@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cutbridge.local/schema/cutbridge-manifest.schema.json",
+  "title": "CutBridge Manifest",
+  "type": "object",
+  "required": [
+    "schema",
+    "schema_version",
+    "cutbridge_version",
+    "project",
+    "episode",
+    "scene",
+    "cut",
+    "take",
+    "version",
+    "fps",
+    "resolution",
+    "frames",
+    "passes"
+  ],
+  "properties": {
+    "schema": {"const": "cutbridge-manifest"},
+    "schema_version": {"type": "integer", "minimum": 1},
+    "cutbridge_version": {"type": "string"},
+    "project": {"type": "string"},
+    "episode": {"type": "string"},
+    "scene": {"type": "string"},
+    "cut": {"type": "string"},
+    "take": {"type": "string"},
+    "version": {"type": "integer", "minimum": 1},
+    "version_label": {"type": "string"},
+    "package_name": {"type": "string"},
+    "fps": {"type": "number", "exclusiveMinimum": 0},
+    "resolution": {
+      "type": "object",
+      "required": ["width", "height"],
+      "properties": {
+        "width": {"type": "integer", "minimum": 1},
+        "height": {"type": "integer", "minimum": 1},
+        "pixel_aspect": {"type": "number", "exclusiveMinimum": 0}
+      }
+    },
+    "frames": {
+      "type": "object",
+      "required": ["start", "end", "count"],
+      "properties": {
+        "start": {"type": "integer"},
+        "end": {"type": "integer"},
+        "count": {"type": "integer", "minimum": 1}
+      }
+    },
+    "camera": {"type": ["string", "null"]},
+    "source_blend": {"type": ["string", "null"]},
+    "passes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "path", "sequence_pattern"],
+        "properties": {
+          "name": {"type": "string"},
+          "path": {"type": "string"},
+          "sequence_pattern": {"type": "string"},
+          "required": {"type": "boolean"}
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}
