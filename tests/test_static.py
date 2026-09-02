@@ -47,12 +47,56 @@ def test_blender_manifest_is_hardened_and_version_synced():
     assert manifest["schema_version"] == "1.0.0"
     assert manifest["id"] == "cutbridge"
     assert manifest["type"] == "add-on"
-    assert manifest["version"] == _version_from_source() == "0.2.0"
+    assert manifest["version"] == _version_from_source() == "0.2.1"
     assert manifest["blender_version_min"] == "4.2.0"
     assert "Animation" in manifest["tags"]
     assert "files" in manifest["permissions"]
     assert "network" in manifest["permissions"]
     assert manifest["build"]["paths_exclude_pattern"]
+
+
+def test_blender_string_property_subtypes_are_valid():
+    """Catch invalid RNA subtypes such as the former `URL` preference subtype."""
+    allowed = {"NONE", "FILE_PATH", "DIR_PATH", "FILE_NAME", "BYTE_STRING", "PASSWORD"}
+    for path in BLENDER.glob("*.py"):
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Call):
+                continue
+            func = node.func
+            is_string_property = (
+                isinstance(func, ast.Name) and func.id == "StringProperty"
+            ) or (
+                isinstance(func, ast.Attribute) and func.attr == "StringProperty"
+            )
+            if not is_string_property:
+                continue
+            for keyword in node.keywords:
+                if keyword.arg == "subtype" and isinstance(keyword.value, ast.Constant):
+                    assert keyword.value.value in allowed, (
+                        f"Unsupported StringProperty subtype {keyword.value.value!r} in {path.name}"
+                    )
+
+
+def test_registration_has_partial_failure_rollback():
+    source = (BLENDER / "__init__.py").read_text(encoding="utf-8")
+    assert "_cleanup_partial_registration" in source
+    assert "_registered_class_for" in source
+    assert "for cls in reversed(registered)" in source
+    assert "raise" in source
+
+
+def test_blender_52_lts_is_in_target_matrix():
+    source = (BLENDER / "version.py").read_text(encoding="utf-8")
+    tree = ast.parse(source)
+    value = None
+    for node in tree.body:
+        if isinstance(node, ast.Assign):
+            if any(isinstance(target, ast.Name) and target.id == "TARGET_LTS_SERIES" for target in node.targets):
+                value = ast.literal_eval(node.value)
+                break
+    assert value is not None
+    assert (5, 2) in value
 
 
 def test_shared_manifest_schema_parses():
@@ -106,7 +150,7 @@ def test_update_selection_respects_channel_version_platform_and_blender():
     stable = updates.select_latest_compatible(
         payload,
         current_version="0.2.0",
-        blender_version=(4, 5, 3),
+        blender_version=(5, 2, 0),
         platform_name="windows-x64",
         selected_channel="stable",
     )
@@ -115,7 +159,7 @@ def test_update_selection_respects_channel_version_platform_and_blender():
     beta = updates.select_latest_compatible(
         payload,
         current_version="0.2.0",
-        blender_version=(4, 5, 3),
+        blender_version=(5, 2, 0),
         platform_name="windows-x64",
         selected_channel="beta",
     )
@@ -133,7 +177,7 @@ def test_update_selection_respects_channel_version_platform_and_blender():
     wrong_platform = updates.select_latest_compatible(
         payload,
         current_version="0.2.0",
-        blender_version=(4, 5, 3),
+        blender_version=(5, 2, 0),
         platform_name="macos-arm64",
         selected_channel="stable",
     )
@@ -150,7 +194,7 @@ def test_release_builder_produces_expected_artifacts(tmp_path):
             sys.executable,
             str(ROOT / "tools" / "build_release.py"),
             "--tag",
-            "v0.2.0",
+            "v0.2.1",
             "--output",
             str(output),
         ],
@@ -159,8 +203,8 @@ def test_release_builder_produces_expected_artifacts(tmp_path):
         text=True,
     )
 
-    blender_zip = output / "CutBridge-Blender-v0.2.0.zip"
-    ae_zip = output / "CutBridge-AfterEffects-v0.2.0.zip"
+    blender_zip = output / "CutBridge-Blender-v0.2.1.zip"
+    ae_zip = output / "CutBridge-AfterEffects-v0.2.1.zip"
     checksum_file = output / "SHA256SUMS.txt"
     metadata_file = output / "release-metadata.json"
 
@@ -185,5 +229,5 @@ def test_release_builder_produces_expected_artifacts(tmp_path):
     assert all(re.match(r"^[a-f0-9]{64}  CutBridge-", line) for line in checksum_lines)
 
     metadata = json.loads(metadata_file.read_text(encoding="utf-8"))
-    assert metadata["version"] == "0.2.0"
+    assert metadata["version"] == "0.2.1"
     assert metadata["blender_version_min"] == "4.2.0"
