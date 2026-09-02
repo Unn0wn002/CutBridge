@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "cutbridge"
-version = "0.2.1"
+version = "0.2.2"
 name = "CutBridge"
 tagline = "Anime cut handoff pipeline for Blender and After Effects"
 maintainer = "CutBridge Student Project"
@@ -13,7 +13,7 @@ license = ["SPDX:GPL-3.0-or-later"]
 
 [permissions]
 files = "Create deterministic cut packages and JSON manifests selected by the user"
-network = "Check a configured CutBridge release index for compatible updates"
+network = "Check the CutBridge distribution release index for compatible updates"
 
 [build]
 paths_exclude_pattern = [
