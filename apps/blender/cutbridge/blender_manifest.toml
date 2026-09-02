@@ -1,0 +1,14 @@
+schema_version = "1.0.0"
+
+id = "cutbridge"
+version = "0.1.0"
+name = "CutBridge"
+tagline = "Anime cut handoff pipeline for Blender and After Effects"
+maintainer = "CutBridge Student Project"
+type = "add-on"
+
+blender_version_min = "4.2.0"
+license = ["SPDX:GPL-3.0-or-later"]
+
+[permissions]
+files = "Create deterministic cut packages and JSON manifests selected by the user"
