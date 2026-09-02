@@ -1,8 +1,8 @@
 # CutBridge
 
-CutBridge is an anime-oriented production bridge for **Blender → After Effects** workflows.
+**CutBridge is a Blender-to-After Effects production pipeline tool for animation cuts.** It standardizes cut metadata, render-pass packaging, versioning, JSON handoff, and compositing setup so artists can move work from Blender into After Effects with less repetitive setup and fewer pipeline errors.
 
-The project standardizes cut metadata, deterministic package structures, JSON handoff manifests, After Effects composition setup, production QC, and a controlled release/update foundation.
+CutBridge is designed around cut-based animation production workflows. Instead of acting as a renderer, shader, or animation tool, it provides a structured handoff layer between 3D production and compositing: validate the cut in Blender, build a deterministic package, transfer the manifest and render sequences, then let the After Effects side reconstruct the expected composition context and perform QC.
 
 ## Current development version
 
