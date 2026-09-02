@@ -6,7 +6,7 @@ The project standardizes cut metadata, deterministic package structures, JSON ha
 
 ## Current development version
 
-**v0.2.0 — update/distribution foundation**
+**v0.2.1 — Blender 5.2 registration hotfix + update/distribution foundation**
 
 ### Blender
 
@@ -20,6 +20,7 @@ The project standardizes cut metadata, deterministic package structures, JSON ha
 - Stable / Beta / Development update-channel preference.
 - Optional startup update **check**.
 - No forced or active-session self-update.
+- Transactional registration cleanup so failed enables do not leave stale RNA classes behind.
 
 ### After Effects
 
@@ -60,7 +61,7 @@ CutBridge/
 
 See [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md).
 
-Minimum Blender runtime is **4.2.0**. The current LTS-first targets are Blender **4.2 LTS** and **4.5 LTS**. A version meeting the minimum is not automatically described as certified until runtime testing is recorded.
+Minimum Blender runtime is **4.2.0**. The current LTS-first targets are Blender **4.2 LTS**, **4.5 LTS**, and **5.2 LTS**. A version meeting the minimum is not automatically described as certified until runtime testing is recorded.
 
 ## Update policy
 
