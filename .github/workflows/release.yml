@@ -1,0 +1,32 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          TAG="${GITHUB_REF_NAME}"
+          (cd apps/blender/cutbridge && zip -r "../../../dist/CutBridge-Blender-${TAG}.zip" .)
+          zip -j "dist/CutBridge-AfterEffects-${TAG}.zip" apps/after-effects/CutBridge.jsx
+          sha256sum dist/*.zip > dist/SHA256SUMS.txt
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/CutBridge-Blender-*.zip
+            dist/CutBridge-AfterEffects-*.zip
+            dist/SHA256SUMS.txt
+          generate_release_notes: true
