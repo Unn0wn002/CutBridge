@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "cutbridge"
-version = "0.2.0"
+version = "0.2.1"
 name = "CutBridge"
 tagline = "Anime cut handoff pipeline for Blender and After Effects"
 maintainer = "CutBridge Student Project"
