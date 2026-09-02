@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, develop, 'feature/**']
+    branches: [main, develop, 'feature/**', 'fix/**']
   pull_request:
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
       - name: Install test dependencies
         run: python -m pip install pytest
       - name: Run tests
-        run: pytest -q
+        run: pytest -q tests/test_static.py
       - name: Simulate release packaging
         shell: bash
         run: |
@@ -36,3 +36,15 @@ jobs:
         run: |
           cp apps/after-effects/CutBridge.jsx /tmp/CutBridge.js
           node --check /tmp/CutBridge.js
+
+  blender-52-rna-runtime:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install official Blender 5.2.1 Python module
+        run: python -m pip install --disable-pip-version-check bpy==5.2.1
+      - name: Register, unregister, and re-register CutBridge in Blender RNA
+        run: python tests/test_blender_runtime_52.py
