@@ -14,17 +14,22 @@ sys.path.insert(0, str(BLENDER_APP))
 import cutbridge  # noqa: E402
 
 
+def is_registered(cls):
+    # Blender injects `bl_rna` into successfully registered Python RNA classes.
+    return "bl_rna" in cls.__dict__
+
+
 def assert_clean():
     assert not hasattr(bpy.types.Scene, "cutbridge")
-    lookup = getattr(bpy.types.Struct, "bl_rna_get_subclass_py")
     for cls in cutbridge.CLASSES:
-        assert lookup(cls.__name__) is None, f"stale RNA class: {cls.__name__}"
+        assert not is_registered(cls), f"stale RNA class: {cls.__name__}"
 
 
 def run_cycle():
     cutbridge.register()
     assert hasattr(bpy.types.Scene, "cutbridge")
-    assert bpy.types.Struct.bl_rna_get_subclass_py("CUTBRIDGE_AP_Preferences") is not None
+    for cls in cutbridge.CLASSES:
+        assert is_registered(cls), f"class did not register: {cls.__name__}"
     cutbridge.unregister()
     assert_clean()
 
