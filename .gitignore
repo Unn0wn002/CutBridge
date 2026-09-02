@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Blender
+*.blend1
+*.blend2
+*.blend@
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Build/release
+build/
+dist/
+*.zip
+
+# Local CutBridge output packages
+cutbridge-output/
+*_V[0-9][0-9][0-9]/
