@@ -25,7 +25,9 @@ class CUTBRIDGE_AP_Preferences(bpy.types.AddonPreferences):
     update_index_url: StringProperty(
         name="Update Index URL",
         description="Separately hosted CutBridge release index; the private source repository is not used as an update endpoint",
-        subtype="URL",
+        # Blender StringProperty has no URL subtype. Keeping the default NONE
+        # subtype is required for registration on Blender 5.2 and is also valid
+        # on the 4.2/4.5 LTS baselines.
         default=DEFAULT_UPDATE_INDEX_URL,
     )
     check_updates_on_startup: BoolProperty(
