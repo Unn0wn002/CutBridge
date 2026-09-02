@@ -2,6 +2,18 @@
 
 All notable CutBridge changes are tracked here.
 
+## [0.2.1] - Unreleased
+
+### Fixed
+- Blender 5.2 registration failure caused by the unsupported `StringProperty(subtype="URL")` declaration in CutBridge preferences.
+- Partial enable failures now roll back already-registered CutBridge classes instead of leaving Blender in an `already registered as a subclass` state.
+- Retrying enable after a failed/partial registration now cleans stale CutBridge RNA registrations first.
+
+### Changed
+- Blender 5.2 LTS is now an explicit CutBridge compatibility target pending real runtime validation.
+- Static CI now checks Blender `StringProperty` subtypes and regression coverage for transactional registration.
+- CutBridge version bumped to 0.2.1.
+
 ## [0.2.0] - Unreleased
 
 ### Added
