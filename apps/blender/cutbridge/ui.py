@@ -1,7 +1,9 @@
 import bpy
 
 from .environment import snapshot
+from .preferences import RUNTIME_UPDATE_STATE
 from .update_ops import get_preferences
+from .version import DEFAULT_UPDATE_INDEX_URL
 
 
 class CUTBRIDGE_PT_MainPanel(bpy.types.Panel):
@@ -72,21 +74,22 @@ class CUTBRIDGE_PT_MainPanel(bpy.types.Panel):
             return
 
         update_box.label(text=f"Channel: {preferences.update_channel.title()}")
-        if not preferences.update_index_url.strip():
+        endpoint_ready = bool(DEFAULT_UPDATE_INDEX_URL.strip())
+        if not endpoint_ready:
             update_box.label(text="Update endpoint not configured")
-            update_box.label(text="Configure it in Blender Preferences > Add-ons/Extensions")
         elif not env["online_access"]:
             update_box.label(text="Blender online access is disabled", icon="ERROR")
 
         row = update_box.row()
-        row.enabled = bool(preferences.update_index_url.strip()) and env["online_access"]
+        row.enabled = endpoint_ready and env["online_access"]
         row.operator("cutbridge.check_for_updates", icon="FILE_REFRESH")
 
-        if preferences.update_available:
-            update_box.label(text=f"New version: {preferences.latest_version}", icon="INFO")
-            if preferences.latest_release_url:
+        state = RUNTIME_UPDATE_STATE
+        if state.update_available:
+            update_box.label(text=f"New version: {state.latest_version}", icon="INFO")
+            if state.latest_release_url:
                 update_box.operator("cutbridge.open_release_page", icon="URL")
         else:
-            update_box.label(text=preferences.last_update_message or "Not checked")
+            update_box.label(text=state.last_update_message or "Not checked")
 
         update_box.label(text="No forced updates; installation remains user-approved")

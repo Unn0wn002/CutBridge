@@ -8,8 +8,9 @@ import webbrowser
 import bpy
 
 from .environment import platform_id
+from .preferences import RUNTIME_UPDATE_STATE
 from .updates import UpdateIndexError, fetch_update_index, select_latest_compatible
-from .version import __version__
+from .version import DEFAULT_UPDATE_INDEX_URL, __version__
 
 
 def get_preferences(context=None):
@@ -19,27 +20,29 @@ def get_preferences(context=None):
     return addon.preferences if addon else None
 
 
-def _set_message(preferences, message: str):
-    preferences.last_update_message = message
-    preferences.last_update_check = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+def _set_message(message: str):
+    RUNTIME_UPDATE_STATE.last_update_message = message
+    RUNTIME_UPDATE_STATE.last_update_check = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
 
 
 def perform_update_check(preferences) -> bool:
-    """Check metadata and update preference state. Never installs anything."""
-    preferences.update_available = False
-    preferences.latest_version = ""
-    preferences.latest_release_url = ""
+    """Check metadata and update transient state. Never installs anything."""
+    state = RUNTIME_UPDATE_STATE
+    state.update_available = False
+    state.latest_version = ""
+    state.latest_release_url = ""
 
-    if not preferences.update_index_url.strip():
-        _set_message(preferences, "Update endpoint not configured")
+    update_index_url = DEFAULT_UPDATE_INDEX_URL.strip()
+    if not update_index_url:
+        _set_message("Update endpoint not configured")
         return False
 
     if not bool(getattr(bpy.app, "online_access", False)):
-        _set_message(preferences, "Blender online access is disabled")
+        _set_message("Blender online access is disabled")
         return False
 
     try:
-        payload = fetch_update_index(preferences.update_index_url)
+        payload = fetch_update_index(update_index_url)
         release = select_latest_compatible(
             payload,
             current_version=__version__,
@@ -48,17 +51,17 @@ def perform_update_check(preferences) -> bool:
             selected_channel=preferences.update_channel,
         )
     except UpdateIndexError as exc:
-        _set_message(preferences, f"Update check failed: {exc}")
+        _set_message(f"Update check failed: {exc}")
         return False
 
     if release is None:
-        _set_message(preferences, f"CutBridge {__version__} is up to date for this environment")
+        _set_message(f"CutBridge {__version__} is up to date for this environment")
         return True
 
-    preferences.update_available = True
-    preferences.latest_version = release["version"]
-    preferences.latest_release_url = release["release_page_url"]
-    _set_message(preferences, f"CutBridge {release['version']} is available")
+    state.update_available = True
+    state.latest_version = release["version"]
+    state.latest_release_url = release["release_page_url"]
+    _set_message(f"CutBridge {release['version']} is available")
     return True
 
 
@@ -74,12 +77,11 @@ class CUTBRIDGE_OT_CheckForUpdates(bpy.types.Operator):
             return {"CANCELLED"}
 
         success = perform_update_check(preferences)
-        if preferences.update_available:
-            self.report({"INFO"}, preferences.last_update_message)
-        elif success:
-            self.report({"INFO"}, preferences.last_update_message)
+        state = RUNTIME_UPDATE_STATE
+        if state.update_available or success:
+            self.report({"INFO"}, state.last_update_message)
         else:
-            self.report({"WARNING"}, preferences.last_update_message)
+            self.report({"WARNING"}, state.last_update_message)
         return {"FINISHED"}
 
 
@@ -89,16 +91,16 @@ class CUTBRIDGE_OT_OpenReleasePage(bpy.types.Operator):
     bl_description = "Open the compatible release page so the user can review and approve the update"
 
     def execute(self, context):
-        preferences = get_preferences(context)
-        if preferences is None or not preferences.latest_release_url:
+        release_url = RUNTIME_UPDATE_STATE.latest_release_url
+        if not release_url:
             self.report({"WARNING"}, "No compatible release URL is available")
             return {"CANCELLED"}
 
         try:
             if hasattr(bpy.ops.wm, "url_open"):
-                bpy.ops.wm.url_open(url=preferences.latest_release_url)
+                bpy.ops.wm.url_open(url=release_url)
             else:
-                webbrowser.open(preferences.latest_release_url)
+                webbrowser.open(release_url)
         except Exception as exc:  # Browser integration is platform-dependent.
             self.report({"ERROR"}, f"Unable to open release page: {exc}")
             return {"CANCELLED"}
@@ -107,7 +109,7 @@ class CUTBRIDGE_OT_OpenReleasePage(bpy.types.Operator):
 
 def _startup_update_check():
     preferences = get_preferences()
-    if preferences and preferences.check_updates_on_startup and preferences.update_index_url.strip():
+    if preferences and preferences.check_updates_on_startup and DEFAULT_UPDATE_INDEX_URL.strip():
         perform_update_check(preferences)
     return None
 
