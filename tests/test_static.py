@@ -140,7 +140,7 @@ def test_update_selection_respects_channel_version_platform_and_blender():
             {
                 "version": "1.0.0",
                 "channel": "stable",
-                "blender_version_min": "5.0.0",
+                "blender_version_min": "6.0.0",
                 "platforms": ["windows-x64"],
                 "release_page_url": "https://example.invalid/1.0.0",
             },
