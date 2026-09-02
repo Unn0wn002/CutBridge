@@ -2,62 +2,84 @@
 
 CutBridge is an anime-oriented production bridge for **Blender → After Effects** workflows.
 
-The project standardizes cut metadata, deterministic package structures, JSON handoff manifests, After Effects composition setup, and production QC. The initial MVP focuses on a reliable end-to-end handoff before adding revision management and production update tooling.
+The project standardizes cut metadata, deterministic package structures, JSON handoff manifests, After Effects composition setup, production QC, and a controlled release/update foundation.
 
-## Current MVP
+## Current development version
 
-- Blender add-on / extension foundation
-- Cut metadata: project, episode, scene, cut, take, version
-- Scene metadata capture: FPS, resolution, frame range, active camera
-- Validation before package generation
-- Deterministic folder/package generation
-- UTF-8 `cutbridge.json` handoff manifest
-- After Effects ExtendScript importer
-- Automatic AE project folders and composition creation
-- Image-sequence import and layer ordering
-- Basic QC
-- Shared JSON Schema
-- CI and release workflow foundations
+**v0.2.0 — update/distribution foundation**
+
+### Blender
+
+- Project / Episode / Scene / Cut / Take / Version metadata.
+- FPS, resolution, frame-range, and active-camera capture.
+- Cut validation and deterministic package generation.
+- UTF-8 `cutbridge.json` manifest.
+- Modern `blender_manifest.toml` extension metadata.
+- Environment diagnostics: CutBridge version, Blender version, Python, platform, online-access status.
+- LTS-first compatibility status.
+- Stable / Beta / Development update-channel preference.
+- Optional startup update **check**.
+- No forced or active-session self-update.
+
+### After Effects
+
+- ExtendScript/ScriptUI importer.
+- Manifest-driven project folders and composition creation.
+- Image-sequence import and FPS conform.
+- Layer ordering and basic QC.
+
+### Engineering
+
+- Private source repository.
+- `main` / `develop` / `feature/*` branch workflow.
+- CI on main, develop, and feature branches.
+- Deterministic release builder.
+- Version/tag consistency validation.
+- Blender + After Effects ZIP artifacts.
+- SHA-256 checksums and release metadata.
+- Separate release-index schema for future public distribution.
 
 ## Repository layout
 
 ```text
 CutBridge/
 ├── apps/
-│   ├── blender/
+│   ├── blender/cutbridge/
 │   └── after-effects/
 ├── packages/
-│   └── shared/
+│   ├── shared/
+│   └── update/
+├── tools/
+│   └── build_release.py
 ├── docs/
 ├── tests/
 └── .github/workflows/
 ```
 
-## Compatibility target
+## Compatibility
 
-- Blender: 4.2 LTS+ baseline, with LTS-first compatibility testing
-- After Effects: 2024–2026 target
-- OS: Windows first, macOS validation planned
-- UI/localization target: English + Japanese
+See [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md).
 
-## Branch model
+Minimum Blender runtime is **4.2.0**. The current LTS-first targets are Blender **4.2 LTS** and **4.5 LTS**. A version meeting the minimum is not automatically described as certified until runtime testing is recorded.
 
-- `main` — stable/release-ready
-- `develop` — active integration
-- `feature/*` — isolated features
+## Update policy
 
-## Roadmap
+See [`docs/UPDATE_ARCHITECTURE.md`](docs/UPDATE_ARCHITECTURE.md).
 
-1. Stabilize Blender → package → After Effects handoff.
-2. Convert packaging fully to the modern Blender Extension workflow.
-3. Add non-destructive revision updates.
-4. Add deeper QC and missing-frame detection.
-5. Add English/Japanese UI switching.
-6. Add release/update infrastructure and compatibility gates.
-7. Validate against real client/studio workflows.
+The private source repository is **not** the plugin update endpoint. CutBridge can check a separately configured release index and notify the user, but installation remains user-approved. Production distribution is intended to use Blender's Remote Extension Repository system.
 
-## Status
+## Development flow
 
-**MVP v0.1.0 — development baseline.**
+- `main` — stable/release-ready.
+- `develop` — active integration.
+- `feature/*` — isolated features.
 
-This repository is private during university-project development.
+## Next product work
+
+1. Blender render-pass/output mapping.
+2. Non-destructive After Effects revision manager.
+3. Missing-frame and naming QC expansion.
+4. Studio presets.
+5. Full English/Japanese UI.
+6. Camera/null handoff.
+7. Client workflow validation.

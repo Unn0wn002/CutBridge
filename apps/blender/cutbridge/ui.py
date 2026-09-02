@@ -1,5 +1,8 @@
 import bpy
 
+from .environment import snapshot
+from .update_ops import get_preferences
+
 
 class CUTBRIDGE_PT_MainPanel(bpy.types.Panel):
     bl_label = "CutBridge"
@@ -51,3 +54,39 @@ class CUTBRIDGE_PT_MainPanel(bpy.types.Panel):
         if s.last_package_path:
             box.operator("cutbridge.open_package_folder", icon="FILE_FOLDER")
             box.label(text=s.last_package_path)
+
+        env = snapshot(bpy)
+        box = layout.box()
+        box.label(text="Environment")
+        box.label(text=f"CutBridge: {env['cutbridge_version']}")
+        box.label(text=f"Blender: {env['blender_version']} — {env['compatibility_label']}")
+        box.label(text=f"Platform: {env['platform']}")
+        box.label(text=f"Python: {env['python_version']}")
+        box.label(text=f"Online access: {'Enabled' if env['online_access'] else 'Disabled'}")
+
+        preferences = get_preferences(context)
+        update_box = layout.box()
+        update_box.label(text="Updates")
+        if preferences is None:
+            update_box.label(text="CutBridge preferences unavailable", icon="ERROR")
+            return
+
+        update_box.label(text=f"Channel: {preferences.update_channel.title()}")
+        if not preferences.update_index_url.strip():
+            update_box.label(text="Update endpoint not configured")
+            update_box.label(text="Configure it in Blender Preferences > Add-ons/Extensions")
+        elif not env["online_access"]:
+            update_box.label(text="Blender online access is disabled", icon="ERROR")
+
+        row = update_box.row()
+        row.enabled = bool(preferences.update_index_url.strip()) and env["online_access"]
+        row.operator("cutbridge.check_for_updates", icon="FILE_REFRESH")
+
+        if preferences.update_available:
+            update_box.label(text=f"New version: {preferences.latest_version}", icon="INFO")
+            if preferences.latest_release_url:
+                update_box.operator("cutbridge.open_release_page", icon="URL")
+        else:
+            update_box.label(text=preferences.last_update_message or "Not checked")
+
+        update_box.label(text="No forced updates; installation remains user-approved")
