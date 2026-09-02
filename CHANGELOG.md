@@ -2,6 +2,16 @@
 
 All notable CutBridge changes are tracked here.
 
+## [0.2.3] - Unreleased
+
+### Fixed
+- Generated `cutbridge.json` files now read `cutbridge_version` from the canonical Blender extension version instead of emitting the stale `0.1.0` literal.
+
+### Added
+- Official `bpy 5.2.1` integration coverage for scene metadata, JSON Schema validation, render-pass layouts, V001/V002 coexistence, UTF-8 Japanese metadata, and validation failures.
+- Release checks now recompute artifact SHA-256 values and verify every shipped Blender Python module plus archived version metadata.
+- Release CI now installs the Blender 5.2.1 runtime dependencies and runs the full automated suite and RNA lifecycle test.
+
 ## [0.2.1] - Unreleased
 
 ### Fixed

@@ -15,11 +15,13 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.13'
       - name: Install test dependencies
-        run: python -m pip install pytest
+        run: python -m pip install pytest jsonschema bpy==5.2.1
       - name: Validate source
         run: pytest -q
+      - name: Validate Blender 5.2.1 RNA lifecycle
+        run: python tests/test_blender_runtime_52.py
       - name: Check ExtendScript syntax
         run: |
           cp apps/after-effects/CutBridge.jsx /tmp/CutBridge.js

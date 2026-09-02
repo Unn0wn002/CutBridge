@@ -8,6 +8,8 @@ from typing import Iterable
 
 import bpy
 
+from .version import __version__
+
 INVALID_FS_CHARS = re.compile(r'[<>:"/\\|?*]+')
 
 
@@ -127,7 +129,7 @@ def build_manifest(context, package_root: Path) -> dict:
     manifest = {
         "schema": "cutbridge-manifest",
         "schema_version": 1,
-        "cutbridge_version": "0.1.0",
+        "cutbridge_version": __version__,
         "project": s.project,
         "episode": s.episode,
         "scene": s.scene_id,

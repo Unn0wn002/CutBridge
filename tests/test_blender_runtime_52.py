@@ -36,7 +36,7 @@ def run_cycle():
 
 if __name__ == "__main__":
     print("bpy version:", bpy.app.version_string)
-    assert bpy.app.version[:2] == (5, 2), bpy.app.version_string
+    assert bpy.app.version == (5, 2, 1), bpy.app.version_string
     assert_clean()
     run_cycle()
     run_cycle()

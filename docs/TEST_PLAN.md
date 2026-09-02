@@ -1,4 +1,4 @@
-# CutBridge v0.2.1 — Test Plan
+# CutBridge v0.2.3 — Test Plan
 
 ## Blender tests
 
@@ -10,10 +10,17 @@
 | B04 | Japanese metadata e.g. `テスト作品` | UTF-8 JSON is created correctly |
 | B05 | BEAUTY+LINE only | Only two render pass folders + manifest entries |
 | B06 | Build V001 then V002 | Two deterministic package folders |
-| B07 | Install/enable CutBridge 0.2.1 on Blender 5.2 LTS | Extension registers without `StringProperty` or RNA registration errors |
+| B07 | Register CutBridge 0.2.3 with official `bpy 5.2.1` | Extension registers without `StringProperty` or RNA registration errors |
 | B08 | Disable and re-enable CutBridge in the same Blender session | No `already registered as a subclass` error |
 | B09 | Simulate/encounter a failed registration, then retry enable | CutBridge cleans partial registrations and can retry without restarting Blender |
-| B10 | Open Environment panel on Blender 5.2 | Reports CutBridge 0.2.1, Blender 5.2.x, platform, Python, and Target LTS status |
+| B10 | Open Environment panel on Blender 5.2 | Reports CutBridge 0.2.3, Blender 5.2.x, platform, Python, and Target LTS status |
+| B11 | Build a package with CutBridge 0.2.3 | Generated manifest version matches the canonical extension version |
+| B12 | Missing camera, Cut ID, output, passes, or valid frame range | Validation reports the corresponding error and blocks package generation |
+| B13 | BEAUTY; BEAUTY+LINE; all four passes | Folder tree and manifest entries match the selected passes exactly |
+| B14 | Build a release artifact | Root manifest/modules, synchronized metadata, and recomputed SHA-256 values pass |
+
+Automated Blender checks run headlessly. Blender GUI installation/panel behavior and
+After Effects GUI behavior remain manual test areas.
 
 ## After Effects tests
 
