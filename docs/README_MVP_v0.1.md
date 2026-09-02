@@ -27,14 +27,14 @@ Not implemented yet: live link, timesheet integration, native AE effect, render 
 
 ---
 
-# 1. Install the Blender add-on
+# 1. Install the Blender side
 
-The installable ZIP is generated beside this README as `CutBridge_Blender_Addon_v0.1.zip`.
+For source/development testing, package the contents of `apps/blender/cutbridge/` as the installable extension ZIP, or use the automated GitHub release workflow once a release tag is published.
 
 1. Open Blender 4.2 LTS or later.
-2. `Edit > Preferences > Add-ons` (or Extensions/Add-ons depending on Blender version).
-3. Choose **Install from Disk** / **Install...**.
-4. Select `CutBridge_Blender_Addon_v0.1.zip`.
+2. `Edit > Preferences > Add-ons` / `Extensions` depending on Blender version.
+3. Choose **Install from Disk**.
+4. Select the CutBridge Blender ZIP.
 5. Enable **CutBridge**.
 6. Open a 3D View and press `N`.
 7. Select the **CutBridge** tab.
@@ -66,37 +66,11 @@ The add-on does **not render** the passes yet. It creates the deterministic hand
 
 ---
 
-# 2. Test the After Effects side immediately
+# 2. Test the After Effects side
 
-A ready-to-use dummy package is included at:
+The repository intentionally does not include binary client/render assets. For AE testing, first create a CutBridge package in Blender, then place test image sequences into the generated pass folders using the filenames defined by `cutbridge.json`.
 
-`examples/DEMO_EP01_SC010_C012_V001/`
-
-It contains 12 PNG frames for BEAUTY, LINE, and SHADOW.
-
-### Quick run
-
-1. Open After Effects.
-2. `File > Scripts > Run Script File...`
-3. Choose `after-effects/CutBridge.jsx`.
-4. Click **Import Package**.
-5. Choose the example `cutbridge.json`.
-6. Click **Build Comp**.
-7. Click **Run QC**.
-
-Expected result: `C012_COMP`, 640×360, 24 fps, 12 frames, with LINE / BEAUTY / SHADOW layers.
-
-### Dockable panel
-
-Copy `CutBridge.jsx` into the After Effects `Scripts/ScriptUI Panels` folder and restart After Effects. Then open it from the `Window` menu.
-
-Adobe's exact scripts folder location varies by OS/version, so for the first test use **Run Script File**.
-
----
-
-# 3. End-to-end real test
-
-After building a package in Blender, render/copy image sequences into the folders using the filename convention generated in `cutbridge.json`, for example:
+Example:
 
 ```text
 render/beauty/C012_BEAUTY_0001.png
@@ -106,11 +80,27 @@ render/line/C012_LINE_0001.png
 ...
 ```
 
-Then load that package in AE.
+Then:
+
+1. Open After Effects.
+2. `File > Scripts > Run Script File...`
+3. Choose `apps/after-effects/CutBridge.jsx`.
+4. Click **Import Package**.
+5. Choose the generated `cutbridge.json`.
+6. Click **Build Comp**.
+7. Click **Run QC**.
+
+The resulting composition should use the manifest resolution, FPS, frame duration, imported passes, and layer ordering.
+
+### Dockable panel
+
+Copy `CutBridge.jsx` into the After Effects `Scripts/ScriptUI Panels` folder and restart After Effects. Then open it from the `Window` menu.
+
+Adobe's exact scripts folder location varies by OS/version, so for the first test use **Run Script File**.
 
 ---
 
-# 4. Recommended next development order
+# 3. Recommended next development order
 
 1. **v0.2 Blender Render Mapping** — map package passes to View Layers/AOVs and set output paths automatically.
 2. **v0.3 Revision Update** — load V002/V003 and replace only managed footage, preserving manual AE layers/effects.
