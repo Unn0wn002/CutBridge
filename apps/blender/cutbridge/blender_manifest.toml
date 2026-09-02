@@ -1,14 +1,24 @@
 schema_version = "1.0.0"
 
 id = "cutbridge"
-version = "0.1.0"
+version = "0.2.0"
 name = "CutBridge"
 tagline = "Anime cut handoff pipeline for Blender and After Effects"
 maintainer = "CutBridge Student Project"
 type = "add-on"
+tags = ["Animation"]
 
 blender_version_min = "4.2.0"
 license = ["SPDX:GPL-3.0-or-later"]
 
 [permissions]
 files = "Create deterministic cut packages and JSON manifests selected by the user"
+network = "Check a configured CutBridge release index for compatible updates"
+
+[build]
+paths_exclude_pattern = [
+  "__pycache__/",
+  ".*",
+  "*.py[cod]",
+  "*.zip",
+]

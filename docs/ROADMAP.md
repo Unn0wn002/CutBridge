@@ -1,10 +1,18 @@
 # Roadmap
 
-## v0.2 — Blender Render Mapping
+## v0.2.0 — Extension & Update Foundation
+- Harden Blender Extension packaging and manifest metadata.
+- Add central version constants.
+- Add environment/version/platform diagnostics.
+- Add LTS-first compatibility policy.
+- Add Stable/Beta/Development update discovery.
+- Add deterministic release builder, checksums, and release metadata.
+- Keep private source control separate from distribution/update hosting.
+
+## v0.2.1 — Blender Render Mapping
 - Map package passes to Blender render outputs / View Layers.
 - Set deterministic output paths automatically.
-- Harden Blender Extension packaging.
-- Add environment/version diagnostics.
+- Validate pass/output configuration before render.
 
 ## v0.3 — Revision Manager
 - Detect newer cut revisions.
