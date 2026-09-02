@@ -3,11 +3,17 @@
 ## Blender
 
 - **Minimum runtime:** Blender `4.2.0`.
-- **LTS-first targets:** Blender `4.2 LTS` and `4.5 LTS`.
+- **LTS-first targets:** Blender `4.2 LTS`, `4.5 LTS`, and `5.2 LTS`.
 - Blender versions newer than the minimum but outside the current LTS target matrix are not blocked by the manifest; CutBridge labels them **Compatible baseline / unverified** until tested.
 - Versions below `4.2.0` are unsupported and should not receive compatible update entries.
 
 `blender_manifest.toml` intentionally defines a minimum version without a maximum version. If a future Blender release introduces a breaking incompatibility, a release may add `blender_version_max` or the distribution index may gate compatible versions.
+
+### Blender 5.2 note
+
+CutBridge 0.2.0 exposed a registration defect in Blender 5.2: the update preference used `StringProperty(subtype="URL")`, but Blender's supported string subtypes are `FILE_PATH`, `DIR_PATH`, `FILE_NAME`, `BYTE_STRING`, `PASSWORD`, and `NONE`. CutBridge 0.2.1 removes the invalid subtype and adds transactional registration cleanup so a failed enable does not leave stale classes registered.
+
+Blender 5.2 LTS is therefore an explicit test target starting with CutBridge 0.2.1. It must still pass a real install/runtime and Blender→After Effects handoff test before being described as certified.
 
 ## Platform identifiers
 
