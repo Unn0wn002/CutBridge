@@ -6,7 +6,7 @@ The project standardizes cut metadata, deterministic package structures, JSON ha
 
 ## Current development version
 
-**v0.2.1 — Blender 5.2 registration hotfix + update/distribution foundation**
+**v0.2.3 — Blender 5.2 runtime and package-generation validation**
 
 ### Blender
 
@@ -34,6 +34,7 @@ The project standardizes cut metadata, deterministic package structures, JSON ha
 - Private source repository.
 - `main` / `develop` / `feature/*` branch workflow.
 - CI on main, develop, and feature branches.
+- Official `bpy 5.2.1` RNA lifecycle and package-generation integration tests.
 - Deterministic release builder.
 - Version/tag consistency validation.
 - Blender + After Effects ZIP artifacts.

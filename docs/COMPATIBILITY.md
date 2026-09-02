@@ -15,6 +15,11 @@ CutBridge 0.2.0 exposed a registration defect in Blender 5.2: the update prefere
 
 Blender 5.2 LTS is therefore an explicit test target starting with CutBridge 0.2.1. It must still pass a real install/runtime and Blender→After Effects handoff test before being described as certified.
 
+CutBridge 0.2.3 is covered by automated RNA lifecycle and package-generation
+tests using the official `bpy 5.2.1` runtime. These headless checks do not replace
+a Blender GUI install/panel test or an After Effects handoff test, so certification
+still requires those manual results.
+
 ## Platform identifiers
 
 CutBridge uses Blender extension-repository style platform identifiers:

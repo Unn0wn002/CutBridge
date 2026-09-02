@@ -44,7 +44,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-      - name: Install official Blender 5.2.1 Python module
-        run: python -m pip install --disable-pip-version-check bpy==5.2.1
+      - name: Install Blender integration test dependencies
+        run: python -m pip install --disable-pip-version-check pytest jsonschema bpy==5.2.1
       - name: Register, unregister, and re-register CutBridge in Blender RNA
         run: python tests/test_blender_runtime_52.py
+      - name: Build and validate CutBridge packages in Blender 5.2.1 RNA
+        run: pytest -q tests/test_blender_integration_52.py

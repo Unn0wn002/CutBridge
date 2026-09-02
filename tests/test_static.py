@@ -1,4 +1,5 @@
 import ast
+import hashlib
 import importlib.util
 import json
 import pathlib
@@ -47,7 +48,7 @@ def test_blender_manifest_is_hardened_and_version_synced():
     assert manifest["schema_version"] == "1.0.0"
     assert manifest["id"] == "cutbridge"
     assert manifest["type"] == "add-on"
-    assert manifest["version"] == _version_from_source() == "0.2.2"
+    assert manifest["version"] == _version_from_source() == "0.2.3"
     assert manifest["blender_version_min"] == "4.2.0"
     assert "Animation" in manifest["tags"]
     assert "files" in manifest["permissions"]
@@ -184,12 +185,14 @@ def test_update_selection_respects_channel_version_platform_and_blender():
 
 def test_release_builder_produces_expected_artifacts(tmp_path):
     output = tmp_path / "dist"
+    version = _version_from_source()
+    tag = f"v{version}"
     subprocess.run(
         [
             sys.executable,
             str(ROOT / "tools" / "build_release.py"),
             "--tag",
-            "v0.2.2",
+            tag,
             "--output",
             str(output),
         ],
@@ -198,8 +201,8 @@ def test_release_builder_produces_expected_artifacts(tmp_path):
         text=True,
     )
 
-    blender_zip = output / "CutBridge-Blender-v0.2.2.zip"
-    ae_zip = output / "CutBridge-AfterEffects-v0.2.2.zip"
+    blender_zip = output / f"CutBridge-Blender-{tag}.zip"
+    ae_zip = output / f"CutBridge-AfterEffects-{tag}.zip"
     checksum_file = output / "SHA256SUMS.txt"
     metadata_file = output / "release-metadata.json"
 
@@ -210,11 +213,20 @@ def test_release_builder_produces_expected_artifacts(tmp_path):
 
     with zipfile.ZipFile(blender_zip) as archive:
         names = set(archive.namelist())
+        expected_python_modules = {
+            path.relative_to(BLENDER).as_posix()
+            for path in BLENDER.rglob("*.py")
+        }
         assert "blender_manifest.toml" in names
-        assert "__init__.py" in names
-        assert "updates.py" in names
-        assert "update_ops.py" in names
+        assert expected_python_modules <= names
         assert all(not name.startswith("cutbridge/") for name in names)
+
+        archived_manifest = tomllib.loads(
+            archive.read("blender_manifest.toml").decode("utf-8")
+        )
+        archived_version_source = archive.read("version.py").decode("utf-8")
+        assert archived_manifest["version"] == version
+        assert f'__version__ = "{version}"' in archived_version_source
 
     with zipfile.ZipFile(ae_zip) as archive:
         assert archive.namelist() == ["CutBridge.jsx"]
@@ -222,7 +234,14 @@ def test_release_builder_produces_expected_artifacts(tmp_path):
     checksum_lines = checksum_file.read_text(encoding="utf-8").splitlines()
     assert len(checksum_lines) == 2
     assert all(re.match(r"^[a-f0-9]{64}  CutBridge-", line) for line in checksum_lines)
+    recorded_checksums = dict(line.split("  ", 1)[::-1] for line in checksum_lines)
+    for artifact in (blender_zip, ae_zip):
+        actual_checksum = hashlib.sha256(artifact.read_bytes()).hexdigest()
+        assert recorded_checksums[artifact.name] == actual_checksum
 
     metadata = json.loads(metadata_file.read_text(encoding="utf-8"))
-    assert metadata["version"] == "0.2.2"
+    assert metadata["version"] == version
+    assert metadata["tag"] == tag
     assert metadata["blender_version_min"] == "4.2.0"
+    assert metadata["artifacts"]["blender"]["sha256"] == recorded_checksums[blender_zip.name]
+    assert metadata["artifacts"]["after_effects"]["sha256"] == recorded_checksums[ae_zip.name]
