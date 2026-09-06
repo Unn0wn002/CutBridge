@@ -32,9 +32,12 @@ class CUTBRIDGE_PG_Settings(bpy.types.PropertyGroup):
         default="PNG",
     )
 
+    # BEAUTY has a renderer-independent Combined/Image source. Other logical
+    # passes are opt-in because their availability depends on the active engine
+    # and View Layer; CutBridge validates them instead of silently guessing.
     pass_beauty: BoolProperty(name="Beauty", default=True)
-    pass_line: BoolProperty(name="Line", default=True)
-    pass_shadow: BoolProperty(name="Shadow", default=True)
+    pass_line: BoolProperty(name="Line", default=False)
+    pass_shadow: BoolProperty(name="Shadow", default=False)
     pass_depth: BoolProperty(name="Depth", default=False)
 
     language: EnumProperty(
