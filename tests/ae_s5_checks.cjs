@@ -1,0 +1,183 @@
+/* S5 Node host-adapter regression harness. This does not certify After Effects GUI/runtime. */
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
+
+const root = path.resolve(__dirname, '..');
+const source = fs.readFileSync(path.join(root, 'apps/after-effects/CutBridge.jsx'), 'utf8');
+const version = fs.readFileSync(path.join(root, 'apps/blender/cutbridge/blender_manifest.toml'), 'utf8').match(/^version = "([^"]+)"/m)[1];
+
+function manifest() {
+  return {
+    schema: 'cutbridge-manifest', schema_version: 1, cutbridge_version: version,
+    project: '桜', episode: 'EP01', scene: 'SC010', cut: 'C001', take: 'T01', version: 1,
+    package_name: '桜_EP01_SC010_C001_T01_V001', fps: 24,
+    resolution: {width: 1920, height: 1080, pixel_aspect: 1},
+    frames: {start: 1, end: 3, count: 3},
+    passes: [{name: 'BEAUTY', path: 'render/beauty', sequence_pattern: 'C001_BEAUTY_####.png', required: true}],
+    ae: {comp_name: 'C001_COMP', layer_order: ['BEAUTY']}
+  };
+}
+
+function contract() {
+  const context = {module: {exports: {}}};
+  vm.createContext(context);
+  vm.runInContext(source, context);
+  return context.module.exports;
+}
+
+function host(m, files) {
+  const controls = [], alerts = [], projectItems = [], imports = [];
+  const packageRoot = '/packages/桜';
+  const normalize = value => path.posix.normalize(decodeURIComponent(String(value).replaceAll('\\', '/')));
+
+  function Folder(value) {
+    this.fsName = normalize(value);
+    this.alias = false;
+    this.exists = this.fsName === packageRoot || files.some(f => f.startsWith(this.fsName + '/'));
+  }
+  Folder.prototype.getFiles = function(filter) {
+    return files.filter(f => path.posix.dirname(f) === this.fsName).map(f => new File(f)).filter(filter);
+  };
+  function File(value) {
+    this.fsName = normalize(value);
+    this.name = encodeURIComponent(path.posix.basename(this.fsName));
+    this.exists = files.includes(this.fsName);
+    this.alias = false;
+  }
+  File.decode = decodeURIComponent;
+  File.openDialog = () => ({parent: new Folder(packageRoot), open: () => true, read: () => JSON.stringify(m), close() {}});
+
+  function Window() { this.layout = {resize() {}, layout() {}}; }
+  Window.prototype.add = function(type, unused, text) {
+    const control = {type, text, graphics: {font: {name: 'Arial'}}, preferredSize: {}};
+    controls.push(control); return control;
+  };
+  Window.prototype.center = Window.prototype.show = function() {};
+  function Panel() {}
+
+  function FolderItem(name) { this.name = name; this.parentFolder = null; this.comment = ''; }
+  function FootageItem(file) { this.name = ''; this.parentFolder = null; this.comment = ''; this.file = file; this.mainSource = {}; }
+  function Layer(comp, sourceItem) {
+    this.comp = comp; this.source = sourceItem; this.name = ''; this.comment = ''; this.startTime = 0;
+  }
+  Layer.prototype.moveToBeginning = function() {
+    const list = this.comp._layers, index = list.indexOf(this);
+    if (index >= 0) { list.splice(index, 1); list.unshift(this); }
+  };
+  function CompItem(name, width, height, aspect, duration, fps) {
+    this.name = name; this.width = width; this.height = height; this.pixelAspect = aspect;
+    this.duration = duration; this.frameRate = fps; this.parentFolder = null; this.comment = ''; this._layers = [];
+    const self = this;
+    this.layers = {add(sourceItem) { const layer = new Layer(self, sourceItem); self._layers.unshift(layer); return layer; }};
+    this.openInViewer = () => {};
+  }
+  Object.defineProperty(CompItem.prototype, 'numLayers', {get() { return this._layers.length; }});
+  CompItem.prototype.layer = function(index) { return this._layers[index - 1]; };
+
+  const project = {rootFolder: {name: 'ROOT'}, item: i => projectItems[i - 1], items: {
+    addFolder(name) { const f = new FolderItem(name); projectItems.push(f); return f; },
+    addComp(...args) { const c = new CompItem(...args); projectItems.push(c); return c; }
+  }, importFile(io) { const item = new FootageItem(io.file); projectItems.push(item); imports.push(item); return item; }};
+  Object.defineProperty(project, 'numItems', {get() { return projectItems.length; }});
+
+  function ImportOptions(file) { this.file = file; this.sequence = false; this.forceAlphabetical = true; }
+  ImportOptions.prototype.canImportAs = () => true;
+  const runtime = {File, Folder, Window, Panel, FolderItem, CompItem, ImportOptions, ImportAsType: {FOOTAGE: 1},
+    ScriptUI: {newFont() {}}, alert: message => alerts.push(String(message)), $: {writeln() {}},
+    app: {project, beginUndoGroup() {}, endUndoGroup() {}, newProject() {}}};
+  vm.createContext(runtime); vm.runInContext(source, runtime);
+
+  function click(word) {
+    const button = controls.find(x => x.type === 'button' && x.text.includes(word));
+    assert.ok(button, `missing ${word} button`); button.onClick();
+  }
+  function rootFolder() { return projectItems.find(x => x instanceof FolderItem && x.parentFolder === project.rootFolder && x.name === m.package_name); }
+  function compFolder() { const root = rootFolder(); return projectItems.find(x => x instanceof FolderItem && x.parentFolder === root && x.name === '01_COMP'); }
+  function renderFolder() { const root = rootFolder(); return projectItems.find(x => x instanceof FolderItem && x.parentFolder === root && x.name === '02_RENDER'); }
+  function comps() { return projectItems.filter(x => x instanceof CompItem); }
+  function footage() { return projectItems.filter(x => x instanceof FootageItem); }
+  function seedManualComp() {
+    const root = project.items.addFolder(m.package_name); root.parentFolder = project.rootFolder;
+    const cf = project.items.addFolder('01_COMP'); cf.parentFolder = root;
+    const rf = project.items.addFolder('02_RENDER'); rf.parentFolder = root;
+    for (const name of ['03_PRECOMP', '04_OUTPUT']) { const f = project.items.addFolder(name); f.parentFolder = root; }
+    const spec = m.resolution;
+    const c = project.items.addComp(m.ae.comp_name, spec.width, spec.height, spec.pixel_aspect, m.frames.count / m.fps, m.fps);
+    c.parentFolder = cf; return c;
+  }
+  return {click, alerts, imports, projectItems, comps, footage, compFolder, renderFolder, seedManualComp};
+}
+
+const beautyFiles = [1, 2, 3].map(n => `/packages/桜/render/beauty/C001_BEAUTY_000${n}.png`);
+let checks = 0;
+function check(name, fn) { fn(); checks++; }
+
+check('contract exposes deterministic managed identity and comp spec checks', () => {
+  const c = contract(), m = manifest();
+  assert.equal(c.managedIdentity(m), m.package_name);
+  assert.match(c.managedTag('comp', m, m.ae.comp_name), /^CUTBRIDGE\|1\|comp\|/);
+  const expected = c.expectedCompSpec(m);
+  assert.deepEqual(JSON.parse(JSON.stringify(c.compSpecErrors(expected, expected))), []);
+  assert.deepEqual(JSON.parse(JSON.stringify(c.compSpecErrors(expected, {...expected, frameRate: 30}))), ['frame rate']);
+});
+
+check('duplicate pass names and invalid layer order are rejected before runtime', () => {
+  const c = contract();
+  const duplicate = manifest(); duplicate.passes.push({...duplicate.passes[0]});
+  assert.match(c.validateManifest(duplicate).join(' '), /duplicate render pass name/);
+  const unknown = manifest(); unknown.ae.layer_order = ['LINE'];
+  assert.match(c.validateManifest(unknown).join(' '), /unknown pass/);
+  const dupOrder = manifest(); dupOrder.ae.layer_order = ['BEAUTY', 'BEAUTY'];
+  assert.match(c.validateManifest(dupOrder).join(' '), /duplicate pass/);
+});
+
+check('required-pass preflight fails before creating project items', () => {
+  const h = host(manifest(), [beautyFiles[0], beautyFiles[2]]);
+  h.click('Build');
+  assert.equal(h.projectItems.length, 0);
+  assert.equal(h.imports.length, 0);
+  assert.match(h.alerts.join(' '), /required pass.*missing frame\(s\): 2/);
+});
+
+check('repeated Build is idempotent for managed comp footage and layer', () => {
+  const h = host(manifest(), beautyFiles);
+  h.click('Build'); h.click('Build');
+  assert.equal(h.comps().length, 1);
+  assert.equal(h.footage().length, 1);
+  assert.equal(h.comps()[0].numLayers, 1);
+  assert.match(h.alerts.at(-1), /reused safely/);
+});
+
+check('reload then Build rediscovers managed project items instead of duplicating', () => {
+  const h = host(manifest(), beautyFiles);
+  h.click('Build'); h.click('Import Package'); h.click('Build');
+  assert.equal(h.comps().length, 1);
+  assert.equal(h.footage().length, 1);
+  assert.equal(h.comps()[0].numLayers, 1);
+});
+
+check('manual same-name comp collision is blocked before footage import', () => {
+  const h = host(manifest(), beautyFiles); h.seedManualComp(); h.click('Build');
+  assert.equal(h.imports.length, 0);
+  assert.match(h.alerts.join(' '), /non-CutBridge comp.*already exists/);
+});
+
+check('managed comp metadata drift blocks silent destructive correction', () => {
+  const h = host(manifest(), beautyFiles); h.click('Build');
+  h.comps()[0].frameRate = 30; h.click('Build');
+  assert.equal(h.comps().length, 1); assert.equal(h.footage().length, 1); assert.equal(h.comps()[0].numLayers, 1);
+  assert.match(h.alerts.at(-1), /metadata no longer matches.*frame rate/);
+});
+
+check('initial managed layer order is deterministic', () => {
+  const m = manifest();
+  m.passes.push({name: 'LINE', path: 'render/line', sequence_pattern: 'C001_LINE_####.png', required: true});
+  m.ae.layer_order = ['BEAUTY', 'LINE'];
+  const lineFiles = [1, 2, 3].map(n => `/packages/桜/render/line/C001_LINE_000${n}.png`);
+  const h = host(m, [...beautyFiles, ...lineFiles]); h.click('Build');
+  assert.deepEqual(h.comps()[0]._layers.map(x => x.name), ['BEAUTY', 'LINE']);
+});
+
+console.log(`PASS: ${checks} S5 AE import/comp reliability groups (Node mocks; AE GUI not executed)`);
