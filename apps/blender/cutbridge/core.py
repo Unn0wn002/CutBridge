@@ -208,7 +208,10 @@ def clear_managed_render_outputs(scene) -> None:
             tree.nodes.remove(node)
 
 
-def _enable_view_layer_passes(layer, pass_names: Iterable[str]) -> None:
+def _enable_view_layer_passes(scene, layer, pass_names: Iterable[str]) -> None:
+    pass_names = tuple(pass_names)
+    if "LINE" in pass_names and hasattr(scene.render, "use_freestyle"):
+        scene.render.use_freestyle = True
     for pass_name in pass_names:
         enable_attr = PASS_MAPPINGS[pass_name]["enable_attr"]
         if enable_attr:
@@ -246,7 +249,7 @@ def configure_render_outputs(context, package_root: Path) -> dict[str, str]:
     pass_names = selected_passes(settings)
     tree = _compositor_tree(scene)
     clear_managed_render_outputs(scene)
-    _enable_view_layer_passes(layer, pass_names)
+    _enable_view_layer_passes(scene, layer, pass_names)
 
     render_layers = tree.nodes.new("CompositorNodeRLayers")
     render_layers.name = f"{MANAGED_NODE_PREFIX}RENDER_LAYERS"
