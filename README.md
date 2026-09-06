@@ -29,7 +29,12 @@ CutBridge is designed around cut-based animation production workflows. Instead o
 - ExtendScript/ScriptUI importer.
 - Manifest-driven project folders and composition creation.
 - Image-sequence import and FPS conform.
-- Layer ordering and basic QC.
+- Layer ordering and exact expected-frame QC.
+- Manifest schema/version validation, required-pass errors and optional-pass warnings.
+- Package-relative path validation and UTF-8 Japanese filenames.
+- Export frames must start at 0 or later; negative/preroll cuts must be rebased before export. No automatic animation renumbering.
+
+S4 repair is tracked in [PR #12](https://github.com/Unn0wn002/CutBridge/pull/12); independent review and real AE GUI validation remain required.
 
 ### Engineering
 

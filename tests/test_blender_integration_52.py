@@ -367,3 +367,55 @@ def test_validation_rejects_missing_output_directory(configured_scene):
 
     _assert_validation_failure("OUTPUT_MISSING", "Package output directory is empty")
     _assert_build_operator_rejects("Package output directory is empty", output_dir)
+
+
+def test_blender_signed_filename_behavior_and_negative_export_boundary(configured_scene):
+    """Observe Blender's filename formatter; do not infer AE signed-sequence support."""
+    from cutbridge.core import build_manifest
+
+    scene, settings, output_dir = configured_scene
+    original_path = scene.render.filepath
+    try:
+        scene.render.filepath = str(output_dir / "C001_BEAUTY_####.png")
+        assert pathlib.Path(scene.render.frame_path(frame=-1)).name == "C001_BEAUTY_-0001.png"
+        assert pathlib.Path(scene.render.frame_path(frame=0)).name == "C001_BEAUTY_0000.png"
+    finally:
+        scene.render.filepath = original_path
+
+    # A proxy also exercises the boundary on Blender versions that clamp UI ranges.
+    invalid_scene = SimpleNamespace(
+        cutbridge=settings, camera=scene.camera, frame_start=-1, frame_end=1,
+        render=scene.render, view_layers=scene.view_layers,
+    )
+    invalid_context = SimpleNamespace(scene=invalid_scene, view_layer=bpy.context.view_layer)
+    issues = validate_scene(invalid_context)
+    issue = next(i for i in issues if i["code"] == "NEGATIVE_FRAMES_UNSUPPORTED")
+    assert issue["level"] == "ERROR"
+    assert "frame 0 or later" in issue["fix"]
+    with pytest.raises(ValueError, match="Negative export frames"):
+        build_manifest(invalid_context, output_dir)
+    assert not any(output_dir.iterdir())
+
+
+@pytest.mark.parametrize("start,end", [(0, 2), (1001, 1003)])
+def test_generated_package_frame_names_match_ae_contract(configured_scene, start, end):
+    import shutil
+    import subprocess
+
+    scene, settings, _ = configured_scene
+    scene.frame_start, scene.frame_end = start, end
+    package_root, manifest_path, manifest = _build_and_read_manifest(settings)
+    output = scene.compositing_node_group.nodes["CUTBRIDGE_OUTPUT_BEAUTY"]
+    assert pathlib.Path(output.directory) == package_root / manifest["passes"][0]["path"]
+    assert output.file_output_items[0].name + ".png" == manifest["passes"][0]["sequence_pattern"]
+    schema = json.loads(MANIFEST_SCHEMA_PATH.read_text(encoding="utf-8"))
+    Draft202012Validator(schema).validate(manifest)
+    original_path = scene.render.filepath
+    try:
+        scene.render.filepath = manifest["passes"][0]["sequence_pattern"]
+        names = [pathlib.Path(scene.render.frame_path(frame=f)).name for f in range(start, end + 1)]
+    finally:
+        scene.render.filepath = original_path
+    node = shutil.which("node")
+    assert node, "Node.js is required for Blender producer -> AE consumer tests"
+    subprocess.run([node, str(ROOT / "tests/ae_contract_checks.cjs"), "--manifest", str(manifest_path), json.dumps(names)], check=True)

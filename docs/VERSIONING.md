@@ -17,12 +17,13 @@ For every release, the following values must agree:
 5. Packaged artifact names and `release-metadata.json`.
 6. Generated `cutbridge.json` → `cutbridge_version` and `bl_info["version"]`.
 7. README current development version.
+8. `CutBridge.jsx` → single `PRODUCT_VERSION` constant, also used by its UI.
 
-CI checks version synchronization. `tools/build_release.py` rejects a tag that does not match the extension manifest or either canonical version constant.
+CI checks version synchronization. `tools/build_release.py` rejects a tag that does not match the extension manifest or either canonical version constant, and rejects a missing, duplicate or mismatched AE `PRODUCT_VERSION` before writing artifacts. Update that one AE constant with the canonical Blender version; never hard-code a second version in AE UI text.
 
 Version 0.2.3 remains unreleased. Session 1 changes packaging, tests and repository documentation without changing the Blender/AE runtime or handoff schema; it does not mint a new plugin version. Historical test versions are deliberate update-selection fixtures. `release-index.example.json` uses placeholder URLs/checksums and is not a published release.
 
-Three schema versions are independent: Blender extension metadata uses `1.0.0`; CutBridge handoff JSON currently emits integer `1`; the update index/release metadata also uses integer `1`. These are not product versions. The current handoff schema permits integer versions above 1, while AE does not gate them yet; explicit compatibility handling is deferred to the AE contract session.
+Three schema versions are independent: Blender extension metadata uses `1.0.0`; CutBridge handoff JSON currently emits integer `1`; the update index/release metadata also uses integer `1`. These are not product versions. The shared schema permits integer versions above 1 for future producers; AE explicitly accepts only handoff version 1. S4 narrows supported export frame endpoints to non-negative integers in the schema and both producer/consumer boundaries. This rejects previously inconsistent negative-frame packages; it does not renumber animation.
 
 ## Channels
 

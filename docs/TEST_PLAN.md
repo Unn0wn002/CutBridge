@@ -43,3 +43,26 @@ Measure:
 3. Number of handoff errors.
 4. Whether the tester understood errors without developer intervention.
 5. Which automation was useful vs. intrusive.
+
+## S4 automated contract gate
+
+`node tests/ae_contract_checks.cjs` executes pure helpers and a mocked host adapter. `pytest -q tests/test_ae_contract.py` also checks Draft 2020-12 schema agreement. Missing Node is a failure, never a silent skip. CI installs Node explicitly.
+
+Coverage includes host/third-realm arrays; schema/version fields; positive/zero/single-frame ranges; rejection of negative, fractional, non-finite, reversed and wrong-count ranges; strict FPS/resolution; traversal/absolute/URI/malformed paths; Unicode filenames; exact missing/extra frame detection; required/optional pass behavior; alias rejection; legacy data-only JSON parsing; canonical AE product version.
+
+Official bpy 5.2.1 integration tests observe Blender's signed frame filename (`-0001`), verify actionable negative-export rejection and feed real generated zero/positive manifests plus Blender-formatted names to the AE contract. No render or AE GUI success is inferred from those tests.
+
+Release validation rejects AE version drift before writing artifacts. Release simulation checks ZIP contents, reproducibility and SHA256 sums.
+
+Additional manual cases (MANUAL NOT EXECUTED until evidence is recorded):
+
+| Case | Expected |
+|---|---|
+| Export range begins at 0 | Blender package and AE import/comp/QC agree |
+| Negative export range | Actionable rejection; animation is not changed |
+| Required middle frame absent | Import blocked with missing frame number |
+| Optional folder/frame absent | Warning and skip; other complete passes import |
+| Extra matching file | Build/QC warning names the affected pass |
+| Japanese package/pass/sequence paths | Correct file resolution and import |
+| Folder/file symlink or alias | Rejected before footage import |
+| Older ExtendScript without native JSON | Valid JSON loads; executable text is rejected |

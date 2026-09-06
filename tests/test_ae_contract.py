@@ -2,6 +2,7 @@ import json
 import pathlib
 import shutil
 import subprocess
+import tomllib
 
 import pytest
 
@@ -12,7 +13,7 @@ AE = ROOT / "apps" / "after-effects" / "CutBridge.jsx"
 def _run_node_contract(script: str):
     node = shutil.which("node")
     if not node:
-        pytest.skip("Node.js is required for executable AE contract tests")
+        pytest.fail("Node.js is required for executable AE contract tests")
     source = AE.read_text(encoding="utf-8")
     runner = f"""
 const vm = require('vm');
@@ -37,6 +38,7 @@ def _manifest(schema_version=1):
     return {
         "schema": "cutbridge-manifest",
         "schema_version": schema_version,
+        "cutbridge_version": tomllib.loads((ROOT / "apps/blender/cutbridge/blender_manifest.toml").read_text())["version"],
         "project": "TEST",
         "episode": "EP01",
         "scene": "SC010",
@@ -128,4 +130,26 @@ def test_ae_source_honors_optional_passes_and_has_no_stale_mvp_label():
     assert "p.required === false" in source
     assert "optional pass skipped" in source
     assert "MVP v0.1" not in source
-    assert "CutBridge After Effects v0.2.3" in source
+    assert "CutBridge After Effects" in source
+    assert "CutBridgeContract.PRODUCT_VERSION" in source
+
+
+def test_ae_executable_contract_and_host_adapter_regressions():
+    node = shutil.which("node")
+    assert node, "Node.js is required for executable AE contract tests"
+    subprocess.run([node, str(ROOT / "tests/ae_contract_checks.cjs")], cwd=ROOT, check=True)
+
+
+@pytest.mark.parametrize("start,end,count,valid", [
+    (1, 3, 3, True), (0, 2, 3, True), (0, 0, 1, True),
+    (-3, -1, 3, False), (-1, 1, 3, False), (1.5, 3.5, 3, False),
+])
+def test_schema_and_ae_frame_type_and_sign_agree(start, end, count, valid):
+    from jsonschema import Draft202012Validator
+
+    manifest = _manifest()
+    manifest["frames"] = {"start": start, "end": end, "count": count}
+    schema = json.loads((ROOT / "packages/shared/cutbridge-manifest.schema.json").read_text(encoding="utf-8"))
+    assert Draft202012Validator(schema).is_valid(manifest) is valid
+    errors = _run_node_contract(f"console.log(JSON.stringify(contract.validateManifest({json.dumps(manifest)})));")
+    assert (not errors) is valid

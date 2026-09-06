@@ -17,6 +17,7 @@ Status reconciled on 2026-09-06. Versions 0.2.1–0.2.3 were used for registrati
 - Validate pass/output configuration before render.
 
 ## Before Revision Manager — AE handoff contract hardening
+S4 repair is in PR #12, pending authoritative CI and independent review. S5 is not started. GUI/user validation remains separate.
 - Gate manifest schema versions explicitly.
 - Respect optional passes.
 - Check exact sequence frame coverage.
