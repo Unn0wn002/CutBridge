@@ -99,6 +99,7 @@ def test_generated_manifest_uses_canonical_cutbridge_version(configured_scene):
     _, _, manifest = _build_and_read_manifest(settings)
 
     assert manifest["cutbridge_version"] == __version__
+    assert cutbridge.bl_info["version"] == tuple(int(x) for x in __version__.split("."))
 
 
 def test_generated_manifest_matches_scene_and_json_schema(configured_scene):

@@ -8,10 +8,10 @@ on every pull request. A release tag must match blender_manifest.toml exactly.
 from __future__ import annotations
 
 import argparse
+import ast
 import hashlib
 import json
 from pathlib import Path
-import shutil
 import tomllib
 import zipfile
 
@@ -41,6 +41,27 @@ def _release_version(tag: str) -> str:
     return tag[1:]
 
 
+def _validate_source_version(version: str) -> None:
+    """Read constants without importing Blender or executing extension code."""
+    tree = ast.parse((BLENDER_ROOT / "version.py").read_text(encoding="utf-8"))
+    values = {}
+    for node in tree.body:
+        if isinstance(node, ast.Assign):
+            for target in node.targets:
+                if isinstance(target, ast.Name) and target.id in {"__version__", "VERSION"}:
+                    values[target.id] = ast.literal_eval(node.value)
+    if values.get("__version__") != version or values.get("VERSION") != tuple(int(x) for x in version.split(".")):
+        raise ValueError("version.py constants do not match the release version")
+
+
+def _write_entry(archive: zipfile.ZipFile, source: Path, name: str) -> None:
+    # Checkout times and OS permissions must not change release checksums.
+    info = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
+    info.create_system = 3
+    info.external_attr = 0o100644 << 16
+    archive.writestr(info, source.read_bytes(), compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
+
+
 def _include_blender_file(path: Path) -> bool:
     relative = path.relative_to(BLENDER_ROOT)
     parts = relative.parts
@@ -62,14 +83,16 @@ def _write_blender_zip(path: Path) -> None:
     with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
         for source in entries:
             relative = source.relative_to(BLENDER_ROOT).as_posix()
-            archive.write(source, relative)
+            _write_entry(archive, source, relative)
+        _write_entry(archive, ROOT / "LICENSE", "LICENSE")
 
 
 def _write_ae_zip(path: Path) -> None:
     if not AE_SCRIPT.is_file():
         raise RuntimeError(f"Missing After Effects script: {AE_SCRIPT}")
     with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
-        archive.write(AE_SCRIPT, "CutBridge.jsx")
+        _write_entry(archive, AE_SCRIPT, "CutBridge.jsx")
+        _write_entry(archive, ROOT / "LICENSE", "LICENSE")
 
 
 def build(tag: str, output_dir: Path) -> dict:
@@ -80,15 +103,21 @@ def build(tag: str, output_dir: Path) -> dict:
             f"Tag {tag!r} does not match blender_manifest.toml version {manifest['version']!r}"
         )
 
-    output_dir.mkdir(parents=True, exist_ok=True)
-    for existing in output_dir.iterdir():
-        if existing.is_dir():
-            shutil.rmtree(existing)
-        else:
-            existing.unlink()
-
+    _validate_source_version(version)
+    if not (ROOT / "LICENSE").is_file() or not AE_SCRIPT.is_file():
+        raise ValueError("Release source must include LICENSE and CutBridge.jsx")
     blender_name = f"CutBridge-Blender-{tag}.zip"
     ae_name = f"CutBridge-AfterEffects-{tag}.zip"
+    output_dir = output_dir.resolve()
+    # Never erase source, another release, or unrelated user files.
+    if output_dir == ROOT.resolve() or output_dir in ROOT.resolve().parents or output_dir.is_relative_to((ROOT / "apps").resolve()):
+        raise ValueError("Release output must not overlap source directories")
+    expected_names = {blender_name, ae_name, "SHA256SUMS.txt", "release-metadata.json"}
+    if output_dir.exists():
+        for existing in output_dir.iterdir():
+            if existing.name not in expected_names or existing.is_symlink() or not existing.is_file():
+                raise ValueError(f"Use an empty release directory; refusing to replace {existing.name}")
+    output_dir.mkdir(parents=True, exist_ok=True)
     blender_zip = output_dir / blender_name
     ae_zip = output_dir / ae_name
 

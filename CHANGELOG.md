@@ -5,12 +5,25 @@ All notable CutBridge changes are tracked here.
 ## [0.2.3] - Unreleased
 
 ### Fixed
+- Release ZIP entries now use fixed timestamps and permissions, so identical sources built with the same Python/zlib toolchain produce identical checksums.
+- Release output validation preserves unrelated files, rejects source-directory overlap and artifact symlinks, and checks both canonical version constants before writing.
 - Generated `cutbridge.json` files now read `cutbridge_version` from the canonical Blender extension version instead of emitting the stale `0.1.0` literal.
 
 ### Added
+- Root GPL license text and license inclusion in both release ZIPs, matching the existing GPL-3.0-or-later declaration.
+- Session 1 baseline/branch-history audit, release safety regression tests, and schema/example validation.
 - Official `bpy 5.2.1` integration coverage for scene metadata, JSON Schema validation, render-pass layouts, V001/V002 coexistence, UTF-8 Japanese metadata, and validation failures.
 - Release checks now recompute artifact SHA-256 values and verify every shipped Blender Python module plus archived version metadata.
 - Release CI now installs the Blender 5.2.1 runtime dependencies and runs the full automated suite and RNA lifecycle test.
+
+## [0.2.2] - Unreleased
+
+### Fixed
+- Removed updater URL/status strings from AddonPreferences RNA after the first Blender 5.2 registration fix proved insufficient.
+- Moved the update endpoint to a distribution code constant and status to transient runtime state.
+
+### Added
+- Official `bpy==5.2.1` lifecycle CI on Python 3.13, checking two register/unregister cycles and stale RNA cleanup.
 
 ## [0.2.1] - Unreleased
 

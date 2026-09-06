@@ -1,6 +1,8 @@
 # Roadmap
 
-## v0.2.0 — Extension & Update Foundation
+Status reconciled on 2026-09-06. Versions 0.2.1–0.2.3 were used for registration and manifest/test fixes; render mapping was not delivered by those fixes. Future milestones below are plans, not completion claims.
+
+## Implemented foundation — v0.2.0 through v0.2.3 (unreleased)
 - Harden Blender Extension packaging and manifest metadata.
 - Add central version constants.
 - Add environment/version/platform diagnostics.
@@ -9,10 +11,16 @@
 - Add deterministic release builder, checksums, and release metadata.
 - Keep private source control separate from distribution/update hosting.
 
-## v0.2.1 — Blender Render Mapping
+## Next — Blender Render Mapping (version to be assigned)
 - Map package passes to Blender render outputs / View Layers.
 - Set deterministic output paths automatically.
 - Validate pass/output configuration before render.
+
+## Before Revision Manager — AE handoff contract hardening
+- Gate manifest schema versions explicitly.
+- Respect optional passes.
+- Check exact sequence frame coverage.
+- Reconcile stale AE MVP labels.
 
 ## v0.3 — Revision Manager
 - Detect newer cut revisions.

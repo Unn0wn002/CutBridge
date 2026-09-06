@@ -1,5 +1,7 @@
 # CutBridge MVP v0.1
 
+> Historical v0.1 guide. Use the [current README](../README.md), [development/test instructions](CONTRIBUTING.md), and [release checklist](RELEASE_CHECKLIST.md) for current versions and verification status. Render mapping and complete AE handoff remain unverified.
+
 CutBridge is a student-project prototype for a **Blender → After Effects anime cut handoff**. The MVP implements the core idea from the project requirements: deterministic cut metadata, package folders, a human-readable JSON manifest, AE auto-comp, image sequence import, and basic QC.
 
 ## What works in v0.1
