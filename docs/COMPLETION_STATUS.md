@@ -1,15 +1,15 @@
 # CutBridge Completion Status
 
-- **Current Session:** S3 — Blender Production Hardening (implementation branch in progress; independent review required before merge)
-- **Completed Sessions:** S1 — Baseline & Repository Integrity; S2 — Blender Render Mapping
-- **Open PR:** None at this status snapshot; S3 PR will target `develop`
-- **Automated Gate Status:** S2 merged to `develop` at `fe5e977724a024e6c9201065456a6db1f4a2ec55`; develop CI run 34034351053 PASS. S3 branch adds package-overwrite/integrity and actionable-validation regressions; branch/PR CI must pass before S3 can complete.
-- **Manual Required:** Blender 5.2.1 GUI validation-panel/package smoke test; full Blender → After Effects handoff remains unexecuted
-- **Known Blockers:** No release tag/publication yet; real After Effects runtime and target-user validation are later manual gates. Existing packages that contain render/user payload must never be silently overwritten; users must increment Version or deliberately move/remove the older package.
-- **Next Session:** S4 — AE Contract Hardening, only after S3 is merged to `develop` with green authoritative CI
+- **Current Session:** S4 — AE Contract Hardening (implementation branch in progress; independent review required before merge)
+- **Completed Sessions:** S1 — Baseline & Repository Integrity; S2 — Blender Render Mapping; S3 — Blender Production Hardening
+- **Open PR:** None at this status snapshot; S4 PR will target `develop`
+- **Automated Gate Status:** S3 merged to `develop` at `a7c63683b3734ac24e51f8db5b3b7aaad2db6d39`; develop CI run 34040501736 PASS. S4 adds executable Node-backed AE contract regressions and must pass branch/PR CI before completion.
+- **Manual Required:** Blender 5.2.1 GUI validation/package smoke test; After Effects GUI import/comp/QC test; full Blender → After Effects handoff
+- **Known Blockers:** No release tag/publication yet; real After Effects runtime and target-user validation are later manual gates. Unsupported manifest schema versions must be rejected; missing required sequence frames must block import; unavailable optional passes must degrade to warnings rather than aborting the package.
+- **Next Session:** S5 — AE Import/Comp Reliability, only after S4 is merged to `develop` with green authoritative CI
 
-## Session 3 scope
+## Session 4 scope
 
-S3 hardens Blender production use around the S2 render mapping. Validation now includes package-target safety and actionable fixes in both operator reports and the N-panel. An existing unrendered CutBridge scaffold may be refreshed with an explicit warning, but any render/user payload blocks a same-version rebuild. Newly built packages receive a minimum deterministic integrity check, prior V001/V002/V003 package payload is preserved when incrementing versions, and Japanese metadata plus Windows-invalid filename characters remain covered by Blender 5.2.1 regressions.
+S4 hardens the After Effects consumer contract without changing the emitted Blender handoff schema. `CutBridge.jsx` now validates `schema == cutbridge-manifest` and `schema_version == 1` before accepting a package, validates manifest frame-count/resolution/FPS basics, computes exact expected sequence filenames for `frames.start..frames.end`, reports missing and unexpected matching files, blocks incomplete required passes, and skips incomplete/missing optional passes with warnings. The stale `MVP v0.1` product label is removed. Pure contract helpers are executable under Node so CI can exercise manifest-version and frame-coverage behavior without claiming After Effects GUI runtime validation.
 
-This file does not mark S3 complete: completion requires an S3 PR, independent review, merge to `develop`, and green authoritative `develop` CI.
+This file does not mark S4 complete: completion requires an S4 PR, independent review, merge to `develop`, and green authoritative `develop` CI.
