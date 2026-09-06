@@ -165,9 +165,11 @@ def test_build_maps_beauty_to_cutbridge_file_output_and_preserves_artist_nodes(c
     assert output is not None
     assert output.directory == str(package_root / "render" / "beauty")
     assert output.file_name == ""
-    assert output.format.file_format == "PNG"
     assert len(output.file_output_items) == 1
-    assert output.file_output_items[0].name == "C001_BEAUTY_####"
+    item = output.file_output_items[0]
+    assert item.name == "C001_BEAUTY_####"
+    assert item.override_node_format is True
+    assert item.format.file_format == "PNG"
     assert any(link.from_node is render_layers and link.to_node is output for link in tree.links)
 
     tree.nodes.remove(artist_node)
@@ -186,8 +188,10 @@ def test_depth_mapping_enables_z_pass_and_uses_exr_output(configured_scene):
     assert bpy.context.view_layer.use_pass_z is True
     assert output is not None
     assert output.directory == str(package_root / "render" / "depth")
-    assert output.format.file_format == "OPEN_EXR"
-    assert output.file_output_items[0].name == "C001_DEPTH_####"
+    item = output.file_output_items[0]
+    assert item.name == "C001_DEPTH_####"
+    assert item.override_node_format is True
+    assert item.format.file_format == "OPEN_EXR"
     depth_links = [link for link in tree.links if link.to_node is output]
     assert len(depth_links) == 1
     assert depth_links[0].from_node is render_layers
