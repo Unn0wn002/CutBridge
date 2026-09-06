@@ -1,16 +1,28 @@
 # CutBridge Completion Status
 
-- **Current Session:** S4.5 — Documentation Reconciliation; bounded documentation/status repair after S4 integration.
-- **Completed Sessions:** S1 — Baseline & Repository Integrity; S2 — Blender Render Mapping; S3 — Blender Production Hardening; S4 — AE Contract Hardening.
-- **Open Implementation PR:** None before S4.5 branch creation.
-- **Live baseline inspected:** `main` = `e282ef99b3fa5772b3d6d1dbbcbfa4957816b78c`; `develop` = `6864a1591c4e177ccd310cea36834d4fc583045f`.
-- **Automated Gate Status:** S4 merged through PR #12 at `6864a1591c4e177ccd310cea36834d4fc583045f`. Post-merge `develop` CI run `34048455452` PASS on that exact SHA. S4 branch/PR CI was also green before integration.
-- **Independent Review:** S4 received an independent review gate before merge; previous cross-realm array and negative-frame contract findings were resolved before integration.
-- **Manual Required:** Blender GUI validation beyond recorded repository evidence, After Effects GUI import/comp/QC, Blender→AE end-to-end, native Japanese-user validation, and production/client validation remain `MANUAL NOT EXECUTED` unless separately recorded with real evidence.
-- **Known Blockers:** No stable GitHub release exists. Negative export frames are intentionally unsupported until signed sequence ordering can be verified safely in After Effects; users must rebase export/preroll to frame 0 or later.
-- **Next Session:** S5 — AE Import & Composition Reliability, only after this S4.5 documentation PR is independently reviewed, merged to `develop`, and post-merge CI is green.
+- **Current Session:** S5 — AE Import & Composition Reliability; bounded implementation on `feature/session-5-ae-import-reliability`.
+- **Completed Sessions:** S1 — Baseline & Repository Integrity; S2 — Blender Render Mapping; S3 — Blender Production Hardening; S4 — AE Contract Hardening; S4.5 — Documentation Reconciliation.
+- **Open Implementation PR:** S5 branch prepared from current `develop`; PR targets `develop` after validation.
+- **Live baseline inspected:** `main` = `e282ef99b3fa5772b3d6d1dbbcbfa4957816b78c`; `develop` = `aab6c9b8ce9236d07386b7bf6f0c95034587246c`.
+- **Automated Gate Status:** S4.5 merged through PR #13 at `aab6c9b8ce9236d07386b7bf6f0c95034587246c`. Post-merge `develop` CI run `34051334080` PASS on that exact SHA. S5 adds executable Node/pytest regressions and must pass branch/PR CI before review.
+- **Independent Review:** Required on the complete S5 PR before integration. The implementation worker must not merge its own PR.
+- **Manual Required:** After Effects GUI import/comp/QC, Blender→AE end-to-end, native Japanese-user validation, and production/client validation remain `MANUAL NOT EXECUTED` unless separately recorded with real evidence.
+- **Known Blockers:** No stable GitHub release exists. Negative export frames remain intentionally unsupported until signed sequence ordering can be verified safely in After Effects; users must rebase export/preroll to frame 0 or later.
+- **Next Session:** S6 — Non-Destructive Revision Manager, only after S5 is independently reviewed, merged to `develop`, and authoritative post-merge CI is green.
 
-## Completed S4 contract scope
+## S5 implementation scope
+
+- Required-pass sequence coverage is preflighted before CutBridge mutates the AE project, so known missing required frames do not leave partial managed folders/comps/imports.
+- CutBridge-managed comps, footage items, and pass layers receive deterministic package-scoped ownership tags in item/layer comments.
+- Repeated Build operations reuse only matching CutBridge-managed objects instead of duplicating footage, comps, or managed pass layers.
+- Reloading the same manifest rediscovers tagged project objects, so idempotency does not depend only on in-memory panel state.
+- Same-name non-CutBridge comps are not hijacked; CutBridge blocks with an actionable collision error rather than modifying manual work.
+- Existing managed comp metadata is checked against manifest resolution, pixel aspect, FPS, and duration. Drift blocks silent destructive correction.
+- Deterministic manifest layer ordering is applied when a managed comp is first created; repeated builds preserve existing user ordering rather than repeatedly moving layers around manual work.
+- Duplicate pass names and invalid/duplicate `ae.layer_order` references are rejected at the contract boundary.
+- S5 behavior is covered by Node host-adapter regressions wired into pytest/CI. These mocks do not certify native After Effects APIs or desktop filesystem behavior.
+
+## S4 contract retained
 
 - ES3-compatible cross-realm array validation and strict schema/schema-version handling.
 - Finite integer frame endpoints/counts with `count = end - start + 1` and consistent non-negative export policy across Blender, shared schema, AE validation, and tests.
@@ -19,12 +31,7 @@
 - Exact expected-frame coverage, unexpected/mis-padded sequence diagnostics, required-pass errors, and optional-pass warning/skip behavior.
 - Legacy JSON parsing without `eval` execution.
 - AE-facing product version checked against the canonical release version by the release builder.
-- Node is an explicit CI/release dependency for executable AE contract checks.
-
-## Negative-frame decision
-
-Blender formats signed frame numbers differently from the original AE helper, and native AE sequence ordering across negative-to-positive ranges has not been certified. CutBridge therefore rejects negative export ranges at the Blender producer, JSON Schema, and AE consumer boundaries. The tool does not silently clamp, renumber, or modify animation; the cut/preroll must be rebased to frame 0 or later before package generation.
 
 ## Session discipline
 
-S4.5 is documentation/status reconciliation only. It must not begin S5 implementation. S5 starts only after this documentation change is independently reviewed, merged, and verified on `develop`.
+S5 is limited to AE import/composition reliability and idempotency. It does not implement S6 revision replacement/preservation semantics. Real After Effects GUI behavior remains a manual gate until actually executed. S6 starts only after the S5 PR is independently reviewed, merged, and verified on `develop`.
