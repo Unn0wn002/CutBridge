@@ -263,10 +263,12 @@ def test_eevee_rejects_line_when_no_freestyle_render_layers_socket_is_exposed(co
     scene.render.engine = "BLENDER_EEVEE"
     settings.pass_beauty = False
     settings.pass_line = True
+    before_scene_freestyle = scene.render.use_freestyle
+    before_layer_freestyle = bpy.context.view_layer.use_freestyle
 
     _assert_build_operator_rejects("LINE mapping is unavailable", output_dir)
-    assert scene.render.use_freestyle is True
-    assert bpy.context.view_layer.use_freestyle is True
+    assert scene.render.use_freestyle == before_scene_freestyle
+    assert bpy.context.view_layer.use_freestyle == before_layer_freestyle
 
 
 def test_v001_and_v002_coexist_without_overwriting_v001(configured_scene):
