@@ -14,6 +14,7 @@ BLENDER_APP = ROOT / "apps" / "blender"
 sys.path.insert(0, str(BLENDER_APP))
 
 import cutbridge  # noqa: E402
+import cutbridge.package_safety as package_safety  # noqa: E402
 from cutbridge.core import clear_managed_render_outputs  # noqa: E402
 from cutbridge.package_safety import (  # noqa: E402
     assert_package_integrity,
@@ -117,6 +118,23 @@ def test_existing_render_payload_blocks_same_version_overwrite(configured_scene)
     with pytest.raises(RuntimeError, match="will not be overwritten"):
         bpy.ops.cutbridge.build_package()
     assert frame.read_bytes() == b"rendered-frame-placeholder"
+
+
+def test_payload_probe_stops_after_first_payload(configured_scene, monkeypatch):
+    _, settings, _ = configured_scene
+    root, _ = _build(settings)
+    first_payload = root / "render" / "beauty" / "C001_BEAUTY_1001.png"
+    first_payload.write_bytes(b"first-frame")
+
+    def guarded_paths(_root):
+        yield first_payload
+        raise AssertionError("payload safety probe enumerated past the first payload")
+
+    monkeypatch.setattr(package_safety, "_iter_package_paths", guarded_paths)
+    issues = package_target_issues(settings)
+
+    assert [item["code"] for item in issues] == ["PACKAGE_EXISTS"]
+    assert first_payload.name in issues[0]["message"]
 
 
 def test_v001_v002_v003_coexist_with_preserved_prior_payload(configured_scene):
