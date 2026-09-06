@@ -37,6 +37,7 @@ def configured_scene(tmp_path):
     settings = scene.cutbridge
     view_layer = bpy.context.view_layer
     original_compositor = getattr(scene, "compositing_node_group", None)
+    original_freestyle = getattr(scene.render, "use_freestyle", None)
     original_pass_state = {
         attr: getattr(view_layer, attr)
         for attr in ("use_freestyle", "use_pass_shadow", "use_pass_z")
@@ -79,6 +80,8 @@ def configured_scene(tmp_path):
     elif hasattr(scene, "compositing_node_group"):
         scene.compositing_node_group = original_compositor
 
+    if original_freestyle is not None:
+        scene.render.use_freestyle = original_freestyle
     for attr, value in original_pass_state.items():
         setattr(view_layer, attr, value)
 
@@ -155,9 +158,10 @@ def test_build_maps_beauty_to_cutbridge_file_output_and_preserves_artist_nodes(c
     artist_node = tree.nodes.new("CompositorNodeRLayers")
     artist_node.name = "ARTIST_RENDER_LAYERS_KEEP"
 
-    # Rebuilding replaces only CUTBRIDGE_ nodes and must preserve user nodes.
+    # bpy can return distinct Python proxy objects for the same RNA node, so
+    # persistence is checked by its stable Blender name rather than `is`.
     package_root, _, _ = _build_and_read_manifest(settings)
-    assert tree.nodes.get("ARTIST_RENDER_LAYERS_KEEP") is artist_node
+    assert tree.nodes.get("ARTIST_RENDER_LAYERS_KEEP") is not None
 
     render_layers = tree.nodes.get("CUTBRIDGE_RENDER_LAYERS")
     output = tree.nodes.get("CUTBRIDGE_OUTPUT_BEAUTY")
@@ -170,9 +174,12 @@ def test_build_maps_beauty_to_cutbridge_file_output_and_preserves_artist_nodes(c
     assert item.name == "C001_BEAUTY_####"
     assert item.override_node_format is True
     assert item.format.file_format == "PNG"
-    assert any(link.from_node is render_layers and link.to_node is output for link in tree.links)
+    assert any(
+        link.from_node.name == render_layers.name and link.to_node.name == output.name
+        for link in tree.links
+    )
 
-    tree.nodes.remove(artist_node)
+    tree.nodes.remove(tree.nodes.get("ARTIST_RENDER_LAYERS_KEEP"))
 
 
 def test_depth_mapping_enables_z_pass_and_uses_exr_output(configured_scene):
@@ -192,9 +199,9 @@ def test_depth_mapping_enables_z_pass_and_uses_exr_output(configured_scene):
     assert item.name == "C001_DEPTH_####"
     assert item.override_node_format is True
     assert item.format.file_format == "OPEN_EXR"
-    depth_links = [link for link in tree.links if link.to_node is output]
+    depth_links = [link for link in tree.links if link.to_node.name == output.name]
     assert len(depth_links) == 1
-    assert depth_links[0].from_node is render_layers
+    assert depth_links[0].from_node.name == render_layers.name
     assert depth_links[0].from_socket.name in {"Depth", "Z"}
 
 
