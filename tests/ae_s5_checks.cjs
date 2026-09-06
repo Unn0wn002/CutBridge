@@ -27,7 +27,7 @@ function contract() {
   return context.module.exports;
 }
 
-function host(m, files) {
+function host(m, files, options = {}) {
   const controls = [], alerts = [], projectItems = [], imports = [];
   const packageRoot = '/packages/桜';
   const normalize = value => path.posix.normalize(decodeURIComponent(String(value).replaceAll('\\', '/')));
@@ -58,7 +58,19 @@ function host(m, files) {
   function Panel() {}
 
   function FolderItem(name) { this.name = name; this.parentFolder = null; this.comment = ''; }
-  function FootageItem(file) { this.name = ''; this.parentFolder = null; this.comment = ''; this.file = file; this.mainSource = {conformFrameRate: 0}; }
+  function FootageItem(file) {
+    this.name = ''; this.parentFolder = null; this.comment = ''; this.file = file;
+    let conformFrameRate = 0;
+    this.mainSource = {};
+    Object.defineProperty(this.mainSource, 'conformFrameRate', {
+      enumerable: true,
+      get() { return conformFrameRate; },
+      set(value) {
+        if (options.conformSetterThrows) throw new Error('mock conform setter failure');
+        conformFrameRate = options.conformRefuses ? 30 : value;
+      }
+    });
+  }
   function Layer(comp, sourceItem) {
     this.comp = comp; this.source = sourceItem; this.name = ''; this.comment = ''; this.startTime = 0;
   }
@@ -212,6 +224,26 @@ check('managed footage conform FPS drift fails closed', () => {
   assert.equal(h.imports.length, 1);
   assert.equal(h.comps()[0].numLayers, 1);
   assert.match(h.alerts.at(-1), /managed footage no longer matches.*frame rate/);
+});
+
+check('initial conform FPS setter failure blocks success and managed layer creation', () => {
+  const h = host(manifest(), beautyFiles, {conformSetterThrows: true});
+  h.click('Build');
+  assert.equal(h.imports.length, 1);
+  assert.equal(h.comps().length, 1);
+  assert.equal(h.comps()[0].numLayers, 0);
+  assert.doesNotMatch(h.alerts.at(-1), /comp built/);
+  assert.match(h.alerts.at(-1), /could not conform imported footage.*Build stopped/);
+});
+
+check('initial conform FPS readback mismatch blocks success and managed layer creation', () => {
+  const h = host(manifest(), beautyFiles, {conformRefuses: true});
+  h.click('Build');
+  assert.equal(h.imports.length, 1);
+  assert.equal(h.comps().length, 1);
+  assert.equal(h.comps()[0].numLayers, 0);
+  assert.doesNotMatch(h.alerts.at(-1), /comp built/);
+  assert.match(h.alerts.at(-1), /timing\/source could not be verified.*frame rate/);
 });
 
 check('initial managed layer order is deterministic', () => {
