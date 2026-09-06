@@ -14,6 +14,11 @@ from .core import (
     validate_scene,
     write_manifest,
 )
+from .package_safety import (
+    assert_package_integrity,
+    format_issue,
+    package_target_issues,
+)
 
 
 def _open_folder(path: str):
@@ -25,27 +30,35 @@ def _open_folder(path: str):
         subprocess.Popen(["xdg-open", path])
 
 
+def _all_validation_issues(context) -> list[dict]:
+    issues = validate_scene(context)
+    issues.extend(package_target_issues(context.scene.cutbridge))
+    return issues
+
+
 class CUTBRIDGE_OT_Validate(bpy.types.Operator):
     bl_idname = "cutbridge.validate"
     bl_label = "Validate Cut"
-    bl_description = "Check cut metadata and Blender scene settings"
+    bl_description = "Check cut metadata, scene settings, render mapping, and package target safety"
 
     def execute(self, context):
-        issues = validate_scene(context)
+        issues = _all_validation_issues(context)
         errors = [i for i in issues if i["level"] == "ERROR"]
         warnings = [i for i in issues if i["level"] == "WARNING"]
 
         if errors:
-            self.report({"ERROR"}, f"CutBridge: {len(errors)} error(s), {len(warnings)} warning(s). See console.")
+            first = format_issue(errors[0])
+            self.report({"ERROR"}, f"CutBridge: {len(errors)} error(s), {len(warnings)} warning(s). {first}")
         elif warnings:
-            self.report({"WARNING"}, f"CutBridge: valid with {len(warnings)} warning(s). See console.")
+            first = format_issue(warnings[0])
+            self.report({"WARNING"}, f"CutBridge: valid with {len(warnings)} warning(s). {first}")
         else:
-            self.report({"INFO"}, "CutBridge: validation passed.")
+            self.report({"INFO"}, "CutBridge: validation passed. Package target is safe to build.")
 
         if issues:
             print("\n=== CutBridge Validation ===")
             for item in issues:
-                print(f"[{item['level']}] {item['code']}: {item['message']} FIX: {item['fix']}")
+                print(f"[{item['level']}] {item['code']}: {format_issue(item)}")
             print("============================\n")
 
         return {"FINISHED"}
@@ -54,18 +67,19 @@ class CUTBRIDGE_OT_Validate(bpy.types.Operator):
 class CUTBRIDGE_OT_BuildPackage(bpy.types.Operator):
     bl_idname = "cutbridge.build_package"
     bl_label = "Build Package"
-    bl_description = "Configure deterministic render outputs and create the CutBridge package manifest"
+    bl_description = "Configure deterministic render outputs and create a new non-overwriting CutBridge package"
 
     def execute(self, context):
-        issues = validate_scene(context)
+        issues = _all_validation_issues(context)
         errors = [i for i in issues if i["level"] == "ERROR"]
         if errors:
             for item in errors[:3]:
-                self.report({"ERROR"}, item["message"])
+                self.report({"ERROR"}, format_issue(item))
             return {"CANCELLED"}
 
         settings = context.scene.cutbridge
         root = absolute_output_dir(settings) / package_name(settings)
+        passes = selected_passes(settings)
 
         # Configure the scene before touching the package directory. If the
         # selected engine cannot expose a requested logical pass, Build Package
@@ -76,9 +90,15 @@ class CUTBRIDGE_OT_BuildPackage(bpy.types.Operator):
             self.report({"ERROR"}, str(exc))
             return {"CANCELLED"}
 
-        ensure_package_dirs(root, selected_passes(settings))
-        manifest = build_manifest(context, root)
-        manifest_path = write_manifest(manifest, root)
+        try:
+            ensure_package_dirs(root, passes)
+            manifest = build_manifest(context, root)
+            manifest_path = write_manifest(manifest, root)
+            assert_package_integrity(root, manifest, passes)
+        except (OSError, RuntimeError, ValueError) as exc:
+            self.report({"ERROR"}, f"CutBridge package build failed: {exc}")
+            return {"CANCELLED"}
+
         settings.last_package_path = str(root)
 
         self.report({"INFO"}, f"CutBridge package created: {manifest_path}")
