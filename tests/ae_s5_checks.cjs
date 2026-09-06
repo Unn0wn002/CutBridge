@@ -91,7 +91,11 @@ function host(m, files, options = {}) {
   const project = {rootFolder: {name: 'ROOT'}, item: i => projectItems[i - 1], items: {
     addFolder(name) { const f = new FolderItem(name); projectItems.push(f); return f; },
     addComp(...args) { const c = new CompItem(...args); projectItems.push(c); return c; }
-  }, importFile(io) { const item = new FootageItem(io.file); projectItems.push(item); imports.push(item); return item; }};
+  }, importFile(io) {
+    const item = new FootageItem(io.file);
+    item.remove = () => { const index = projectItems.indexOf(item); if (index >= 0) projectItems.splice(index, 1); };
+    projectItems.push(item); imports.push(item); return item;
+  }};
   Object.defineProperty(project, 'numItems', {get() { return projectItems.length; }});
 
   function ImportOptions(file) { this.file = file; this.sequence = false; this.forceAlphabetical = true; }
@@ -226,21 +230,35 @@ check('managed footage conform FPS drift fails closed', () => {
   assert.match(h.alerts.at(-1), /managed footage no longer matches.*frame rate/);
 });
 
-check('initial conform FPS setter failure blocks success and managed layer creation', () => {
+check('initial conform FPS setter failure rolls back only the new import across retries', () => {
   const h = host(manifest(), beautyFiles, {conformSetterThrows: true});
   h.click('Build');
   assert.equal(h.imports.length, 1);
+  assert.equal(h.footage().length, 0);
   assert.equal(h.comps().length, 1);
+  assert.equal(h.comps()[0].numLayers, 0);
+  const afterFirstFailure = h.projectItems.length;
+  h.click('Build');
+  assert.equal(h.imports.length, 2);
+  assert.equal(h.footage().length, 0);
+  assert.equal(h.projectItems.length, afterFirstFailure);
   assert.equal(h.comps()[0].numLayers, 0);
   assert.doesNotMatch(h.alerts.at(-1), /comp built/);
   assert.match(h.alerts.at(-1), /could not conform imported footage.*Build stopped/);
 });
 
-check('initial conform FPS readback mismatch blocks success and managed layer creation', () => {
+check('initial conform FPS readback mismatch rolls back only the new import across retries', () => {
   const h = host(manifest(), beautyFiles, {conformRefuses: true});
   h.click('Build');
   assert.equal(h.imports.length, 1);
+  assert.equal(h.footage().length, 0);
   assert.equal(h.comps().length, 1);
+  assert.equal(h.comps()[0].numLayers, 0);
+  const afterFirstFailure = h.projectItems.length;
+  h.click('Build');
+  assert.equal(h.imports.length, 2);
+  assert.equal(h.footage().length, 0);
+  assert.equal(h.projectItems.length, afterFirstFailure);
   assert.equal(h.comps()[0].numLayers, 0);
   assert.doesNotMatch(h.alerts.at(-1), /comp built/);
   assert.match(h.alerts.at(-1), /timing\/source could not be verified.*frame rate/);
