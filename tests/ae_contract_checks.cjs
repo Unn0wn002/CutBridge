@@ -137,7 +137,7 @@ check('legacy JSON parser accepts data without eval', () => {
 });
 
 function host(m, files, aliases = []) {
-    const controls = [], alerts = [], imports = [], folders = [], comps = [];
+    const controls = [], alerts = [], imports = [], folders = [], comps = [], footageItems = [];
     const packageRoot = '/packages/桜';
     const normalize = value => path.posix.normalize(decodeURIComponent(String(value).replaceAll('\\', '/')));
     function Folder(value) { this.fsName = normalize(value); this.alias = aliases.includes(this.fsName); this.exists = this.fsName === packageRoot || files.some(f => f.startsWith(this.fsName + '/')); }
@@ -149,15 +149,16 @@ function host(m, files, aliases = []) {
     Window.prototype.add = function(type, unused, text) { const control = {type, text, graphics: {font: {name: 'Arial'}}, preferredSize: {}}; controls.push(control); return control; };
     Window.prototype.center = Window.prototype.show = function() {};
     function FolderItem(name) { this.name = name; }
+    function FootageItem(file) { this.file = file; this.mainSource = {conformFrameRate: 0}; this.comment = ''; this.parentFolder = null; this.name = ''; }
     function CompItem(name, width, height, aspect, duration, fps) {
         Object.assign(this, {name, width, height, pixelAspect: aspect, duration, frameRate: fps, numLayers: 0});
         this.layers = {add: () => {this.numLayers++; return {};}}; this.openInViewer = () => {};
     }
-    const project = {rootFolder: {}, numItems: 0, item: i => [...folders, ...comps][i - 1], items: {
+    const project = {rootFolder: {}, numItems: 0, item: i => [...folders, ...comps, ...footageItems][i - 1], items: {
         addFolder(name) { const f = new FolderItem(name); folders.push(f); project.numItems++; return f; },
         addComp(...args) { const comp = new CompItem(...args); comps.push(comp); project.numItems++; return comp; }
-    }, importFile(io) { imports.push(io); return {mainSource: {}}; }};
-    const runtime = {File, Folder, Window, Panel: function() {}, FolderItem, CompItem,
+    }, importFile(io) { imports.push(io); const item = new FootageItem(io.file); footageItems.push(item); project.numItems++; return item; }};
+    const runtime = {File, Folder, Window, Panel: function() {}, FolderItem, FootageItem, CompItem,
         ImportOptions: function(file) {this.file = file;}, ImportAsType: {FOOTAGE: 1}, ScriptUI: {newFont() {}},
         alert: message => alerts.push(message), $: {writeln() {}},
         app: {project, beginUndoGroup() {}, endUndoGroup() {}}};
