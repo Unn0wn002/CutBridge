@@ -2,10 +2,10 @@
 
 - **Current Session:** S5 — AE Import & Composition Reliability; bounded implementation on `feature/session-5-ae-import-reliability`.
 - **Completed Sessions:** S1 — Baseline & Repository Integrity; S2 — Blender Render Mapping; S3 — Blender Production Hardening; S4 — AE Contract Hardening; S4.5 — Documentation Reconciliation.
-- **Open Implementation PR:** S5 branch prepared from current `develop`; PR targets `develop` after validation.
+- **Open Implementation PR:** [#14](https://github.com/Unn0wn002/CutBridge/pull/14), `feature/session-5-ae-import-reliability` → `develop`, head `65817295df00126d172ef35aa300b92684cfa3f5` at the latest verified gate.
 - **Live baseline inspected:** `main` = `e282ef99b3fa5772b3d6d1dbbcbfa4957816b78c`; `develop` = `aab6c9b8ce9236d07386b7bf6f0c95034587246c`.
-- **Automated Gate Status:** S4.5 merged through PR #13 at `aab6c9b8ce9236d07386b7bf6f0c95034587246c`. Post-merge `develop` CI run `34051334080` PASS on that exact SHA. S5 adds executable Node/pytest regressions and must pass branch/PR CI before review.
-- **Independent Review:** Required on the complete S5 PR before integration. The implementation worker must not merge its own PR.
+- **Automated Gate Status:** S4.5 merged through PR #13 at `aab6c9b8ce9236d07386b7bf6f0c95034587246c`; post-merge `develop` CI run `34051334080` PASS. S5 push CI run `34052816173` PASS and PR CI run `34052827809` PASS on head `65817295df00126d172ef35aa300b92684cfa3f5`, including static validation, the complete pytest/Blender package suite, official bpy 5.2.1 RNA lifecycle, release simulation, and JSX syntax parsing.
+- **Independent Review:** Still required on the complete S5 PR before integration. Green CI is not self-approval; the implementation worker must not merge its own PR.
 - **Manual Required:** After Effects GUI import/comp/QC, Blender→AE end-to-end, native Japanese-user validation, and production/client validation remain `MANUAL NOT EXECUTED` unless separately recorded with real evidence.
 - **Known Blockers:** No stable GitHub release exists. Negative export frames remain intentionally unsupported until signed sequence ordering can be verified safely in After Effects; users must rebase export/preroll to frame 0 or later.
 - **Next Session:** S6 — Non-Destructive Revision Manager, only after S5 is independently reviewed, merged to `develop`, and authoritative post-merge CI is green.
