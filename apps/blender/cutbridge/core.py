@@ -228,23 +228,6 @@ def _find_output_socket(render_layers_node, pass_name: str):
     return None
 
 
-def _configure_file_output_node(node, directory: Path, filename: str, socket_type: str):
-    """Configure File Output using Blender 5.x API with a Blender 4.x fallback."""
-    if hasattr(node, "file_output_items") and hasattr(node, "directory"):
-        node.directory = str(directory)
-        node.file_name = filename
-        node.format.file_format = node.id_data.id_data.cutbridge.image_format if False else node.format.file_format
-        node.file_output_items.clear()
-        item = node.file_output_items.new(socket_type, "Image")
-        return node.inputs.get(item.name) or node.inputs.get("Image") or node.inputs[0]
-
-    node.base_path = str(directory)
-    node.file_slots.clear()
-    socket = node.file_slots.new("Image")
-    node.file_slots[0].path = filename
-    return socket
-
-
 def configure_render_outputs(context, package_root: Path) -> dict[str, str]:
     """Create CutBridge-owned compositor outputs for the selected logical passes.
 
@@ -296,12 +279,15 @@ def configure_render_outputs(context, package_root: Path) -> dict[str, str]:
             filename = f"{safe_token(settings.cut, 'C000')}_{pass_name}_####"
 
             if hasattr(output_node, "file_output_items") and hasattr(output_node, "directory"):
+                # Blender 5.x: file_slots/base_path were removed. The output item
+                # name is the per-image path/name, matching the old slot.path role.
                 output_node.directory = str(directory)
-                output_node.file_name = filename
+                output_node.file_name = ""
                 output_node.file_output_items.clear()
-                item = output_node.file_output_items.new(PASS_MAPPINGS[pass_name]["socket_type"], "Image")
-                target_socket = output_node.inputs.get(item.name) or output_node.inputs.get("Image") or output_node.inputs[0]
+                item = output_node.file_output_items.new(PASS_MAPPINGS[pass_name]["socket_type"], filename)
+                target_socket = output_node.inputs.get(item.name) or output_node.inputs[0]
             else:
+                # Blender 4.2/4.5 compatibility path.
                 output_node.base_path = str(directory)
                 if len(output_node.file_slots) == 0:
                     target_socket = output_node.file_slots.new("Image")
@@ -313,7 +299,8 @@ def configure_render_outputs(context, package_root: Path) -> dict[str, str]:
             configured[pass_name] = source_socket.name
     except Exception:
         for node in reversed(created_nodes):
-            if node.name in tree.nodes:
+            current = tree.nodes.get(node.name)
+            if current is node:
                 tree.nodes.remove(node)
         raise
 
