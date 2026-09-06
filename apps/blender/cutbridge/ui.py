@@ -1,6 +1,8 @@
 import bpy
 
+from .core import validate_scene
 from .environment import snapshot
+from .package_safety import package_target_issues
 from .preferences import RUNTIME_UPDATE_STATE
 from .update_ops import get_preferences
 from .version import DEFAULT_UPDATE_INDEX_URL
@@ -56,6 +58,26 @@ class CUTBRIDGE_PT_MainPanel(bpy.types.Panel):
         if s.last_package_path:
             box.operator("cutbridge.open_package_folder", icon="FILE_FOLDER")
             box.label(text=s.last_package_path)
+
+        validation_box = layout.box()
+        validation_box.label(text="Validation Status")
+        issues = validate_scene(context)
+        issues.extend(package_target_issues(s))
+        errors = [item for item in issues if item["level"] == "ERROR"]
+        warnings = [item for item in issues if item["level"] == "WARNING"]
+        if not issues:
+            validation_box.label(text="Ready to build", icon="CHECKMARK")
+        else:
+            validation_box.label(
+                text=f"{len(errors)} error(s), {len(warnings)} warning(s)",
+                icon="ERROR" if errors else "INFO",
+            )
+            for item in issues[:3]:
+                icon = "ERROR" if item["level"] == "ERROR" else "INFO"
+                validation_box.label(text=f"{item['code']}: {item['message']}", icon=icon)
+                validation_box.label(text=f"Fix: {item['fix']}")
+            if len(issues) > 3:
+                validation_box.label(text=f"+ {len(issues) - 3} more — run Validate Cut for details")
 
         env = snapshot(bpy)
         box = layout.box()

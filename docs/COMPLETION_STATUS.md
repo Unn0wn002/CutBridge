@@ -1,15 +1,15 @@
 # CutBridge Completion Status
 
-- **Current Session:** S2 — Blender Render Mapping (PR #10 ready for independent review; not merged)
-- **Completed Sessions:** S1 — Baseline & Repository Integrity
-- **Open PR:** #10 — Session 2: Map Blender render outputs
-- **Automated Gate Status:** PASS at implementation head `72731fabfe61febe1dd58d708431cd05f0dc5401`: PR CI run 34030701176 and branch CI run 34030700666 completed successfully. Final status-only commit still requires CI before merge.
-- **Manual Required:** Blender 5.2.1 GUI render-output smoke test; full Blender → After Effects handoff remains unexecuted
-- **Known Blockers:** No release tag/publication yet; real After Effects runtime and target-user validation are later manual gates. LINE/SHADOW remain renderer-dependent and are opt-in; unsupported Render Layers sockets fail Build Package explicitly instead of silently fabricating output.
-- **Next Session:** S3 — Blender Production Hardening, only after S2 is merged to `develop` with green authoritative CI
+- **Current Session:** S3 — Blender Production Hardening (implementation branch in progress; independent review required before merge)
+- **Completed Sessions:** S1 — Baseline & Repository Integrity; S2 — Blender Render Mapping
+- **Open PR:** None at this status snapshot; S3 PR will target `develop`
+- **Automated Gate Status:** S2 merged to `develop` at `fe5e977724a024e6c9201065456a6db1f4a2ec55`; develop CI run 34034351053 PASS. S3 branch adds package-overwrite/integrity and actionable-validation regressions; branch/PR CI must pass before S3 can complete.
+- **Manual Required:** Blender 5.2.1 GUI validation-panel/package smoke test; full Blender → After Effects handoff remains unexecuted
+- **Known Blockers:** No release tag/publication yet; real After Effects runtime and target-user validation are later manual gates. Existing packages that contain render/user payload must never be silently overwritten; users must increment Version or deliberately move/remove the older package.
+- **Next Session:** S4 — AE Contract Hardening, only after S3 is merged to `develop` with green authoritative CI
 
-## Session 2 scope
+## Session 3 scope
 
-CutBridge now maps selected logical passes to CutBridge-owned compositor File Output nodes and an active Render Layers source, using Blender 5.x compositor APIs with a Blender 4.x fallback. Artist-owned compositor nodes are intentionally preserved. BEAUTY and DEPTH mapping are exercised under official `bpy==5.2.1`; renderer-dependent logical passes such as LINE are rejected with an actionable mapping error when the active engine does not expose the required Render Layers socket. DEPTH warns when a non-OpenEXR package format is selected.
+S3 hardens Blender production use around the S2 render mapping. Validation now includes package-target safety and actionable fixes in both operator reports and the N-panel. An existing unrendered CutBridge scaffold may be refreshed with an explicit warning, but any render/user payload blocks a same-version rebuild. Newly built packages receive a minimum deterministic integrity check, prior V001/V002/V003 package payload is preserved when incrementing versions, and Japanese metadata plus Windows-invalid filename characters remain covered by Blender 5.2.1 regressions.
 
-This file does not mark S2 complete: completion requires independent review, merge to `develop`, and green authoritative `develop` CI.
+This file does not mark S3 complete: completion requires an S3 PR, independent review, merge to `develop`, and green authoritative `develop` CI.
