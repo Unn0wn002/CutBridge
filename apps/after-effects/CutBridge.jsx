@@ -137,7 +137,6 @@ var CutBridgeContract = (function () {
     function sameFilesystemPath(left, right) {
         return normalizedFsPath(left) === normalizedFsPath(right);
     }
-
     function escapeRegex(text) { return text.replace(/([.*+?^${}()|\[\]\\])/g, "\\$1"); }
     function validatePattern(pattern) {
         if (typeof pattern !== "string" || !pattern.length || /[\/\\:%\x00-\x1f\x7f<>"|?*]/.test(pattern) || /[ .]$/.test(pattern)) {
@@ -191,9 +190,7 @@ var CutBridgeContract = (function () {
         var errors = [];
         if (!actual || actual.isFootage !== true) errors.push("item type");
         if (!actual || !actual.path || !sameFilesystemPath(expected.path, actual.path)) errors.push("source path");
-        if (actual && actual.conformFrameRate !== null && actual.conformFrameRate !== undefined) {
-            if (!isFiniteNumber(actual.conformFrameRate) || actual.conformFrameRate <= 0 || Math.abs(actual.conformFrameRate - expected.frameRate) > 0.001) errors.push("frame rate");
-        }
+        if (!actual || !isFiniteNumber(actual.conformFrameRate) || actual.conformFrameRate <= 0 || Math.abs(actual.conformFrameRate - expected.frameRate) > 0.001) errors.push("frame rate");
         return errors;
     }
 
