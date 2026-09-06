@@ -4,7 +4,7 @@ CutBridge After Effects
 - Creates deterministic AE folders + comp
 - Imports complete required image sequences from manifest
 - Skips unavailable optional passes with warnings
-- Reuses only CutBridge-managed comp/footage/layers on repeated builds
+- Reuses only validated CutBridge-managed comp/footage/layers on repeated builds
 - QC validates exact manifest frame coverage, comp metadata, duration and FPS
 
 Install/test:
@@ -129,6 +129,15 @@ var CutBridgeContract = (function () {
         return candidate.indexOf(root + "/") === 0;
     }
 
+    function normalizedFsPath(value) {
+        var result = String(value || "").replace(/\\/g, "/").replace(/\/+$/, "");
+        if (/^[A-Za-z]:/.test(result) || result.indexOf("//") === 0) result = result.toLowerCase();
+        return result;
+    }
+    function sameFilesystemPath(left, right) {
+        return normalizedFsPath(left) === normalizedFsPath(right);
+    }
+
     function escapeRegex(text) { return text.replace(/([.*+?^${}()|\[\]\\])/g, "\\$1"); }
     function validatePattern(pattern) {
         if (typeof pattern !== "string" || !pattern.length || /[\/\\:%\x00-\x1f\x7f<>"|?*]/.test(pattern) || /[ .]$/.test(pattern)) {
@@ -176,6 +185,15 @@ var CutBridgeContract = (function () {
         if (Math.abs(actual.pixelAspect - expected.pixelAspect) > 0.000001) errors.push("pixel aspect");
         if (Math.abs(actual.frameRate - expected.frameRate) > 0.001) errors.push("frame rate");
         if (Math.abs(actual.duration - expected.duration) >= (1.0 / expected.frameRate)) errors.push("duration");
+        return errors;
+    }
+    function footageReuseErrors(expected, actual) {
+        var errors = [];
+        if (!actual || actual.isFootage !== true) errors.push("item type");
+        if (!actual || !actual.path || !sameFilesystemPath(expected.path, actual.path)) errors.push("source path");
+        if (actual && actual.conformFrameRate !== null && actual.conformFrameRate !== undefined) {
+            if (!isFiniteNumber(actual.conformFrameRate) || actual.conformFrameRate <= 0 || Math.abs(actual.conformFrameRate - expected.frameRate) > 0.001) errors.push("frame rate");
+        }
         return errors;
     }
 
@@ -242,7 +260,8 @@ var CutBridgeContract = (function () {
     return {parseJSON: parseJSON, PRODUCT_VERSION: PRODUCT_VERSION, relativePassPath: relativePassPath, pathIsInside: pathIsInside,
         SCHEMA: SCHEMA, SCHEMA_VERSION: SCHEMA_VERSION, validateManifest: validateManifest, patternToRegex: patternToRegex,
         expectedFrameName: expectedFrameName, sequenceCoverage: sequenceCoverage, managedIdentity: managedIdentity, managedTag: managedTag,
-        expectedCompSpec: expectedCompSpec, compSpecErrors: compSpecErrors, passNames: passNames};
+        expectedCompSpec: expectedCompSpec, compSpecErrors: compSpecErrors, passNames: passNames, sameFilesystemPath: sameFilesystemPath,
+        footageReuseErrors: footageReuseErrors};
 })();
 
 if (typeof module !== "undefined" && module.exports) {
@@ -312,13 +331,30 @@ if (typeof module !== "undefined" && module.exports) {
         return result;
     }
 
-    function importSequence(passInfo, manifest, renderFolder, coverage) {
-        var tag = CutBridgeContract.managedTag("footage", manifest, passInfo.name);
-        var existing = state.imported[tag] || findTaggedProjectItem(renderFolder, tag);
-        if (existing) { state.imported[tag] = existing; return existing; }
+    function expectedFirstFile(passInfo, coverage) {
         var firstFile = new File(coverage.dir.fsName + "/" + coverage.firstName);
         if (firstFile.alias || !CutBridgeContract.pathIsInside(coverage.dir.fsName, firstFile.fsName)) throw new Error(passInfo.name + ": unsafe first-frame path.");
         if (!firstFile.exists) throw new Error(passInfo.name + ": expected first frame is missing: " + coverage.firstName);
+        return firstFile;
+    }
+    function validateReusableFootage(existing, firstFile, passInfo, manifest) {
+        var isFootage = typeof FootageItem !== "undefined" && existing instanceof FootageItem;
+        var sourcePath = null, conformFrameRate = null;
+        try { if (existing.file && existing.file.fsName) sourcePath = existing.file.fsName; } catch (e) {}
+        try { if (existing.mainSource && typeof existing.mainSource.conformFrameRate !== "undefined") conformFrameRate = existing.mainSource.conformFrameRate; } catch (e2) {}
+        var mismatches = CutBridgeContract.footageReuseErrors(
+            {path: firstFile.fsName, frameRate: manifest.fps},
+            {isFootage: isFootage, path: sourcePath, conformFrameRate: conformFrameRate}
+        );
+        if (mismatches.length) throw new Error(passInfo.name + ": managed footage no longer matches the package (" + mismatches.join(", ") + "). Preserve the existing project and remove/relabel the stale managed footage before rebuilding; S5 will not silently replace it.");
+        return existing;
+    }
+
+    function importSequence(passInfo, manifest, renderFolder, coverage) {
+        var tag = CutBridgeContract.managedTag("footage", manifest, passInfo.name);
+        var firstFile = expectedFirstFile(passInfo, coverage);
+        var existing = state.imported[tag] || findTaggedProjectItem(renderFolder, tag);
+        if (existing) { existing = validateReusableFootage(existing, firstFile, passInfo, manifest); state.imported[tag] = existing; return existing; }
         var io = new ImportOptions(firstFile); if (io.canImportAs && io.canImportAs(ImportAsType.FOOTAGE)) io.importAs = ImportAsType.FOOTAGE;
         io.sequence = true; io.forceAlphabetical = false;
         var footage = app.project.importFile(io); footage.name = manifest.cut + "_" + passInfo.name; footage.parentFolder = renderFolder; setItemComment(footage, tag);
