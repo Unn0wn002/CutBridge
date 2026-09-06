@@ -8,11 +8,17 @@ All notable CutBridge changes are tracked here.
 - S4 AE contract: realm-safe arrays, finite integer frame semantics, safe package-relative pass paths and basename patterns, Unicode filename decoding, and executable JSON rejection in legacy ExtendScript.
 - Negative export ranges now fail consistently at Blender/schema/AE boundaries with a rebase instruction; zero-based export remains supported. Signed AE sequence ordering is not certified.
 - AE-facing version text reads one centrally checked product-version constant; release builds reject divergence.
+- S3 package rebuild safety blocks same-version overwrite when render/user payload already exists while allowing safe refresh of an empty CutBridge scaffold.
+- S3 package-integrity checks fail incomplete package creation before reporting success.
+- S2 render mapping is transactional: failed replacement attempts preserve the previous valid CutBridge mapping and restore render/View Layer settings.
 - Release ZIP entries now use fixed timestamps and permissions, so identical sources built with the same Python/zlib toolchain produce identical checksums.
 - Release output validation preserves unrelated files, rejects source-directory overlap and artifact symlinks, and checks both canonical version constants before writing.
 - Generated `cutbridge.json` files now read `cutbridge_version` from the canonical Blender extension version instead of emitting the stale `0.1.0` literal.
 
 ### Added
+- S2 Blender render-output mapping for logical BEAUTY / LINE / SHADOW / DEPTH passes using CutBridge-owned compositor nodes and deterministic package-relative output locations.
+- S2 renderer/View Layer capability validation and Blender 5.2.1 regressions for mapping behavior without deleting unrelated artist nodes.
+- S3 actionable Blender validation UI, V001/V002/V003 coexistence coverage, Japanese/UTF-8 and Windows-invalid-name hardening, lazy payload detection, and package preservation regressions.
 - Node AE contract and mocked host-adapter regressions for required/optional passes, exact coverage, unexpected files, unsafe paths, aliases and legacy JSON parsing; official bpy producer-to-AE filename contract checks.
 - Root GPL license text and license inclusion in both release ZIPs, matching the existing GPL-3.0-or-later declaration.
 - Session 1 baseline/branch-history audit, release safety regression tests, and schema/example validation.
