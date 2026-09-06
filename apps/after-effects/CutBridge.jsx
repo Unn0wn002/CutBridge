@@ -1,15 +1,140 @@
 /*
-CutBridge AE MVP v0.1.0
-- Reads cutbridge.json
+CutBridge After Effects v0.2.3
+- Reads and validates cutbridge.json schema/version
 - Creates deterministic AE folders + comp
-- Imports image sequences from manifest
-- Basic QC: manifest consistency, pass folder, first-frame source, duration/FPS
+- Imports complete required image sequences from manifest
+- Skips unavailable optional passes with warnings
+- QC validates exact manifest frame coverage, duration and FPS
 
 Install/test:
 File > Scripts > Run Script File... > CutBridge.jsx
 For a dockable panel, place this file in After Effects/Scripts/ScriptUI Panels and restart AE.
 */
 
+var CutBridgeContract = (function () {
+    var SCHEMA = "cutbridge-manifest";
+    var SCHEMA_VERSION = 1;
+
+    function zeroPad(n, width) {
+        var s = String(n);
+        while (s.length < width) s = "0" + s;
+        return s;
+    }
+
+    function escapeRegex(text) {
+        return text.replace(/([.+^${}()|\[\]\\])/g, "\\$1");
+    }
+
+    function patternToRegex(pattern) {
+        if (typeof pattern !== "string" || pattern.indexOf("####") < 0) {
+            throw new Error("Sequence pattern must contain a #### frame token.");
+        }
+        var escaped = escapeRegex(pattern);
+        escaped = escaped.replace(/####/g, "(\\d{4,})");
+        return new RegExp("^" + escaped + "$", "i");
+    }
+
+    function expectedFrameName(pattern, frame) {
+        if (typeof pattern !== "string" || pattern.indexOf("####") < 0) {
+            throw new Error("Sequence pattern must contain a #### frame token.");
+        }
+        return pattern.replace("####", zeroPad(frame, 4));
+    }
+
+    function validateManifest(manifest) {
+        var errors = [];
+        if (!manifest || typeof manifest !== "object") {
+            return ["Manifest is empty or invalid JSON data."];
+        }
+        if (manifest.schema !== SCHEMA) {
+            errors.push("Unsupported manifest schema: " + String(manifest.schema));
+        }
+        if (manifest.schema_version !== SCHEMA_VERSION) {
+            errors.push(
+                "Unsupported manifest schema_version " + String(manifest.schema_version) +
+                "; CutBridge AE supports " + String(SCHEMA_VERSION) + "."
+            );
+        }
+        if (!manifest.frames || typeof manifest.frames.start !== "number" || typeof manifest.frames.end !== "number") {
+            errors.push("Manifest frames.start/frames.end are missing or invalid.");
+        } else {
+            var expectedCount = manifest.frames.end - manifest.frames.start + 1;
+            if (manifest.frames.end < manifest.frames.start || manifest.frames.count !== expectedCount) {
+                errors.push("Manifest frame range/count is inconsistent.");
+            }
+        }
+        if (!(manifest.fps > 0)) errors.push("Manifest FPS must be greater than zero.");
+        if (!manifest.resolution || !(manifest.resolution.width > 0) || !(manifest.resolution.height > 0)) {
+            errors.push("Manifest resolution is missing or invalid.");
+        }
+        if (!(manifest.passes instanceof Array) || manifest.passes.length === 0) {
+            errors.push("Manifest contains no render passes.");
+        } else {
+            for (var i = 0; i < manifest.passes.length; i++) {
+                var p = manifest.passes[i];
+                if (!p || !p.name || !p.path || !p.sequence_pattern) {
+                    errors.push("Manifest pass at index " + i + " is incomplete.");
+                    continue;
+                }
+                try { patternToRegex(p.sequence_pattern); }
+                catch (e) { errors.push(p.name + ": " + e.message); }
+            }
+        }
+        return errors;
+    }
+
+    function sequenceCoverage(passInfo, manifest, fileNames) {
+        var result = {
+            complete: false,
+            firstName: null,
+            missing: [],
+            unexpected: [],
+            matching: []
+        };
+        var regex = patternToRegex(passInfo.sequence_pattern);
+        var exact = {};
+        var expected = {};
+        var i;
+
+        for (i = 0; i < fileNames.length; i++) {
+            var name = String(fileNames[i]);
+            var match = regex.exec(name);
+            if (match) {
+                result.matching.push(name);
+                exact[name.toLowerCase()] = true;
+            }
+        }
+
+        for (var frame = manifest.frames.start; frame <= manifest.frames.end; frame++) {
+            var expectedName = expectedFrameName(passInfo.sequence_pattern, frame);
+            expected[expectedName.toLowerCase()] = true;
+            if (!exact[expectedName.toLowerCase()]) result.missing.push(frame);
+        }
+
+        for (i = 0; i < result.matching.length; i++) {
+            if (!expected[result.matching[i].toLowerCase()]) result.unexpected.push(result.matching[i]);
+        }
+
+        result.complete = result.missing.length === 0;
+        if (result.complete) {
+            result.firstName = expectedFrameName(passInfo.sequence_pattern, manifest.frames.start);
+        }
+        return result;
+    }
+
+    return {
+        SCHEMA: SCHEMA,
+        SCHEMA_VERSION: SCHEMA_VERSION,
+        validateManifest: validateManifest,
+        patternToRegex: patternToRegex,
+        expectedFrameName: expectedFrameName,
+        sequenceCoverage: sequenceCoverage
+    };
+})();
+
+if (typeof module !== "undefined" && module.exports) {
+    module.exports = CutBridgeContract;
+} else {
 (function CutBridge(thisObj) {
     var state = {
         manifestFile: null,
@@ -45,12 +170,15 @@ For a dockable panel, place this file in After Effects/Scripts/ScriptUI Panels a
         var f = File.openDialog("Choose CutBridge cutbridge.json", "JSON:*.json");
         if (!f) return null;
         var obj = parseJSON(readTextFile(f));
-        if (!obj || obj.schema !== "cutbridge-manifest") {
-            throw new Error("This is not a CutBridge manifest.");
+        var contractErrors = CutBridgeContract.validateManifest(obj);
+        if (contractErrors.length) {
+            throw new Error("Manifest contract rejected:\n- " + contractErrors.join("\n- "));
         }
         state.manifestFile = f;
         state.manifest = obj;
         state.packageFolder = f.parent;
+        state.imported = {};
+        state.comp = null;
         return obj;
     }
 
@@ -76,34 +204,39 @@ For a dockable panel, place this file in After Effects/Scripts/ScriptUI Panels a
         };
     }
 
-    function zeroPad(n, width) {
-        var s = String(n);
-        while (s.length < width) s = "0" + s;
-        return s;
-    }
-
-    function patternToRegex(pattern) {
-        // Supports a single #### style token.
-        var escaped = pattern.replace(/([.+^${}()|\[\]\\])/g, "\\$1");
-        escaped = escaped.replace(/####/g, "(\\d{4,})");
-        return new RegExp("^" + escaped + "$", "i");
-    }
-
-    function findFirstSequenceFile(passInfo, manifest) {
+    function listSequenceFileNames(passInfo) {
         var dir = new Folder(state.packageFolder.fsName + "/" + passInfo.path);
-        if (!dir.exists) return null;
-
-        var regex = patternToRegex(passInfo.sequence_pattern);
+        if (!dir.exists) return {dir: dir, names: []};
+        var regex = CutBridgeContract.patternToRegex(passInfo.sequence_pattern);
         var files = dir.getFiles(function(f) { return f instanceof File && regex.test(f.name); });
-        if (!files || files.length === 0) return null;
-
-        files.sort(function(a, b) { return a.name < b.name ? -1 : (a.name > b.name ? 1 : 0); });
-        return files[0];
+        var names = [];
+        for (var i = 0; files && i < files.length; i++) names.push(files[i].name);
+        return {dir: dir, names: names};
     }
 
-    function importSequence(passInfo, manifest, renderFolder) {
-        var firstFile = findFirstSequenceFile(passInfo, manifest);
-        if (!firstFile) throw new Error("No sequence found for pass " + passInfo.name + " (" + passInfo.sequence_pattern + ")");
+    function inspectSequence(passInfo, manifest) {
+        var listing = listSequenceFileNames(passInfo);
+        var coverage = CutBridgeContract.sequenceCoverage(passInfo, manifest, listing.names);
+        coverage.folderExists = listing.dir.exists;
+        coverage.dir = listing.dir;
+        return coverage;
+    }
+
+    function formatMissingFrames(frames) {
+        if (!frames.length) return "";
+        var shown = frames.slice(0, 12).join(", ");
+        if (frames.length > 12) shown += " … +" + (frames.length - 12) + " more";
+        return shown;
+    }
+
+    function importSequence(passInfo, manifest, renderFolder, coverage) {
+        coverage = coverage || inspectSequence(passInfo, manifest);
+        if (!coverage.folderExists) throw new Error(passInfo.name + ": pass folder missing.");
+        if (!coverage.complete) {
+            throw new Error(passInfo.name + ": missing frame(s): " + formatMissingFrames(coverage.missing));
+        }
+        var firstFile = new File(coverage.dir.fsName + "/" + coverage.firstName);
+        if (!firstFile.exists) throw new Error(passInfo.name + ": expected first frame is missing: " + coverage.firstName);
 
         var io = new ImportOptions(firstFile);
         if (io.canImportAs && io.canImportAs(ImportAsType.FOOTAGE)) io.importAs = ImportAsType.FOOTAGE;
@@ -135,6 +268,7 @@ For a dockable panel, place this file in After Effects/Scripts/ScriptUI Panels a
         var folders = ensureProjectFolders(m);
         var compName = (m.ae && m.ae.comp_name) ? m.ae.comp_name : (m.cut + "_COMP");
         var duration = m.frames.count / m.fps;
+        var warnings = [];
 
         app.beginUndoGroup("CutBridge Build Comp");
         try {
@@ -154,7 +288,16 @@ For a dockable panel, place this file in After Effects/Scripts/ScriptUI Panels a
 
             for (var i = 0; i < m.passes.length; i++) {
                 var p = m.passes[i];
-                var footage = state.imported[p.name] || importSequence(p, m, folders.render);
+                var coverage = inspectSequence(p, m);
+                if (!coverage.folderExists || !coverage.complete) {
+                    var reason = !coverage.folderExists ? "pass folder missing" : ("missing frame(s): " + formatMissingFrames(coverage.missing));
+                    if (p.required === false) {
+                        warnings.push(p.name + ": optional pass skipped — " + reason);
+                        continue;
+                    }
+                    throw new Error(p.name + ": required pass cannot be imported — " + reason);
+                }
+                var footage = state.imported[p.name] || importSequence(p, m, folders.render, coverage);
                 var layer = comp.layers.add(footage);
                 layer.name = p.name;
                 layer.startTime = 0;
@@ -174,7 +317,9 @@ For a dockable panel, place this file in After Effects/Scripts/ScriptUI Panels a
             }
 
             comp.openInViewer();
-            alert("CutBridge: comp built\n" + comp.name + "\n" + m.resolution.width + "x" + m.resolution.height + " @ " + m.fps + " fps");
+            var message = "CutBridge: comp built\n" + comp.name + "\n" + m.resolution.width + "x" + m.resolution.height + " @ " + m.fps + " fps";
+            if (warnings.length) message += "\n\nWarnings:\n- " + warnings.join("\n- ");
+            alert(message);
         } catch (e) {
             alertError(e.toString());
         } finally {
@@ -188,9 +333,18 @@ For a dockable panel, place this file in After Effects/Scripts/ScriptUI Panels a
         var m = state.manifest;
         var lines = [];
         var errors = 0;
+        var warnings = 0;
 
-        function ok(msg) { lines.push("OK  " + msg); }
-        function bad(msg) { errors++; lines.push("ERR " + msg); }
+        function ok(msg) { lines.push("PASS " + msg); }
+        function warn(msg) { warnings++; lines.push("WARN " + msg); }
+        function bad(msg) { errors++; lines.push("ERR  " + msg); }
+
+        var contractErrors = CutBridgeContract.validateManifest(m);
+        if (contractErrors.length) {
+            for (var c = 0; c < contractErrors.length; c++) bad(contractErrors[c]);
+        } else {
+            ok("Manifest schema " + CutBridgeContract.SCHEMA + " v" + CutBridgeContract.SCHEMA_VERSION);
+        }
 
         if (m.fps > 0) ok("FPS " + m.fps); else bad("Invalid FPS");
         if (m.frames && m.frames.count === (m.frames.end - m.frames.start + 1)) ok("Frame count " + m.frames.count); else bad("Frame count mismatch");
@@ -198,14 +352,20 @@ For a dockable panel, place this file in After Effects/Scripts/ScriptUI Panels a
 
         for (var i = 0; i < m.passes.length; i++) {
             var p = m.passes[i];
-            var dir = new Folder(state.packageFolder.fsName + "/" + p.path);
-            if (!dir.exists) {
-                bad(p.name + ": pass folder missing");
+            var coverage = inspectSequence(p, m);
+            var optional = p.required === false;
+            if (!coverage.folderExists) {
+                if (optional) warn(p.name + ": optional pass folder missing");
+                else bad(p.name + ": required pass folder missing");
                 continue;
             }
-            var first = findFirstSequenceFile(p, m);
-            if (!first) bad(p.name + ": no matching sequence");
-            else ok(p.name + ": source found (" + first.name + ")");
+            if (!coverage.complete) {
+                var missingMsg = p.name + ": missing frame(s): " + formatMissingFrames(coverage.missing);
+                if (optional) warn(missingMsg + " (optional pass)"); else bad(missingMsg);
+                continue;
+            }
+            ok(p.name + ": " + m.frames.count + "/" + m.frames.count + " expected frames present");
+            if (coverage.unexpected.length) warn(p.name + ": " + coverage.unexpected.length + " unexpected matching filename(s)");
         }
 
         if (state.comp) {
@@ -214,7 +374,8 @@ For a dockable panel, place this file in After Effects/Scripts/ScriptUI Panels a
             if (Math.abs(state.comp.duration - expectedDuration) < (1.0 / m.fps)) ok("Comp duration matches manifest"); else bad("Comp duration mismatch");
         }
 
-        alert("CutBridge QC — " + (errors === 0 ? "PASS" : (errors + " issue(s)")) + "\n\n" + lines.join("\n"));
+        var headline = errors === 0 ? (warnings === 0 ? "PASS" : ("PASS with " + warnings + " warning(s)")) : (errors + " error(s), " + warnings + " warning(s)");
+        alert("CutBridge QC — " + headline + "\n\n" + lines.join("\n"));
     }
 
     function loadOnly(statusText) {
@@ -249,7 +410,7 @@ For a dockable panel, place this file in After Effects/Scripts/ScriptUI Panels a
         btnBuild.onClick = function() { buildComp(); };
         btnQC.onClick = function() { runQC(); };
 
-        var note = pal.add("statictext", undefined, "MVP v0.1: package → auto-comp → basic QC", {multiline: true});
+        var note = pal.add("statictext", undefined, "v0.2.3: validated package → comp → QC", {multiline: true});
         note.preferredSize.height = 32;
 
         pal.onResizing = pal.onResize = function() { this.layout.resize(); };
@@ -264,3 +425,4 @@ For a dockable panel, place this file in After Effects/Scripts/ScriptUI Panels a
         panel.layout.layout(true);
     }
 })(this);
+}
