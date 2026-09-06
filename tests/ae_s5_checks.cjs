@@ -60,11 +60,15 @@ function host(m, files, options = {}) {
   function FolderItem(name) { this.name = name; this.parentFolder = null; this.comment = ''; }
   function FootageItem(file) {
     this.name = ''; this.parentFolder = null; this.comment = ''; this.file = file;
+    this._conformGetterThrows = false; this._conformUnavailable = false;
     let conformFrameRate = 0;
     this.mainSource = {};
     Object.defineProperty(this.mainSource, 'conformFrameRate', {
       enumerable: true,
-      get() { return conformFrameRate; },
+      get: () => {
+        if (this._conformGetterThrows) throw new Error('mock conform getter failure');
+        return this._conformUnavailable ? undefined : conformFrameRate;
+      },
       set(value) {
         if (options.conformSetterThrows) throw new Error('mock conform setter failure');
         conformFrameRate = options.conformRefuses ? 30 : value;
@@ -136,7 +140,11 @@ function host(m, files, options = {}) {
     return wrong;
   }
   function driftFootageSource(item, filePath) { item.file = new File(filePath); }
-  return {click, alerts, imports, projectItems, comps, footage, compFolder, renderFolder, seedManualComp, seedWrongTypeFootageTag, driftFootageSource};
+  function breakFootageFpsRead(item, mode) {
+    item._conformGetterThrows = mode === 'throw';
+    item._conformUnavailable = mode === 'unavailable';
+  }
+  return {click, alerts, imports, projectItems, comps, footage, compFolder, renderFolder, seedManualComp, seedWrongTypeFootageTag, driftFootageSource, breakFootageFpsRead};
 }
 
 const beautyFiles = [1, 2, 3].map(n => `/packages/桜/render/beauty/C001_BEAUTY_000${n}.png`);
@@ -154,6 +162,14 @@ check('contract exposes deterministic managed identity and comp spec checks', ()
     {path: '/pkg/render/beauty/C001_0001.png', frameRate: 24},
     {isFootage: true, path: '/pkg/render/beauty/C001_0001.png', conformFrameRate: 24}
   ))), []);
+  assert.deepEqual(JSON.parse(JSON.stringify(c.footageReuseErrors(
+    {path: '/pkg/render/beauty/C001_0001.png', frameRate: 24},
+    {isFootage: true, path: '/pkg/render/beauty/C001_0001.png', conformFrameRate: null}
+  ))), ['frame rate']);
+  assert.deepEqual(JSON.parse(JSON.stringify(c.footageReuseErrors(
+    {path: '/pkg/render/beauty/C001_0001.png', frameRate: 24},
+    {isFootage: true, path: '/pkg/render/beauty/C001_0001.png', conformFrameRate: undefined}
+  ))), ['frame rate']);
 });
 
 check('duplicate pass names and invalid layer order are rejected before runtime', () => {
@@ -228,6 +244,32 @@ check('managed footage conform FPS drift fails closed', () => {
   assert.equal(h.imports.length, 1);
   assert.equal(h.comps()[0].numLayers, 1);
   assert.match(h.alerts.at(-1), /managed footage no longer matches.*frame rate/);
+});
+
+check('managed footage throwing FPS getter fails closed without replacement and QC does not pass footage', () => {
+  const h = host(manifest(), beautyFiles); h.click('Build');
+  h.breakFootageFpsRead(h.footage()[0], 'throw');
+  h.click('Build');
+  assert.equal(h.imports.length, 1);
+  assert.equal(h.footage().length, 1);
+  assert.equal(h.comps()[0].numLayers, 1);
+  assert.match(h.alerts.at(-1), /managed footage no longer matches.*frame rate/);
+  h.click('QC');
+  assert.match(h.alerts.at(-1), /managed footage validation failed/);
+  assert.doesNotMatch(h.alerts.at(-1), /PASS BEAUTY: managed footage source\/FPS matches manifest/);
+});
+
+check('managed footage unavailable FPS fails closed without replacement and QC does not pass footage', () => {
+  const h = host(manifest(), beautyFiles); h.click('Build');
+  h.breakFootageFpsRead(h.footage()[0], 'unavailable');
+  h.click('Build');
+  assert.equal(h.imports.length, 1);
+  assert.equal(h.footage().length, 1);
+  assert.equal(h.comps()[0].numLayers, 1);
+  assert.match(h.alerts.at(-1), /managed footage no longer matches.*frame rate/);
+  h.click('QC');
+  assert.match(h.alerts.at(-1), /managed footage validation failed/);
+  assert.doesNotMatch(h.alerts.at(-1), /PASS BEAUTY: managed footage source\/FPS matches manifest/);
 });
 
 check('initial conform FPS setter failure rolls back only the new import across retries', () => {
