@@ -384,10 +384,22 @@ if (typeof module !== "undefined" && module.exports) {
         if (existing) { existing = validateReusableFootage(existing, firstFile, passInfo, manifest); state.imported[tag] = existing; return existing; }
         var io = new ImportOptions(firstFile); if (io.canImportAs && io.canImportAs(ImportAsType.FOOTAGE)) io.importAs = ImportAsType.FOOTAGE;
         io.sequence = true; io.forceAlphabetical = false;
-        var footage = app.project.importFile(io); footage.name = manifest.cut + "_" + passInfo.name; footage.parentFolder = renderFolder;
-        conformAndVerifyImportedFootage(footage, firstFile, passInfo, manifest);
-        setItemComment(footage, tag);
-        state.imported[tag] = footage; return footage;
+        var footage = app.project.importFile(io);
+        try {
+            footage.name = manifest.cut + "_" + passInfo.name; footage.parentFolder = renderFolder;
+            conformAndVerifyImportedFootage(footage, firstFile, passInfo, manifest);
+            setItemComment(footage, tag);
+            state.imported[tag] = footage;
+            return footage;
+        } catch (importError) {
+            try {
+                if (!footage || typeof footage.remove !== "function") throw new Error("newly imported footage cannot be removed by this AE host");
+                footage.remove();
+            } catch (rollbackError) {
+                throw new Error(passInfo.name + ": import verification failed and CutBridge could not roll back the newly imported footage (" + rollbackError.toString() + "). Use Undo for the CutBridge Build Comp operation before retrying. Original error: " + importError.toString());
+            }
+            throw importError;
+        }
     }
 
     function ensureManagedComp(manifest, compFolder, compName) {
