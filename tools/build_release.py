@@ -11,6 +11,7 @@ import argparse
 import ast
 import hashlib
 import json
+import re
 from pathlib import Path
 import tomllib
 import zipfile
@@ -52,6 +53,9 @@ def _validate_source_version(version: str) -> None:
                     values[target.id] = ast.literal_eval(node.value)
     if values.get("__version__") != version or values.get("VERSION") != tuple(int(x) for x in version.split(".")):
         raise ValueError("version.py constants do not match the release version")
+    ae_versions = re.findall(r'var PRODUCT_VERSION = "([^"\n]+)";', AE_SCRIPT.read_text(encoding="utf-8"))
+    if ae_versions != [version]:
+        raise ValueError("CutBridge.jsx PRODUCT_VERSION does not match the release version")
 
 
 def _write_entry(archive: zipfile.ZipFile, source: Path, name: str) -> None:

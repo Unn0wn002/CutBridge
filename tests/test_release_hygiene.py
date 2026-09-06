@@ -73,6 +73,13 @@ class ReleaseHygieneTests(unittest.TestCase):
             self.builder.build("v0.2.3", self.output)
         self.assertFalse(self.output.exists())
 
+    def test_ae_version_mismatch_is_rejected_before_output(self):
+        source = self.builder.AE_SCRIPT
+        source.write_text(source.read_text().replace('var PRODUCT_VERSION = "0.2.3";', 'var PRODUCT_VERSION = "0.2.2";'))
+        with self.assertRaisesRegex(ValueError, "PRODUCT_VERSION"):
+            self.builder.build("v0.2.3", self.output)
+        self.assertFalse(self.output.exists())
+
     def test_artifact_symlink_cannot_overwrite_another_file(self):
         self.output.mkdir()
         victim = Path(self.temp.name) / "preserve.txt"

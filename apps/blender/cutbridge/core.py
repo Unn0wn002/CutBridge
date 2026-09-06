@@ -159,6 +159,10 @@ def validate_scene(context) -> list[dict]:
     if scene.render.fps <= 0:
         err("FPS_INVALID", "FPS must be greater than zero.", "Set a valid scene FPS.")
 
+    if scene.frame_start < 0 or scene.frame_end < 0:
+        err("NEGATIVE_FRAMES_UNSUPPORTED", "Negative export frames are unsupported.",
+            "Rebase the cut and preroll to frame 0 or later, then rebuild the package.")
+
     if scene.frame_end < scene.frame_start:
         err("FRAME_RANGE_INVALID", "Frame end is before frame start.", "Correct the frame range.")
 
@@ -393,6 +397,8 @@ def configure_render_outputs(context, package_root: Path) -> dict[str, str]:
 
 def build_manifest(context, package_root: Path) -> dict:
     scene = context.scene
+    if scene.frame_start < 0 or scene.frame_end < 0:
+        raise ValueError("Negative export frames are unsupported. Rebase the cut and preroll to frame 0 or later.")
     s = scene.cutbridge
     ext = extension_for(s.image_format)
     passes = []
