@@ -16,7 +16,7 @@ BLENDER_APP = ROOT / "apps" / "blender"
 sys.path.insert(0, str(BLENDER_APP))
 
 import cutbridge  # noqa: E402
-from cutbridge.core import clear_managed_render_outputs, validate_scene  # noqa: E402
+from cutbridge.core import PASS_MAPPINGS, clear_managed_render_outputs, validate_scene  # noqa: E402
 from cutbridge.version import __version__  # noqa: E402
 
 MANIFEST_SCHEMA_PATH = ROOT / "packages" / "shared" / "cutbridge-manifest.schema.json"
@@ -36,6 +36,7 @@ def configured_scene(tmp_path):
     scene = bpy.context.scene
     settings = scene.cutbridge
     view_layer = bpy.context.view_layer
+    original_engine = scene.render.engine
     original_compositor = getattr(scene, "compositing_node_group", None)
     original_freestyle = getattr(scene.render, "use_freestyle", None)
     original_pass_state = {
@@ -80,6 +81,7 @@ def configured_scene(tmp_path):
     elif hasattr(scene, "compositing_node_group"):
         scene.compositing_node_group = original_compositor
 
+    scene.render.engine = original_engine
     if original_freestyle is not None:
         scene.render.use_freestyle = original_freestyle
     for attr, value in original_pass_state.items():
@@ -112,6 +114,14 @@ def _assert_build_operator_rejects(expected_message: str, output_dir: pathlib.Pa
     with pytest.raises(RuntimeError, match=expected_message):
         bpy.ops.cutbridge.build_package()
     assert not any(output_dir.iterdir())
+
+
+def test_logical_pass_mapping_contract_is_explicit():
+    assert set(PASS_MAPPINGS) == {"BEAUTY", "LINE", "SHADOW", "DEPTH"}
+    assert PASS_MAPPINGS["BEAUTY"]["socket_names"] == ("Image",)
+    assert PASS_MAPPINGS["LINE"]["enable_attr"] == "use_freestyle"
+    assert PASS_MAPPINGS["SHADOW"]["enable_attr"] == "use_pass_shadow"
+    assert PASS_MAPPINGS["DEPTH"]["enable_attr"] == "use_pass_z"
 
 
 def test_generated_manifest_uses_canonical_cutbridge_version(configured_scene):
@@ -209,18 +219,17 @@ def test_depth_mapping_enables_z_pass_and_uses_exr_output(configured_scene):
     ("enabled_passes", "expected_names"),
     [
         ({"beauty"}, ["BEAUTY"]),
-        ({"beauty", "line"}, ["BEAUTY", "LINE"]),
-        ({"beauty", "line", "shadow", "depth"}, ["BEAUTY", "LINE", "SHADOW", "DEPTH"]),
+        ({"beauty", "depth"}, ["BEAUTY", "DEPTH"]),
     ],
-    ids=["beauty", "beauty-line", "beauty-line-shadow-depth"],
+    ids=["beauty", "beauty-depth"],
 )
-def test_render_pass_combinations_create_matching_folders_and_manifest_entries(
+def test_supported_pass_combinations_create_matching_folders_and_manifest_entries(
     configured_scene, enabled_passes, expected_names
 ):
     _, settings, _ = configured_scene
     settings.pass_beauty = "beauty" in enabled_passes
-    settings.pass_line = "line" in enabled_passes
-    settings.pass_shadow = "shadow" in enabled_passes
+    settings.pass_line = False
+    settings.pass_shadow = False
     settings.pass_depth = "depth" in enabled_passes
     if settings.pass_depth:
         settings.image_format = "OPEN_EXR"
@@ -247,6 +256,17 @@ def test_render_pass_combinations_create_matching_folders_and_manifest_entries(
         f"render/{name.lower()}" for name in expected_names
     }
     assert actual_directories == expected_directories
+
+
+def test_eevee_rejects_line_when_no_freestyle_render_layers_socket_is_exposed(configured_scene):
+    scene, settings, output_dir = configured_scene
+    scene.render.engine = "BLENDER_EEVEE"
+    settings.pass_beauty = False
+    settings.pass_line = True
+
+    _assert_build_operator_rejects("LINE mapping is unavailable", output_dir)
+    assert scene.render.use_freestyle is True
+    assert bpy.context.view_layer.use_freestyle is True
 
 
 def test_v001_and_v002_coexist_without_overwriting_v001(configured_scene):
