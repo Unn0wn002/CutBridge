@@ -349,6 +349,33 @@ if (typeof module !== "undefined" && module.exports) {
         if (mismatches.length) throw new Error(passInfo.name + ": managed footage no longer matches the package (" + mismatches.join(", ") + "). Preserve the existing project and remove/relabel the stale managed footage before rebuilding; S5 will not silently replace it.");
         return existing;
     }
+    function conformAndVerifyImportedFootage(footage, firstFile, passInfo, manifest) {
+        if (typeof FootageItem === "undefined" || !(footage instanceof FootageItem) || !footage.mainSource) {
+            throw new Error(passInfo.name + ": imported item is not verifiable footage; build stopped before creating a managed layer.");
+        }
+        try {
+            footage.mainSource.conformFrameRate = manifest.fps;
+        } catch (setError) {
+            throw new Error(passInfo.name + ": After Effects could not conform imported footage to " + manifest.fps + " fps (" + setError.toString() + "). Build stopped; verify the source sequence and AE footage interpretation before retrying.");
+        }
+        var actualRate;
+        try {
+            if (typeof footage.mainSource.conformFrameRate === "undefined") throw new Error("conformFrameRate is unavailable");
+            actualRate = footage.mainSource.conformFrameRate;
+        } catch (readError) {
+            throw new Error(passInfo.name + ": CutBridge could not verify the imported footage frame rate after conforming it (" + readError.toString() + "). Build stopped before creating a managed layer.");
+        }
+        var sourcePath = null;
+        try { if (footage.file && footage.file.fsName) sourcePath = footage.file.fsName; } catch (pathError) {}
+        var mismatches = CutBridgeContract.footageReuseErrors(
+            {path: firstFile.fsName, frameRate: manifest.fps},
+            {isFootage: true, path: sourcePath, conformFrameRate: actualRate}
+        );
+        if (actualRate === null || actualRate === undefined || mismatches.length) {
+            throw new Error(passInfo.name + ": imported footage timing/source could not be verified (" + (mismatches.length ? mismatches.join(", ") : "frame rate unavailable") + "). Build stopped before creating a managed layer.");
+        }
+        return footage;
+    }
 
     function importSequence(passInfo, manifest, renderFolder, coverage) {
         var tag = CutBridgeContract.managedTag("footage", manifest, passInfo.name);
@@ -357,8 +384,9 @@ if (typeof module !== "undefined" && module.exports) {
         if (existing) { existing = validateReusableFootage(existing, firstFile, passInfo, manifest); state.imported[tag] = existing; return existing; }
         var io = new ImportOptions(firstFile); if (io.canImportAs && io.canImportAs(ImportAsType.FOOTAGE)) io.importAs = ImportAsType.FOOTAGE;
         io.sequence = true; io.forceAlphabetical = false;
-        var footage = app.project.importFile(io); footage.name = manifest.cut + "_" + passInfo.name; footage.parentFolder = renderFolder; setItemComment(footage, tag);
-        try { footage.mainSource.conformFrameRate = manifest.fps; } catch (e) { log("Could not conform FPS for " + passInfo.name + ": " + e.toString()); }
+        var footage = app.project.importFile(io); footage.name = manifest.cut + "_" + passInfo.name; footage.parentFolder = renderFolder;
+        conformAndVerifyImportedFootage(footage, firstFile, passInfo, manifest);
+        setItemComment(footage, tag);
         state.imported[tag] = footage; return footage;
     }
 
@@ -430,6 +458,11 @@ if (typeof module !== "undefined" && module.exports) {
             if (!coverage.folderExists) { if (optional) warn(p.name + ": optional pass folder missing"); else bad(p.name + ": required pass folder missing"); continue; }
             if (!coverage.complete) { var missingMsg = p.name + ": missing frame(s): " + formatMissingFrames(coverage.missing); if (optional) warn(missingMsg + " (optional pass)"); else bad(missingMsg); continue; }
             ok(p.name + ": " + m.frames.count + "/" + m.frames.count + " expected frames present"); if (coverage.unexpected.length) warn(p.name + ": " + coverage.unexpected.length + " unexpected matching filename(s)");
+            var footageTag = CutBridgeContract.managedTag("footage", m, p.name), managedFootage = state.imported[footageTag];
+            if (managedFootage) {
+                try { validateReusableFootage(managedFootage, expectedFirstFile(p, coverage), p, m); ok(p.name + ": managed footage source/FPS matches manifest"); }
+                catch (footageError) { bad(p.name + ": managed footage validation failed — " + footageError.toString()); }
+            }
         }
         if (state.comp) {
             var expected = CutBridgeContract.expectedCompSpec(m), mismatches = CutBridgeContract.compSpecErrors(expected, {width: state.comp.width, height: state.comp.height, pixelAspect: state.comp.pixelAspect, duration: state.comp.duration, frameRate: state.comp.frameRate});
