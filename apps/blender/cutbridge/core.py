@@ -273,18 +273,19 @@ def configure_render_outputs(context, package_root: Path) -> dict[str, str]:
             output_node.name = f"{MANAGED_NODE_PREFIX}OUTPUT_{pass_name}"
             output_node.label = f"CutBridge {pass_name}"
             output_node.location = (80.0, -220.0 * index)
-            output_node.format.file_format = settings.image_format
 
             directory = package_root / "render" / pass_name.lower()
             filename = f"{safe_token(settings.cut, 'C000')}_{pass_name}_####"
 
             if hasattr(output_node, "file_output_items") and hasattr(output_node, "directory"):
-                # Blender 5.x: file_slots/base_path were removed. The output item
-                # name is the per-image path/name, matching the old slot.path role.
+                # Blender 5.x initializes File Output as multi-layer EXR. Add an
+                # image item first so regular PNG/OpenEXR/TIFF node formats become
+                # available, then set the requested CutBridge sequence format.
                 output_node.directory = str(directory)
                 output_node.file_name = ""
                 output_node.file_output_items.clear()
                 item = output_node.file_output_items.new(PASS_MAPPINGS[pass_name]["socket_type"], filename)
+                output_node.format.file_format = settings.image_format
                 target_socket = output_node.inputs.get(item.name) or output_node.inputs[0]
             else:
                 # Blender 4.2/4.5 compatibility path.
@@ -294,6 +295,7 @@ def configure_render_outputs(context, package_root: Path) -> dict[str, str]:
                 else:
                     target_socket = output_node.inputs[0]
                 output_node.file_slots[0].path = filename
+                output_node.format.file_format = settings.image_format
 
             tree.links.new(source_socket, target_socket)
             configured[pass_name] = source_socket.name
