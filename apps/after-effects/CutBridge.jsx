@@ -422,7 +422,13 @@ if (typeof module !== "undefined" && module.exports) {
     }
     function ensureManagedLayer(comp, footage, manifest, passName) {
         var tag = CutBridgeContract.managedTag("layer", manifest, passName), layer = findManagedLayer(comp, tag);
-        if (layer) { if (layer.source && layer.source !== footage) throw new Error(passName + ": managed layer points to unexpected footage; refusing destructive replacement in S5."); return {layer: layer, created: false}; }
+        if (layer) {
+            var source;
+            try { source = layer.source; }
+            catch (sourceError) { throw new Error(passName + ": managed layer source cannot be read; refusing destructive replacement in S5."); }
+            if (!source || source !== footage) throw new Error(passName + ": managed layer does not point to the expected footage; refusing destructive replacement in S5.");
+            return {layer: layer, created: false};
+        }
         layer = comp.layers.add(footage); layer.name = passName; layer.startTime = 0; try { layer.comment = tag; } catch (e) { throw new Error("After Effects layer comments are required for safe CutBridge idempotency."); }
         state.layers[tag] = layer; return {layer: layer, created: true};
     }
