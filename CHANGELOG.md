@@ -5,6 +5,7 @@ All notable CutBridge changes are tracked here.
 ## [0.2.3] - Unreleased
 
 ### Fixed
+- S5 AE build/import reliability now preflights required sequence coverage before project mutation, reuses only package-scoped CutBridge-managed comps/footage/layers, blocks same-name manual comp collisions, and refuses silent managed-comp metadata rewrites.
 - S4 AE contract: realm-safe arrays, finite integer frame semantics, safe package-relative pass paths and basename patterns, Unicode filename decoding, and executable JSON rejection in legacy ExtendScript.
 - Negative export ranges now fail consistently at Blender/schema/AE boundaries with a rebase instruction; zero-based export remains supported. Signed AE sequence ordering is not certified.
 - AE-facing version text reads one centrally checked product-version constant; release builds reject divergence.
@@ -16,6 +17,7 @@ All notable CutBridge changes are tracked here.
 - Generated `cutbridge.json` files now read `cutbridge_version` from the canonical Blender extension version instead of emitting the stale `0.1.0` literal.
 
 ### Added
+- S5 deterministic managed-object tags and Node/pytest host-adapter regressions for repeated-build/reload idempotency, manual comp collision safety, comp metadata drift, layer order, and preflight no-mutation behavior.
 - S2 Blender render-output mapping for logical BEAUTY / LINE / SHADOW / DEPTH passes using CutBridge-owned compositor nodes and deterministic package-relative output locations.
 - S2 renderer/View Layer capability validation and Blender 5.2.1 regressions for mapping behavior without deleting unrelated artist nodes.
 - S3 actionable Blender validation UI, V001/V002/V003 coexistence coverage, Japanese/UTF-8 and Windows-invalid-name hardening, lazy payload detection, and package preservation regressions.
