@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, Iterator
 
 from .core import absolute_output_dir, package_name
 
@@ -22,15 +22,19 @@ def package_target(settings) -> Path:
     return absolute_output_dir(settings) / package_name(settings)
 
 
-def _package_payload_files(root: Path) -> list[Path]:
-    """Return files that represent user/render payload rather than rebuildable scaffold."""
-    payload = []
-    for path in root.rglob("*"):
+def _iter_package_paths(root: Path) -> Iterator[Path]:
+    """Yield package entries lazily so safety checks can stop at first payload."""
+    yield from root.rglob("*")
+
+
+def _first_package_payload_file(root: Path) -> Path | None:
+    """Return the first user/render payload without enumerating the full package tree."""
+    for path in _iter_package_paths(root):
         if path.is_symlink():
-            payload.append(path)
-        elif path.is_file() and path.name != "cutbridge.json":
-            payload.append(path)
-    return payload
+            return path
+        if path.is_file() and path.name != "cutbridge.json":
+            return path
+    return None
 
 
 def package_target_issues(settings) -> list[dict]:
@@ -70,9 +74,9 @@ def package_target_issues(settings) -> list[dict]:
                 )
             ]
         if root.is_dir():
-            payload = _package_payload_files(root)
-            if payload:
-                sample = payload[0].relative_to(root).as_posix()
+            payload = _first_package_payload_file(root)
+            if payload is not None:
+                sample = payload.relative_to(root).as_posix()
                 return [
                     issue(
                         "ERROR",
