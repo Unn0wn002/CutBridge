@@ -7,6 +7,7 @@ import bpy
 from .core import (
     absolute_output_dir,
     build_manifest,
+    configure_render_outputs,
     ensure_package_dirs,
     package_name,
     selected_passes,
@@ -53,7 +54,7 @@ class CUTBRIDGE_OT_Validate(bpy.types.Operator):
 class CUTBRIDGE_OT_BuildPackage(bpy.types.Operator):
     bl_idname = "cutbridge.build_package"
     bl_label = "Build Package"
-    bl_description = "Create deterministic cut folders and cutbridge.json manifest"
+    bl_description = "Configure deterministic render outputs and create the CutBridge package manifest"
 
     def execute(self, context):
         issues = validate_scene(context)
@@ -65,6 +66,16 @@ class CUTBRIDGE_OT_BuildPackage(bpy.types.Operator):
 
         settings = context.scene.cutbridge
         root = absolute_output_dir(settings) / package_name(settings)
+
+        # Configure the scene before touching the package directory. If the
+        # selected engine cannot expose a requested logical pass, Build Package
+        # fails without leaving a misleading empty handoff package on disk.
+        try:
+            configure_render_outputs(context, root)
+        except RuntimeError as exc:
+            self.report({"ERROR"}, str(exc))
+            return {"CANCELLED"}
+
         ensure_package_dirs(root, selected_passes(settings))
         manifest = build_manifest(context, root)
         manifest_path = write_manifest(manifest, root)
