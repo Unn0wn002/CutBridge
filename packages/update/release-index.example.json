@@ -3,7 +3,7 @@
   "generated_at": "2026-09-02T00:00:00Z",
   "releases": [
     {
-      "version": "0.2.1",
+      "version": "0.2.3",
       "channel": "stable",
       "blender_version_min": "4.2.0",
       "platforms": [
@@ -13,8 +13,8 @@
         "macos-arm64",
         "linux-x64"
       ],
-      "release_page_url": "https://updates.example.invalid/cutbridge/0.2.1/",
-      "download_url": "https://updates.example.invalid/cutbridge/0.2.1/CutBridge-Blender-v0.2.1.zip",
+      "release_page_url": "https://updates.example.invalid/cutbridge/0.2.3/",
+      "download_url": "https://updates.example.invalid/cutbridge/0.2.3/CutBridge-Blender-v0.2.3.zip",
       "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
       "notes": [
         "Example only — not a production endpoint"

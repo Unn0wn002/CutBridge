@@ -14,9 +14,9 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install test dependencies
-        run: python -m pip install pytest
+        run: python -m pip install pytest jsonschema
       - name: Run tests
-        run: pytest -q tests/test_static.py
+        run: pytest -q tests/test_static.py tests/test_release_hygiene.py
       - name: Simulate release packaging
         shell: bash
         run: |
@@ -32,6 +32,7 @@ jobs:
           test -f "dist-ci/CutBridge-AfterEffects-v${VERSION}.zip"
           test -f dist-ci/SHA256SUMS.txt
           test -f dist-ci/release-metadata.json
+          (cd dist-ci && sha256sum --check SHA256SUMS.txt)
       - name: Check ExtendScript syntax with Node parser
         run: |
           cp apps/after-effects/CutBridge.jsx /tmp/CutBridge.js
@@ -48,5 +49,5 @@ jobs:
         run: python -m pip install --disable-pip-version-check pytest jsonschema bpy==5.2.1
       - name: Register, unregister, and re-register CutBridge in Blender RNA
         run: python tests/test_blender_runtime_52.py
-      - name: Build and validate CutBridge packages in Blender 5.2.1 RNA
-        run: pytest -q tests/test_blender_integration_52.py
+      - name: Run the complete suite including Blender package integration
+        run: pytest -q

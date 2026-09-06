@@ -2,6 +2,8 @@
 
 **CutBridge is a Blender-to-After Effects production pipeline tool for animation cuts.** It standardizes cut metadata, render-pass packaging, versioning, JSON handoff, and compositing setup so artists can move work from Blender into After Effects with less repetitive setup and fewer pipeline errors.
 
+The primary audience is Japanese animation and content-creation artists and studios, with English usability retained and no single studio workflow hard-coded.
+
 CutBridge is designed around cut-based animation production workflows. Instead of acting as a renderer, shader, or animation tool, it provides a structured handoff layer between 3D production and compositing: validate the cut in Blender, build a deterministic package, transfer the manifest and render sequences, then let the After Effects side reconstruct the expected composition context and perform QC.
 
 ## Current development version
@@ -32,7 +34,7 @@ CutBridge is designed around cut-based animation production workflows. Instead o
 ### Engineering
 
 - Private source repository.
-- `main` / `develop` / `feature/*` branch workflow.
+- `main` / `develop` / `feature/*` / `fix/*` branch workflow.
 - CI on main, develop, and feature branches.
 - Official `bpy 5.2.1` RNA lifecycle and package-generation integration tests.
 - Deterministic release builder.
@@ -74,7 +76,17 @@ The private source repository is **not** the plugin update endpoint. CutBridge c
 
 - `main` — stable/release-ready.
 - `develop` — active integration.
-- `feature/*` — isolated features.
+- `feature/*` / `fix/*` — focused work branched from current `develop`.
+
+See [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) for complete test commands and [`docs/BASELINE_2026-09-06.md`](docs/BASELINE_2026-09-06.md) for the Session 1 repository audit.
+
+## License
+
+CutBridge uses **GPL-3.0-or-later**, as already declared by the Blender extension manifest. The full GPL v3 text is in [`LICENSE`](LICENSE); both release ZIPs include it.
+
+## Release status
+
+Version 0.2.3 is an unreleased development baseline. No GitHub release or tag exists at the Session 1 audit. Release-package simulation does not certify the full Blender → After Effects workflow.
 
 ## Next product work
 

@@ -19,6 +19,7 @@ Thumbs.db
 # Build/release
 build/
 dist/
+dist-ci/
 *.zip
 
 # Local CutBridge output packages

@@ -1,5 +1,7 @@
 # CutBridge v0.2.3 — Test Plan
 
+Run the complete automated commands in [CONTRIBUTING.md](CONTRIBUTING.md). Release safety coverage also checks repeatability, license inclusion, output preservation, artifact symlinks and mismatched version constants.
+
 ## Blender tests
 
 | ID | Test | Expected |
