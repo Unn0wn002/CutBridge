@@ -12,6 +12,7 @@ from .version import __version__
 
 INVALID_FS_CHARS = re.compile(r'[<>:"/\\|?*]+')
 MANAGED_NODE_PREFIX = "CUTBRIDGE_"
+PENDING_NODE_PREFIX = f"{MANAGED_NODE_PREFIX}PENDING_"
 
 # Logical CutBridge passes intentionally map to renderer/view-layer concepts,
 # not to studio-specific node names. Blender exposes the corresponding Render
@@ -231,11 +232,64 @@ def _find_output_socket(render_layers_node, pass_name: str):
     return None
 
 
-def configure_render_outputs(context, package_root: Path) -> dict[str, str]:
-    """Create CutBridge-owned compositor outputs for the selected logical passes.
+def _capture_render_mapping_state(scene, layer, pass_names: Iterable[str]) -> dict:
+    """Capture every non-node setting CutBridge may mutate during mapping."""
+    pass_names = tuple(pass_names)
+    layer_flags = {}
+    for pass_name in pass_names:
+        enable_attr = PASS_MAPPINGS[pass_name]["enable_attr"]
+        if enable_attr and hasattr(layer, enable_attr):
+            layer_flags[enable_attr] = getattr(layer, enable_attr)
 
-    Existing artist compositor nodes are preserved. Only nodes with the
-    CUTBRIDGE_ prefix are replaced on each package build.
+    return {
+        "compositor_tree": getattr(scene, "compositing_node_group", None),
+        "use_compositing": getattr(scene.render, "use_compositing", None),
+        "use_nodes": getattr(scene, "use_nodes", None),
+        "use_freestyle": getattr(scene.render, "use_freestyle", None),
+        "layer_flags": layer_flags,
+    }
+
+
+def _restore_render_mapping_state(scene, layer, state: dict, created_tree=None) -> None:
+    """Restore render/View Layer flags and a compositor tree created by a failed attempt."""
+    if state["use_freestyle"] is not None:
+        scene.render.use_freestyle = state["use_freestyle"]
+    for attr, value in state["layer_flags"].items():
+        setattr(layer, attr, value)
+    try:
+        layer.update_render_passes()
+    except (AttributeError, RuntimeError):
+        pass
+
+    if state["use_compositing"] is not None:
+        scene.render.use_compositing = state["use_compositing"]
+    if state["use_nodes"] is not None and hasattr(scene, "use_nodes"):
+        scene.use_nodes = state["use_nodes"]
+
+    if hasattr(scene, "compositing_node_group") and scene.compositing_node_group is not state["compositor_tree"]:
+        scene.compositing_node_group = state["compositor_tree"]
+    if created_tree is not None and created_tree is not state["compositor_tree"]:
+        try:
+            bpy.data.node_groups.remove(created_tree)
+        except (ReferenceError, RuntimeError):
+            pass
+
+
+def _remove_nodes_by_name(tree, node_names: Iterable[str]) -> None:
+    """Remove nodes by stable Blender names; bpy may return different Python proxies."""
+    for name in tuple(node_names):
+        node = tree.nodes.get(name)
+        if node is not None:
+            tree.nodes.remove(node)
+
+
+def configure_render_outputs(context, package_root: Path) -> dict[str, str]:
+    """Transactionally replace CutBridge-owned compositor outputs.
+
+    Artist nodes and the previous valid CutBridge mapping remain untouched until
+    every selected pass has a usable socket and every replacement output has
+    been created successfully. A failed attempt removes only its pending nodes
+    and restores all render/View Layer settings it changed.
     """
     scene = context.scene
     settings = scene.cutbridge
@@ -247,21 +301,27 @@ def configure_render_outputs(context, package_root: Path) -> dict[str, str]:
         raise RuntimeError("No active View Layer is available for render mapping.")
 
     pass_names = selected_passes(settings)
-    tree = _compositor_tree(scene)
-    clear_managed_render_outputs(scene)
-    _enable_view_layer_passes(scene, layer, pass_names)
-
-    render_layers = tree.nodes.new("CompositorNodeRLayers")
-    render_layers.name = f"{MANAGED_NODE_PREFIX}RENDER_LAYERS"
-    render_layers.label = "CutBridge Render Source"
-    render_layers.scene = scene
-    if hasattr(render_layers, "layer"):
-        render_layers.layer = layer.name
-    render_layers.location = (-420.0, 0.0)
-
+    state = _capture_render_mapping_state(scene, layer, pass_names)
+    tree = None
+    created_tree = None
+    created_names: list[str] = []
     configured = {}
-    created_nodes = [render_layers]
+
     try:
+        tree = _compositor_tree(scene)
+        if state["compositor_tree"] is None and getattr(scene, "compositing_node_group", None) is tree:
+            created_tree = tree
+        _enable_view_layer_passes(scene, layer, pass_names)
+
+        render_layers = tree.nodes.new("CompositorNodeRLayers")
+        render_layers.name = f"{PENDING_NODE_PREFIX}RENDER_LAYERS"
+        render_layers.label = "CutBridge Render Source (pending)"
+        render_layers.scene = scene
+        if hasattr(render_layers, "layer"):
+            render_layers.layer = layer.name
+        render_layers.location = (-420.0, 0.0)
+        created_names.append(render_layers.name)
+
         for index, pass_name in enumerate(pass_names):
             source_socket = _find_output_socket(render_layers, pass_name)
             if source_socket is None:
@@ -272,10 +332,10 @@ def configure_render_outputs(context, package_root: Path) -> dict[str, str]:
                 )
 
             output_node = tree.nodes.new("CompositorNodeOutputFile")
-            created_nodes.append(output_node)
-            output_node.name = f"{MANAGED_NODE_PREFIX}OUTPUT_{pass_name}"
-            output_node.label = f"CutBridge {pass_name}"
+            output_node.name = f"{PENDING_NODE_PREFIX}OUTPUT_{pass_name}"
+            output_node.label = f"CutBridge {pass_name} (pending)"
             output_node.location = (80.0, -220.0 * index)
+            created_names.append(output_node.name)
 
             directory = package_root / "render" / pass_name.lower()
             filename = f"{safe_token(settings.cut, 'C000')}_{pass_name}_####"
@@ -303,14 +363,32 @@ def configure_render_outputs(context, package_root: Path) -> dict[str, str]:
 
             tree.links.new(source_socket, target_socket)
             configured[pass_name] = source_socket.name
-    except Exception:
-        for node in reversed(created_nodes):
-            current = tree.nodes.get(node.name)
-            if current is node:
-                tree.nodes.remove(node)
-        raise
 
-    return configured
+        # Commit point: every replacement output is valid. Remove previous managed
+        # nodes only now, excluding this attempt's pending nodes.
+        pending_names = set(created_names)
+        for node in list(tree.nodes):
+            if node.name.startswith(MANAGED_NODE_PREFIX) and node.name not in pending_names:
+                tree.nodes.remove(node)
+
+        pending_render = tree.nodes.get(created_names[0])
+        if pending_render is None:
+            raise RuntimeError("CutBridge pending Render Layers node disappeared before commit.")
+        pending_render.name = f"{MANAGED_NODE_PREFIX}RENDER_LAYERS"
+        pending_render.label = "CutBridge Render Source"
+        for pass_name, pending_name in zip(pass_names, created_names[1:]):
+            output_node = tree.nodes.get(pending_name)
+            if output_node is None:
+                raise RuntimeError(f"CutBridge pending {pass_name} output disappeared before commit.")
+            output_node.name = f"{MANAGED_NODE_PREFIX}OUTPUT_{pass_name}"
+            output_node.label = f"CutBridge {pass_name}"
+
+        return configured
+    except Exception:
+        if tree is not None:
+            _remove_nodes_by_name(tree, created_names)
+        _restore_render_mapping_state(scene, layer, state, created_tree=created_tree)
+        raise
 
 
 def build_manifest(context, package_root: Path) -> dict:
