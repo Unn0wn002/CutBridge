@@ -22,8 +22,19 @@ def package_target(settings) -> Path:
     return absolute_output_dir(settings) / package_name(settings)
 
 
+def _package_payload_files(root: Path) -> list[Path]:
+    """Return files that represent user/render payload rather than rebuildable scaffold."""
+    payload = []
+    for path in root.rglob("*"):
+        if path.is_symlink():
+            payload.append(path)
+        elif path.is_file() and path.name != "cutbridge.json":
+            payload.append(path)
+    return payload
+
+
 def package_target_issues(settings) -> list[dict]:
-    """Refuse silent overwrite of an existing versioned CutBridge package."""
+    """Prevent overwriting rendered/user data while allowing an unrendered scaffold refresh."""
     if not getattr(settings, "output_dir", "").strip():
         return []
 
@@ -58,15 +69,27 @@ def package_target_issues(settings) -> list[dict]:
                     "Choose another output location or increment the CutBridge version.",
                 )
             ]
-        if root.is_dir() and any(root.iterdir()):
-            return [
-                issue(
-                    "ERROR",
-                    "PACKAGE_EXISTS",
-                    f"Package {root.name} already contains data and will not be overwritten.",
-                    "Increment Version for a new revision, or deliberately move/remove the existing package first.",
-                )
-            ]
+        if root.is_dir():
+            payload = _package_payload_files(root)
+            if payload:
+                sample = payload[0].relative_to(root).as_posix()
+                return [
+                    issue(
+                        "ERROR",
+                        "PACKAGE_EXISTS",
+                        f"Package {root.name} contains render/user data ({sample}) and will not be overwritten.",
+                        "Increment Version for a new revision, or deliberately move/remove the existing package first.",
+                    )
+                ]
+            if (root / "cutbridge.json").is_file():
+                return [
+                    issue(
+                        "WARNING",
+                        "PACKAGE_SCAFFOLD_REFRESH",
+                        f"Package {root.name} exists but contains no render/user payload; its scaffold can be refreshed safely.",
+                        "Increment Version before rendering when this should become a new revision.",
+                    )
+                ]
     except OSError as exc:
         return [
             issue(
