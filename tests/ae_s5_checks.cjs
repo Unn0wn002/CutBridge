@@ -58,7 +58,7 @@ function host(m, files) {
   function Panel() {}
 
   function FolderItem(name) { this.name = name; this.parentFolder = null; this.comment = ''; }
-  function FootageItem(file) { this.name = ''; this.parentFolder = null; this.comment = ''; this.file = file; this.mainSource = {}; }
+  function FootageItem(file) { this.name = ''; this.parentFolder = null; this.comment = ''; this.file = file; this.mainSource = {conformFrameRate: 0}; }
   function Layer(comp, sourceItem) {
     this.comp = comp; this.source = sourceItem; this.name = ''; this.comment = ''; this.startTime = 0;
   }
@@ -84,7 +84,7 @@ function host(m, files) {
 
   function ImportOptions(file) { this.file = file; this.sequence = false; this.forceAlphabetical = true; }
   ImportOptions.prototype.canImportAs = () => true;
-  const runtime = {File, Folder, Window, Panel, FolderItem, CompItem, ImportOptions, ImportAsType: {FOOTAGE: 1},
+  const runtime = {File, Folder, Window, Panel, FolderItem, FootageItem, CompItem, ImportOptions, ImportAsType: {FOOTAGE: 1},
     ScriptUI: {newFont() {}}, alert: message => alerts.push(String(message)), $: {writeln() {}},
     app: {project, beginUndoGroup() {}, endUndoGroup() {}, newProject() {}}};
   vm.createContext(runtime); vm.runInContext(source, runtime);
@@ -98,16 +98,29 @@ function host(m, files) {
   function renderFolder() { const root = rootFolder(); return projectItems.find(x => x instanceof FolderItem && x.parentFolder === root && x.name === '02_RENDER'); }
   function comps() { return projectItems.filter(x => x instanceof CompItem); }
   function footage() { return projectItems.filter(x => x instanceof FootageItem); }
-  function seedManualComp() {
+  function seedPackageFolders() {
     const root = project.items.addFolder(m.package_name); root.parentFolder = project.rootFolder;
     const cf = project.items.addFolder('01_COMP'); cf.parentFolder = root;
     const rf = project.items.addFolder('02_RENDER'); rf.parentFolder = root;
     for (const name of ['03_PRECOMP', '04_OUTPUT']) { const f = project.items.addFolder(name); f.parentFolder = root; }
+    return {root, cf, rf};
+  }
+  function seedManualComp() {
+    const {cf} = seedPackageFolders();
     const spec = m.resolution;
     const c = project.items.addComp(m.ae.comp_name, spec.width, spec.height, spec.pixel_aspect, m.frames.count / m.fps, m.fps);
     c.parentFolder = cf; return c;
   }
-  return {click, alerts, imports, projectItems, comps, footage, compFolder, renderFolder, seedManualComp};
+  function seedWrongTypeFootageTag(passName = 'BEAUTY') {
+    const {rf} = seedPackageFolders();
+    const wrong = new FolderItem('WRONG_TYPE');
+    wrong.parentFolder = rf;
+    wrong.comment = `CUTBRIDGE|1|footage|${m.package_name}|${passName}`;
+    projectItems.push(wrong);
+    return wrong;
+  }
+  function driftFootageSource(item, filePath) { item.file = new File(filePath); }
+  return {click, alerts, imports, projectItems, comps, footage, compFolder, renderFolder, seedManualComp, seedWrongTypeFootageTag, driftFootageSource};
 }
 
 const beautyFiles = [1, 2, 3].map(n => `/packages/桜/render/beauty/C001_BEAUTY_000${n}.png`);
@@ -121,6 +134,10 @@ check('contract exposes deterministic managed identity and comp spec checks', ()
   const expected = c.expectedCompSpec(m);
   assert.deepEqual(JSON.parse(JSON.stringify(c.compSpecErrors(expected, expected))), []);
   assert.deepEqual(JSON.parse(JSON.stringify(c.compSpecErrors(expected, {...expected, frameRate: 30}))), ['frame rate']);
+  assert.deepEqual(JSON.parse(JSON.stringify(c.footageReuseErrors(
+    {path: '/pkg/render/beauty/C001_0001.png', frameRate: 24},
+    {isFootage: true, path: '/pkg/render/beauty/C001_0001.png', conformFrameRate: 24}
+  ))), []);
 });
 
 check('duplicate pass names and invalid layer order are rejected before runtime', () => {
@@ -169,6 +186,32 @@ check('managed comp metadata drift blocks silent destructive correction', () => 
   h.comps()[0].frameRate = 30; h.click('Build');
   assert.equal(h.comps().length, 1); assert.equal(h.footage().length, 1); assert.equal(h.comps()[0].numLayers, 1);
   assert.match(h.alerts.at(-1), /metadata no longer matches.*frame rate/);
+});
+
+check('wrong-type project item carrying managed footage tag fails closed', () => {
+  const h = host(manifest(), beautyFiles); h.seedWrongTypeFootageTag(); h.click('Build');
+  assert.equal(h.imports.length, 0);
+  assert.match(h.alerts.at(-1), /managed footage no longer matches.*item type/);
+});
+
+check('managed footage source drift fails closed without replacement or duplicate layer', () => {
+  const h = host(manifest(), beautyFiles); h.click('Build');
+  const original = h.footage()[0];
+  h.driftFootageSource(original, '/packages/桜/render/beauty/C001_BEAUTY_9999.png');
+  h.click('Build');
+  assert.equal(h.imports.length, 1);
+  assert.equal(h.footage().length, 1);
+  assert.equal(h.comps()[0].numLayers, 1);
+  assert.match(h.alerts.at(-1), /managed footage no longer matches.*source path/);
+});
+
+check('managed footage conform FPS drift fails closed', () => {
+  const h = host(manifest(), beautyFiles); h.click('Build');
+  h.footage()[0].mainSource.conformFrameRate = 30;
+  h.click('Build');
+  assert.equal(h.imports.length, 1);
+  assert.equal(h.comps()[0].numLayers, 1);
+  assert.match(h.alerts.at(-1), /managed footage no longer matches.*frame rate/);
 });
 
 check('initial managed layer order is deterministic', () => {
