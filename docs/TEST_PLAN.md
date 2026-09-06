@@ -1,6 +1,6 @@
 # CutBridge v0.2.3 — Test Plan
 
-Run the complete automated commands in [CONTRIBUTING.md](CONTRIBUTING.md). Release safety coverage also checks repeatability, license inclusion, output preservation, artifact symlinks and mismatched version constants.
+Run the complete automated commands in [CONTRIBUTING.md](CONTRIBUTING.md). Release safety coverage also checks repeatability, license inclusion, output preservation, artifact symlinks, source/output separation, and mismatched version constants.
 
 ## Blender tests
 
@@ -20,9 +20,15 @@ Run the complete automated commands in [CONTRIBUTING.md](CONTRIBUTING.md). Relea
 | B12 | Missing camera, Cut ID, output, passes, or valid frame range | Validation reports the corresponding error and blocks package generation |
 | B13 | BEAUTY; BEAUTY+LINE; all four passes | Folder tree and manifest entries match the selected passes exactly |
 | B14 | Build a release artifact | Root manifest/modules, synchronized metadata, and recomputed SHA-256 values pass |
+| B15 | Configure BEAUTY/LINE/SHADOW/DEPTH render outputs on supported Blender 5.2.1 setup | CutBridge-owned compositor outputs use deterministic package locations/patterns |
+| B16 | Existing unrelated artist compositor nodes before CutBridge mapping | Artist-owned nodes remain untouched |
+| B17 | Replacement render mapping fails after a prior valid mapping exists | Pending nodes/settings roll back and the previous valid CutBridge mapping is preserved |
+| B18 | Same-version package contains rendered/user payload | Build is blocked with actionable version/package guidance; payload is preserved |
+| B19 | Empty CutBridge scaffold exists for the same version | Safe refresh is allowed with the documented warning path |
+| B20 | Build V001/V002/V003 with Japanese metadata and filesystem-invalid source characters | Version folders coexist, prior payload is preserved, and safe package tokens are deterministic |
+| B21 | Negative export range | Validation and direct manifest production reject it with rebase-to-frame-0 guidance |
 
-Automated Blender checks run headlessly. Blender GUI installation/panel behavior and
-After Effects GUI behavior remain manual test areas.
+Automated Blender checks run headlessly. They validate RNA lifecycle, render-mapping state transitions, package generation/integrity, schema/producer contracts, and selected Blender API behavior. Blender GUI installation/panel behavior and After Effects GUI behavior remain separate manual test areas unless real evidence is recorded.
 
 ## After Effects tests
 
@@ -31,33 +37,38 @@ After Effects GUI behavior remain manual test areas.
 | A01 | Load a valid CutBridge manifest | Status shows package / FPS / frame count |
 | A02 | Build comp from prepared image sequences | Resolution, FPS, and duration match manifest |
 | A03 | Layer order | Layers follow `ae.layer_order` in manifest |
-| A04 | Remove a required pass folder and run QC | QC reports pass folder/source missing |
+| A04 | Remove a required pass folder and run QC/import inspection | Required pass blocks import/build with actionable error |
 | A05 | Change manifest FPS and build a new comp | Comp uses manifest FPS |
 | A06 | Japanese path/package name | Manifest loads without encoding failure |
-
-## Client task test
-
-Measure:
-1. Manual setup time for one cut in AE.
-2. CutBridge setup time.
-3. Number of handoff errors.
-4. Whether the tester understood errors without developer intervention.
-5. Which automation was useful vs. intrusive.
+| A07 | Missing optional pass | Warning/skip; complete required passes remain usable |
+| A08 | Missing expected middle frame | Missing frame number is diagnosed before complete-sequence import |
+| A09 | Extra or wrong-padding matching filename | QC reports unexpected sequence filename without treating it as the expected frame |
+| A10 | Unsupported `schema_version` | Manifest is rejected before import |
+| A11 | Absolute/traversal/URI-escaped/unsafe pass path | Manifest or host adapter rejects path escape before footage import |
+| A12 | Legacy ExtendScript runtime without native `JSON.parse` | Valid JSON data parses; executable/malformed text is rejected without `eval` |
+| A13 | AE `PRODUCT_VERSION` differs from canonical release version | Release build fails before artifacts are written |
 
 ## S4 automated contract gate
 
 `node tests/ae_contract_checks.cjs` executes pure helpers and a mocked host adapter. `pytest -q tests/test_ae_contract.py` also checks Draft 2020-12 schema agreement. Missing Node is a failure, never a silent skip. CI installs Node explicitly.
 
-Coverage includes host/third-realm arrays; schema/version fields; positive/zero/single-frame ranges; rejection of negative, fractional, non-finite, reversed and wrong-count ranges; strict FPS/resolution; traversal/absolute/URI/malformed paths; Unicode filenames; exact missing/extra frame detection; required/optional pass behavior; alias rejection; legacy data-only JSON parsing; canonical AE product version.
+Coverage includes host/third-realm arrays; schema/version fields; positive/zero/single-frame ranges; rejection of negative, fractional, non-finite, reversed and wrong-count ranges; strict FPS/resolution; traversal/absolute/URI/malformed paths; Unicode filenames; exact missing/extra frame detection; required/optional pass behavior; alias rejection; legacy data-only JSON parsing; and canonical AE product version.
 
-Official bpy 5.2.1 integration tests observe Blender's signed frame filename (`-0001`), verify actionable negative-export rejection and feed real generated zero/positive manifests plus Blender-formatted names to the AE contract. No render or AE GUI success is inferred from those tests.
+Official `bpy 5.2.1` integration tests observe Blender's signed frame filename (`-0001`), verify actionable negative-export rejection, and feed real generated zero/positive manifests plus Blender-formatted names to the AE contract. No render or AE GUI success is inferred from those tests.
 
-Release validation rejects AE version drift before writing artifacts. Release simulation checks ZIP contents, reproducibility and SHA256 sums.
+Release validation rejects AE version drift before writing artifacts. Release simulation checks ZIP contents, reproducibility and SHA-256 sums.
 
-Additional manual cases (MANUAL NOT EXECUTED until evidence is recorded):
+## Manual application tests
+
+These remain `MANUAL NOT EXECUTED` until real evidence is recorded.
 
 | Case | Expected |
 |---|---|
+| Install/enable current Blender extension in supported GUI build | Add-on/extension enables and CutBridge panel is usable |
+| Validate and Build Package in Blender GUI | Actionable diagnostics match automated contract and package is created safely |
+| Render configured pass sequences | Expected files are produced for the selected renderer/View Layer setup |
+| Load a real package in After Effects | Manifest loads without host/runtime error |
+| Build AE comp | Resolution/FPS/duration/folders/layers agree with manifest |
 | Export range begins at 0 | Blender package and AE import/comp/QC agree |
 | Negative export range | Actionable rejection; animation is not changed |
 | Required middle frame absent | Import blocked with missing frame number |
@@ -66,3 +77,18 @@ Additional manual cases (MANUAL NOT EXECUTED until evidence is recorded):
 | Japanese package/pass/sequence paths | Correct file resolution and import |
 | Folder/file symlink or alias | Rejected before footage import |
 | Older ExtendScript without native JSON | Valid JSON loads; executable text is rejected |
+| Repeat package import | Behavior matches the S5 idempotency design once S5 is implemented |
+| V001 → V002 revision | Preservation behavior is tested only after S6 is implemented |
+
+## Target-user task test
+
+After the product reaches the appropriate validation stage, measure with representative users:
+
+1. Manual setup time for one cut in AE.
+2. CutBridge setup time.
+3. Number/type of handoff errors.
+4. Whether the tester understood diagnostics without developer intervention.
+5. Which automation was useful versus intrusive.
+6. Revision/rework impact when V002 replaces V001.
+
+Do not claim timing, error-rate, usability, or Japanese target-user results until the test was actually run.

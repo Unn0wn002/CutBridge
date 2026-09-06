@@ -13,12 +13,7 @@
 
 CutBridge 0.2.0 exposed a registration defect in Blender 5.2: the update preference used `StringProperty(subtype="URL")`, but Blender's supported string subtypes are `FILE_PATH`, `DIR_PATH`, `FILE_NAME`, `BYTE_STRING`, `PASSWORD`, and `NONE`. CutBridge 0.2.1 removes the invalid subtype and adds transactional registration cleanup so a failed enable does not leave stale classes registered.
 
-Blender 5.2 LTS is therefore an explicit test target starting with CutBridge 0.2.1. It must still pass a real install/runtime and Blender→After Effects handoff test before being described as certified.
-
-CutBridge 0.2.3 is covered by automated RNA lifecycle and package-generation
-tests using the official `bpy 5.2.1` runtime. These headless checks do not replace
-a Blender GUI install/panel test or an After Effects handoff test, so certification
-still requires those manual results.
+CutBridge 0.2.3 is covered by automated RNA lifecycle, render-mapping, package-generation, package-safety, and producer/consumer contract tests using the official `bpy 5.2.1` runtime. These headless checks establish specific API/contract behavior but do not by themselves certify Blender GUI installation, every renderer configuration, operating-system filesystem behavior, or the Blender→After Effects handoff.
 
 ## Platform identifiers
 
@@ -40,8 +35,12 @@ CutBridge distinguishes between:
 - **Compatible baseline / unverified** — meets the declared minimum but has not been validated in the current test matrix.
 - **Unsupported** — below the minimum version or explicitly excluded by release metadata.
 
-Do not label a Blender/OS combination as *certified* until an actual install, package-build, Blender runtime, and Blender→After Effects handoff test has been recorded.
+Do not label a Blender/OS combination as *certified* until the required real install, package-build/render workflow, and Blender→After Effects handoff evidence has been recorded for the release claim being made.
 
 ## After Effects
 
-The current ExtendScript MVP targets After Effects 2024–2026. This is a project target, not a certification claim. Version-specific runtime testing is tracked separately from the Blender extension compatibility policy.
+The current ExtendScript/ScriptUI implementation targets After Effects 2024–2026. This is a project target, not a certification claim.
+
+S4 automated coverage validates the manifest/schema contract, frame semantics, required/optional passes, exact sequence coverage, path containment, Unicode filename handling in contract/host mocks, legacy data-only JSON parsing, and AE product-version synchronization. These tests run through Node and mocked host adapters; they do **not** certify native After Effects APIs, ScriptUI behavior, filesystem semantics, sequence interpretation, or composition behavior on a supported desktop installation.
+
+Real AE GUI import/comp/QC and Blender→AE end-to-end execution remain manual validation gates until actual evidence is recorded.
