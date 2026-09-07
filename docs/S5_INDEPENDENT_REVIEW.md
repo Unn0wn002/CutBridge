@@ -121,4 +121,9 @@ Required correction: surface live tagged managed-object validation errors even w
 
 ## Further repair status
 
-The local bounded repair adds reload-safe existing-layer/source preflight, build-level rollback for newly created managed footage/layers, and QC reporting for tagged managed comps outside the expected package root. The focused host harness now passes 45 groups, alongside the partial-retry, managed-layer guard, and rollback fixture checks. This repair is not yet pushed or independently re-reviewed; exact-head CI and the integration gate remain outstanding.
+The local bounded repair adds reload-safe existing-layer/source preflight, build-level rollback for newly created managed footage/layers, and QC reporting for tagged managed comps outside the expected package root. The focused host harness now passes 45 groups, alongside the partial-retry, managed-layer guard, and rollback fixture checks. At the time of this note the repair was not yet pushed or independently re-reviewed; the final repair status is recorded below.
+
+
+## Final review status
+
+The final repair is pushed at PR head `af410d985974abaae502a8afe690c8725c7268e2`. Exact-head CI run `34086643584` is green: static validation passed, official Blender 5.2.1 registration passed, and the complete suite passed 60 tests with 2 subtests and 28 deprecation warnings. A fresh independent review returned **PASS** with no additional concrete S5 blocker. Native After Effects GUI/runtime, real end-to-end handoff, revision preservation, Blender GUI, and target-user/studio validation remain **MANUAL NOT EXECUTED**. Merge to `develop` and post-merge `develop` CI are still required before S5 is marked complete.
