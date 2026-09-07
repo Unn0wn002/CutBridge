@@ -38,3 +38,14 @@ def test_native_revision_uses_avlayer_replace_source_api():
     assert 'layer.replaceSource(oldSource, false);' in source
     assert 'layer.source = item;' not in source
     assert 'layer.source = oldSource;' not in source
+
+
+def test_revision_preserves_unmanaged_package_root_comments():
+    """S5 never claimed the package-root comment, so S6 must not overwrite artist notes."""
+    root = Path(__file__).resolve().parents[1]
+    source = (root / "apps/after-effects/CutBridge.jsx").read_text(encoding="utf-8")
+
+    assert 'migrateRootComment: rootComment === currentRootTag' in source
+    assert 'if (migration.migrateRootComment) setItemComment(folders.root, CutBridgeContract.managedTag("root", newManifest, "PACKAGE"));' in source
+    assert 'if (migration.migrateRootComment) setItemComment(folders.root, migration.rootComment);' in source
+    assert '\n                setItemComment(folders.root, CutBridgeContract.managedTag("root", newManifest, "PACKAGE"));' not in source
