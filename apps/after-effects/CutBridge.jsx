@@ -588,7 +588,7 @@ if (typeof module !== "undefined" && module.exports) {
         var hasUnverifiedLayer = false;
         for (var i = 1; i <= comp.numLayers; i++) {
             var layerComment = itemComment(comp.layer(i));
-            if (!isManagedLayerTagForManifest(layerComment) && !isAnyManagedTag(layerComment)) hasUnverifiedLayer = true;
+            if (!isManagedLayerTagForManifest(layerComment, manifest) && !isAnyManagedTag(layerComment)) hasUnverifiedLayer = true;
         }
         for (var j = 0; j < entries.length; j++) {
             var entry = entries[j]; if (entry.skip) continue;
