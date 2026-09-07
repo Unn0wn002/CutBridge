@@ -3,6 +3,9 @@
 All notable CutBridge changes are tracked here.
 
 ## [0.2.3] - Unreleased
+### Added
+- S6 revision-manager contract for V001/V002/V003 discovery, compatibility classification, managed-only source replacement planning, explicit warning confirmation, and rollback-safe host-adapter execution.
+
 
 ### Fixed
 - S5 ownership/cache repair resolves footage and layers from live project state on every reuse, rejects tag/container drift and ambiguous duplicate identities without reclaiming artist objects, and applies the same live footage checks in QC.

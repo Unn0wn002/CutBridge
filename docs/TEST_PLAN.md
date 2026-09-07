@@ -130,3 +130,7 @@ Do not claim timing, error-rate, usability, or Japanese target-user results unti
 | Late build failure after new managed objects are created | Roll back only the newly created footage/layers and preserve unrelated project state |
 
 Manual repetition in a supported AE desktop installation remains `MANUAL NOT EXECUTED`. Mocks cannot certify native host handles, comment persistence, undo behavior or OS filesystem semantics.
+
+## S6 revision-manager gate
+
+The runtime-independent S6 checks cover V001/V002/V003 numeric selection, newer compatible discovery, identity/schema rejection, FPS/frame-range/pixel-aspect blocking, resolution warning and confirmation, missing required passes, managed-only replacement planning, preservation declarations, and rollback of newly imported replacements. Native After Effects preservation remains MANUAL NOT EXECUTED.
