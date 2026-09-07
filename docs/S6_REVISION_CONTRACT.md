@@ -46,10 +46,16 @@ does not sandbox a malicious adapter. All callbacks must exist before preparing 
 | readSource(layer) | Return the actual live source handle; throw if unreadable. |
 | importReplacement(candidate, passName, track) | Allocate exactly one new item, immediately call track(item), then configure it and return it. Track before any fallible setup so allocation-then-throw is recoverable. Never return or track existing artist footage. |
 | validateReplacement(item, candidate, passName) | Literal true only after filesystem containment, exact sequence coverage, source identity, type and conform FPS validation. |
-| swapManagedSource(layer, item) | Change only the verified layer's source. Do not change effects, masks, timing, transforms, parenting, switches, blend mode, tags or ordering. |
-| restoreManagedSource(layer, oldSource) | Restore the journaled source even after a swap mutates then throws. The core verifies readSource afterward. |
+| swapManagedSource(layer, item) | Change only the verified layer's source. In the native adapter this must use `AVLayer.replaceSource(item, false)` because `AVLayer.source` is read-only. Do not change effects, masks, timing, transforms, parenting, switches, blend mode, tags or ordering. |
+| restoreManagedSource(layer, oldSource) | Restore the journaled source even after a swap mutates then throws. The native adapter uses `AVLayer.replaceSource(oldSource, false)` when restoration is needed; the core verifies `readSource` afterward. |
 | removeImportedReplacement(item) | Remove only this transaction's tracked new item, verify its absence, and return literal true. |
 | commitRevision(current, candidate, replacements) | Persist the new package/root/version identity and managed tags only after every source swap succeeds. Throw on any failed metadata write so the core restores sources and invokes cleanup. |
+
+`AVLayer.source` is treated strictly as an observation. The native adapter never assigns to it.
+`replaceSource(..., false)` is used so CutBridge does not ask After Effects to rewrite artist
+expression text while replacing managed footage; source identity is verified immediately after
+each swap by the revision core. Static regression coverage rejects direct `layer.source = ...`
+assignment in the S6 adapter.
 
 The `ownershipKey` includes the collision-safe cut tuple, numeric version, package name
 and pass. It is verification context, not a replacement tag format for existing S5
@@ -69,12 +75,14 @@ before migration.
    and live ownership/source associations.
 2. Apply revalidates the managed objects, stages and validates **all** replacement imports,
    then revalidates ownership before swaps. There are no swaps on import/validation failure.
-3. Record each old source before attempting its swap, then verify the new live source.
+3. Record each old source before attempting its native `replaceSource()` swap, then verify the
+   new live source. A missing native replacement method blocks the transaction.
 4. Only after every source swap succeeds, migrate the package root, managed comp/layer tags,
    replacement-footage tags, and current-version caches. Retired footage keeps old-version
    provenance instead of becoming unmanaged.
 5. On failure restore every attempted layer in reverse order, including mutate-then-throw,
-   and restore any partially migrated metadata from the recorded journal.
+   using native `replaceSource()` where a source restoration is necessary, and restore any
+   partially migrated metadata from the recorded journal.
 6. Only after all restores succeed, remove the tracked replacement items.
 7. If restoration fails, retain all replacement footage to avoid dangling layer sources.
    Cleanup failures are also reported, including retained counts. The executor blocks
@@ -90,6 +98,14 @@ types and shared-validator exceptions become incompatible-candidate diagnostics.
 
 Revision application also fails closed when the AE confirmation function is unavailable;
 there is no automatic revision mutation without a user confirmation surface.
+
+## Automated evidence
+
+Exact-head CI run `34144889247` on `540831f1a5b0f2dfbe58c73c277a4a66681bcc00`
+passed `static-validation` and `blender-52-rna-runtime`. Static validation includes pytest,
+deterministic release-package simulation/checksums, S6 Node contract checks, JSX syntax,
+and the native `AVLayer.replaceSource()` regression. This is strong regression evidence but
+is not a substitute for native After Effects execution.
 
 ## Remaining S6 gate
 
