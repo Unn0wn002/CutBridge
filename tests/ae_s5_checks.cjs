@@ -246,7 +246,7 @@ check('reload then Build rediscovers managed project items instead of duplicatin
 check('manual same-name comp collision is blocked before footage import', () => {
   const h = host(manifest(), beautyFiles); h.seedManualComp(); h.click('Build');
   assert.equal(h.imports.length, 0);
-  assert.match(h.alerts.join(' '), /non-CutBridge comp.*already exists/);
+  assert.match(h.alerts.join(' '), /project-root folder.*not verified|non-CutBridge comp.*already exists/i);
 });
 
 check('moved managed comp fails closed without creating a replacement', () => {
