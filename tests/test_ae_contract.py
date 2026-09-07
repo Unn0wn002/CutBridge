@@ -134,6 +134,16 @@ def test_ae_source_honors_optional_passes_and_has_no_stale_mvp_label():
     assert "CutBridgeContract.PRODUCT_VERSION" in source
 
 
+def test_ae_revision_entrypoint_and_release_sidecar_are_wired():
+    source = AE.read_text(encoding="utf-8")
+    revision = (ROOT / "apps/after-effects/revision_manager.js").read_text(encoding="utf-8")
+    assert "function getRevisionManager()" in source
+    assert "$.evalFile(scriptFile)" in source
+    assert "Update Revision" in source
+    assert "commitRevision" in source
+    assert "CutBridgeRevisionManager" in revision
+
+
 def test_ae_executable_contract_and_host_adapter_regressions():
     node = shutil.which("node")
     assert node, "Node.js is required for executable AE contract tests"

@@ -136,7 +136,7 @@ Manual repetition in a supported AE desktop installation remains `MANUAL NOT EXE
 Run `node tests/ae_s6_revision_checks.cjs` or `pytest -q tests/test_ae_s6.py`.
 The latter makes S6 mandatory in the complete pytest suite; missing Node fails.
 
-The 29 groups cover producer-style versioned package names, structural tuple drift,
+The 30 groups cover producer-style versioned package names, structural tuple drift,
 delimiter collisions, strict numeric revisions/display tokens, ambiguous duplicate
 candidates, shared schema/path/frame/pass validation, prototype-key names, required
 and optional policy, mandatory callbacks, forged/stale tickets, confirmation bypass

@@ -1,8 +1,9 @@
-# S6 Revision Contract — core repair, integration incomplete
+# S6 Revision Contract — native integration, review pending
 
-PR #15 remains **BLOCKED for integration**. The revision core has executable Node/pytest
-regressions; it is not connected to the After Effects panel or included in the AE ZIP.
-The earlier S6 implementation-complete claim was premature.
+PR #15 remains **BLOCKED for merge** pending independent review and native AE validation.
+The revision core is connected to the After Effects panel through a same-directory sidecar,
+and the deterministic AE ZIP ships both executable files. Native AE GUI execution remains
+MANUAL NOT EXECUTED.
 
 ## Compatibility and discovery
 
@@ -47,6 +48,7 @@ does not sandbox a malicious adapter. All callbacks must exist before preparing 
 | swapManagedSource(layer, item) | Change only the verified layer's source. Do not change effects, masks, timing, transforms, parenting, switches, blend mode, tags or ordering. |
 | restoreManagedSource(layer, oldSource) | Restore the journaled source even after a swap mutates then throws. The core verifies readSource afterward. |
 | removeImportedReplacement(item) | Remove only this transaction's tracked new item, verify its absence, and return literal true. |
+| commitRevision(current, candidate, replacements) | Persist the new package/root/version identity and managed tags only after every source swap succeeds. Throw on any failed metadata write so the core restores sources and invokes cleanup. |
 
 The `ownershipKey` includes the collision-safe cut tuple, numeric version, package name
 and pass. It is verification context, not a replacement tag format for existing S5
@@ -75,15 +77,11 @@ Error formatting is nonthrowing, including host exceptions without a usable toSt
 one recovery failure cannot prevent the remaining recovery attempts. Malformed schema
 types and shared-validator exceptions become incompatible-candidate diagnostics.
 
-## Outstanding before S6 integration
+## Remaining S6 gate
 
-- Implement and test a real AE adapter, including persistent current-package/version/root
-  association, safe S5 migration and metadata updates with rollback.
-- Add package-directory discovery and the panel preview/confirmation/update flow.
-- Preserve Build/QC behavior after revision and script reload, and test V001→V002→V003
-  against producer-generated manifests and mock native host objects.
-- Include the executable revision path in deterministic release ZIPs and validate installation.
-- Obtain independent clean full-PR review plus green CI before merge; verify post-merge CI.
+- Obtain independent clean full-PR review at the exact final head plus green CI before merge;
+  verify post-merge develop CI.
+- Execute the manual AE workflow and inspect V001→V002 behavior after script reload.
 
 Keeping mock layer objects and their non-source properties unchanged is tested. Native AE
 property preservation, real revision execution, GUI/undo behavior and Blender→AE end-to-end

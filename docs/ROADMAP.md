@@ -42,7 +42,7 @@ Real AE GUI/end-to-end behavior remains a separate manual validation gate.
 - Expand runtime-independent regression coverage without claiming native AE GUI execution.
 
 ## In progress S6 — Non-Destructive Revision Manager
-- PR #15 is blocked pending native AE adapter/panel/persistent-state/release integration and independent review. The tested revision core alone does not complete S6.
+- PR #15 contains the native AE adapter, panel confirmation/update flow, persistent package-root/tag migration, and deterministic release sidecar. Integration remains blocked pending exact-head CI and independent review.
 - Detect newer compatible cut revisions.
 - Replace only CutBridge-managed footage/sources where technically safe.
 - Preserve manual effects, masks, transforms, parenting, timing, layers, and compositor work where possible.

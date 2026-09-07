@@ -19,6 +19,7 @@ import zipfile
 ROOT = Path(__file__).resolve().parents[1]
 BLENDER_ROOT = ROOT / "apps" / "blender" / "cutbridge"
 AE_SCRIPT = ROOT / "apps" / "after-effects" / "CutBridge.jsx"
+AE_REVISION = ROOT / "apps" / "after-effects" / "revision_manager.js"
 UPDATE_SCHEMA_VERSION = 1
 
 
@@ -92,10 +93,11 @@ def _write_blender_zip(path: Path) -> None:
 
 
 def _write_ae_zip(path: Path) -> None:
-    if not AE_SCRIPT.is_file():
-        raise RuntimeError(f"Missing After Effects script: {AE_SCRIPT}")
+    if not AE_SCRIPT.is_file() or not AE_REVISION.is_file():
+        raise RuntimeError("Missing After Effects scripts required for the revision workflow")
     with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
         _write_entry(archive, AE_SCRIPT, "CutBridge.jsx")
+        _write_entry(archive, AE_REVISION, "revision_manager.js")
         _write_entry(archive, ROOT / "LICENSE", "LICENSE")
 
 
@@ -108,8 +110,8 @@ def build(tag: str, output_dir: Path) -> dict:
         )
 
     _validate_source_version(version)
-    if not (ROOT / "LICENSE").is_file() or not AE_SCRIPT.is_file():
-        raise ValueError("Release source must include LICENSE and CutBridge.jsx")
+    if not (ROOT / "LICENSE").is_file() or not AE_SCRIPT.is_file() or not AE_REVISION.is_file():
+        raise ValueError("Release source must include LICENSE, CutBridge.jsx and revision_manager.js")
     blender_name = f"CutBridge-Blender-{tag}.zip"
     ae_name = f"CutBridge-AfterEffects-{tag}.zip"
     output_dir = output_dir.resolve()

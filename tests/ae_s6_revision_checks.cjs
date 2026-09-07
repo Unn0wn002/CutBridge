@@ -48,7 +48,8 @@ function fixture(overrides = {}) {
         validateReplacement(item) { events.push("validate:" + item.name); return item.valid === true; },
         swapManagedSource(layer, item) { events.push("swap:" + item.name); layer.source = item; },
         restoreManagedSource(layer, source) { events.push("restore:" + source.pass); layer.source = source; },
-        removeImportedReplacement(item) { events.push("remove:" + item.name); item.removed = true; return true; }
+        removeImportedReplacement(item) { events.push("remove:" + item.name); item.removed = true; return true; },
+        commitRevision() { events.push("commit"); return true; }
     };
     Object.assign(adapter, overrides);
     return {current, next, sources, layers, artist, order, imports, events, adapter};
@@ -135,6 +136,7 @@ test("successful source-only transaction preserves mock layer properties and ord
         for (const key of Object.keys(before[i]).filter(k => k !== "source")) assert.equal(f.layers[i][key], before[i][key]);
     }
     assert.ok(f.events.indexOf("validate:LINE") < f.events.indexOf("swap:BEAUTY"));
+    assert.equal(f.events[f.events.length - 1], "commit");
     assert.throws(() => ex.apply(ticket), /already applied/);
 });
 test("warnings require explicit confirmation even if public ticket is modified", () => {
@@ -240,6 +242,14 @@ test("cleanup failure is explicit and cleanup continues for remaining imports", 
     assert.equal(f.imports[0].removed, true);
     assert.equal(f.imports[1].removed, undefined);
     assert.throws(() => ex.prepare(f.current, f.next), /Rollback incomplete/);
+});
+test("commit failure rolls back all swapped sources and staged replacements", () => {
+    const f = fixture();
+    f.adapter.commitRevision = () => { throw Error("metadata write failed"); };
+    const ex = R.createExecutor(f.adapter), ticket = ex.prepare(f.current, f.next);
+    assert.throws(() => ex.apply(ticket), /metadata write failed/);
+    assert.deepEqual(f.layers.map(l => l.source), f.sources);
+    assert.ok(f.imports.every(i => i.removed));
 });
 test("unprintable removal errors cannot interrupt cleanup or bypass poisoning", () => {
     const f = fixture(), remove = f.adapter.removeImportedReplacement;

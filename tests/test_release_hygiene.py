@@ -25,6 +25,7 @@ class ReleaseHygieneTests(unittest.TestCase):
         self.builder.ROOT = self.root
         self.builder.BLENDER_ROOT = self.root / "apps/blender/cutbridge"
         self.builder.AE_SCRIPT = self.root / "apps/after-effects/CutBridge.jsx"
+        self.builder.AE_REVISION = self.root / "apps/after-effects/revision_manager.js"
         self.output = Path(self.temp.name) / "dist"
 
     def test_identical_sources_produce_identical_artifacts(self):

@@ -85,6 +85,9 @@
         if (errors.length) return {status: "incompatible", reasons: errors, warnings: warnings};
         if (!sameCut(current, candidate)) errors.push("Project/episode/scene/cut/take identity differs.");
         if (candidate.version <= current.version) errors.push("Candidate must be a newer revision.");
+        var currentComp = current.ae && current.ae.comp_name ? current.ae.comp_name : current.cut + "_COMP";
+        var candidateComp = candidate.ae && candidate.ae.comp_name ? candidate.ae.comp_name : candidate.cut + "_COMP";
+        if (currentComp !== candidateComp) errors.push("Composition identity/name changes are unsupported.");
         // Producer package names include V### and therefore normally differ across revisions.
         if (current.fps !== candidate.fps) errors.push("FPS changes are unsupported.");
         if (current.frames.start !== candidate.frames.start || current.frames.end !== candidate.frames.end ||
@@ -159,7 +162,8 @@
     function createExecutor(adapter) {
         // The adapter is trusted host code. Package data and public plan records are not.
         var methods = ["listManagedLayers", "validateManagedLayer", "readSource", "importReplacement",
-            "validateReplacement", "swapManagedSource", "restoreManagedSource", "removeImportedReplacement"];
+            "validateReplacement", "swapManagedSource", "restoreManagedSource", "removeImportedReplacement",
+            "commitRevision"];
         var host = {}, pending = null, busy = false, poisoned = false;
         for (var i = 0; i < methods.length; i++) {
             if (!adapter || typeof adapter[methods[i]] !== "function") throw new Error("Required adapter callback: " + methods[i]);
@@ -239,14 +243,16 @@
                     action = plan.actions[j];
                     verify(action, plan.current);
                     attempted.push(action); // Record BEFORE a host write can mutate then throw.
-                    host.swapManagedSource(action.layer, replacements[j]);
+                    host.swapManagedSource(action.layer, replacements[j], action.passName);
                     if (host.readSource(action.layer) !== replacements[j]) throw new Error("Source swap verification failed.");
                 }
+                // Package/tag migration is a commit step inside the same rollback boundary.
+                host.commitRevision(snapshot(plan.current), snapshot(plan.candidate), replacements);
                 return {status: "applied", replaced: attempted.length};
             } catch (error) {
                 for (j = attempted.length - 1; j >= 0; j--) {
                     try {
-                        host.restoreManagedSource(attempted[j].layer, attempted[j].oldSource);
+                        host.restoreManagedSource(attempted[j].layer, attempted[j].oldSource, attempted[j].passName);
                         if (host.readSource(attempted[j].layer) !== attempted[j].oldSource) throw new Error("Source restoration not verified.");
                     } catch (restoreError) {
                         poisoned = true;
