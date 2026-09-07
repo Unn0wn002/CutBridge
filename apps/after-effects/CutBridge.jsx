@@ -736,7 +736,7 @@ if (typeof module !== "undefined" && module.exports) {
                     layer.replaceSource(oldSource, false);
                 }
                 if (migration) {
-                    setItemComment(folders.root, migration.rootComment);
+                    if (migration.migrateRootComment) setItemComment(folders.root, migration.rootComment);
                     folders.root.name = migration.rootName;
                     setItemComment(comp, migration.compComment);
                     for (var j = 0; j < migration.items.length; j++) {
@@ -761,7 +761,8 @@ if (typeof module !== "undefined" && module.exports) {
             commitRevision: function(oldManifest, newManifest, replacements) {
                 var targetName = newManifest.package_name || (newManifest.project + "_" + newManifest.cut), collision = findExistingChildFolder(app.project.rootFolder, targetName);
                 if (collision && collision !== folders.root) throw new Error("The candidate package root already exists in this project; revision is ambiguous and was not applied.");
-                migration = {rootName: folders.root.name, rootComment: itemComment(folders.root), compComment: itemComment(comp), items: []};
+                var rootComment = itemComment(folders.root), currentRootTag = CutBridgeContract.managedTag("root", oldManifest, "PACKAGE");
+                migration = {rootName: folders.root.name, rootComment: rootComment, migrateRootComment: rootComment === currentRootTag, compComment: itemComment(comp), items: []};
                 for (var i = 0; i < journal.length; i++) migration.items.push({layer: journal[i].layer, oldSource: journal[i].oldSource, replacement: journal[i].replacement, passName: journal[i].passName, layerComment: itemComment(journal[i].layer), oldComment: itemComment(journal[i].oldSource), replacementComment: itemComment(journal[i].replacement)});
                 for (i = 0; i < journal.length; i++) {
                     var item = migration.items[i], passName = item.passName;
@@ -778,7 +779,7 @@ if (typeof module !== "undefined" && module.exports) {
                     state.imported[CutBridgeContract.managedTag("footage", newManifest, passName)] = item.replacement;
                 }
                 folders.root.name = targetName;
-                setItemComment(folders.root, CutBridgeContract.managedTag("root", newManifest, "PACKAGE"));
+                if (migration.migrateRootComment) setItemComment(folders.root, CutBridgeContract.managedTag("root", newManifest, "PACKAGE"));
                 setItemComment(comp, CutBridgeContract.managedTag("comp", newManifest, comp.name));
                 state.comp = comp;
             }
