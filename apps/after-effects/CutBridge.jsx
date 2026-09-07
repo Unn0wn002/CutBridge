@@ -332,7 +332,7 @@ if (typeof module !== "undefined" && module.exports) {
     function existingProjectFolders(manifest) {
         var rootName = manifest.package_name || (manifest.project + "_" + manifest.cut), root = findExistingChildFolder(app.project.rootFolder, rootName);
         if (!root) return null;
-        return {root: root, comp: findExistingChildFolder(root, "01_COMP"), render: findExistingChildFolder(root, "02_RENDER"), precomp: findExistingChildFolder(root, "03_PRECOMP"), output: findExistingChildFolder(root, "04_OUTPUT")};
+        return uniqueExistingProjectFolders(manifest);
     }
     function uniqueExistingProjectFolders(manifest) {
         var rootName = manifest.package_name || (manifest.project + "_" + manifest.cut), root = null, rootCount = 0, i;
@@ -342,7 +342,7 @@ if (typeof module !== "undefined" && module.exports) {
                 rootCount++; if (!root) root = rootCandidate;
             }
         }
-        if (rootCount !== 1) throw new Error("Current CutBridge package root '" + rootName + "' must exist exactly once before revision. Resolve missing/duplicate roots; revision will not choose or create one.");
+        if (rootCount !== 1) throw new Error("Current CutBridge package root '" + rootName + "' must exist exactly once. Resolve missing/duplicate roots; CutBridge will not choose or create one.");
         var names = ["01_COMP", "02_RENDER", "03_PRECOMP", "04_OUTPUT"], keys = ["comp", "render", "precomp", "output"], result = {root: root};
         for (var n = 0; n < names.length; n++) {
             var found = null, count = 0;
@@ -350,7 +350,7 @@ if (typeof module !== "undefined" && module.exports) {
                 var child = app.project.item(i);
                 if (child instanceof FolderItem && child.parentFolder === root && child.name === names[n]) { count++; if (!found) found = child; }
             }
-            if (count !== 1) throw new Error("Current CutBridge managed folder '" + names[n] + "' must exist exactly once before revision. Resolve missing/duplicate folder drift; revision will not choose or create one.");
+            if (count !== 1) throw new Error("Current CutBridge managed folder '" + names[n] + "' must exist exactly once. Resolve missing/duplicate folder drift; CutBridge will not choose or create one.");
             result[keys[n]] = found;
         }
         return result;
