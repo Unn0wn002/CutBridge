@@ -158,8 +158,12 @@ function makeHost() {
     }
     function comps() { return projectItems.filter(x => x instanceof CompItem); }
     function footage() { return projectItems.filter(x => x instanceof FootageItem); }
+    function addManualRoot(name, comment) {
+        const item = new FolderItem(name); item.parentFolder = project.rootFolder; item.comment = comment || ""; projectItems.push(item); return item;
+    }
+    function childFolders(parent) { return projectItems.filter(x => x instanceof FolderItem && x.parentFolder === parent); }
 
-    return {alerts, confirms, replaceFlags, queue, click, reload, topRoot, comps, footage, projectItems};
+    return {alerts, confirms, replaceFlags, queue, click, reload, topRoot, comps, footage, addManualRoot, childFolders, projectItems};
 }
 
 const h = makeHost();
@@ -210,4 +214,15 @@ assert.equal(h.footage().length, 3);
 assert.equal(h.topRoot(v3.package_name).comment, "Artist / studio package note");
 assert.ok(!h.alerts.some(x => /Revision failed|revision was not applied/.test(x)));
 
-console.log("S6 native-host lifecycle: PASS (V001→V002→V003 + Build/QC + reload; real AE MANUAL NOT EXECUTED)");
+// A user-owned top-level folder with the deterministic package name is a collision,
+// not ownership proof. Build must not create children or managed objects inside it.
+const collisionHost = makeHost();
+const manualRoot = collisionHost.addManualRoot(v1.package_name, "Studio-owned folder");
+collisionHost.queue(v1); collisionHost.click("Import Package"); collisionHost.click("Build Comp");
+assert.equal(collisionHost.comps().length, 0, "unverified package root must not receive a managed comp");
+assert.equal(collisionHost.footage().length, 0, "unverified package root must not receive managed footage");
+assert.equal(collisionHost.childFolders(manualRoot).length, 0, "unverified package root must not be mutated with CutBridge child folders");
+assert.equal(manualRoot.comment, "Studio-owned folder");
+assert.match(collisionHost.alerts.at(-1), /package root|package folder|ownership|collision/i);
+
+console.log("S6 native-host lifecycle: PASS (V001→V002→V003 + Build/QC + reload + root collision; real AE MANUAL NOT EXECUTED)");
