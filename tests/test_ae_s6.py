@@ -4,11 +4,20 @@ import shutil
 import subprocess
 
 
-def test_revision_contract():
+def _run_node_test(filename):
     node = shutil.which("node")
-    assert node, "Node is required for S6 revision contract tests"
+    assert node, "Node is required for S6 After Effects regression tests"
     root = Path(__file__).resolve().parents[1]
-    subprocess.run([node, str(root / "tests/ae_s6_revision_checks.cjs")], cwd=root, check=True)
+    subprocess.run([node, str(root / "tests" / filename)], cwd=root, check=True)
+
+
+def test_revision_contract():
+    _run_node_test("ae_s6_revision_checks.cjs")
+
+
+def test_native_revision_host_lifecycle():
+    """Exercise actual CutBridge.jsx adapter through V001→V002→V003 in a host-shaped vm."""
+    _run_node_test("ae_s6_native_host_checks.cjs")
 
 
 def test_native_revision_lifecycle_preserves_retired_footage_provenance():
