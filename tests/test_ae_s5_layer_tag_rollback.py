@@ -10,7 +10,7 @@ JSX = ROOT / "apps" / "after-effects" / "CutBridge.jsx"
 def test_new_managed_layer_tag_failure_rolls_back_without_accumulation():
     source = JSX.read_text(encoding="utf-8")
     start = source.index("    function ensureManagedLayer(")
-    end = source.index("\n\n    function orderManagedLayers", start)
+    end = source.index("\n\n    function findVerifiedPass", start)
     function_source = source[start:end].strip()
 
     node_script = f"""

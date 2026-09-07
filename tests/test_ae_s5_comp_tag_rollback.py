@@ -22,6 +22,7 @@ const CutBridgeContract = {{
   compSpecErrors: () => []
 }};
 function findTaggedProjectItem() {{ return null; }}
+function findManagedComp() {{ return null; }}
 function findNamedComp() {{ return null; }}
 function setItemComment(item, value) {{ item.comment = value; }}
 
