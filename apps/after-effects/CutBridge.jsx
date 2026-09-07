@@ -722,14 +722,19 @@ if (typeof module !== "undefined" && module.exports) {
                 } catch (e) { return false; }
             },
             swapManagedSource: function(layer, item, passName) {
+                if (!layer || typeof layer.replaceSource !== "function") throw new Error("Managed layer source replacement is unavailable in this After Effects host.");
                 var record = {layer: layer, oldSource: layer.source, replacement: item, passName: passName};
                 journal.push(record);
-                layer.source = item;
+                layer.replaceSource(item, false);
             },
             restoreManagedSource: function(layer, oldSource, passName) {
                 var record = null;
                 for (var i = journal.length - 1; i >= 0; i--) if (journal[i].layer === layer && journal[i].oldSource === oldSource) { record = journal[i]; break; }
-                layer.source = oldSource;
+                if (!layer) throw new Error("Managed layer is unavailable during source restoration.");
+                if (layer.source !== oldSource) {
+                    if (typeof layer.replaceSource !== "function") throw new Error("Managed layer source restoration is unavailable in this After Effects host.");
+                    layer.replaceSource(oldSource, false);
+                }
                 if (migration) {
                     setItemComment(folders.root, migration.rootComment);
                     folders.root.name = migration.rootName;
