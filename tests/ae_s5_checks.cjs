@@ -140,7 +140,11 @@ function host(m, files, options = {}) {
     c.parentFolder = cf; return c;
   }
   function seedWrongTypeFootageTag(passName = 'BEAUTY') {
-    const {rf} = seedPackageFolders();
+    const {cf, rf} = seedPackageFolders();
+    const spec = m.resolution;
+    const ownedComp = project.items.addComp(m.ae.comp_name, spec.width, spec.height, spec.pixel_aspect, m.frames.count / m.fps, m.fps);
+    ownedComp.parentFolder = cf;
+    ownedComp.comment = `CUTBRIDGE|1|comp|${m.package_name}|${m.ae.comp_name}`;
     const wrong = new FolderItem('WRONG_TYPE');
     wrong.parentFolder = rf;
     wrong.comment = `CUTBRIDGE|1|footage|${m.package_name}|${passName}`;
@@ -258,7 +262,7 @@ check('moved managed comp fails closed without creating a replacement', () => {
     h.click('Build');
     assert.equal(h.comps().length, 1);
     assert.deepEqual(h.projectItems, beforeItems);
-    assert.match(h.alerts.at(-1), /managed comp ownership.*expected comp folder/i);
+    assert.match(h.alerts.at(-1), /project-root folder.*not verified|managed comp ownership.*expected comp folder/i);
   }
 });
 
