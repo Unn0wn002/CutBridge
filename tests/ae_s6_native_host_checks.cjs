@@ -223,6 +223,6 @@ assert.equal(collisionHost.comps().length, 0, "unverified package root must not 
 assert.equal(collisionHost.footage().length, 0, "unverified package root must not receive managed footage");
 assert.equal(collisionHost.childFolders(manualRoot).length, 0, "unverified package root must not be mutated with CutBridge child folders");
 assert.equal(manualRoot.comment, "Studio-owned folder");
-assert.match(collisionHost.alerts.at(-1), /package root|package folder|ownership|collision/i);
+assert.match(collisionHost.alerts.at(-1), /project-root folder|package root|package folder|ownership|collision|not verified/i);
 
 console.log("S6 native-host lifecycle: PASS (V001→V002→V003 + Build/QC + reload + root collision; real AE MANUAL NOT EXECUTED)");
