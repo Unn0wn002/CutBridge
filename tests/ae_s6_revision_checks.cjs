@@ -109,12 +109,12 @@ test("prototype pass names remain valid", () => {
     const passes = ["constructor", "__proto__", "toString"].map(name => ({...m(1).passes[0], name}));
     assert.equal(R.assess(m(1, {passes}), m(2, {passes})).status, "safe");
 });
-test("media changes follow conservative compatibility policy", () => {
+test("media changes follow conservative source-only compatibility policy", () => {
     for (const changes of [{fps: 30}, {fps: 24.0001}, {frames: {start: 1, end: 24, count: 24}},
-        {resolution: {width: 1920, height: 1080, pixel_aspect: 1.1}}]) {
+        {resolution: {width: 1920, height: 1080, pixel_aspect: 1.1}},
+        {resolution: {width: 2048, height: 1080, pixel_aspect: 1}}]) {
         assert.equal(R.assess(m(1), m(2, changes)).status, "incompatible");
     }
-    assert.equal(R.assess(m(1), m(2, {resolution: {width: 2048, height: 1080}})).status, "warning");
     const next = m(2); next.passes[1].required = true;
     assert.equal(R.assess(m(1), next).status, "warning");
 });
@@ -140,7 +140,7 @@ test("successful source-only transaction preserves mock layer properties and ord
     assert.throws(() => ex.apply(ticket), /already applied/);
 });
 test("warnings require explicit confirmation even if public ticket is modified", () => {
-    const f = fixture(); f.next.resolution.width = 2048;
+    const f = fixture(); f.next.passes[1].required = true;
     const ex = R.createExecutor(f.adapter), ticket = ex.prepare(f.current, f.next);
     ticket.requiresConfirmation = false; ticket.status = "safe";
     assert.throws(() => ex.apply(ticket), /explicit confirmation/);
