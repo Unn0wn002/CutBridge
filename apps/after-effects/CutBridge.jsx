@@ -429,7 +429,7 @@ if (typeof module !== "undefined" && module.exports) {
         return footage;
     }
 
-    function importSequence(passInfo, manifest, renderFolder, coverage) {
+    function importSequence(passInfo, manifest, renderFolder, coverage, createdFootage) {
         var tag = CutBridgeContract.managedTag("footage", manifest, passInfo.name);
         var firstFile = expectedFirstFile(passInfo, coverage);
         var existing = findManagedFootage(passInfo, manifest, renderFolder, firstFile);
@@ -442,6 +442,7 @@ if (typeof module !== "undefined" && module.exports) {
             conformAndVerifyImportedFootage(footage, firstFile, passInfo, manifest);
             setItemComment(footage, tag);
             state.imported[tag] = footage;
+            if (createdFootage) createdFootage.push({item: footage, tag: tag});
             return footage;
         } catch (importError) {
             try {
@@ -560,6 +561,46 @@ if (typeof module !== "undefined" && module.exports) {
         state.layers[tag] = layer; return {layer: layer, created: true};
     }
 
+    function isManagedLayerTagForManifest(comment, manifest) {
+        for (var i = 0; i < manifest.passes.length; i++) if (comment === CutBridgeContract.managedTag("layer", manifest, manifest.passes[i].name)) return true;
+        return false;
+    }
+    function preflightExistingManagedLayers(comp, manifest, entries, renderFolder) {
+        if (!comp || !comp.numLayers) return;
+        var hasUnverifiedLayer = false;
+        for (var i = 1; i <= comp.numLayers; i++) if (!isManagedLayerTagForManifest(itemComment(comp.layer(i)), manifest)) hasUnverifiedLayer = true;
+        for (var j = 0; j < entries.length; j++) {
+            var entry = entries[j]; if (entry.skip) continue;
+            var passInfo = entry.passInfo, tag = CutBridgeContract.managedTag("layer", manifest, passInfo.name), layer = findManagedLayer(comp, tag, null, passInfo.name);
+            if (layer) {
+                var source;
+                try { source = layer.source; } catch (sourceError) { throw new Error(passInfo.name + ": managed layer source cannot be read before import; preserve artist work and restore the intended managed layer before retrying."); }
+                if (!source) throw new Error(passInfo.name + ": managed layer has no readable footage source; preserve artist work and restore the intended managed layer before retrying.");
+                validateReusableFootage(source, expectedFirstFile(passInfo, entry.coverage), passInfo, manifest, renderFolder);
+            } else if (hasUnverifiedLayer) {
+                throw new Error(passInfo.name + ": managed layer ownership is ambiguous because the existing comp contains an unverified layer. Preserve artist work and restore the intended managed layer tag before retrying; CutBridge will not add a replacement over it.");
+            }
+        }
+    }
+    function rollbackNewBuildObjects(createdLayers, createdFootage) {
+        var failures = [], i, record;
+        for (i = createdLayers.length - 1; i >= 0; i--) {
+            record = createdLayers[i];
+            try {
+                if (!record.layer || typeof record.layer.remove !== "function") throw new Error("newly created managed layer cannot be removed by this AE host");
+                record.layer.remove(); delete state.layers[record.tag];
+            } catch (layerError) { failures.push("layer rollback failed: " + layerError.toString()); }
+        }
+        for (i = createdFootage.length - 1; i >= 0; i--) {
+            record = createdFootage[i];
+            try {
+                if (!record.item || typeof record.item.remove !== "function") throw new Error("newly imported footage cannot be removed by this AE host");
+                record.item.remove(); delete state.imported[record.tag];
+            } catch (footageError) { failures.push("footage rollback failed: " + footageError.toString()); }
+        }
+        return failures;
+    }
+
     function findVerifiedPass(passName, verifiedPasses) {
         for (var i = 0; verifiedPasses && i < verifiedPasses.length; i++) if (verifiedPasses[i].name === passName) return verifiedPasses[i];
         return null;
@@ -585,12 +626,14 @@ if (typeof module !== "undefined" && module.exports) {
         if (!app.project) app.newProject();
         var warnings = preflight.warnings.slice(0), compName = (m.ae && m.ae.comp_name) ? m.ae.comp_name : (m.cut + "_COMP");
         app.beginUndoGroup("CutBridge Build Comp");
+        var createdFootage = [], createdLayers = [];
         try {
             var folders = ensureProjectFolders(m), compResult = ensureManagedComp(m, folders.comp, compName), comp = compResult.comp, verifiedPasses = []; state.comp = comp;
+            if (!compResult.created) preflightExistingManagedLayers(comp, m, preflight.entries, folders.render);
             for (var i = 0; i < preflight.entries.length; i++) {
                 var entry = preflight.entries[i]; if (entry.skip) continue;
-                var footage = importSequence(entry.passInfo, m, folders.render, entry.coverage);
-                ensureManagedLayer(comp, footage, m, entry.passInfo.name);
+                var footage = importSequence(entry.passInfo, m, folders.render, entry.coverage, createdFootage), layerResult = ensureManagedLayer(comp, footage, m, entry.passInfo.name);
+                if (layerResult.created) createdLayers.push({layer: layerResult.layer, tag: CutBridgeContract.managedTag("layer", m, entry.passInfo.name)});
                 verifiedPasses.push({name: entry.passInfo.name, footage: footage});
             }
             orderManagedLayers(comp, m, verifiedPasses);
@@ -598,7 +641,12 @@ if (typeof module !== "undefined" && module.exports) {
             var message = "CutBridge: comp " + (compResult.created ? "built" : "reused safely") + "\n" + comp.name + "\n" + m.resolution.width + "x" + m.resolution.height + " @ " + m.fps + " fps";
             if (warnings.length) message += "\n\nWarnings:\n- " + warnings.join("\n- ");
             alert(message);
-        } catch (e) { alertError(e.toString()); }
+        } catch (e) {
+            var rollbackFailures = rollbackNewBuildObjects(createdLayers, createdFootage), errorMessage = e.toString();
+            if (createdLayers.length || createdFootage.length) errorMessage += "\nNewly created managed objects were rolled back.";
+            if (rollbackFailures.length) errorMessage += "\n" + rollbackFailures.join("\n");
+            alertError(errorMessage);
+        }
         finally { app.endUndoGroup(); }
     }
 
@@ -627,9 +675,9 @@ if (typeof module !== "undefined" && module.exports) {
                 }
             }
         }
-        if (projectFolders) {
-            if (compLookupError) bad("Managed comp validation failed — " + compLookupError.toString());
-            else if (!managedCompFolder) bad("Managed comp folder is missing from the expected package folder");
+        if (compLookupError) bad("Managed comp validation failed — " + compLookupError.toString());
+        else if (projectFolders) {
+            if (!managedCompFolder) bad("Managed comp folder is missing from the expected package folder");
             else if (!liveComp) bad("Managed comp is missing from the expected comp folder");
             else {
                 state.comp = liveComp;

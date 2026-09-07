@@ -102,3 +102,23 @@ Required correction: when the package-owned project folder exists, report explic
 ## Follow-up repair status
 
 The local bounded repair retains live cached-object identity for footage and layers, rejects replacement over a still-live object with combined ownership drift, restores validated layer cache observations after ordering, and adds explicit managed-state QC diagnostics. The focused host harness now passes 41 groups, alongside the existing partial-retry, managed-layer guard, and rollback fixture checks. This follow-up repair is not yet pushed or independently re-reviewed; exact-head CI and the integration gate remain outstanding.
+
+## Further independent review — additional blockers
+
+The fresh independent review against exact PR head cb0e6990805179dbdc5fcddda6f3f5320f7c9b56 found two additional merge blockers:
+
+### S5-R8 — Combined drift after script reload could still create replacements
+
+After script reload, the in-memory cache is gone. If a previously managed footage item loses its tag, generated name, source path, and managed folder, the live tagged scan cannot identify it and Build can import replacement footage. The existing managed layer then fails source validation, leaving the replacement behind. If the managed layer loses the same identifying signals, Build can add a duplicate layer.
+
+Required correction: preflight existing managed comp/layer state before importing or adding replacements, and roll back any newly created footage/layers if a later build step fails. Preserve the existing object and artist work.
+
+### S5-R9 — Moved package root could hide tagged managed state from QC
+
+If the package root folder is moved while its tagged managed objects remain live, existingProjectFolders() returns no expected package root. QC previously ignored the resulting findManagedComp() error and fell back to package-only PASS.
+
+Required correction: surface live tagged managed-object validation errors even when the expected package root is absent. A moved managed comp must produce an actionable QC error, not a package-only PASS.
+
+## Further repair status
+
+The local bounded repair adds reload-safe existing-layer/source preflight, build-level rollback for newly created managed footage/layers, and QC reporting for tagged managed comps outside the expected package root. The focused host harness now passes 45 groups, alongside the partial-retry, managed-layer guard, and rollback fixture checks. This repair is not yet pushed or independently re-reviewed; exact-head CI and the integration gate remain outstanding.

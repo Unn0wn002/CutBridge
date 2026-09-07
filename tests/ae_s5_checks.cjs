@@ -79,8 +79,13 @@ function host(m, files, options = {}) {
     this.containingComp = comp; this.comp = comp; this.source = sourceItem; this.name = ''; this.comment = ''; this.startTime = 0;
   }
   Layer.prototype.moveToBeginning = function() {
+    if (options.moveToBeginningThrows) throw new Error('mock layer move failure');
     const list = this.comp._layers, index = list.indexOf(this);
     if (index >= 0) { list.splice(index, 1); list.unshift(this); }
+  };
+  Layer.prototype.remove = function() {
+    const list = this.comp._layers, index = list.indexOf(this);
+    if (index >= 0) list.splice(index, 1);
   };
   function CompItem(name, width, height, aspect, duration, fps) {
     this.name = name; this.width = width; this.height = height; this.pixelAspect = aspect;
@@ -118,6 +123,7 @@ function host(m, files, options = {}) {
   function rootFolder() { return projectItems.find(x => x instanceof FolderItem && x.parentFolder === project.rootFolder && x.name === m.package_name); }
   function compFolder() { const root = rootFolder(); return projectItems.find(x => x instanceof FolderItem && x.parentFolder === root && x.name === '01_COMP'); }
   function renderFolder() { const root = rootFolder(); return projectItems.find(x => x instanceof FolderItem && x.parentFolder === root && x.name === '02_RENDER'); }
+  function movePackageRoot() { const moved = project.items.addFolder('Artist package area'); moved.parentFolder = project.rootFolder; rootFolder().parentFolder = moved; }
   function comps() { return projectItems.filter(x => x instanceof CompItem); }
   function footage() { return projectItems.filter(x => x instanceof FootageItem); }
   function seedPackageFolders() {
@@ -165,7 +171,7 @@ function host(m, files, options = {}) {
     item._conformGetterThrows = mode === 'throw';
     item._conformUnavailable = mode === 'unavailable';
   }
-  return {click, reloadScript, seedArtistWork, moveLayer, duplicateFootage, alerts, imports, projectItems, comps, footage, compFolder, renderFolder, seedManualComp, seedWrongTypeFootageTag, driftFootageSource, breakFootageFpsRead};
+  return {click, reloadScript, seedArtistWork, moveLayer, movePackageRoot, duplicateFootage, alerts, imports, projectItems, comps, footage, compFolder, renderFolder, seedManualComp, seedWrongTypeFootageTag, driftFootageSource, breakFootageFpsRead};
 }
 
 const beautyFiles = [1, 2, 3].map(n => `/packages/桜/render/beauty/C001_BEAUTY_000${n}.png`);
@@ -340,7 +346,7 @@ check('combined cached footage drift fails closed without importing a replacemen
   h.click('Build');
   assert.equal(h.imports.length, 1);
   assert.deepEqual(h.projectItems, beforeItems);
-  assert.match(h.alerts.at(-1), /cached managed footage no longer proves ownership/i);
+  assert.match(h.alerts.at(-1), /managed footage no longer matches|cached managed footage no longer proves ownership/i);
 });
 
 check('combined cached layer drift fails closed without adding a replacement', () => {
@@ -353,6 +359,42 @@ check('combined cached layer drift fails closed without adding a replacement', (
   assert.equal(h.comps()[0]._layers.length, beforeLayers.length);
   beforeLayers.forEach((beforeLayer, index) => assert.strictEqual(h.comps()[0]._layers[index], beforeLayer));
   assert.match(h.alerts.at(-1), /cached managed layer no longer proves ownership/i);
+});
+
+check('combined footage drift after script reload fails before replacement import', () => {
+  const h = host(manifest(), beautyFiles); h.click('Build');
+  const footage = h.footage()[0]; footage.comment = ''; footage.name = 'Artist footage'; footage.parentFolder = null; h.driftFootageSource(footage, '/artist/changed.png');
+  h.reloadScript(); h.click('Build');
+  assert.equal(h.imports.length, 1);
+  assert.equal(h.footage().length, 1);
+  assert.equal(h.comps()[0].numLayers, 1);
+  assert.match(h.alerts.at(-1), /managed footage no longer matches.*source path/i);
+});
+
+check('combined layer drift after script reload fails before adding a replacement', () => {
+  const h = host(manifest(), beautyFiles); h.click('Build');
+  const layer = h.comps()[0].layer(1); layer.comment = ''; layer.name = 'Artist layer'; layer.source = null;
+  const beforeLayers = h.comps()[0]._layers.slice();
+  h.reloadScript(); h.click('Build');
+  assert.equal(h.imports.length, 1);
+  assert.equal(h.comps()[0]._layers.length, beforeLayers.length);
+  beforeLayers.forEach((beforeLayer, index) => assert.strictEqual(h.comps()[0]._layers[index], beforeLayer));
+  assert.match(h.alerts.at(-1), /managed layer ownership is ambiguous/i);
+});
+
+check('late build failure rolls back newly created footage and layers', () => {
+  const h = host(manifest(), beautyFiles, {moveToBeginningThrows: true}); h.click('Build');
+  assert.equal(h.imports.length, 1);
+  assert.equal(h.footage().length, 0);
+  assert.equal(h.comps()[0].numLayers, 0);
+  assert.match(h.alerts.at(-1), /mock layer move failure/);
+  assert.match(h.alerts.at(-1), /newly created managed objects were rolled back/i);
+});
+
+check('QC reports tagged managed comp outside the expected package root after reload', () => {
+  const h = host(manifest(), beautyFiles); h.click('Build'); h.movePackageRoot(); h.reloadScript(); h.click('QC');
+  assert.match(h.alerts.at(-1), /Managed comp validation failed/);
+  assert.doesNotMatch(h.alerts.at(-1), /QC — PASS\b/);
 });
 
 check('managed footage throwing FPS getter fails closed without replacement and QC does not pass footage', () => {

@@ -55,6 +55,9 @@ Automated Blender checks run headlessly. They validate RNA lifecycle, render-map
 | A19 | Cached footage loses tag, name, source, and folder in one session | Build fails closed without importing a replacement or reclaiming the live artist item |
 | A20 | Cached layer loses tag, name, source, and comp ownership evidence in one session | Build fails closed without adding a replacement layer or reordering the artist layer |
 | A21 | Managed comp or required footage is deleted before QC, including after script reload | QC reports explicit missing managed state; package-only QC remains valid before any managed project state exists |
+| A22 | Combined footage or layer drift is present after script reload | Build fails before replacement import/layer creation and preserves the existing object |
+| A23 | Managed package root is moved while tagged managed objects remain | QC reports managed-state ownership failure instead of package-only PASS |
+| A24 | A late build operation fails after new footage/layer creation | Newly created managed footage/layers roll back; existing comp scaffold and artist work remain |
 
 ## S4 automated contract gate
 
@@ -103,7 +106,7 @@ Do not claim timing, error-rate, usability, or Japanese target-user results unti
 
 ## S5 ownership/cache automated gate
 
-`node tests/ae_s5_checks.cjs` executes the entire JSX panel with host mocks and re-evaluates it against the same project to simulate script reload. It runs through `tests/test_ae_s5.py` in CI. The source-guard, comp/layer rollback, and partial-retry-order regressions remain mandatory. The current harness contains 41 groups.
+`node tests/ae_s5_checks.cjs` executes the entire JSX panel with host mocks and re-evaluates it against the same project to simulate script reload. It runs through `tests/test_ae_s5.py` in CI. The source-guard, comp/layer rollback, and partial-retry-order regressions remain mandatory. The current harness contains 45 groups.
 
 | Change after successful Build | Expected same-session and script-reload result |
 |---|---|
@@ -122,5 +125,8 @@ Do not claim timing, error-rate, usability, or Japanese target-user results unti
 | QC following footage ownership/source/FPS failure | Report managed-footage error even after cache invalidation or reload |
 | Cached footage or layer loses all identifying signals while the object remains live | Fail closed without importing footage or adding a layer over the live user-modified object |
 | Managed comp or required managed footage is deleted before QC | Report explicit missing managed state rather than a false package-only PASS |
+| Combined footage/layer drift remains after script reload | Preflight the existing managed comp/layer state before importing or adding replacements |
+| Managed package root is moved but tagged managed comp remains | Report managed-comp validation failure; do not issue package-only PASS |
+| Late build failure after new managed objects are created | Roll back only the newly created footage/layers and preserve unrelated project state |
 
 Manual repetition in a supported AE desktop installation remains `MANUAL NOT EXECUTED`. Mocks cannot certify native host handles, comment persistence, undo behavior or OS filesystem semantics.
