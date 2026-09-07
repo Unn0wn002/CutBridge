@@ -406,7 +406,20 @@ if (typeof module !== "undefined" && module.exports) {
         if (!comp) {
             var collision = findNamedComp(compFolder, compName);
             if (collision) throw new Error("A non-CutBridge comp named '" + compName + "' already exists in the managed folder. Rename or move it before building to avoid modifying manual work.");
-            comp = app.project.items.addComp(compName, expected.width, expected.height, expected.pixelAspect, expected.duration, expected.frameRate); comp.parentFolder = compFolder; setItemComment(comp, tag); return {comp: comp, created: true};
+            comp = app.project.items.addComp(compName, expected.width, expected.height, expected.pixelAspect, expected.duration, expected.frameRate);
+            try {
+                comp.parentFolder = compFolder;
+                setItemComment(comp, tag);
+            } catch (creationError) {
+                try {
+                    if (!comp || typeof comp.remove !== "function") throw new Error("newly created managed comp cannot be removed by this AE host");
+                    comp.remove();
+                } catch (rollbackError) {
+                    throw new Error("Managed comp initialization failed and CutBridge could not roll back the newly created comp (" + rollbackError.toString() + "). Use Undo for the CutBridge Build Comp operation before retrying. Original error: " + creationError.toString());
+                }
+                throw new Error("Managed comp initialization failed and the newly created comp was rolled back (" + creationError.toString() + "). After Effects item comments are required for safe CutBridge idempotency.");
+            }
+            return {comp: comp, created: true};
         }
         var mismatches = CutBridgeContract.compSpecErrors(expected, {width: comp.width, height: comp.height, pixelAspect: comp.pixelAspect, duration: comp.duration, frameRate: comp.frameRate});
         if (mismatches.length) throw new Error("Managed comp metadata no longer matches the package (" + mismatches.join(", ") + "). Preserve manual work and rebuild into a clean package/comp instead of silently rewriting it.");
