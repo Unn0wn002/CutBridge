@@ -296,8 +296,20 @@ if (typeof module !== "undefined" && module.exports) {
         return null;
     }
     function ensureProjectFolders(manifest) {
-        var rootName = manifest.package_name || (manifest.project + "_" + manifest.cut);
-        var root = findChildFolder(app.project.rootFolder, rootName);
+        var rootName = manifest.package_name || (manifest.project + "_" + manifest.cut), root = findExistingChildFolder(app.project.rootFolder, rootName);
+        if (root) {
+            var compName = (manifest.ae && manifest.ae.comp_name) ? manifest.ae.comp_name : (manifest.cut + "_COMP");
+            var compFolder = findExistingChildFolder(root, "01_COMP"), expectedCompTag = CutBridgeContract.managedTag("comp", manifest, compName), owned = false;
+            if (compFolder && typeof CompItem !== "undefined") {
+                for (var i = 1; i <= app.project.numItems; i++) {
+                    var item = app.project.item(i);
+                    if (item instanceof CompItem && item.parentFolder === compFolder && item.name === compName && itemComment(item) === expectedCompTag) { owned = true; break; }
+                }
+            }
+            if (!owned) throw new Error("A project-root folder named '" + rootName + "' already exists but is not verified as this CutBridge package. Preserve that folder; rename or move it, or build this package in a clean project. CutBridge will not adopt or modify it.");
+        } else {
+            root = app.project.items.addFolder(rootName); root.parentFolder = app.project.rootFolder;
+        }
         return {root: root, comp: findChildFolder(root, "01_COMP"), render: findChildFolder(root, "02_RENDER"), precomp: findChildFolder(root, "03_PRECOMP"), output: findChildFolder(root, "04_OUTPUT")};
     }
     function existingProjectFolders(manifest) {
