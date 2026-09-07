@@ -241,6 +241,39 @@ test("cleanup failure is explicit and cleanup continues for remaining imports", 
     assert.equal(f.imports[1].removed, undefined);
     assert.throws(() => ex.prepare(f.current, f.next), /Rollback incomplete/);
 });
+test("unprintable removal errors cannot interrupt cleanup or bypass poisoning", () => {
+    const f = fixture(), remove = f.adapter.removeImportedReplacement;
+    f.adapter.validateReplacement = item => item.name !== "LINE";
+    f.adapter.removeImportedReplacement = item => {
+        if (item.name === "LINE") throw Object.create(null);
+        return remove(item);
+    };
+    const ex = R.createExecutor(f.adapter), ticket = ex.prepare(f.current, f.next);
+    assert.throws(() => ex.apply(ticket), e => e.retainedReplacements === 1 && /ROLLBACK INCOMPLETE/.test(e.message));
+    assert.equal(f.imports[0].removed, true);
+    assert.throws(() => ex.prepare(f.current, f.next), /Rollback incomplete/);
+});
+test("unprintable restore and original errors preserve subsequent recovery attempts", () => {
+    const f = fixture(), swap = f.adapter.swapManagedSource, restore = f.adapter.restoreManagedSource;
+    f.adapter.swapManagedSource = (layer, item) => { swap(layer, item); if (item.name === "LINE") throw Object.create(null); };
+    f.adapter.restoreManagedSource = (layer, source) => {
+        if (source.pass === "LINE") throw Object.create(null);
+        restore(layer, source);
+    };
+    const ex = R.createExecutor(f.adapter), ticket = ex.prepare(f.current, f.next);
+    assert.throws(() => ex.apply(ticket), e => e.retainedReplacements === 2 && /ROLLBACK INCOMPLETE/.test(e.message));
+    assert.equal(f.layers[0].source, f.sources[0]);
+    assert.ok(f.imports.every(i => !i.removed));
+    assert.throws(() => ex.prepare(f.current, f.next), /Rollback incomplete/);
+});
+test("malformed schema coercion cannot abort valid candidate discovery", () => {
+    for (const field of ["schema", "schema_version"]) {
+        const bad = m(2); bad[field] = JSON.parse('{"toString":null}');
+        assert.equal(R.assess(m(1), bad).status, "incompatible");
+        assert.equal(R.discover(m(1), [bad, m(3)]).length, 2);
+        assert.equal(R.selectLatest(m(1), [m(3), bad]).version, 3);
+    }
+});
 test("removed optional layer remains unchanged", () => {
     const f = fixture(); f.next.passes.pop();
     const ex = R.createExecutor(f.adapter), ticket = ex.prepare(f.current, f.next);

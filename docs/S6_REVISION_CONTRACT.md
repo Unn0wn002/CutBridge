@@ -71,6 +71,9 @@ Host failures cannot be guaranteed reversible. Errors state `ROLLBACK INCOMPLETE
 when appropriate; the core never swallows recovery failures or claims unconditional
 atomicity. An adapter violating its allocation/tracking contract can leak an untracked
 host object and is not suitable for integration.
+Error formatting is nonthrowing, including host exceptions without a usable toString;
+one recovery failure cannot prevent the remaining recovery attempts. Malformed schema
+types and shared-validator exceptions become incompatible-candidate diagnostics.
 
 ## Outstanding before S6 integration
 

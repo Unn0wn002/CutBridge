@@ -16,6 +16,10 @@
     var IDS = ["project", "episode", "scene", "cut", "take"];
     function own(o, key) { return Object.prototype.hasOwnProperty.call(o, key); }
     function array(value) { return Object.prototype.toString.call(value) === "[object Array]"; }
+    function errorText(value) {
+        try { return String(value); }
+        catch (formatError) { return "Unprintable host/manifest error"; }
+    }
     function integer(value) {
         return typeof value === "number" && isFinite(value) &&
             value > 0 && Math.floor(value) === value && value <= 9007199254740991;
@@ -28,7 +32,13 @@
         return integer(number) && value === "V" + digits ? number : NaN;
     }
     function manifestErrors(m) {
-        var errors = Contract.validateManifest(m), i;
+        var errors, i;
+        if (m && typeof m === "object" && !array(m) &&
+            (typeof m.schema !== "string" || typeof m.schema_version !== "number")) {
+            return ["Manifest schema must be a string and schema_version must be numeric."];
+        }
+        try { errors = Contract.validateManifest(m); }
+        catch (validationError) { return ["Manifest validator rejected data: " + errorText(validationError)]; }
         if (!m || typeof m !== "object" || array(m)) return errors;
         for (i = 0; i < IDS.length; i++) {
             if (typeof m[IDS[i]] !== "string" || !/\S/.test(m[IDS[i]])) {
@@ -238,7 +248,10 @@
                     try {
                         host.restoreManagedSource(attempted[j].layer, attempted[j].oldSource);
                         if (host.readSource(attempted[j].layer) !== attempted[j].oldSource) throw new Error("Source restoration not verified.");
-                    } catch (restoreError) { failures.push("Restore " + attempted[j].passName + ": " + String(restoreError)); }
+                    } catch (restoreError) {
+                        poisoned = true;
+                        failures.push("Restore " + attempted[j].passName + ": " + errorText(restoreError));
+                    }
                 }
                 // Retain footage if any restoration failed: a layer may still reference it.
                 var retained = failures.length ? made.length : 0;
@@ -247,13 +260,14 @@
                         try {
                             if (host.removeImportedReplacement(made[j]) !== true) throw new Error("Removal not verified.");
                         } catch (removeError) {
+                            poisoned = true;
                             retained++;
-                            failures.push("Remove replacement: " + String(removeError));
+                            failures.push("Remove replacement: " + errorText(removeError));
                         }
                     }
                 }
                 poisoned = failures.length > 0;
-                var report = new Error("Revision failed: " + String(error) +
+                var report = new Error("Revision failed: " + errorText(error) +
                     (failures.length ? "; ROLLBACK INCOMPLETE: " + failures.join("; ") : "; rollback completed."));
                 report.rollbackFailures = failures;
                 report.retainedReplacements = retained;
