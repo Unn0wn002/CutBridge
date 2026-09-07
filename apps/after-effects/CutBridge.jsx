@@ -763,7 +763,9 @@ if (typeof module !== "undefined" && module.exports) {
                     if (!passName) throw new Error("Could not identify the managed pass during revision commit.");
                     item.passName = passName;
                     setItemComment(item.layer, CutBridgeContract.managedTag("layer", newManifest, passName));
-                    setItemComment(item.oldSource, "");
+                    // Preserve the retired source's old version-scoped CutBridge tag. Clearing it would
+                    // convert historical CutBridge footage into an unmanaged S5 collision on later Build/QC.
+                    setItemComment(item.oldSource, item.oldComment);
                     setItemComment(item.replacement, CutBridgeContract.managedTag("footage", newManifest, passName));
                     delete state.layers[CutBridgeContract.managedTag("layer", oldManifest, passName)];
                     delete state.imported[CutBridgeContract.managedTag("footage", oldManifest, passName)];
@@ -793,7 +795,8 @@ if (typeof module !== "undefined" && module.exports) {
             if (assessment.status === "incompatible") { alertError("Revision blocked:\n- " + assessment.reasons.join("\n- ")); return; }
             var adapter = makeRevisionAdapter(state.manifest, selected.manifest, selected.root), executor = manager.createExecutor(adapter), ticket = executor.prepare(state.manifest, selected.manifest);
             var message = "Update CutBridge revision to V" + zeroPad(selected.manifest.version, 3) + "?\n\n" + (ticket.warnings.length ? "Warnings:\n- " + ticket.warnings.join("\n- ") + "\n\n" : "") + "Only verified CutBridge-managed sources and metadata will be changed.";
-            if (typeof confirm === "function" && !confirm(message)) return;
+            if (typeof confirm !== "function") throw new Error("After Effects confirmation UI is unavailable; revision was not applied.");
+            if (!confirm(message)) return;
             app.beginUndoGroup("CutBridge Update Revision");
             try {
                 executor.apply(ticket, true);
