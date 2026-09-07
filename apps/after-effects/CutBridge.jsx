@@ -258,7 +258,7 @@ var CutBridgeContract = (function () {
         return result;
     }
 
-    return {parseJSON: parseJSON, PRODUCT_VERSION: PRODUCT_VERSION, relativePassPath: relativePassPath, pathIsInside: pathIsInside,
+    return {parseJSON: parseJSON, zeroPad: zeroPad, PRODUCT_VERSION: PRODUCT_VERSION, relativePassPath: relativePassPath, pathIsInside: pathIsInside,
         SCHEMA: SCHEMA, SCHEMA_VERSION: SCHEMA_VERSION, validateManifest: validateManifest, patternToRegex: patternToRegex,
         expectedFrameName: expectedFrameName, sequenceCoverage: sequenceCoverage, managedIdentity: managedIdentity, managedTag: managedTag,
         expectedCompSpec: expectedCompSpec, compSpecErrors: compSpecErrors, passNames: passNames, sameFilesystemPath: sameFilesystemPath,
@@ -707,7 +707,7 @@ if (typeof module !== "undefined" && module.exports) {
                 io.sequence = true; io.forceAlphabetical = false;
                 var footage = app.project.importFile(io);
                 track(footage);
-                footage.name = manifest.cut + "_" + passName + "_V" + zeroPad(manifest.version, 3);
+                footage.name = manifest.cut + "_" + passName + "_V" + CutBridgeContract.zeroPad(manifest.version, 3);
                 footage.parentFolder = folders.render;
                 conformAndVerifyImportedFootage(footage, firstFile, p, manifest);
                 return footage;
@@ -800,14 +800,14 @@ if (typeof module !== "undefined" && module.exports) {
             var manager = getRevisionManager(), assessment = manager.assess(state.manifest, selected.manifest);
             if (assessment.status === "incompatible") { alertError("Revision blocked:\n- " + assessment.reasons.join("\n- ")); return; }
             var adapter = makeRevisionAdapter(state.manifest, selected.manifest, selected.root), executor = manager.createExecutor(adapter), ticket = executor.prepare(state.manifest, selected.manifest);
-            var message = "Update CutBridge revision to V" + zeroPad(selected.manifest.version, 3) + "?\n\n" + (ticket.warnings.length ? "Warnings:\n- " + ticket.warnings.join("\n- ") + "\n\n" : "") + "Only verified CutBridge-managed sources and metadata will be changed.";
+            var message = "Update CutBridge revision to V" + CutBridgeContract.zeroPad(selected.manifest.version, 3) + "?\n\n" + (ticket.warnings.length ? "Warnings:\n- " + ticket.warnings.join("\n- ") + "\n\n" : "") + "Only verified CutBridge-managed sources and metadata will be changed.";
             if (typeof confirm !== "function") throw new Error("After Effects confirmation UI is unavailable; revision was not applied.");
             if (!confirm(message)) return;
             app.beginUndoGroup("CutBridge Update Revision");
             try {
                 executor.apply(ticket, true);
                 state.manifestFile = selected.file; state.manifest = selected.manifest; state.packageFolder = selected.root;
-                alert("CutBridge: revision updated to V" + zeroPad(selected.manifest.version, 3) + ".\nManaged layer properties and artist layers were preserved.");
+                alert("CutBridge: revision updated to V" + CutBridgeContract.zeroPad(selected.manifest.version, 3) + ".\nManaged layer properties and artist layers were preserved.");
             } catch (applyError) { alertError(applyError.toString()); }
             finally { app.endUndoGroup(); }
         } catch (e) { alertError(e.toString()); }
