@@ -479,7 +479,7 @@ if (typeof module !== "undefined" && module.exports) {
                 var footage = importSequence(entry.passInfo, m, folders.render, entry.coverage);
                 ensureManagedLayer(comp, footage, m, entry.passInfo.name);
             }
-            if (compResult.created) orderManagedLayers(comp, m);
+            orderManagedLayers(comp, m);
             comp.openInViewer();
             var message = "CutBridge: comp " + (compResult.created ? "built" : "reused safely") + "\n" + comp.name + "\n" + m.resolution.width + "x" + m.resolution.height + " @ " + m.fps + " fps";
             if (warnings.length) message += "\n\nWarnings:\n- " + warnings.join("\n- ");
