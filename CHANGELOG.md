@@ -3,11 +3,9 @@
 All notable CutBridge changes are tracked here.
 
 ## [0.2.3] - Unreleased
-### Added
-- S6 revision-manager contract for V001/V002/V003 discovery, compatibility classification, managed-only source replacement planning, explicit warning confirmation, and rollback-safe host-adapter execution.
-
 
 ### Fixed
+- S6 core repair requires live adapter verification and replacement validation, stages all imports before source swaps, journals mutate-then-throw writes, and reports incomplete rollback while retaining potentially referenced footage. Identity tuples, canonical revisions, ambiguous candidates and malformed passes now fail closed. Native AE/panel/release integration remains incomplete; this is not a completed revision feature.
 - S5 ownership/cache repair resolves footage and layers from live project state on every reuse, rejects tag/container drift and ambiguous duplicate identities without reclaiming artist objects, and applies the same live footage checks in QC.
 - S5 follow-up hardening resolves managed comps from live package-scoped ownership, rejects duplicate/moved comp tags before replacement, keeps QC live after script reload, excludes skipped optional layers from current-build ordering, and makes manifest membership safe for prototype-key names.
 - S5 cache/QC hardening now treats a still-live cached object with combined tag/name/source/container drift as an ownership collision, rehydrates verified layer cache observations, and reports missing managed comps or required footage during project-state QC after reload.

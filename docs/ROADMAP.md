@@ -1,6 +1,6 @@
 # Roadmap
 
-Status reconciled after S4 integration on 2026-09-07. Versions 0.2.1–0.2.3 remain unreleased development history; milestone labels below describe product sessions rather than guaranteed release numbers unless explicitly assigned.
+Status reconciled during S6 repair after S5 integration. Versions 0.2.1–0.2.3 remain unreleased development history; milestone labels below describe product sessions rather than guaranteed release numbers unless explicitly assigned.
 
 ## Implemented foundation — v0.2.0 through v0.2.3 (unreleased)
 - Harden Blender Extension packaging and manifest metadata.
@@ -35,13 +35,14 @@ Status reconciled after S4 integration on 2026-09-07. Versions 0.2.1–0.2.3 rem
 
 Real AE GUI/end-to-end behavior remains a separate manual validation gate.
 
-## Next — S5 AE Import & Composition Reliability
+## Completed S5 — AE Import & Composition Reliability
 - Harden malformed-package and manifest-loading behavior.
 - Make composition/folder/layer creation deterministic and safe across repeated imports.
 - Verify FPS, resolution, pixel aspect, duration, layer ordering, Japanese/Unicode/Windows paths, and actionable failures.
 - Expand runtime-independent regression coverage without claiming native AE GUI execution.
 
-## S6 — Non-Destructive Revision Manager
+## In progress S6 — Non-Destructive Revision Manager
+- PR #15 is blocked pending native AE adapter/panel/persistent-state/release integration and independent review. The tested revision core alone does not complete S6.
 - Detect newer compatible cut revisions.
 - Replace only CutBridge-managed footage/sources where technically safe.
 - Preserve manual effects, masks, transforms, parenting, timing, layers, and compositor work where possible.

@@ -1,21 +1,267 @@
-/* CutBridge S6 revision manager. Pure preflight plus explicit host-adapter transaction boundary. */
-(function(root,factory){if(typeof module!=="undefined"&&module.exports)module.exports=factory();else root.CutBridgeRevisionManager=factory();}(this,function(){"use strict";
-var SCHEMA="cutbridge-manifest",SCHEMA_VERSION=1,IDS=["project","episode","scene","cut","take"];
-function own(o,k){return Object.prototype.hasOwnProperty.call(o,k);} function arr(v){return Object.prototype.toString.call(v)==="[object Array]";} function num(v){return typeof v==="number"&&isFinite(v);}
-function tupleIdentity(m){var a=[];for(var i=0;i<IDS.length;i++)a.push(String(m&&m[IDS[i]]));return a.join("|");} function identity(m){if(m&&m.package_name)return String(m.package_name);return tupleIdentity(m);}
-function tag(k,m,p){return"CUTBRIDGE|1|"+k+"|"+identity(m)+"|"+String(p||"");}
-function rev(v){if(typeof v==="number"&&isFinite(v))return v;var m=String(v==null?"":v).match(/(?:^|[^0-9])V?([0-9]+)(?:$|[^0-9])/i);return m?parseInt(m[1],10):NaN;}
-function map(m){var o={},p=m&&arr(m.passes)?m.passes:[];for(var i=0;i<p.length;i++)o["$"+p[i].name]=p[i];return o;}
-function meta(m){return{fps:m&&m.fps,w:m&&m.resolution&&m.resolution.width,h:m&&m.resolution&&m.resolution.height,pa:m&&m.resolution&&m.resolution.pixel_aspect!==undefined?m.resolution.pixel_aspect:1,s:m&&m.frames&&m.frames.start,e:m&&m.frames&&m.frames.end,c:m&&m.frames&&m.frames.count};}
-function eq(a,b,e){return num(a)&&num(b)&&Math.abs(a-b)<=e;}
-function assess(cur,next){var r=[],w=[],a=meta(cur),b=meta(next);if(!cur||!next)return{status:"incompatible",reasons:["Both current and candidate manifests are required."],warnings:[]};
-if(next.schema!==SCHEMA||next.schema_version!==SCHEMA_VERSION)r.push("candidate schema is not supported");if(cur.schema!==SCHEMA||cur.schema_version!==SCHEMA_VERSION)r.push("current schema is not supported");if(tupleIdentity(cur)!==tupleIdentity(next))r.push("project/episode/scene/cut/take identity differs");if(!!cur.package_name!==!!next.package_name||String(cur.package_name||"")!==String(next.package_name||""))r.push("package identity differs");
-var cv=rev(cur.version),nv=rev(next.version);if(!num(cv)||!num(nv))r.push("package version is not numeric");else if(nv<=cv)r.push("candidate is not newer");
-if(!eq(a.fps,b.fps,.001))r.push("FPS changes are not supported");if(a.s!==b.s||a.e!==b.e||a.c!==b.c)r.push("frame range/count changes are not supported");if(!eq(a.pa,b.pa,.000001))r.push("pixel aspect changes are not supported");if(a.w!==b.w||a.h!==b.h)w.push("resolution changes require explicit confirmation; existing layer geometry is preserved");
-var old=map(cur),fresh=map(next),passes=cur.passes||[];for(var i=0;i<passes.length;i++)if(passes[i].required!==false&&!own(fresh,"$"+passes[i].name))r.push("previously required pass is missing: "+passes[i].name);for(var k in old)if(own(old,k)&&!own(fresh,k))w.push("previous pass is absent and will not be deleted: "+old[k].name);
-return{status:r.length?"incompatible":w.length?"warning":"safe",reasons:r,warnings:w};}
-function select(cur,cands){var a=[],l=arr(cands)?cands:[];for(var i=0;i<l.length;i++){var c=assess(cur,l[i]);if(c.status!=="incompatible")a.push({manifest:l[i],compatibility:c,version:rev(l[i].version)});}a.sort(function(x,y){return y.version-x.version;});return a.length?a[0]:null;}
-function discover(cur,cands){var o=[],l=arr(cands)?cands:[];for(var i=0;i<l.length;i++)o.push({manifest:l[i],version:rev(l[i].version),newer:rev(l[i].version)>rev(cur&&cur.version),compatibility:assess(cur,l[i])});o.sort(function(a,b){return b.version-a.version;});return o;}
-function plan(cur,next,objects){var c=assess(cur,next),actions=[],o=arr(objects)?objects:[],n=map(next);if(c.status==="incompatible")return{status:c.status,compatibility:c,actions:[],preserve:[]};for(var i=0;i<o.length;i++){var x=o[i],p=x.passName&&n["$"+x.passName];if(x.managed&&x.tag===tag("layer",cur,x.passName)&&p)actions.push({passName:x.passName,layer:x,replacement:p,oldSource:x.source,managedTag:x.tag});}return{status:c.status,compatibility:c,actions:actions,preserve:["layer transforms","effects","masks","parenting","timing","switches","blend modes","manual layers","artist ordering outside managed subset"],requiresConfirmation:c.status==="warning"};}
-function apply(p,a,confirmed){if(!p||p.status==="incompatible")throw new Error("Revision is incompatible; no managed objects were changed.");if(p.requiresConfirmation&&confirmed!==true)throw new Error("Revision has warnings and requires explicit confirmation.");if(!a||typeof a.importReplacement!=="function"||typeof a.swapManagedSource!=="function")throw new Error("Revision host adapter must provide importReplacement and swapManagedSource.");var made=[],done=[];try{for(var i=0;i<p.actions.length;i++){var x=p.actions[i],n=a.importReplacement(x.replacement,x.passName);if(!n)throw new Error(x.passName+": replacement import returned no footage.");if(typeof a.validateReplacement==="function"&&a.validateReplacement(n,x.replacement)!==true)throw new Error(x.passName+": replacement footage failed validation.");made.push(n);a.swapManagedSource(x.layer,n);done.push(x);}return{status:"applied",replaced:done.length,imported:made.length};}catch(e){for(var j=done.length-1;j>=0;j--)try{if(typeof a.restoreManagedSource==="function")a.restoreManagedSource(done[j].layer,done[j].oldSource);}catch(ignore){}for(var k=made.length-1;k>=0;k--)try{if(typeof a.removeImportedReplacement==="function")a.removeImportedReplacement(made[k]);}catch(ignore2){}throw e;}}
-return{SCHEMA:SCHEMA,SCHEMA_VERSION:SCHEMA_VERSION,identity:identity,managedTag:tag,revisionNumber:rev,assess:assess,discover:discover,selectLatest:select,plan:plan,apply:apply};}));
+/*
+ * S6 revision core. Native AE adapter/UI and release integration are outstanding.
+ * Existing S5 project tags are never rewritten by this module.
+ */
+(function (root, factory) {
+    if (typeof module !== "undefined" && module.exports) {
+        module.exports = factory(require("./CutBridge.jsx"));
+    } else {
+        root.CutBridgeRevisionManager = factory(root.CutBridgeContract);
+    }
+}(this, function (Contract) {
+    "use strict";
+    if (!Contract || typeof Contract.validateManifest !== "function") {
+        throw new Error("Load CutBridgeContract before the revision core.");
+    }
+    var IDS = ["project", "episode", "scene", "cut", "take"];
+    function own(o, key) { return Object.prototype.hasOwnProperty.call(o, key); }
+    function array(value) { return Object.prototype.toString.call(value) === "[object Array]"; }
+    function integer(value) {
+        return typeof value === "number" && isFinite(value) &&
+            value > 0 && Math.floor(value) === value && value <= 9007199254740991;
+    }
+    function revisionNumber(value) {
+        if (integer(value)) return value;
+        if (typeof value !== "string" || !/^V[0-9]{3,}$/.test(value)) return NaN;
+        var number = Number(value.slice(1)), digits = String(number);
+        while (digits.length < 3) digits = "0" + digits;
+        return integer(number) && value === "V" + digits ? number : NaN;
+    }
+    function manifestErrors(m) {
+        var errors = Contract.validateManifest(m), i;
+        if (!m || typeof m !== "object" || array(m)) return errors;
+        for (i = 0; i < IDS.length; i++) {
+            if (typeof m[IDS[i]] !== "string" || !/\S/.test(m[IDS[i]])) {
+                errors.push("S6 requires a non-empty " + IDS[i] + " identity field.");
+            }
+        }
+        if (m.package_name !== undefined &&
+            (typeof m.package_name !== "string" || !/\S/.test(m.package_name))) {
+            errors.push("package_name must be a non-empty string when provided.");
+        }
+        return errors;
+    }
+    function requireManifest(m) {
+        var errors = manifestErrors(m);
+        if (errors.length) throw new Error("Revision manifest rejected: " + errors.join("; "));
+    }
+    function sameCut(a, b) {
+        for (var i = 0; i < IDS.length; i++) if (a[IDS[i]] !== b[IDS[i]]) return false;
+        return true;
+    }
+    // Length prefixes prevent delimiter collisions without requiring native JSON.
+    function encode(value) { value = String(value); return value.length + ":" + value; }
+    function identity(m) {
+        requireManifest(m);
+        var value = "";
+        for (var i = 0; i < IDS.length; i++) value += encode(m[IDS[i]]);
+        return value;
+    }
+    // Verification key only, NOT a replacement for persisted S5 item comments.
+    function ownershipKey(m, passName) {
+        return "CUTBRIDGE-REVISION-1:" + identity(m) + encode(m.version) +
+            encode(m.package_name === undefined ? "" : m.package_name) + encode(passName);
+    }
+    function passMap(m) {
+        var out = {};
+        for (var i = 0; i < m.passes.length; i++) out["$" + m.passes[i].name] = m.passes[i];
+        return out;
+    }
+    function aspect(m) { return m.resolution.pixel_aspect === undefined ? 1 : m.resolution.pixel_aspect; }
+    function assess(current, candidate) {
+        var errors = [], warnings = [], left = manifestErrors(current), right = manifestErrors(candidate), i;
+        for (i = 0; i < left.length; i++) errors.push("Current: " + left[i]);
+        for (i = 0; i < right.length; i++) errors.push("Candidate: " + right[i]);
+        if (errors.length) return {status: "incompatible", reasons: errors, warnings: warnings};
+        if (!sameCut(current, candidate)) errors.push("Project/episode/scene/cut/take identity differs.");
+        if (candidate.version <= current.version) errors.push("Candidate must be a newer revision.");
+        // Producer package names include V### and therefore normally differ across revisions.
+        if (current.fps !== candidate.fps) errors.push("FPS changes are unsupported.");
+        if (current.frames.start !== candidate.frames.start || current.frames.end !== candidate.frames.end ||
+            current.frames.count !== candidate.frames.count) errors.push("Frame range/count changes are unsupported.");
+        if (aspect(current) !== aspect(candidate)) errors.push("Pixel aspect changes are unsupported.");
+        if (current.resolution.width !== candidate.resolution.width || current.resolution.height !== candidate.resolution.height) {
+            warnings.push("Resolution changes require confirmation; source geometry can change appearance.");
+        }
+        var old = passMap(current), next = passMap(candidate), p;
+        for (i = 0; i < current.passes.length; i++) {
+            p = current.passes[i];
+            if (!own(next, "$" + p.name)) {
+                if (p.required !== false) errors.push("Previously required pass missing: " + p.name);
+                else warnings.push("Removed optional pass will be retained unchanged: " + p.name);
+            } else if ((p.required !== false) !== (next["$" + p.name].required !== false)) {
+                warnings.push("Required/optional status changed: " + p.name);
+            }
+        }
+        for (i = 0; i < candidate.passes.length; i++) {
+            p = candidate.passes[i];
+            if (!own(old, "$" + p.name)) {
+                errors.push("Adding passes is unsupported by source-only revision: " + p.name);
+            }
+        }
+        return {status: errors.length ? "incompatible" : warnings.length ? "warning" : "safe",
+            reasons: errors, warnings: warnings};
+    }
+    function discover(current, candidates) {
+        requireManifest(current);
+        if (!array(candidates)) throw new Error("Candidates must be an array.");
+        var out = [], counts = {}, i, m, valid, key;
+        for (i = 0; i < candidates.length; i++) {
+            m = candidates[i];
+            valid = manifestErrors(m).length === 0;
+            if (valid && sameCut(current, m) && m.version > current.version) {
+                key = "$" + m.version; counts[key] = (counts[key] || 0) + 1;
+            }
+            out.push({manifest: m, version: valid ? m.version : null,
+                newer: valid && m.version > current.version, compatibility: assess(current, m)});
+        }
+        for (i = 0; i < out.length; i++) {
+            m = out[i].manifest;
+            if (out[i].version !== null && sameCut(current, m) && counts["$" + m.version] > 1) {
+                out[i].compatibility.status = "incompatible";
+                out[i].compatibility.reasons.push("Duplicate candidate revision is ambiguous: V" + m.version);
+                out[i].ambiguous = true;
+            }
+        }
+        // Diagnostic rows retain input order; selection below never breaks ties by input order.
+        return out;
+    }
+    function selectLatest(current, candidates) {
+        var rows = discover(current, candidates), best = null;
+        for (var i = 0; i < rows.length; i++) {
+            if (rows[i].ambiguous) return null;
+            if (rows[i].compatibility.status !== "incompatible" && (!best || rows[i].version > best.version)) best = rows[i];
+        }
+        return best;
+    }
+    function snapshot(m) {
+        var out = {schema: m.schema, schema_version: m.schema_version, cutbridge_version: m.cutbridge_version,
+            version: m.version, fps: m.fps, frames: {start: m.frames.start, end: m.frames.end, count: m.frames.count},
+            resolution: {width: m.resolution.width, height: m.resolution.height, pixel_aspect: aspect(m)}, passes: []};
+        if (m.package_name !== undefined) out.package_name = m.package_name;
+        for (var i = 0; i < IDS.length; i++) out[IDS[i]] = m[IDS[i]];
+        for (i = 0; i < m.passes.length; i++) {
+            var p = m.passes[i];
+            out.passes.push({name: p.name, path: p.path, sequence_pattern: p.sequence_pattern, required: p.required !== false});
+        }
+        return out;
+    }
+    function createExecutor(adapter) {
+        // The adapter is trusted host code. Package data and public plan records are not.
+        var methods = ["listManagedLayers", "validateManagedLayer", "readSource", "importReplacement",
+            "validateReplacement", "swapManagedSource", "restoreManagedSource", "removeImportedReplacement"];
+        var host = {}, pending = null, busy = false, poisoned = false;
+        for (var i = 0; i < methods.length; i++) {
+            if (!adapter || typeof adapter[methods[i]] !== "function") throw new Error("Required adapter callback: " + methods[i]);
+            host[methods[i]] = adapter[methods[i]];
+        }
+        function available() {
+            if (busy) throw new Error("Revision executor is busy.");
+            if (poisoned) throw new Error("Rollback incomplete; recover the project before creating a new executor.");
+        }
+        function verify(action, current) {
+            // Callback must inspect live host type, project membership, comp/render folders,
+            // persisted package metadata/tags, uniqueness, source path and conform FPS.
+            if (host.validateManagedLayer(action.layer, snapshot(current), action.passName,
+                ownershipKey(current, action.passName)) !== true ||
+                host.readSource(action.layer) !== action.oldSource) {
+                throw new Error("Live managed ownership/source drift: " + action.passName);
+            }
+        }
+        function prepare(current, candidate) {
+            available(); pending = null;
+            var compatibility = assess(current, candidate);
+            if (compatibility.status === "incompatible") throw new Error(compatibility.reasons.join("; "));
+            current = snapshot(current); candidate = snapshot(candidate);
+            var records = host.listManagedLayers(snapshot(current)), actions = [], seen = {}, old = passMap(current), next = passMap(candidate);
+            if (!array(records)) throw new Error("Adapter must return verified managed-layer records.");
+            for (var j = 0; j < records.length; j++) {
+                var record = records[j], key = record && "$" + record.passName;
+                if (!record || !own(old, key) || seen[key] || !record.layer) throw new Error("Invalid or duplicate managed-layer record.");
+                for (var k = 0; k < j; k++) if (records[k].layer === record.layer) throw new Error("Duplicate managed layer handle.");
+                seen[key] = true;
+                var action = {passName: record.passName, layer: record.layer, oldSource: host.readSource(record.layer),
+                    replacement: next[key]};
+                if (!action.oldSource) throw new Error("Managed layer has no source.");
+                verify(action, current);
+                if (own(next, key)) actions.push(action);
+            }
+            for (j = 0; j < current.passes.length; j++) {
+                var pass = current.passes[j], nextPass = next["$" + pass.name];
+                if ((pass.required !== false || (nextPass && nextPass.required !== false)) && !seen["$" + pass.name]) {
+                    throw new Error("Missing required managed layer: " + pass.name);
+                }
+            }
+            if (!actions.length) throw new Error("No managed source replacements available.");
+            var ticket = {status: compatibility.status, warnings: compatibility.warnings.slice(0),
+                requiresConfirmation: compatibility.status === "warning", replacementCount: actions.length};
+            pending = {ticket: ticket, current: current, candidate: candidate, actions: actions,
+                requiresConfirmation: ticket.requiresConfirmation};
+            return ticket;
+        }
+        function apply(ticket, confirmed) {
+            available();
+            if (!pending || pending.ticket !== ticket) throw new Error("Unknown, expired or already applied revision plan.");
+            if (pending.requiresConfirmation && confirmed !== true) throw new Error("Revision requires explicit confirmation.");
+            var plan = pending; pending = null; busy = true;
+            var made = [], attempted = [], replacements = [], failures = [], j;
+            function track(item) {
+                if (!item) throw new Error("Cannot track empty replacement.");
+                for (var a = 0; a < plan.actions.length; a++) if (plan.actions[a].oldSource === item) throw new Error("Import must create new footage.");
+                for (var b = 0; b < made.length; b++) if (made[b] === item) throw new Error("Replacement already tracked.");
+                made.push(item);
+            }
+            try {
+                for (j = 0; j < plan.actions.length; j++) verify(plan.actions[j], plan.current);
+                // Import AND validate every replacement before changing any existing layer.
+                for (j = 0; j < plan.actions.length; j++) {
+                    var action = plan.actions[j], before = made.length;
+                    var item = host.importReplacement(snapshot(plan.candidate), action.passName, track);
+                    // Adapter must track immediately after allocation, before any fallible setup.
+                    if (made.length !== before + 1 || made[before] !== item) throw new Error("Import must register exactly one new replacement.");
+                    if (host.validateReplacement(item, snapshot(plan.candidate), action.passName) !== true) {
+                        throw new Error("Replacement validation failed: " + action.passName);
+                    }
+                    replacements.push(item);
+                }
+                for (j = 0; j < plan.actions.length; j++) verify(plan.actions[j], plan.current);
+                for (j = 0; j < plan.actions.length; j++) {
+                    action = plan.actions[j];
+                    verify(action, plan.current);
+                    attempted.push(action); // Record BEFORE a host write can mutate then throw.
+                    host.swapManagedSource(action.layer, replacements[j]);
+                    if (host.readSource(action.layer) !== replacements[j]) throw new Error("Source swap verification failed.");
+                }
+                return {status: "applied", replaced: attempted.length};
+            } catch (error) {
+                for (j = attempted.length - 1; j >= 0; j--) {
+                    try {
+                        host.restoreManagedSource(attempted[j].layer, attempted[j].oldSource);
+                        if (host.readSource(attempted[j].layer) !== attempted[j].oldSource) throw new Error("Source restoration not verified.");
+                    } catch (restoreError) { failures.push("Restore " + attempted[j].passName + ": " + String(restoreError)); }
+                }
+                // Retain footage if any restoration failed: a layer may still reference it.
+                var retained = failures.length ? made.length : 0;
+                if (!failures.length) {
+                    for (j = made.length - 1; j >= 0; j--) {
+                        try {
+                            if (host.removeImportedReplacement(made[j]) !== true) throw new Error("Removal not verified.");
+                        } catch (removeError) {
+                            retained++;
+                            failures.push("Remove replacement: " + String(removeError));
+                        }
+                    }
+                }
+                poisoned = failures.length > 0;
+                var report = new Error("Revision failed: " + String(error) +
+                    (failures.length ? "; ROLLBACK INCOMPLETE: " + failures.join("; ") : "; rollback completed."));
+                report.rollbackFailures = failures;
+                report.retainedReplacements = retained;
+                throw report;
+            } finally { busy = false; }
+        }
+        return {prepare: prepare, apply: apply};
+    }
+    return {assess: assess, identity: identity, ownershipKey: ownershipKey, revisionNumber: revisionNumber,
+        discover: discover, selectLatest: selectLatest, createExecutor: createExecutor};
+}));

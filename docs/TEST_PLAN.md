@@ -131,6 +131,21 @@ Do not claim timing, error-rate, usability, or Japanese target-user results unti
 
 Manual repetition in a supported AE desktop installation remains `MANUAL NOT EXECUTED`. Mocks cannot certify native host handles, comment persistence, undo behavior or OS filesystem semantics.
 
-## S6 revision-manager gate
+## S6 revision-manager repair gate
 
-The runtime-independent S6 checks cover V001/V002/V003 numeric selection, newer compatible discovery, identity/schema rejection, FPS/frame-range/pixel-aspect blocking, resolution warning and confirmation, missing required passes, managed-only replacement planning, preservation declarations, and rollback of newly imported replacements. Native After Effects preservation remains MANUAL NOT EXECUTED.
+Run `node tests/ae_s6_revision_checks.cjs` or `pytest -q tests/test_ae_s6.py`.
+The latter makes S6 mandatory in the complete pytest suite; missing Node fails.
+
+The 26 groups cover producer-style versioned package names, structural tuple drift,
+delimiter collisions, strict numeric revisions/display tokens, ambiguous duplicate
+candidates, shared schema/path/frame/pass validation, prototype-key names, required
+and optional policy, mandatory callbacks, forged/stale tickets, confirmation bypass
+attempts, live ownership/source/container/FPS drift, duplicate/missing layers, staging
+all imports before swaps, validation-failure cleanup, allocation-then-throw,
+multi-action mutate-then-throw restoration, silent swap failure, failed restoration,
+failed cleanup, retained replacements and mock layer-property/order preservation.
+
+Mocks validate only the core/adapter contract. They do not execute a native AE adapter.
+The native adapter, panel/discovery flow, persistent version metadata, S5 migration,
+Build/QC after reload and release installation path remain implementation blockers.
+Native AE property preservation remains **MANUAL NOT EXECUTED**.
