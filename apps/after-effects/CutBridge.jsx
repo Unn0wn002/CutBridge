@@ -296,17 +296,34 @@ if (typeof module !== "undefined" && module.exports) {
         return null;
     }
     function ensureProjectFolders(manifest) {
-        var rootName = manifest.package_name || (manifest.project + "_" + manifest.cut), root = findExistingChildFolder(app.project.rootFolder, rootName);
-        if (root) {
-            var compName = (manifest.ae && manifest.ae.comp_name) ? manifest.ae.comp_name : (manifest.cut + "_COMP");
-            var compFolder = findExistingChildFolder(root, "01_COMP"), expectedCompTag = CutBridgeContract.managedTag("comp", manifest, compName), owned = false;
-            if (compFolder && typeof CompItem !== "undefined") {
-                for (var i = 1; i <= app.project.numItems; i++) {
-                    var item = app.project.item(i);
-                    if (item instanceof CompItem && item.parentFolder === compFolder && item.name === compName && itemComment(item) === expectedCompTag) { owned = true; break; }
-                }
+        var rootName = manifest.package_name || (manifest.project + "_" + manifest.cut), root = null, rootCount = 0;
+        for (var i = 1; i <= app.project.numItems; i++) {
+            var rootCandidate = app.project.item(i);
+            if (rootCandidate instanceof FolderItem && rootCandidate.parentFolder === app.project.rootFolder && rootCandidate.name === rootName) {
+                rootCount++; if (!root) root = rootCandidate;
             }
-            if (!owned) throw new Error("A project-root folder named '" + rootName + "' already exists but is not verified as this CutBridge package. Preserve that folder; rename or move it, or build this package in a clean project. CutBridge will not adopt or modify it.");
+        }
+        if (rootCount > 1) throw new Error("Multiple project-root folders named '" + rootName + "' exist; package ownership is ambiguous. Resolve the duplicate roots before Build. CutBridge will not modify either root.");
+        if (root) {
+            var managedNames = ["01_COMP", "02_RENDER", "03_PRECOMP", "04_OUTPUT"], childCounts = {}, c;
+            for (c = 0; c < managedNames.length; c++) childCounts[managedNames[c]] = 0;
+            for (i = 1; i <= app.project.numItems; i++) {
+                var childCandidate = app.project.item(i);
+                if (!(childCandidate instanceof FolderItem) || childCandidate.parentFolder !== root) continue;
+                for (c = 0; c < managedNames.length; c++) if (childCandidate.name === managedNames[c]) childCounts[managedNames[c]]++;
+            }
+            for (c = 0; c < managedNames.length; c++) {
+                if (childCounts[managedNames[c]] > 1) throw new Error("Duplicate managed child folder '" + managedNames[c] + "' exists inside '" + rootName + "'. Resolve the folder ambiguity before Build; CutBridge will not choose one arbitrarily.");
+            }
+            var compName = (manifest.ae && manifest.ae.comp_name) ? manifest.ae.comp_name : (manifest.cut + "_COMP");
+            var compFolder = findExistingChildFolder(root, "01_COMP"), expectedCompTag = CutBridgeContract.managedTag("comp", manifest, compName), taggedCompItems = 0, ownedCompItems = 0;
+            for (i = 1; i <= app.project.numItems; i++) {
+                var item = app.project.item(i);
+                if (itemComment(item) !== expectedCompTag) continue;
+                taggedCompItems++;
+                if (typeof CompItem !== "undefined" && item instanceof CompItem && item.parentFolder === compFolder && item.name === compName) ownedCompItems++;
+            }
+            if (!compFolder || taggedCompItems !== 1 || ownedCompItems !== 1) throw new Error("A project-root folder named '" + rootName + "' exists but is not uniquely verified as this CutBridge package. Preserve that folder; resolve missing/duplicate/misplaced managed-comp ownership, rename or move the conflicting root, or build this package in a clean project. CutBridge will not adopt or modify it.");
         } else {
             root = app.project.items.addFolder(rootName); root.parentFolder = app.project.rootFolder;
         }
