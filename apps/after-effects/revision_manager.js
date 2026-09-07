@@ -1,6 +1,6 @@
 /*
- * S6 revision core. Native AE adapter/UI and release integration are outstanding.
- * Existing S5 project tags are never rewritten by this module.
+ * S6 revision core for the native CutBridge After Effects adapter.
+ * Host integration remains subject to native AE/manual release validation.
  */
 (function (root, factory) {
     if (typeof module !== "undefined" && module.exports) {
@@ -94,7 +94,7 @@
             current.frames.count !== candidate.frames.count) errors.push("Frame range/count changes are unsupported.");
         if (aspect(current) !== aspect(candidate)) errors.push("Pixel aspect changes are unsupported.");
         if (current.resolution.width !== candidate.resolution.width || current.resolution.height !== candidate.resolution.height) {
-            warnings.push("Resolution changes require confirmation; source geometry can change appearance.");
+            errors.push("Resolution changes are unsupported by source-only revision; rebuild or migrate the comp deliberately.");
         }
         var old = passMap(current), next = passMap(candidate), p;
         for (i = 0; i < current.passes.length; i++) {
