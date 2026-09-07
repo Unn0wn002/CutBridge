@@ -58,6 +58,10 @@ Automated Blender checks run headlessly. They validate RNA lifecycle, render-map
 | A22 | Combined footage or layer drift is present after script reload | Build fails before replacement import/layer creation and preserves the existing object |
 | A23 | Managed package root is moved while tagged managed objects remain | QC reports managed-state ownership failure instead of package-only PASS |
 | A24 | A late build operation fails after new footage/layer creation | Newly created managed footage/layers roll back; existing comp scaffold and artist work remain |
+| A25 | Existing managed root is missing `03_PRECOMP` or has duplicate `02_RENDER` | Build remains read-only and fails; QC cannot report PASS through an arbitrary first match |
+| A26 | Current V002 project has a duplicate package root or duplicate `02_RENDER`, then V003 revision is selected | Revision blocks before confirmation, replacement import, or `replaceSource()` |
+| A27 | V001 → V002 → V003 through the actual `CutBridge.jsx` adapter in the host-shaped VM | Managed source replacement, ownership migration, historical-footage provenance, Build/QC and script reload remain consistent |
+| A28 | AE release ZIP is built | Archive contains exact `CutBridge.jsx`, `revision_manager.js`, and `LICENSE` contents with valid release checksums |
 
 ## S4 automated contract gate
 
@@ -78,6 +82,7 @@ These remain `MANUAL NOT EXECUTED` until real evidence is recorded.
 | Install/enable current Blender extension in supported GUI build | Add-on/extension enables and CutBridge panel is usable |
 | Validate and Build Package in Blender GUI | Actionable diagnostics match automated contract and package is created safely |
 | Render configured pass sequences | Expected files are produced for the selected renderer/View Layer setup |
+| Install/run AE development scripts | `CutBridge.jsx` runs with `revision_manager.js` beside it; the panel exposes Import, Build, QC, and Update Revision actions |
 | Load a real package in After Effects | Manifest loads without host/runtime error |
 | Build AE comp | Resolution/FPS/duration/folders/layers agree with manifest |
 | Export range begins at 0 | Blender package and AE import/comp/QC agree |
@@ -89,7 +94,12 @@ These remain `MANUAL NOT EXECUTED` until real evidence is recorded.
 | Folder/file symlink or alias | Rejected before footage import |
 | Older ExtendScript without native JSON | Valid JSON loads; executable text is rejected |
 | Repeat package import | First build, repeated build, manifest reload and script reload retain singleton managed items/layers; tag/container drift blocks without adoption or duplication |
-| V001 → V002 revision | Preservation behavior is tested only after S6 is implemented |
+| V001 → V002 revision in native AE | Explicit confirmation is shown; only verified CutBridge-managed sources/metadata change; effects, masks, transforms, parenting, timing, switches, blend mode, and unrelated artist layers remain unchanged |
+| V002 → V003 revision followed by Build/QC | New managed sources are active, historical managed footage retains prior-version provenance, Build safely reuses the current managed state, and QC passes only when the project is consistent |
+| Save/close/reopen after revision | Reloading the newer manifest rediscovers managed project state; Build/QC do not duplicate or adopt unrelated objects |
+| Duplicate/missing managed root/folder before revision or QC | Revision blocks before confirmation/import/source swap; QC reports structural failure and never reports PASS |
+| Native AE rollback/undo failure exercise where safely reproducible | Failed revision reports the failure accurately; original source/property state is restored when host rollback succeeds; incomplete rollback is never described as successful |
+| Blender → package → AE V001 → V002 smoke test | Real producer output imports, builds, revises, and QCs in the selected Blender/AE/OS combination without replacing unrelated artist work |
 
 ## Target-user task test
 
@@ -136,18 +146,34 @@ Manual repetition in a supported AE desktop installation remains `MANUAL NOT EXE
 Run `node tests/ae_s6_revision_checks.cjs` or `pytest -q tests/test_ae_s6.py`.
 The latter makes S6 mandatory in the complete pytest suite; missing Node fails.
 
-The 30 groups cover producer-style versioned package names, structural tuple drift,
-delimiter collisions, strict numeric revisions/display tokens, ambiguous duplicate
-candidates, shared schema/path/frame/pass validation, prototype-key names, required
-and optional policy, mandatory callbacks, forged/stale tickets, confirmation bypass
-attempts, live ownership/source/container/FPS drift, duplicate/missing layers, staging
-all imports before swaps, validation-failure cleanup, allocation-then-throw,
-multi-action mutate-then-throw restoration, silent swap failure, failed restoration,
-failed cleanup, retained replacements and mock layer-property/order preservation.
-They also cover unprintable thrown values during rollback and malformed schema values
-within otherwise valid discovery lists, so error reporting cannot interrupt recovery.
+The core revision harness contains 30 groups covering producer-style versioned package names,
+structural tuple drift, delimiter collisions, strict numeric revisions/display tokens, ambiguous
+duplicate candidates, shared schema/path/frame/pass validation, prototype-key names, required
+and optional policy, mandatory callbacks, forged/stale tickets, confirmation bypass attempts,
+live ownership/source/container/FPS drift, duplicate/missing layers, staging all imports before
+swaps, validation-failure cleanup, allocation-then-throw, multi-action mutate-then-throw
+restoration, silent swap failure, failed restoration, failed cleanup, retained replacements and
+mock layer-property/order preservation. It also covers unprintable thrown values during rollback
+and malformed schema values within otherwise valid discovery lists, so error reporting cannot
+interrupt recovery.
 
-Mocks validate only the core/adapter contract. They do not execute a native AE adapter.
-The native adapter, panel/discovery flow, persistent version metadata, S5 migration,
-Build/QC after reload and release installation path remain implementation blockers.
-Native AE property preservation remains **MANUAL NOT EXECUTED**.
+`tests/test_ae_s6.py` also executes the actual `CutBridge.jsx` adapter in host-shaped Node VMs:
+
+- `ae_s6_native_host_checks.cjs` runs V001 → V002 → V003, uses a deliberately read-only
+  `AVLayer.source`, permits source mutation only through `replaceSource(..., false)`, verifies
+  package/tag migration, historical-footage provenance, Build/QC after revision, script reload,
+  artist root-comment preservation, and rejection of ambiguous current root/folder structure
+  before confirmation/import/source replacement.
+- `ae_s6_root_structure_checks.cjs` removes/duplicates deterministic managed folders and proves
+  Build performs no implicit structural repair while QC remains read-only and cannot report PASS
+  through an ambiguous first match.
+- Static guards verify the formatter scope, native source-replacement API, root-ownership rules,
+  release sidecar inclusion and other source invariants.
+
+The native adapter, panel/discovery flow, package-root/tag migration, Build/QC/reload lifecycle,
+and deterministic release-sidecar packaging are therefore **implemented and regression-tested**.
+These host-shaped tests still do **not** execute an Adobe After Effects desktop host. Native AE
+property preservation, ScriptUI/undo behavior, item-comment persistence across real project
+save/reopen, OS filesystem/sequence interpretation, real V001 → V002 → V003 execution, and the
+Blender → After Effects end-to-end workflow remain **MANUAL NOT EXECUTED** until actual evidence
+is recorded.
