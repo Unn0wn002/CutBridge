@@ -21,11 +21,12 @@ MANUAL NOT EXECUTED.
 - `discover` returns diagnostic rows in input order. `selectLatest` selects the highest
   compatible newer numeric revision. Duplicate newer revisions for the same cut are
   ambiguous; selection returns null regardless of their order or package names.
-- FPS, frame range/count and pixel-aspect changes block. Resolution and required/optional
-  status changes warn and require explicit confirmation. Source geometry can change the
-  visual result even when layer properties are retained.
-- Missing previously required passes block. Removed optional passes remain untouched.
-  Added passes block this source-only operation; it does not create layers.
+- FPS, frame range/count, pixel-aspect **and resolution** changes block. S6 is deliberately
+  source-only and does not resize/re-time an existing composition; accepting a new resolution
+  while retaining old comp geometry would leave Build/QC inconsistent with the new manifest.
+- Required/optional status changes warn and require explicit confirmation. Missing previously
+  required passes block. Removed optional passes remain untouched. Added passes block this
+  source-only operation; it does not create layers.
 
 ## Trusted host-adapter boundary
 
@@ -52,9 +53,15 @@ does not sandbox a malicious adapter. All callbacks must exist before preparing 
 
 The `ownershipKey` includes the collision-safe cut tuple, numeric version, package name
 and pass. It is verification context, not a replacement tag format for existing S5
-comments. A native adapter needs a reliable persisted manifest/root association and an
-explicit migration policy before it can attest ownership. No silent S5 tag adoption is
-implemented.
+comments.
+
+The native adapter preserves provenance across revisions: the active layer and replacement
+footage receive the candidate package/version tags, while retired CutBridge footage retains
+its previous version-scoped CutBridge tag. Retired footage is removed from current-version
+caches but is not converted into an unmanaged item. This allows historical footage to remain
+available for artist references without weakening S5's unmanaged-collision protections.
+Rollback restores the exact pre-revision root/comp/layer/footage comments and names recorded
+before migration.
 
 ## Transaction and recovery
 
@@ -63,9 +70,13 @@ implemented.
 2. Apply revalidates the managed objects, stages and validates **all** replacement imports,
    then revalidates ownership before swaps. There are no swaps on import/validation failure.
 3. Record each old source before attempting its swap, then verify the new live source.
-4. On failure restore every attempted layer in reverse order, including mutate-then-throw.
-   Only after all restores succeed, remove the tracked replacement items.
-5. If restoration fails, retain all replacement footage to avoid dangling layer sources.
+4. Only after every source swap succeeds, migrate the package root, managed comp/layer tags,
+   replacement-footage tags, and current-version caches. Retired footage keeps old-version
+   provenance instead of becoming unmanaged.
+5. On failure restore every attempted layer in reverse order, including mutate-then-throw,
+   and restore any partially migrated metadata from the recorded journal.
+6. Only after all restores succeed, remove the tracked replacement items.
+7. If restoration fails, retain all replacement footage to avoid dangling layer sources.
    Cleanup failures are also reported, including retained counts. The executor blocks
    retries after incomplete rollback; recover the project before constructing another one.
 
@@ -77,11 +88,15 @@ Error formatting is nonthrowing, including host exceptions without a usable toSt
 one recovery failure cannot prevent the remaining recovery attempts. Malformed schema
 types and shared-validator exceptions become incompatible-candidate diagnostics.
 
+Revision application also fails closed when the AE confirmation function is unavailable;
+there is no automatic revision mutation without a user confirmation surface.
+
 ## Remaining S6 gate
 
 - Obtain independent clean full-PR review at the exact final head plus green CI before merge;
   verify post-merge develop CI.
-- Execute the manual AE workflow and inspect V001→V002 behavior after script reload.
+- Execute the manual AE workflow and inspect V001→V002→V003, Build/QC after revision,
+  save/reopen behavior, and property preservation in a real supported After Effects host.
 
 Keeping mock layer objects and their non-source properties unchanged is tested. Native AE
 property preservation, real revision execution, GUI/undo behavior and Blender→AE end-to-end
