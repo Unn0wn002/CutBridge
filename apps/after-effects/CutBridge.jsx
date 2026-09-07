@@ -429,7 +429,20 @@ if (typeof module !== "undefined" && module.exports) {
             if (!source || source !== footage) throw new Error(passName + ": managed layer does not point to the expected footage; refusing destructive replacement in S5.");
             return {layer: layer, created: false};
         }
-        layer = comp.layers.add(footage); layer.name = passName; layer.startTime = 0; try { layer.comment = tag; } catch (e) { throw new Error("After Effects layer comments are required for safe CutBridge idempotency."); }
+        layer = comp.layers.add(footage);
+        try {
+            layer.name = passName;
+            layer.startTime = 0;
+            layer.comment = tag;
+        } catch (creationError) {
+            try {
+                if (!layer || typeof layer.remove !== "function") throw new Error("newly created managed layer cannot be removed by this AE host");
+                layer.remove();
+            } catch (rollbackError) {
+                throw new Error(passName + ": managed layer initialization failed and CutBridge could not roll back the newly created layer (" + rollbackError.toString() + "). Use Undo for the CutBridge Build Comp operation before retrying. Original error: " + creationError.toString());
+            }
+            throw new Error(passName + ": managed layer initialization failed and the newly created layer was rolled back (" + creationError.toString() + "). After Effects layer comments are required for safe CutBridge idempotency.");
+        }
         state.layers[tag] = layer; return {layer: layer, created: true};
     }
 
