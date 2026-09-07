@@ -20,6 +20,11 @@ def test_native_revision_host_lifecycle():
     _run_node_test("ae_s6_native_host_checks.cjs")
 
 
+def test_existing_managed_root_folder_drift_fails_before_mutation():
+    """Missing deterministic folders on an existing managed package must not be auto-repaired."""
+    _run_node_test("ae_s6_root_structure_checks.cjs")
+
+
 def test_native_revision_lifecycle_preserves_retired_footage_provenance():
     """Retired CutBridge footage must not become an unmanaged S5 collision."""
     root = Path(__file__).resolve().parents[1]
@@ -78,8 +83,9 @@ def test_package_root_ownership_preflight_requires_unique_structure_before_mutat
     source = (root / "apps/after-effects/CutBridge.jsx").read_text(encoding="utf-8")
 
     assert 'if (rootCount > 1)' in source
-    assert 'if (childCounts[managedNames[c]] > 1)' in source
+    assert 'if (childCounts[managedNames[c]] !== 1)' in source
     assert 'taggedCompItems !== 1 || ownedCompItems !== 1' in source
+    folder_guard = source.index('if (childCounts[managedNames[c]] !== 1)')
     ownership_guard = source.index('taggedCompItems !== 1 || ownedCompItems !== 1')
     child_creation = source.index('return {root: root, comp: findChildFolder(root, "01_COMP")')
-    assert ownership_guard < child_creation
+    assert folder_guard < ownership_guard < child_creation
