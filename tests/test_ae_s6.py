@@ -27,3 +27,14 @@ def test_revision_confirmation_fails_closed_when_host_dialog_is_unavailable():
 
     assert 'if (typeof confirm !== "function") throw new Error("After Effects confirmation UI is unavailable; revision was not applied.");' in source
     assert 'if (!confirm(message)) return;' in source
+
+
+def test_native_revision_uses_avlayer_replace_source_api():
+    """AVLayer.source is read-only; native revision must use replaceSource()."""
+    root = Path(__file__).resolve().parents[1]
+    source = (root / "apps/after-effects/CutBridge.jsx").read_text(encoding="utf-8")
+
+    assert 'layer.replaceSource(item, false);' in source
+    assert 'layer.replaceSource(oldSource, false);' in source
+    assert 'layer.source = item;' not in source
+    assert 'layer.source = oldSource;' not in source
