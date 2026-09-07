@@ -11,7 +11,7 @@ status(R.assess(m(1),m(2,{resolution:{width:2048,height:1080,pixel_aspect:1}})),
 status(R.assess(m(1),m(2,{fps:30})),"incompatible");
 status(R.assess(m(1),m(2,{frames:{start:1,end:24,count:24}})),"incompatible");
 status(R.assess(m(1),m(2,{resolution:{width:1920,height:1080,pixel_aspect:1.1}})),"incompatible");
-status(R.assess(m(1),m(2,{package_name:"CUT|SCENE|011"})),"incompatible");
+status(R.assess(m(1),m(2,{cut:"011"})),"incompatible"); status(R.assess(m(1),m(2,{package_name:"CUT|SCENE|011"})),"incompatible");
 status(R.assess(m(1),m(2,{schema_version:2})),"incompatible");
 status(R.assess(m(1),m(2,{passes:[{name:"LINE",required:false,path:"line",sequence_pattern:"line####.png"}]})),"incompatible");
 assert.strictEqual(R.selectLatest(m(1),[m(2),m(3),m(1),m(4,{fps:30})]).version,3); assert.strictEqual(R.discover(m(1),[m(3),m(2)]).length,2);

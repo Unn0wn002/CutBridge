@@ -2,14 +2,14 @@
 (function(root,factory){if(typeof module!=="undefined"&&module.exports)module.exports=factory();else root.CutBridgeRevisionManager=factory();}(this,function(){"use strict";
 var SCHEMA="cutbridge-manifest",SCHEMA_VERSION=1,IDS=["project","episode","scene","cut","take"];
 function own(o,k){return Object.prototype.hasOwnProperty.call(o,k);} function arr(v){return Object.prototype.toString.call(v)==="[object Array]";} function num(v){return typeof v==="number"&&isFinite(v);}
-function identity(m){if(m&&m.package_name)return String(m.package_name);var a=[];for(var i=0;i<IDS.length;i++)a.push(String(m&&m[IDS[i]]));return a.join("|");}
+function tupleIdentity(m){var a=[];for(var i=0;i<IDS.length;i++)a.push(String(m&&m[IDS[i]]));return a.join("|");} function identity(m){if(m&&m.package_name)return String(m.package_name);return tupleIdentity(m);}
 function tag(k,m,p){return"CUTBRIDGE|1|"+k+"|"+identity(m)+"|"+String(p||"");}
 function rev(v){if(typeof v==="number"&&isFinite(v))return v;var m=String(v==null?"":v).match(/(?:^|[^0-9])V?([0-9]+)(?:$|[^0-9])/i);return m?parseInt(m[1],10):NaN;}
 function map(m){var o={},p=m&&arr(m.passes)?m.passes:[];for(var i=0;i<p.length;i++)o["$"+p[i].name]=p[i];return o;}
 function meta(m){return{fps:m&&m.fps,w:m&&m.resolution&&m.resolution.width,h:m&&m.resolution&&m.resolution.height,pa:m&&m.resolution&&m.resolution.pixel_aspect!==undefined?m.resolution.pixel_aspect:1,s:m&&m.frames&&m.frames.start,e:m&&m.frames&&m.frames.end,c:m&&m.frames&&m.frames.count};}
 function eq(a,b,e){return num(a)&&num(b)&&Math.abs(a-b)<=e;}
 function assess(cur,next){var r=[],w=[],a=meta(cur),b=meta(next);if(!cur||!next)return{status:"incompatible",reasons:["Both current and candidate manifests are required."],warnings:[]};
-if(next.schema!==SCHEMA||next.schema_version!==SCHEMA_VERSION)r.push("candidate schema is not supported");if(cur.schema!==SCHEMA||cur.schema_version!==SCHEMA_VERSION)r.push("current schema is not supported");if(identity(cur)!==identity(next))r.push("project/episode/scene/cut/take identity differs");
+if(next.schema!==SCHEMA||next.schema_version!==SCHEMA_VERSION)r.push("candidate schema is not supported");if(cur.schema!==SCHEMA||cur.schema_version!==SCHEMA_VERSION)r.push("current schema is not supported");if(tupleIdentity(cur)!==tupleIdentity(next))r.push("project/episode/scene/cut/take identity differs");if(!!cur.package_name!==!!next.package_name||String(cur.package_name||"")!==String(next.package_name||""))r.push("package identity differs");
 var cv=rev(cur.version),nv=rev(next.version);if(!num(cv)||!num(nv))r.push("package version is not numeric");else if(nv<=cv)r.push("candidate is not newer");
 if(!eq(a.fps,b.fps,.001))r.push("FPS changes are not supported");if(a.s!==b.s||a.e!==b.e||a.c!==b.c)r.push("frame range/count changes are not supported");if(!eq(a.pa,b.pa,.000001))r.push("pixel aspect changes are not supported");if(a.w!==b.w||a.h!==b.h)w.push("resolution changes require explicit confirmation; existing layer geometry is preserved");
 var old=map(cur),fresh=map(next),passes=cur.passes||[];for(var i=0;i<passes.length;i++)if(passes[i].required!==false&&!own(fresh,"$"+passes[i].name))r.push("previously required pass is missing: "+passes[i].name);for(var k in old)if(own(old,k)&&!own(fresh,k))w.push("previous pass is absent and will not be deleted: "+old[k].name);
