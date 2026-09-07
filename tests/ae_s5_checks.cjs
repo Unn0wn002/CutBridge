@@ -287,6 +287,26 @@ check('QC rediscovers managed comp metadata after script reload', () => {
   assert.doesNotMatch(h.alerts.at(-1), /QC — PASS\b/);
 });
 
+check('QC reports missing managed comp after script reload', () => {
+  const h = host(manifest(), beautyFiles); h.click('Build');
+  const comp = h.comps()[0]; h.projectItems.splice(h.projectItems.indexOf(comp), 1);
+  h.reloadScript(); h.click('QC');
+  assert.match(h.alerts.at(-1), /ERR.*Managed comp is missing from the expected comp folder/);
+  assert.doesNotMatch(h.alerts.at(-1), /QC — PASS\b/);
+});
+
+check('QC reports missing required managed footage after script reload', () => {
+  const h = host(manifest(), beautyFiles); h.click('Build');
+  h.footage()[0].remove(); h.reloadScript(); h.click('QC');
+  assert.match(h.alerts.at(-1), /ERR.*required managed footage is missing/);
+  assert.doesNotMatch(h.alerts.at(-1), /QC — PASS\b/);
+});
+
+check('QC remains package-only before any managed project state exists', () => {
+  const h = host(manifest(), beautyFiles); h.click('QC');
+  assert.match(h.alerts.at(-1), /QC — PASS\b/);
+});
+
 check('wrong-type project item carrying managed footage tag fails closed', () => {
   const h = host(manifest(), beautyFiles); h.seedWrongTypeFootageTag(); h.click('Build');
   assert.equal(h.imports.length, 0);
@@ -311,6 +331,28 @@ check('managed footage conform FPS drift fails closed', () => {
   assert.equal(h.imports.length, 1);
   assert.equal(h.comps()[0].numLayers, 1);
   assert.match(h.alerts.at(-1), /managed footage no longer matches.*frame rate/);
+});
+
+check('combined cached footage drift fails closed without importing a replacement', () => {
+  const h = host(manifest(), beautyFiles); h.click('Build');
+  const footage = h.footage()[0]; footage.comment = ''; footage.name = 'Artist footage'; footage.parentFolder = null; h.driftFootageSource(footage, '/artist/changed.png');
+  const beforeItems = h.projectItems.slice();
+  h.click('Build');
+  assert.equal(h.imports.length, 1);
+  assert.deepEqual(h.projectItems, beforeItems);
+  assert.match(h.alerts.at(-1), /cached managed footage no longer proves ownership/i);
+});
+
+check('combined cached layer drift fails closed without adding a replacement', () => {
+  const h = host(manifest(), beautyFiles); h.click('Build');
+  const layer = h.comps()[0].layer(1); layer.comment = ''; layer.name = 'Artist layer'; layer.source = null;
+  const beforeItems = h.projectItems.slice(), beforeLayers = h.comps()[0]._layers.slice();
+  h.click('Build');
+  assert.equal(h.imports.length, 1);
+  assert.deepEqual(h.projectItems, beforeItems);
+  assert.equal(h.comps()[0]._layers.length, beforeLayers.length);
+  beforeLayers.forEach((beforeLayer, index) => assert.strictEqual(h.comps()[0]._layers[index], beforeLayer));
+  assert.match(h.alerts.at(-1), /cached managed layer no longer proves ownership/i);
 });
 
 check('managed footage throwing FPS getter fails closed without replacement and QC does not pass footage', () => {

@@ -82,3 +82,23 @@ Do not merge PR #14. Keep S5 open, repair the findings in a bounded follow-up on
 The bounded repair is now implemented locally on the same S5 scope. It adds live package-scoped comp discovery with duplicate/moved/name/type rejection, reload-safe QC comp discovery, current-build verified-pass ordering, and prototype-safe manifest membership keys. Focused coverage now reports 36 S5 host-adapter groups, plus the existing rollback and ordering scripts.
 
 The repair has not yet been pushed to PR #14 or independently re-reviewed. Exact-head CI, fresh review, merge, and post-merge `develop` CI remain outstanding.
+
+## Follow-up independent review — additional blockers
+
+The follow-up review against PR head `18b8f1105bd997c66783e5a305c716e97b224955` also found the following merge blockers:
+
+### S5-R6 — Combined cache drift could still create a replacement
+
+If an artist changed multiple identifying fields on a previously managed object—such as its tag, generated name, source path, and managed folder/container—in the same panel session, the live tagged scan found nothing and the stale cache entry was discarded. CutBridge could then import new footage or add a duplicate layer over the still-live user-modified object.
+
+Required correction: retain the cached object identity long enough to determine whether it is still live. If it remains in the project but no longer proves managed ownership, fail closed and preserve it. A validated live lookup must rehydrate the cache so later same-session ordering checks do not lose the ownership observation.
+
+### S5-R7 — QC could pass after managed state was deleted
+
+After script reload, QC could validate package files while treating missing managed comp or required managed footage as a no-op. A project with deleted managed state could therefore report a misleading package-only PASS.
+
+Required correction: when the package-owned project folder exists, report explicit errors for missing managed comp and required managed footage; keep package-only QC only when no managed project state exists yet. Add reload regressions for both conditions.
+
+## Follow-up repair status
+
+The local bounded repair retains live cached-object identity for footage and layers, rejects replacement over a still-live object with combined ownership drift, restores validated layer cache observations after ordering, and adds explicit managed-state QC diagnostics. The focused host harness now passes 41 groups, alongside the existing partial-retry, managed-layer guard, and rollback fixture checks. This follow-up repair is not yet pushed or independently re-reviewed; exact-head CI and the integration gate remain outstanding.

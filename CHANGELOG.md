@@ -7,6 +7,7 @@ All notable CutBridge changes are tracked here.
 ### Fixed
 - S5 ownership/cache repair resolves footage and layers from live project state on every reuse, rejects tag/container drift and ambiguous duplicate identities without reclaiming artist objects, and applies the same live footage checks in QC.
 - S5 follow-up hardening resolves managed comps from live package-scoped ownership, rejects duplicate/moved comp tags before replacement, keeps QC live after script reload, excludes skipped optional layers from current-build ordering, and makes manifest membership safe for prototype-key names.
+- S5 cache/QC hardening now treats a still-live cached object with combined tag/name/source/container drift as an ownership collision, rehydrates verified layer cache observations, and reports missing managed comps or required footage during project-state QC after reload.
 - S5 AE build/import reliability now preflights required sequence coverage before project mutation, reuses only package-scoped CutBridge-managed comps/footage/layers, blocks same-name manual comp collisions, and refuses silent managed-comp metadata rewrites.
 - S4 AE contract: realm-safe arrays, finite integer frame semantics, safe package-relative pass paths and basename patterns, Unicode filename decoding, and executable JSON rejection in legacy ExtendScript.
 - Negative export ranges now fail consistently at Blender/schema/AE boundaries with a rebase instruction; zero-based export remains supported. Signed AE sequence ordering is not certified.
