@@ -191,6 +191,39 @@ assert.equal(sourceV2.comment, Contract.managedTag("footage", v2, "BEAUTY"));
 h.click("Build Comp"); h.click("Run QC");
 assert.match(h.alerts.at(-1), /CutBridge QC — PASS/);
 
+// Revision must not choose an arbitrary current root or deterministic child folder.
+const duplicateCurrentRoot = h.addManualRoot(v2.package_name, "duplicate current root");
+let sourceBeforeBlockedRevision = layer.source;
+let footageBeforeBlockedRevision = h.footage().length;
+let replaceCallsBeforeBlockedRevision = h.replaceFlags.length;
+let confirmsBeforeBlockedRevision = h.confirms.length;
+h.queue(v3); h.click("Update Revision");
+assert.strictEqual(layer.source, sourceBeforeBlockedRevision, "duplicate current root must not swap a source");
+assert.equal(h.footage().length, footageBeforeBlockedRevision, "duplicate current root must not import replacement footage");
+assert.equal(h.replaceFlags.length, replaceCallsBeforeBlockedRevision, "duplicate current root must not call replaceSource");
+assert.equal(h.confirms.length, confirmsBeforeBlockedRevision, "duplicate current root must block before confirmation");
+assert.equal(h.topRoot(v2.package_name), packageRoot, "current managed root must not migrate on ambiguous revision");
+assert.match(h.alerts.at(-1), /package root.*must exist exactly once|duplicate roots/i);
+h.projectItems.splice(h.projectItems.indexOf(duplicateCurrentRoot), 1);
+
+const renderFolderV2 = h.childFolders(packageRoot).find(folder => folder.name === "02_RENDER");
+assert.ok(renderFolderV2, "V002 render folder should exist");
+const duplicateRenderFolder = new renderFolderV2.constructor("02_RENDER");
+duplicateRenderFolder.parentFolder = packageRoot;
+h.projectItems.push(duplicateRenderFolder);
+sourceBeforeBlockedRevision = layer.source;
+footageBeforeBlockedRevision = h.footage().length;
+replaceCallsBeforeBlockedRevision = h.replaceFlags.length;
+confirmsBeforeBlockedRevision = h.confirms.length;
+h.queue(v3); h.click("Update Revision");
+assert.strictEqual(layer.source, sourceBeforeBlockedRevision, "duplicate render folder must not swap a source");
+assert.equal(h.footage().length, footageBeforeBlockedRevision, "duplicate render folder must not import replacement footage");
+assert.equal(h.replaceFlags.length, replaceCallsBeforeBlockedRevision, "duplicate render folder must not call replaceSource");
+assert.equal(h.confirms.length, confirmsBeforeBlockedRevision, "duplicate render folder must block before confirmation");
+assert.equal(h.topRoot(v2.package_name), packageRoot, "current managed root must stay V002 on folder ambiguity");
+assert.match(h.alerts.at(-1), /managed folder '02_RENDER'.*must exist exactly once|02_RENDER.*duplicate folder/i);
+h.projectItems.splice(h.projectItems.indexOf(duplicateRenderFolder), 1);
+
 h.queue(v3); h.click("Update Revision");
 packageRoot = h.topRoot(v3.package_name);
 assert.ok(packageRoot, "root should migrate to V003 name; alerts=" + JSON.stringify(h.alerts) + "; confirms=" + JSON.stringify(h.confirms));
@@ -225,4 +258,4 @@ assert.equal(collisionHost.childFolders(manualRoot).length, 0, "unverified packa
 assert.equal(manualRoot.comment, "Studio-owned folder");
 assert.match(collisionHost.alerts.at(-1), /project-root folder|package root|package folder|ownership|collision|not verified/i);
 
-console.log("S6 native-host lifecycle: PASS (V001→V002→V003 + Build/QC + reload + root collision; real AE MANUAL NOT EXECUTED)");
+console.log("S6 native-host lifecycle: PASS (V001→V002→V003 + Build/QC + reload + revision/root collisions; real AE MANUAL NOT EXECUTED)");
