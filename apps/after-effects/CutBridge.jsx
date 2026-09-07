@@ -4,7 +4,8 @@ CutBridge After Effects
 - Creates deterministic AE folders + comp
 - Imports complete required image sequences from manifest
 - Skips unavailable optional passes with warnings
-- QC validates exact manifest frame coverage, duration and FPS
+- Reuses only validated CutBridge-managed comp/footage/layers on repeated builds
+- QC validates exact manifest frame coverage, comp metadata, duration and FPS
 
 Install/test:
 File > Scripts > Run Script File... > CutBridge.jsx
@@ -12,10 +13,10 @@ For a dockable panel, place this file in After Effects/Scripts/ScriptUI Panels a
 */
 
 var CutBridgeContract = (function () {
-    // Centrally checked against blender_manifest.toml by the release builder.
     var PRODUCT_VERSION = "0.2.3";
     var SCHEMA = "cutbridge-manifest";
     var SCHEMA_VERSION = 1;
+    var MANAGED_PREFIX = "CUTBRIDGE|1|";
 
     function zeroPad(n, width) {
         var s = String(n);
@@ -25,7 +26,6 @@ var CutBridgeContract = (function () {
 
     function parseJSON(text) {
         if (typeof JSON !== "undefined" && JSON.parse) return JSON.parse(text);
-        // Older ExtendScript engines lack JSON. Parse data without executing it.
         var pos = 0;
         function fail() { throw new Error("Invalid JSON at character " + pos + "."); }
         function white() { while (/[ \t\r\n]/.test(text.charAt(pos)) && pos < text.length) pos++; }
@@ -66,7 +66,6 @@ var CutBridgeContract = (function () {
                     else {
                         key = string(); white();
                         if (text.charAt(pos++) !== ":") fail();
-                        // Do not let an input key mutate the legacy object's prototype.
                         if (key === "__proto__") fail();
                         result[key] = value(depth + 1);
                     }
@@ -91,18 +90,9 @@ var CutBridgeContract = (function () {
         return parsed;
     }
 
-    function isArray(value) {
-        // ES3-compatible; instanceof Array fails for host/Node vm realm boundaries.
-        return Object.prototype.toString.call(value) === "[object Array]";
-    }
-
-    function isFiniteNumber(value) {
-        return typeof value === "number" && isFinite(value);
-    }
-
-    function isInteger(value) {
-        return isFiniteNumber(value) && Math.floor(value) === value && Math.abs(value) <= 9007199254740991;
-    }
+    function isArray(value) { return Object.prototype.toString.call(value) === "[object Array]"; }
+    function isFiniteNumber(value) { return typeof value === "number" && isFinite(value); }
+    function isInteger(value) { return isFiniteNumber(value) && Math.floor(value) === value && Math.abs(value) <= 9007199254740991; }
 
     function validateFrames(frames) {
         if (!frames || !isInteger(frames.start) || !isInteger(frames.end) || !isInteger(frames.count)) {
@@ -120,7 +110,6 @@ var CutBridgeContract = (function () {
     function relativePassPath(path) {
         if (typeof path !== "string" || !path.length) throw new Error("Pass path must be a non-empty package-relative path.");
         var normalized = path.replace(/\\/g, "/");
-        // '%' is rejected because ExtendScript File/Folder accepts URI-escaped paths.
         if (/^[\/~]/.test(normalized) || /[:%\x00-\x1f\x7f<>"|?*]/.test(normalized)) {
             throw new Error("Pass path must stay inside the package; absolute, URI and unsafe paths are not allowed.");
         }
@@ -136,145 +125,154 @@ var CutBridgeContract = (function () {
     function pathIsInside(root, candidate) {
         root = root.replace(/\\/g, "/").replace(/\/+$/, "");
         candidate = candidate.replace(/\\/g, "/");
-        if (/^[A-Za-z]:/.test(root) || root.indexOf("//") === 0) {
-            root = root.toLowerCase(); candidate = candidate.toLowerCase();
-        }
+        if (/^[A-Za-z]:/.test(root) || root.indexOf("//") === 0) { root = root.toLowerCase(); candidate = candidate.toLowerCase(); }
         return candidate.indexOf(root + "/") === 0;
     }
 
-    function escapeRegex(text) {
-        return text.replace(/([.*+?^${}()|\[\]\\])/g, "\\$1");
+    function normalizedFsPath(value) {
+        var result = String(value || "").replace(/\\/g, "/").replace(/\/+$/, "");
+        if (/^[A-Za-z]:/.test(result) || result.indexOf("//") === 0) result = result.toLowerCase();
+        return result;
     }
-
+    function sameFilesystemPath(left, right) {
+        return normalizedFsPath(left) === normalizedFsPath(right);
+    }
+    function escapeRegex(text) { return text.replace(/([.*+?^${}()|\[\]\\])/g, "\\$1"); }
     function validatePattern(pattern) {
         if (typeof pattern !== "string" || !pattern.length || /[\/\\:%\x00-\x1f\x7f<>"|?*]/.test(pattern) || /[ .]$/.test(pattern)) {
             throw new Error("Sequence pattern must be a safe filename, without directories or URI escapes.");
         }
         var first = pattern.indexOf("####");
-        if (first < 0 || pattern.replace("####", "").indexOf("#") >= 0) {
-            throw new Error("Sequence pattern must contain exactly one #### frame token.");
-        }
+        if (first < 0 || pattern.replace("####", "").indexOf("#") >= 0) throw new Error("Sequence pattern must contain exactly one #### frame token.");
     }
-
-    function patternToRegex(pattern) {
-        validatePattern(pattern);
-        // Match wrong padding/signs too, so QC can diagnose unexpected filenames.
-        return new RegExp("^" + escapeRegex(pattern).replace("####", "(-?\\d+)") + "$", "i");
-    }
-
+    function patternToRegex(pattern) { validatePattern(pattern); return new RegExp("^" + escapeRegex(pattern).replace("####", "(-?\\d+)") + "$", "i"); }
     function expectedFrameName(pattern, frame) {
         validatePattern(pattern);
         if (!isInteger(frame) || frame < 0) throw new Error("Export frame must be a non-negative finite integer.");
         return pattern.replace("####", zeroPad(frame, 4));
     }
 
+    function passNames(manifest) {
+        var result = [], seen = {};
+        if (manifest.ae && isArray(manifest.ae.layer_order)) {
+            for (var i = 0; i < manifest.ae.layer_order.length; i++) {
+                var ordered = manifest.ae.layer_order[i];
+                var orderedKey = "$" + ordered;
+                if (!seen[orderedKey]) { result.push(ordered); seen[orderedKey] = true; }
+            }
+        }
+        for (var j = 0; j < manifest.passes.length; j++) {
+            var name = manifest.passes[j].name;
+            var nameKey = "$" + name;
+            if (!seen[nameKey]) { result.push(name); seen[nameKey] = true; }
+        }
+        return result;
+    }
+
+    function managedIdentity(manifest) {
+        if (manifest.package_name) return String(manifest.package_name);
+        return [manifest.project, manifest.episode, manifest.scene, manifest.cut, manifest.take, "V" + String(manifest.version)].join("|");
+    }
+    function managedTag(kind, manifest, name) {
+        return MANAGED_PREFIX + kind + "|" + managedIdentity(manifest) + "|" + String(name || "");
+    }
+    function expectedCompSpec(manifest) {
+        return {width: manifest.resolution.width, height: manifest.resolution.height,
+            pixelAspect: manifest.resolution.pixel_aspect || 1.0, duration: manifest.frames.count / manifest.fps, frameRate: manifest.fps};
+    }
+    function compSpecErrors(expected, actual) {
+        var errors = [];
+        if (actual.width !== expected.width || actual.height !== expected.height) errors.push("resolution");
+        if (Math.abs(actual.pixelAspect - expected.pixelAspect) > 0.000001) errors.push("pixel aspect");
+        if (Math.abs(actual.frameRate - expected.frameRate) > 0.001) errors.push("frame rate");
+        if (Math.abs(actual.duration - expected.duration) >= (1.0 / expected.frameRate)) errors.push("duration");
+        return errors;
+    }
+    function footageReuseErrors(expected, actual) {
+        var errors = [];
+        if (!actual || actual.isFootage !== true) errors.push("item type");
+        if (!actual || !actual.path || !sameFilesystemPath(expected.path, actual.path)) errors.push("source path");
+        if (!actual || !isFiniteNumber(actual.conformFrameRate) || actual.conformFrameRate <= 0 || Math.abs(actual.conformFrameRate - expected.frameRate) > 0.001) errors.push("frame rate");
+        return errors;
+    }
+
     function validateManifest(manifest) {
         var errors = [];
         if (!manifest || typeof manifest !== "object" || isArray(manifest)) return ["Manifest is empty or invalid JSON data."];
         if (manifest.schema !== SCHEMA) errors.push("Unsupported manifest schema: " + String(manifest.schema));
-        if (manifest.schema_version !== SCHEMA_VERSION) {
-            errors.push("Unsupported manifest schema_version " + String(manifest.schema_version) + "; CutBridge AE supports " + String(SCHEMA_VERSION) + ".");
-        }
+        if (manifest.schema_version !== SCHEMA_VERSION) errors.push("Unsupported manifest schema_version " + String(manifest.schema_version) + "; CutBridge AE supports " + String(SCHEMA_VERSION) + ".");
         var strings = ["cutbridge_version", "project", "episode", "scene", "cut", "take"];
-        for (var n = 0; n < strings.length; n++) {
-            if (typeof manifest[strings[n]] !== "string") errors.push("Manifest " + strings[n] + " must be a string.");
-        }
+        for (var n = 0; n < strings.length; n++) if (typeof manifest[strings[n]] !== "string") errors.push("Manifest " + strings[n] + " must be a string.");
         if (!isInteger(manifest.version) || manifest.version < 1) errors.push("Manifest version must be a positive integer.");
-        var frameError = validateFrames(manifest.frames);
-        if (frameError) errors.push(frameError);
+        var frameError = validateFrames(manifest.frames); if (frameError) errors.push(frameError);
         if (!isFiniteNumber(manifest.fps) || manifest.fps <= 0) errors.push("Manifest FPS must be a finite number greater than zero.");
         var r = manifest.resolution;
-        if (!r || !isInteger(r.width) || r.width < 1 || !isInteger(r.height) || r.height < 1) {
-            errors.push("Manifest resolution width/height must be positive integers.");
-        }
-        if (r && r.pixel_aspect !== undefined && (!isFiniteNumber(r.pixel_aspect) || r.pixel_aspect <= 0)) {
-            errors.push("Manifest resolution pixel_aspect must be a finite number greater than zero.");
-        }
-        if (!isArray(manifest.passes) || manifest.passes.length === 0) {
-            errors.push("Manifest contains no render passes.");
-        } else {
+        if (!r || !isInteger(r.width) || r.width < 1 || !isInteger(r.height) || r.height < 1) errors.push("Manifest resolution width/height must be positive integers.");
+        if (r && r.pixel_aspect !== undefined && (!isFiniteNumber(r.pixel_aspect) || r.pixel_aspect <= 0)) errors.push("Manifest resolution pixel_aspect must be a finite number greater than zero.");
+        if (!isArray(manifest.passes) || manifest.passes.length === 0) errors.push("Manifest contains no render passes.");
+        else {
+            var seenPass = {};
             for (var i = 0; i < manifest.passes.length; i++) {
                 var p = manifest.passes[i];
-                if (!p || typeof p.name !== "string" || !p.name.length) {
-                    errors.push("Manifest pass at index " + i + " needs a non-empty name."); continue;
-                }
+                if (!p || typeof p.name !== "string" || !p.name.length) { errors.push("Manifest pass at index " + i + " needs a non-empty name."); continue; }
+                var passKey = "$" + p.name;
+                if (seenPass[passKey]) errors.push("Manifest contains duplicate render pass name: " + p.name + ".");
+                seenPass[passKey] = true;
                 try { relativePassPath(p.path); } catch (pathError) { errors.push(p.name + ": " + pathError.message); }
                 try { patternToRegex(p.sequence_pattern); } catch (patternError) { errors.push(p.name + ": " + patternError.message); }
                 if (p.required !== undefined && typeof p.required !== "boolean") errors.push(p.name + ": required must be a boolean.");
+            }
+            if (manifest.ae && manifest.ae.layer_order !== undefined) {
+                if (!isArray(manifest.ae.layer_order)) errors.push("Manifest ae.layer_order must be an array when provided.");
+                else {
+                    var seenOrder = {};
+                    for (var q = 0; q < manifest.ae.layer_order.length; q++) {
+                        var orderedName = manifest.ae.layer_order[q];
+                        var orderKey = "$" + orderedName;
+                        if (typeof orderedName !== "string" || !seenPass[orderKey]) errors.push("Manifest ae.layer_order references an unknown pass at index " + q + ".");
+                        else if (seenOrder[orderKey]) errors.push("Manifest ae.layer_order contains duplicate pass: " + orderedName + ".");
+                        seenOrder[orderKey] = true;
+                    }
+                }
             }
         }
         return errors;
     }
 
     function sequenceCoverage(passInfo, manifest, fileNames) {
-        var frameError = validateFrames(manifest.frames);
-        if (frameError) throw new Error(frameError);
-        var result = {
-            complete: false,
-            firstName: null,
-            missing: [],
-            unexpected: [],
-            matching: []
-        };
-        var regex = patternToRegex(passInfo.sequence_pattern);
-        var exact = {};
-        var expected = {};
-        var i;
-
+        var frameError = validateFrames(manifest.frames); if (frameError) throw new Error(frameError);
+        var result = {complete: false, firstName: null, missing: [], unexpected: [], matching: []};
+        var regex = patternToRegex(passInfo.sequence_pattern), exact = {}, expected = {}, i;
         for (i = 0; i < fileNames.length; i++) {
             var name = String(fileNames[i]);
-            var match = regex.exec(name);
-            if (match) {
-                result.matching.push(name);
-                exact[name.toLowerCase()] = name;
-            }
+            if (regex.exec(name)) { result.matching.push(name); exact[name.toLowerCase()] = name; }
         }
-
         for (var frame = manifest.frames.start; frame <= manifest.frames.end; frame++) {
             var expectedName = expectedFrameName(passInfo.sequence_pattern, frame);
             expected[expectedName.toLowerCase()] = true;
             if (!exact[expectedName.toLowerCase()]) result.missing.push(frame);
         }
-
-        for (i = 0; i < result.matching.length; i++) {
-            if (!expected[result.matching[i].toLowerCase()]) result.unexpected.push(result.matching[i]);
-        }
-
+        for (i = 0; i < result.matching.length; i++) if (!expected[result.matching[i].toLowerCase()]) result.unexpected.push(result.matching[i]);
         result.complete = result.missing.length === 0;
         if (result.complete) result.firstName = exact[expectedFrameName(passInfo.sequence_pattern, manifest.frames.start).toLowerCase()];
         return result;
     }
 
-    return {
-        parseJSON: parseJSON,
-        PRODUCT_VERSION: PRODUCT_VERSION,
-        relativePassPath: relativePassPath,
-        pathIsInside: pathIsInside,
-        SCHEMA: SCHEMA,
-        SCHEMA_VERSION: SCHEMA_VERSION,
-        validateManifest: validateManifest,
-        patternToRegex: patternToRegex,
-        expectedFrameName: expectedFrameName,
-        sequenceCoverage: sequenceCoverage
-    };
+    return {parseJSON: parseJSON, PRODUCT_VERSION: PRODUCT_VERSION, relativePassPath: relativePassPath, pathIsInside: pathIsInside,
+        SCHEMA: SCHEMA, SCHEMA_VERSION: SCHEMA_VERSION, validateManifest: validateManifest, patternToRegex: patternToRegex,
+        expectedFrameName: expectedFrameName, sequenceCoverage: sequenceCoverage, managedIdentity: managedIdentity, managedTag: managedTag,
+        expectedCompSpec: expectedCompSpec, compSpecErrors: compSpecErrors, passNames: passNames, sameFilesystemPath: sameFilesystemPath,
+        footageReuseErrors: footageReuseErrors};
 })();
 
 if (typeof module !== "undefined" && module.exports) {
     module.exports = CutBridgeContract;
 } else {
 (function CutBridge(thisObj) {
-    var state = {manifestFile: null, manifest: null, packageFolder: null, comp: null, imported: {}};
-
+    var state = {manifestFile: null, manifest: null, packageFolder: null, comp: null, imported: {}, layers: {}};
     function log(msg) { $.writeln("[CutBridge] " + msg); }
     function alertError(msg) { alert("CutBridge\n\n" + msg); }
-
-    function readTextFile(file) {
-        file.encoding = "UTF-8";
-        if (!file.open("r")) throw new Error("Could not open: " + file.fsName);
-        var text = file.read();
-        file.close();
-        return text;
-    }
+    function readTextFile(file) { file.encoding = "UTF-8"; if (!file.open("r")) throw new Error("Could not open: " + file.fsName); var text = file.read(); file.close(); return text; }
 
     function chooseManifest() {
         var f = File.openDialog("Choose CutBridge cutbridge.json", "JSON:*.json");
@@ -282,216 +280,425 @@ if (typeof module !== "undefined" && module.exports) {
         var obj = CutBridgeContract.parseJSON(readTextFile(f));
         var contractErrors = CutBridgeContract.validateManifest(obj);
         if (contractErrors.length) throw new Error("Manifest contract rejected:\n- " + contractErrors.join("\n- "));
-        state.manifestFile = f;
-        state.manifest = obj;
-        state.packageFolder = f.parent;
-        state.imported = {};
-        state.comp = null;
+        state.manifestFile = f; state.manifest = obj; state.packageFolder = f.parent; state.imported = {}; state.layers = {}; state.comp = null;
         return obj;
     }
-
-    function ensureManifestLoaded() {
-        if (state.manifest) return true;
-        try { return !!chooseManifest(); }
-        catch (e) { alertError(e.toString()); return false; }
-    }
+    function ensureManifestLoaded() { if (state.manifest) return true; try { return !!chooseManifest(); } catch (e) { alertError(e.toString()); return false; } }
 
     function findChildFolder(parent, name) {
-        for (var i = 1; i <= app.project.numItems; i++) {
-            var item = app.project.item(i);
-            if (item instanceof FolderItem && item.name === name && item.parentFolder === parent) return item;
-        }
-        var folder = app.project.items.addFolder(name);
-        folder.parentFolder = parent;
-        return folder;
+        for (var i = 1; i <= app.project.numItems; i++) { var item = app.project.item(i); if (item instanceof FolderItem && item.name === name && item.parentFolder === parent) return item; }
+        var folder = app.project.items.addFolder(name); folder.parentFolder = parent; return folder;
     }
-
+    function findExistingChildFolder(parent, name) {
+        if (!parent) return null;
+        for (var i = 1; i <= app.project.numItems; i++) { var item = app.project.item(i); if (item instanceof FolderItem && item.name === name && item.parentFolder === parent) return item; }
+        return null;
+    }
     function ensureProjectFolders(manifest) {
         var rootName = manifest.package_name || (manifest.project + "_" + manifest.cut);
         var root = findChildFolder(app.project.rootFolder, rootName);
         return {root: root, comp: findChildFolder(root, "01_COMP"), render: findChildFolder(root, "02_RENDER"), precomp: findChildFolder(root, "03_PRECOMP"), output: findChildFolder(root, "04_OUTPUT")};
     }
+    function existingProjectFolders(manifest) {
+        var rootName = manifest.package_name || (manifest.project + "_" + manifest.cut), root = findExistingChildFolder(app.project.rootFolder, rootName);
+        if (!root) return null;
+        return {root: root, comp: findExistingChildFolder(root, "01_COMP"), render: findExistingChildFolder(root, "02_RENDER"), precomp: findExistingChildFolder(root, "03_PRECOMP"), output: findExistingChildFolder(root, "04_OUTPUT")};
+    }
+    function itemComment(item) { try { return item.comment || ""; } catch (e) { return ""; } }
+    function setItemComment(item, value) { try { item.comment = value; } catch (e) { throw new Error("After Effects item comments are required for safe CutBridge managed-object tracking."); } }
+    function findTaggedProjectItem(parentFolder, tag) {
+        for (var i = 1; i <= app.project.numItems; i++) { var item = app.project.item(i); if (item.parentFolder === parentFolder && itemComment(item) === tag) return item; }
+        return null;
+    }
+    function findNamedComp(parentFolder, name) {
+        for (var i = 1; i <= app.project.numItems; i++) { var item = app.project.item(i); if (item instanceof CompItem && item.parentFolder === parentFolder && item.name === name) return item; }
+        return null;
+    }
 
     function listSequenceFileNames(passInfo) {
-        var relative = CutBridgeContract.relativePassPath(passInfo.path);
-        var parts = relative.split("/");
-        var dir = state.packageFolder;
-        for (var p = 0; p < parts.length; p++) {
-            dir = new Folder(dir.fsName + "/" + parts[p]);
-            if (dir.alias || !CutBridgeContract.pathIsInside(state.packageFolder.fsName, dir.fsName)) {
-                throw new Error(passInfo.name + ": pass folder must stay inside the package; aliases are not supported.");
-            }
-        }
+        var relative = CutBridgeContract.relativePassPath(passInfo.path), parts = relative.split("/"), dir = state.packageFolder;
+        for (var p = 0; p < parts.length; p++) { dir = new Folder(dir.fsName + "/" + parts[p]); if (dir.alias || !CutBridgeContract.pathIsInside(state.packageFolder.fsName, dir.fsName)) throw new Error(passInfo.name + ": pass folder must stay inside the package; aliases are not supported."); }
         if (!dir.exists) return {dir: dir, names: []};
         var regex = CutBridgeContract.patternToRegex(passInfo.sequence_pattern);
-        var files = dir.getFiles(function(f) { return f instanceof File && regex.test(File.decode(f.name)); });
-        var names = [];
-        for (var i = 0; files && i < files.length; i++) {
-            if (files[i].alias || !CutBridgeContract.pathIsInside(dir.fsName, files[i].fsName)) {
-                throw new Error(passInfo.name + ": sequence files must stay inside the pass folder; aliases are not supported.");
-            }
-            names.push(File.decode(files[i].name));
-        }
+        var files = dir.getFiles(function(f) { return f instanceof File && regex.test(File.decode(f.name)); }), names = [];
+        for (var i = 0; files && i < files.length; i++) { if (files[i].alias || !CutBridgeContract.pathIsInside(dir.fsName, files[i].fsName)) throw new Error(passInfo.name + ": sequence files must stay inside the pass folder; aliases are not supported."); names.push(File.decode(files[i].name)); }
         return {dir: dir, names: names};
     }
+    function inspectSequence(passInfo, manifest) { var listing = listSequenceFileNames(passInfo); var coverage = CutBridgeContract.sequenceCoverage(passInfo, manifest, listing.names); coverage.folderExists = listing.dir.exists; coverage.dir = listing.dir; return coverage; }
+    function formatMissingFrames(frames) { if (!frames.length) return ""; var shown = frames.slice(0, 12).join(", "); if (frames.length > 12) shown += " … +" + (frames.length - 12) + " more"; return shown; }
 
-    function inspectSequence(passInfo, manifest) {
-        var listing = listSequenceFileNames(passInfo);
-        var coverage = CutBridgeContract.sequenceCoverage(passInfo, manifest, listing.names);
-        coverage.folderExists = listing.dir.exists;
-        coverage.dir = listing.dir;
-        return coverage;
+    function preflightSequences(manifest) {
+        var result = {entries: [], warnings: []};
+        for (var i = 0; i < manifest.passes.length; i++) {
+            var passInfo = manifest.passes[i], coverage = inspectSequence(passInfo, manifest);
+            if (!coverage.folderExists || !coverage.complete) {
+                var reason = !coverage.folderExists ? "pass folder missing" : ("missing frame(s): " + formatMissingFrames(coverage.missing));
+                if (passInfo.required === false) { result.warnings.push(passInfo.name + ": optional pass skipped — " + reason); result.entries.push({passInfo: passInfo, coverage: coverage, skip: true}); continue; }
+                throw new Error(passInfo.name + ": required pass cannot be imported — " + reason);
+            }
+            if (coverage.unexpected.length) result.warnings.push(passInfo.name + ": unexpected matching filename(s): " + coverage.unexpected.join(", "));
+            result.entries.push({passInfo: passInfo, coverage: coverage, skip: false});
+        }
+        return result;
     }
 
-    function formatMissingFrames(frames) {
-        if (!frames.length) return "";
-        var shown = frames.slice(0, 12).join(", ");
-        if (frames.length > 12) shown += " … +" + (frames.length - 12) + " more";
-        return shown;
-    }
-
-    function importSequence(passInfo, manifest, renderFolder, coverage) {
-        coverage = coverage || inspectSequence(passInfo, manifest);
-        if (!coverage.folderExists) throw new Error(passInfo.name + ": pass folder missing.");
-        if (!coverage.complete) throw new Error(passInfo.name + ": missing frame(s): " + formatMissingFrames(coverage.missing));
+    function expectedFirstFile(passInfo, coverage) {
         var firstFile = new File(coverage.dir.fsName + "/" + coverage.firstName);
         if (firstFile.alias || !CutBridgeContract.pathIsInside(coverage.dir.fsName, firstFile.fsName)) throw new Error(passInfo.name + ": unsafe first-frame path.");
         if (!firstFile.exists) throw new Error(passInfo.name + ": expected first frame is missing: " + coverage.firstName);
-        var io = new ImportOptions(firstFile);
-        if (io.canImportAs && io.canImportAs(ImportAsType.FOOTAGE)) io.importAs = ImportAsType.FOOTAGE;
-        io.sequence = true;
-        io.forceAlphabetical = false;
-        var footage = app.project.importFile(io);
-        footage.name = manifest.cut + "_" + passInfo.name;
-        footage.parentFolder = renderFolder;
-        try { footage.mainSource.conformFrameRate = manifest.fps; } catch (e) { log("Could not conform FPS for " + passInfo.name + ": " + e.toString()); }
-        state.imported[passInfo.name] = footage;
-        return footage;
+        return firstFile;
+    }
+    function validateReusableFootage(existing, firstFile, passInfo, manifest, renderFolder) {
+        var isFootage = typeof FootageItem !== "undefined" && existing instanceof FootageItem;
+        var sourcePath = null, conformFrameRate = null;
+        try { if (existing.file && existing.file.fsName) sourcePath = existing.file.fsName; } catch (e) {}
+        try { if (existing.mainSource && typeof existing.mainSource.conformFrameRate !== "undefined") conformFrameRate = existing.mainSource.conformFrameRate; } catch (e2) {}
+        var mismatches = CutBridgeContract.footageReuseErrors(
+            {path: firstFile.fsName, frameRate: manifest.fps},
+            {isFootage: isFootage, path: sourcePath, conformFrameRate: conformFrameRate}
+        );
+        if (itemComment(existing) !== CutBridgeContract.managedTag("footage", manifest, passInfo.name)) mismatches.push("managed ownership tag");
+        if (!renderFolder || existing.parentFolder !== renderFolder) mismatches.push("managed render folder ownership");
+        if (mismatches.length) throw new Error(passInfo.name + ": managed footage no longer matches the package (" + mismatches.join(", ") + "). Preserve the existing project. Restore the intended source/FPS/tag/folder only if appropriate, or build in a clean project; S5 will not silently replace or reclaim it.");
+        return existing;
+    }
+    // Caches are observations only. Always resolve live project membership before reuse.
+    function findManagedFootage(passInfo, manifest, renderFolder, firstFile) {
+        var tag = CutBridgeContract.managedTag("footage", manifest, passInfo.name), cached = state.imported[tag], found = null;
+        delete state.imported[tag];
+        for (var i = 1; i <= app.project.numItems; i++) {
+            var item = app.project.item(i), comment = itemComment(item), path = null;
+            if (comment === tag) {
+                if (found) throw new Error(passInfo.name + ": duplicate managed footage ownership. Preserve the project and resolve the duplicate tags before retrying.");
+                found = validateReusableFootage(item, firstFile, passInfo, manifest, renderFolder);
+            } else {
+                try { if (item.file) path = item.file.fsName; } catch (pathError) {}
+                // A matching source or generated name is a collision signal, never ownership proof.
+                if ((path && CutBridgeContract.sameFilesystemPath(path, firstFile.fsName)) ||
+                    (item.parentFolder === renderFolder && item.name === manifest.cut + "_" + passInfo.name)) {
+                    throw new Error(passInfo.name + ": ambiguous footage ownership: an unverified item uses the expected source or managed name. Preserve artist work; restore the original managed tag/folder only if intended, or remove the conflicting item from this project before retrying. CutBridge will not adopt it or import a duplicate.");
+                }
+            }
+        }
+        if (cached && liveProjectItem(cached) && cached !== found) throw new Error(passInfo.name + ": cached managed footage no longer proves ownership; preserve the existing project and restore the intended tag/source/folder before retrying. CutBridge will not import a replacement over a live user-modified object.");
+        if (found) state.imported[tag] = found;
+        return found;
     }
 
-    function findExistingComp(name, parentFolder) {
-        for (var i = 1; i <= app.project.numItems; i++) {
-            var item = app.project.item(i);
-            if (item instanceof CompItem && item.name === name && item.parentFolder === parentFolder) return item;
+    function liveProjectItem(target) {
+        if (!target || !app.project) return false;
+        for (var i = 1; i <= app.project.numItems; i++) if (app.project.item(i) === target) return true;
+        return false;
+    }
+
+    function existingRenderFolder(manifest) {
+        var rootName = manifest.package_name || (manifest.project + "_" + manifest.cut);
+        for (var i = 1; app.project && i <= app.project.numItems; i++) {
+            var item = app.project.item(i), parent = item.parentFolder;
+            if (item instanceof FolderItem && item.name === "02_RENDER" && parent instanceof FolderItem &&
+                parent.name === rootName && parent.parentFolder === app.project.rootFolder) return item;
         }
         return null;
     }
 
+    function conformAndVerifyImportedFootage(footage, firstFile, passInfo, manifest) {
+        if (typeof FootageItem === "undefined" || !(footage instanceof FootageItem) || !footage.mainSource) {
+            throw new Error(passInfo.name + ": imported item is not verifiable footage; build stopped before creating a managed layer.");
+        }
+        try {
+            footage.mainSource.conformFrameRate = manifest.fps;
+        } catch (setError) {
+            throw new Error(passInfo.name + ": After Effects could not conform imported footage to " + manifest.fps + " fps (" + setError.toString() + "). Build stopped; verify the source sequence and AE footage interpretation before retrying.");
+        }
+        var actualRate;
+        try {
+            if (typeof footage.mainSource.conformFrameRate === "undefined") throw new Error("conformFrameRate is unavailable");
+            actualRate = footage.mainSource.conformFrameRate;
+        } catch (readError) {
+            throw new Error(passInfo.name + ": CutBridge could not verify the imported footage frame rate after conforming it (" + readError.toString() + "). Build stopped before creating a managed layer.");
+        }
+        var sourcePath = null;
+        try { if (footage.file && footage.file.fsName) sourcePath = footage.file.fsName; } catch (pathError) {}
+        var mismatches = CutBridgeContract.footageReuseErrors(
+            {path: firstFile.fsName, frameRate: manifest.fps},
+            {isFootage: true, path: sourcePath, conformFrameRate: actualRate}
+        );
+        if (actualRate === null || actualRate === undefined || mismatches.length) {
+            throw new Error(passInfo.name + ": imported footage timing/source could not be verified (" + (mismatches.length ? mismatches.join(", ") : "frame rate unavailable") + "). Build stopped before creating a managed layer.");
+        }
+        return footage;
+    }
+
+    function importSequence(passInfo, manifest, renderFolder, coverage, createdFootage) {
+        var tag = CutBridgeContract.managedTag("footage", manifest, passInfo.name);
+        var firstFile = expectedFirstFile(passInfo, coverage);
+        var existing = findManagedFootage(passInfo, manifest, renderFolder, firstFile);
+        if (existing) return existing;
+        var io = new ImportOptions(firstFile); if (io.canImportAs && io.canImportAs(ImportAsType.FOOTAGE)) io.importAs = ImportAsType.FOOTAGE;
+        io.sequence = true; io.forceAlphabetical = false;
+        var footage = app.project.importFile(io);
+        try {
+            footage.name = manifest.cut + "_" + passInfo.name; footage.parentFolder = renderFolder;
+            conformAndVerifyImportedFootage(footage, firstFile, passInfo, manifest);
+            setItemComment(footage, tag);
+            state.imported[tag] = footage;
+            if (createdFootage) createdFootage.push({item: footage, tag: tag});
+            return footage;
+        } catch (importError) {
+            try {
+                if (!footage || typeof footage.remove !== "function") throw new Error("newly imported footage cannot be removed by this AE host");
+                footage.remove();
+            } catch (rollbackError) {
+                throw new Error(passInfo.name + ": import verification failed and CutBridge could not roll back the newly imported footage (" + rollbackError.toString() + "). Use Undo for the CutBridge Build Comp operation before retrying. Original error: " + importError.toString());
+            }
+            throw importError;
+        }
+    }
+
+    function findManagedComp(manifest, compFolder, compName) {
+        var tag = CutBridgeContract.managedTag("comp", manifest, compName), found = null;
+        for (var i = 1; i <= app.project.numItems; i++) {
+            var item = app.project.item(i);
+            if (itemComment(item) !== tag) continue;
+            if (found) throw new Error("Duplicate managed comp ownership for " + compName + "; resolve duplicate tags before retrying.");
+            if (typeof CompItem === "undefined" || !(item instanceof CompItem)) throw new Error("Managed comp tag collision for " + compName + "; the tagged item is not a composition.");
+            if (!compFolder || item.parentFolder !== compFolder) throw new Error("Managed comp ownership no longer belongs to the expected comp folder. Preserve the project and restore the intended folder before retrying.");
+            if (item.name !== compName) throw new Error("Managed comp name no longer matches the package identity. Preserve the project and restore the intended comp name before retrying.");
+            found = item;
+        }
+        return found;
+    }
+    function ensureManagedComp(manifest, compFolder, compName) {
+        var tag = CutBridgeContract.managedTag("comp", manifest, compName), expected = CutBridgeContract.expectedCompSpec(manifest);
+        var comp = findManagedComp(manifest, compFolder, compName);
+        if (!comp) {
+            var collision = findNamedComp(compFolder, compName);
+            if (collision) throw new Error("A non-CutBridge comp named '" + compName + "' already exists in the managed folder. Rename or move it before building to avoid modifying manual work.");
+            comp = app.project.items.addComp(compName, expected.width, expected.height, expected.pixelAspect, expected.duration, expected.frameRate);
+            try {
+                comp.parentFolder = compFolder;
+                setItemComment(comp, tag);
+            } catch (creationError) {
+                try {
+                    if (!comp || typeof comp.remove !== "function") throw new Error("newly created managed comp cannot be removed by this AE host");
+                    comp.remove();
+                } catch (rollbackError) {
+                    throw new Error("Managed comp initialization failed and CutBridge could not roll back the newly created comp (" + rollbackError.toString() + "). Use Undo for the CutBridge Build Comp operation before retrying. Original error: " + creationError.toString());
+                }
+                throw new Error("Managed comp initialization failed and the newly created comp was rolled back (" + creationError.toString() + "). After Effects item comments are required for safe CutBridge idempotency.");
+            }
+            return {comp: comp, created: true};
+        }
+        var mismatches = CutBridgeContract.compSpecErrors(expected, {width: comp.width, height: comp.height, pixelAspect: comp.pixelAspect, duration: comp.duration, frameRate: comp.frameRate});
+        if (mismatches.length) throw new Error("Managed comp metadata no longer matches the package (" + mismatches.join(", ") + "). Preserve manual work and rebuild into a clean package/comp instead of silently rewriting it.");
+        return {comp: comp, created: false};
+    }
+
+    function findManagedLayer(comp, tag, footage, passName) {
+        var cached = state.layers[tag];
+        delete state.layers[tag];
+        var found = null;
+        // Scan project comps as well, so a moved tagged layer blocks after script reload too.
+        for (var p = 1; p <= app.project.numItems; p++) {
+            var owner = app.project.item(p);
+            if (!(owner instanceof CompItem)) continue;
+            for (var i = 1; i <= owner.numLayers; i++) {
+                var layer = owner.layer(i), comment = itemComment(layer);
+                if (comment === tag) {
+                    if (found) throw new Error("Duplicate managed layer ownership; resolve duplicate tags before retrying.");
+                    if (owner !== comp || typeof AVLayer === "undefined" || !(layer instanceof AVLayer) || layer.containingComp !== comp) {
+                        throw new Error("Managed layer ownership no longer belongs to a valid footage layer in the expected comp. Preserve artist work and restore the intended tag/container before retrying.");
+                    }
+                    if (footage) {
+                        var liveSource;
+                        try { liveSource = layer.source; }
+                        catch (liveSourceError) { throw new Error("Managed layer source cannot be read; preserve artist work and restore the intended managed layer before retrying."); }
+                        if (!liveSource || liveSource !== footage) throw new Error("Managed layer does not point to the expected footage; preserve artist work and restore the intended managed layer before retrying.");
+                    }
+                    found = layer;
+                } else if (owner === comp && ((passName && layer.name === passName) || (footage && layer.source === footage))) {
+                    throw new Error("Ambiguous managed layer ownership: an unverified layer uses the expected pass name or footage. Preserve artist work; restore its original tag only if intended, or move/remove the conflicting layer before retrying. CutBridge will not adopt it or add a duplicate.");
+                }
+            }
+        }
+        if (cached && liveProjectLayer(cached) && cached !== found) throw new Error("Cached managed layer no longer proves ownership; preserve the existing project and restore the intended tag/source/container before retrying. CutBridge will not add a replacement over a live user-modified layer.");
+        if (found) state.layers[tag] = found;
+        return found;
+    }
+    function liveProjectLayer(target) {
+        if (!target || !app.project) return false;
+        for (var p = 1; p <= app.project.numItems; p++) {
+            var owner = app.project.item(p);
+            if (!(owner instanceof CompItem)) continue;
+            for (var i = 1; i <= owner.numLayers; i++) if (owner.layer(i) === target) return true;
+        }
+        return false;
+    }
+    function ensureManagedLayer(comp, footage, manifest, passName) {
+        var tag = CutBridgeContract.managedTag("layer", manifest, passName), layer = findManagedLayer(comp, tag, footage, passName);
+        if (layer) {
+            var source;
+            try { source = layer.source; }
+            catch (sourceError) { throw new Error(passName + ": managed layer source cannot be read; refusing destructive replacement in S5."); }
+            if (!source || source !== footage) throw new Error(passName + ": managed layer does not point to the expected footage; refusing destructive replacement in S5.");
+            state.layers[tag] = layer;
+            return {layer: layer, created: false};
+        }
+        layer = comp.layers.add(footage);
+        try {
+            layer.name = passName;
+            layer.startTime = 0;
+            layer.comment = tag;
+        } catch (creationError) {
+            try {
+                if (!layer || typeof layer.remove !== "function") throw new Error("newly created managed layer cannot be removed by this AE host");
+                layer.remove();
+            } catch (rollbackError) {
+                throw new Error(passName + ": managed layer initialization failed and CutBridge could not roll back the newly created layer (" + rollbackError.toString() + "). Use Undo for the CutBridge Build Comp operation before retrying. Original error: " + creationError.toString());
+            }
+            throw new Error(passName + ": managed layer initialization failed and the newly created layer was rolled back (" + creationError.toString() + "). After Effects layer comments are required for safe CutBridge idempotency.");
+        }
+        state.layers[tag] = layer; return {layer: layer, created: true};
+    }
+
+    function isManagedLayerTagForManifest(comment, manifest) {
+        for (var i = 0; i < manifest.passes.length; i++) if (comment === CutBridgeContract.managedTag("layer", manifest, manifest.passes[i].name)) return true;
+        return false;
+    }
+    function preflightExistingManagedLayers(comp, manifest, entries, renderFolder) {
+        if (!comp || !comp.numLayers) return;
+        var hasUnverifiedLayer = false;
+        for (var i = 1; i <= comp.numLayers; i++) if (!isManagedLayerTagForManifest(itemComment(comp.layer(i)), manifest)) hasUnverifiedLayer = true;
+        for (var j = 0; j < entries.length; j++) {
+            var entry = entries[j]; if (entry.skip) continue;
+            var passInfo = entry.passInfo, tag = CutBridgeContract.managedTag("layer", manifest, passInfo.name), layer = findManagedLayer(comp, tag, null, passInfo.name);
+            if (layer) {
+                var source;
+                try { source = layer.source; } catch (sourceError) { throw new Error(passInfo.name + ": managed layer source cannot be read before import; preserve artist work and restore the intended managed layer before retrying."); }
+                if (!source) throw new Error(passInfo.name + ": managed layer has no readable footage source; preserve artist work and restore the intended managed layer before retrying.");
+                validateReusableFootage(source, expectedFirstFile(passInfo, entry.coverage), passInfo, manifest, renderFolder);
+            } else if (hasUnverifiedLayer) {
+                throw new Error(passInfo.name + ": managed layer ownership is ambiguous because the existing comp contains an unverified layer. Preserve artist work and restore the intended managed layer tag before retrying; CutBridge will not add a replacement over it.");
+            }
+        }
+    }
+    function rollbackNewBuildObjects(createdLayers, createdFootage) {
+        var failures = [], i, record;
+        for (i = createdLayers.length - 1; i >= 0; i--) {
+            record = createdLayers[i];
+            try {
+                if (!record.layer || typeof record.layer.remove !== "function") throw new Error("newly created managed layer cannot be removed by this AE host");
+                record.layer.remove(); delete state.layers[record.tag];
+            } catch (layerError) { failures.push("layer rollback failed: " + layerError.toString()); }
+        }
+        for (i = createdFootage.length - 1; i >= 0; i--) {
+            record = createdFootage[i];
+            try {
+                if (!record.item || typeof record.item.remove !== "function") throw new Error("newly imported footage cannot be removed by this AE host");
+                record.item.remove(); delete state.imported[record.tag];
+            } catch (footageError) { failures.push("footage rollback failed: " + footageError.toString()); }
+        }
+        return failures;
+    }
+
+    function findVerifiedPass(passName, verifiedPasses) {
+        for (var i = 0; verifiedPasses && i < verifiedPasses.length; i++) if (verifiedPasses[i].name === passName) return verifiedPasses[i];
+        return null;
+    }
+    function orderManagedLayers(comp, manifest, verifiedPasses) {
+        if (typeof comp.layer !== "function") return;
+        var ordered = CutBridgeContract.passNames(manifest);
+        var layers = [];
+        for (var i = 0; i < ordered.length; i++) {
+            var verified = findVerifiedPass(ordered[i], verifiedPasses);
+            if (!verified) continue;
+            var tag = CutBridgeContract.managedTag("layer", manifest, ordered[i]);
+            var layer = findManagedLayer(comp, tag, verified.footage, ordered[i]);
+            if (layer) layers.push(layer);
+        }
+        for (var j = layers.length - 1; j >= 0; j--) if (layers[j].moveToBeginning) layers[j].moveToBeginning();
+    }
+
     function buildComp() {
         if (!ensureManifestLoaded()) return;
+        var m = state.manifest, preflight;
+        try { preflight = preflightSequences(m); } catch (preflightError) { alertError(preflightError.toString()); return; }
         if (!app.project) app.newProject();
-        var m = state.manifest;
-        var folders = ensureProjectFolders(m);
-        var compName = (m.ae && m.ae.comp_name) ? m.ae.comp_name : (m.cut + "_COMP");
-        var duration = m.frames.count / m.fps;
-        var warnings = [];
+        var warnings = preflight.warnings.slice(0), compName = (m.ae && m.ae.comp_name) ? m.ae.comp_name : (m.cut + "_COMP");
         app.beginUndoGroup("CutBridge Build Comp");
+        var createdFootage = [], createdLayers = [];
         try {
-            var comp = findExistingComp(compName, folders.comp);
-            if (!comp) {
-                comp = app.project.items.addComp(compName, m.resolution.width, m.resolution.height, m.resolution.pixel_aspect || 1.0, duration, m.fps);
-                comp.parentFolder = folders.comp;
+            var folders = ensureProjectFolders(m), compResult = ensureManagedComp(m, folders.comp, compName), comp = compResult.comp, verifiedPasses = []; state.comp = comp;
+            if (!compResult.created) preflightExistingManagedLayers(comp, m, preflight.entries, folders.render);
+            for (var i = 0; i < preflight.entries.length; i++) {
+                var entry = preflight.entries[i]; if (entry.skip) continue;
+                var footage = importSequence(entry.passInfo, m, folders.render, entry.coverage, createdFootage), layerResult = ensureManagedLayer(comp, footage, m, entry.passInfo.name);
+                if (layerResult.created) createdLayers.push({layer: layerResult.layer, tag: CutBridgeContract.managedTag("layer", m, entry.passInfo.name)});
+                verifiedPasses.push({name: entry.passInfo.name, footage: footage});
             }
-            state.comp = comp;
-            for (var i = 0; i < m.passes.length; i++) {
-                var p = m.passes[i];
-                var coverage = inspectSequence(p, m);
-                if (!coverage.folderExists || !coverage.complete) {
-                    var reason = !coverage.folderExists ? "pass folder missing" : ("missing frame(s): " + formatMissingFrames(coverage.missing));
-                    if (p.required === false) { warnings.push(p.name + ": optional pass skipped — " + reason); continue; }
-                    throw new Error(p.name + ": required pass cannot be imported — " + reason);
-                }
-                if (coverage.unexpected.length) warnings.push(p.name + ": unexpected matching filename(s): " + coverage.unexpected.join(", "));
-                var footage = state.imported[p.name] || importSequence(p, m, folders.render, coverage);
-                var layer = comp.layers.add(footage);
-                layer.name = p.name;
-                layer.startTime = 0;
-            }
-            if (m.ae && m.ae.layer_order) {
-                for (var j = m.ae.layer_order.length - 1; j >= 0; j--) {
-                    var lname = m.ae.layer_order[j];
-                    for (var k = 1; k <= comp.numLayers; k++) {
-                        if (comp.layer(k).name === lname) { comp.layer(k).moveToBeginning(); break; }
-                    }
-                }
-            }
+            orderManagedLayers(comp, m, verifiedPasses);
             comp.openInViewer();
-            var message = "CutBridge: comp built\n" + comp.name + "\n" + m.resolution.width + "x" + m.resolution.height + " @ " + m.fps + " fps";
+            var message = "CutBridge: comp " + (compResult.created ? "built" : "reused safely") + "\n" + comp.name + "\n" + m.resolution.width + "x" + m.resolution.height + " @ " + m.fps + " fps";
             if (warnings.length) message += "\n\nWarnings:\n- " + warnings.join("\n- ");
             alert(message);
-        } catch (e) { alertError(e.toString()); }
+        } catch (e) {
+            var rollbackFailures = rollbackNewBuildObjects(createdLayers, createdFootage), errorMessage = e.toString();
+            if (createdLayers.length || createdFootage.length) errorMessage += "\nNewly created managed objects were rolled back.";
+            if (rollbackFailures.length) errorMessage += "\n" + rollbackFailures.join("\n");
+            alertError(errorMessage);
+        }
         finally { app.endUndoGroup(); }
     }
 
     function runQC() {
         if (!ensureManifestLoaded()) return;
-        var m = state.manifest;
-        var lines = [];
-        var errors = 0;
-        var warnings = 0;
-        function ok(msg) { lines.push("PASS " + msg); }
-        function warn(msg) { warnings++; lines.push("WARN " + msg); }
-        function bad(msg) { errors++; lines.push("ERR  " + msg); }
-        var contractErrors = CutBridgeContract.validateManifest(m);
-        if (contractErrors.length) { alertError("Manifest contract rejected:\n- " + contractErrors.join("\n- ")); return; }
-        else ok("Manifest schema " + CutBridgeContract.SCHEMA + " v" + CutBridgeContract.SCHEMA_VERSION);
-        if (m.fps > 0) ok("FPS " + m.fps); else bad("Invalid FPS");
-        if (m.frames && m.frames.count === (m.frames.end - m.frames.start + 1)) ok("Frame count " + m.frames.count); else bad("Frame count mismatch");
-        if (m.resolution && m.resolution.width > 0 && m.resolution.height > 0) ok("Resolution " + m.resolution.width + "x" + m.resolution.height); else bad("Invalid resolution");
+        var m = state.manifest, lines = [], errors = 0, warnings = 0;
+        function ok(msg) { lines.push("PASS " + msg); } function warn(msg) { warnings++; lines.push("WARN " + msg); } function bad(msg) { errors++; lines.push("ERR  " + msg); }
+        var contractErrors = CutBridgeContract.validateManifest(m); if (contractErrors.length) { alertError("Manifest contract rejected:\n- " + contractErrors.join("\n- ")); return; } else ok("Manifest schema " + CutBridgeContract.SCHEMA + " v" + CutBridgeContract.SCHEMA_VERSION);
+        ok("FPS " + m.fps); ok("Frame count " + m.frames.count); ok("Resolution " + m.resolution.width + "x" + m.resolution.height);
+        var projectFolders = existingProjectFolders(m), managedCompFolder = projectFolders ? projectFolders.comp : null, compName = (m.ae && m.ae.comp_name) ? m.ae.comp_name : (m.cut + "_COMP"), liveComp = null, compLookupError = null;
+        try { liveComp = findManagedComp(m, managedCompFolder, compName); } catch (compError) { compLookupError = compError; }
         for (var i = 0; i < m.passes.length; i++) {
-            var p = m.passes[i];
-            var coverage = inspectSequence(p, m);
-            var optional = p.required === false;
+            var p = m.passes[i], coverage = inspectSequence(p, m), optional = p.required === false;
             if (!coverage.folderExists) { if (optional) warn(p.name + ": optional pass folder missing"); else bad(p.name + ": required pass folder missing"); continue; }
-            if (!coverage.complete) {
-                var missingMsg = p.name + ": missing frame(s): " + formatMissingFrames(coverage.missing);
-                if (optional) warn(missingMsg + " (optional pass)"); else bad(missingMsg);
-                continue;
+            if (!coverage.complete) { var missingMsg = p.name + ": missing frame(s): " + formatMissingFrames(coverage.missing); if (optional) warn(missingMsg + " (optional pass)"); else bad(missingMsg); continue; }
+            ok(p.name + ": " + m.frames.count + "/" + m.frames.count + " expected frames present"); if (coverage.unexpected.length) warn(p.name + ": " + coverage.unexpected.length + " unexpected matching filename(s)");
+            if (projectFolders) {
+                if (!projectFolders.render) { if (optional) warn(p.name + ": managed render folder is missing"); else bad(p.name + ": managed render folder is missing"); }
+                else {
+                    try {
+                        var managedFootage = findManagedFootage(p, m, projectFolders.render, expectedFirstFile(p, coverage));
+                        if (managedFootage) ok(p.name + ": managed footage source/FPS matches manifest");
+                        else if (optional) warn(p.name + ": optional managed footage is missing from the expected render folder");
+                        else bad(p.name + ": required managed footage is missing from the expected render folder");
+                    } catch (footageError) { bad(p.name + ": managed footage validation failed — " + footageError.toString()); }
+                }
             }
-            ok(p.name + ": " + m.frames.count + "/" + m.frames.count + " expected frames present");
-            if (coverage.unexpected.length) warn(p.name + ": " + coverage.unexpected.length + " unexpected matching filename(s)");
         }
-        if (state.comp) {
-            if (Math.abs(state.comp.frameRate - m.fps) < 0.001) ok("Comp FPS matches manifest"); else bad("Comp FPS mismatch");
-            var expectedDuration = m.frames.count / m.fps;
-            if (Math.abs(state.comp.duration - expectedDuration) < (1.0 / m.fps)) ok("Comp duration matches manifest"); else bad("Comp duration mismatch");
-        }
-        var headline = errors === 0 ? (warnings === 0 ? "PASS" : ("PASS with " + warnings + " warning(s)")) : (errors + " error(s), " + warnings + " warning(s)");
-        alert("CutBridge QC — " + headline + "\n\n" + lines.join("\n"));
+        if (compLookupError) bad("Managed comp validation failed — " + compLookupError.toString());
+        else if (projectFolders) {
+            if (!managedCompFolder) bad("Managed comp folder is missing from the expected package folder");
+            else if (!liveComp) bad("Managed comp is missing from the expected comp folder");
+            else {
+                state.comp = liveComp;
+                var expected = CutBridgeContract.expectedCompSpec(m), mismatches = CutBridgeContract.compSpecErrors(expected, {width: liveComp.width, height: liveComp.height, pixelAspect: liveComp.pixelAspect, duration: liveComp.duration, frameRate: liveComp.frameRate});
+                if (!mismatches.length) ok("Managed comp metadata matches manifest"); else bad("Managed comp metadata mismatch: " + mismatches.join(", "));
+            }
+        } else state.comp = null;
+        var headline = errors === 0 ? (warnings === 0 ? "PASS" : ("PASS with " + warnings + " warning(s)")) : (errors + " error(s), " + warnings + " warning(s)"); alert("CutBridge QC — " + headline + "\n\n" + lines.join("\n"));
     }
 
-    function loadOnly(statusText) {
-        try {
-            var m = chooseManifest();
-            if (m) statusText.text = (m.package_name || m.cut) + " | " + m.fps + "fps | " + m.frames.count + "f";
-        } catch (e) { alertError(e.toString()); }
-    }
-
+    function loadOnly(statusText) { try { var m = chooseManifest(); if (m) statusText.text = (m.package_name || m.cut) + " | " + m.fps + "fps | " + m.frames.count + "f"; } catch (e) { alertError(e.toString()); } }
     function buildUI(thisObj) {
-        var pal = (thisObj instanceof Panel) ? thisObj : new Window("palette", "CutBridge", undefined, {resizeable: true});
-        if (!pal) return pal;
-        pal.orientation = "column";
-        pal.alignChildren = ["fill", "top"];
-        pal.spacing = 8;
-        pal.margins = 12;
-        var title = pal.add("statictext", undefined, "CutBridge / カットブリッジ");
-        try { title.graphics.font = ScriptUI.newFont(title.graphics.font.name, "BOLD", 16); } catch (e) {}
-        var status = pal.add("statictext", undefined, "No package loaded");
-        status.characters = 45;
-        var btnLoad = pal.add("button", undefined, "1. Import Package / 読み込み");
-        var btnBuild = pal.add("button", undefined, "2. Build Comp / コンポ作成");
-        var btnQC = pal.add("button", undefined, "3. Run QC / QC実行");
-        btnLoad.onClick = function() { loadOnly(status); };
-        btnBuild.onClick = function() { buildComp(); };
-        btnQC.onClick = function() { try { runQC(); } catch (e) { alertError(e.toString()); } };
-        var note = pal.add("statictext", undefined, "v" + CutBridgeContract.PRODUCT_VERSION + ": validated package → comp → QC", {multiline: true});
-        note.preferredSize.height = 32;
-        pal.onResizing = pal.onResize = function() { this.layout.resize(); };
-        return pal;
+        var pal = (thisObj instanceof Panel) ? thisObj : new Window("palette", "CutBridge", undefined, {resizeable: true}); if (!pal) return pal;
+        pal.orientation = "column"; pal.alignChildren = ["fill", "top"]; pal.spacing = 8; pal.margins = 12;
+        var title = pal.add("statictext", undefined, "CutBridge / カットブリッジ"); try { title.graphics.font = ScriptUI.newFont(title.graphics.font.name, "BOLD", 16); } catch (e) {}
+        var status = pal.add("statictext", undefined, "No package loaded"); status.characters = 45;
+        var btnLoad = pal.add("button", undefined, "1. Import Package / 読み込み"); var btnBuild = pal.add("button", undefined, "2. Build Comp / コンポ作成"); var btnQC = pal.add("button", undefined, "3. Run QC / QC実行");
+        btnLoad.onClick = function() { loadOnly(status); }; btnBuild.onClick = function() { buildComp(); }; btnQC.onClick = function() { try { runQC(); } catch (e) { alertError(e.toString()); } };
+        var note = pal.add("statictext", undefined, "v" + CutBridgeContract.PRODUCT_VERSION + ": validated package → idempotent comp → QC", {multiline: true}); note.preferredSize.height = 32;
+        pal.onResizing = pal.onResize = function() { this.layout.resize(); }; return pal;
     }
-
-    var panel = buildUI(thisObj);
-    if (panel instanceof Window) { panel.center(); panel.show(); }
-    else { panel.layout.layout(true); }
+    var panel = buildUI(thisObj); if (panel instanceof Window) { panel.center(); panel.show(); } else { panel.layout.layout(true); }
 })(this);
 }

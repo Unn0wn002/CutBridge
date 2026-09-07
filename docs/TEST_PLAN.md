@@ -47,6 +47,17 @@ Automated Blender checks run headlessly. They validate RNA lifecycle, render-map
 | A11 | Absolute/traversal/URI-escaped/unsafe pass path | Manifest or host adapter rejects path escape before footage import |
 | A12 | Legacy ExtendScript runtime without native `JSON.parse` | Valid JSON data parses; executable/malformed text is rejected without `eval` |
 | A13 | AE `PRODUCT_VERSION` differs from canonical release version | Release build fails before artifacts are written |
+| A14 | Tagged managed comp moved out of `01_COMP` | Build fails before replacement creation; the moved comp remains untouched |
+| A15 | Duplicate tagged managed comps | Build fails closed before footage/layer mutation |
+| A16 | Managed comp metadata drift after script reload | QC rediscovers the tagged comp and reports the mismatch |
+| A17 | Previously imported optional pass becomes unavailable | The stale optional layer is not treated as verified or reordered |
+| A18 | Valid pass names matching object prototype keys | `constructor`, `toString`, and `__proto__` values are not false duplicates |
+| A19 | Cached footage loses tag, name, source, and folder in one session | Build fails closed without importing a replacement or reclaiming the live artist item |
+| A20 | Cached layer loses tag, name, source, and comp ownership evidence in one session | Build fails closed without adding a replacement layer or reordering the artist layer |
+| A21 | Managed comp or required footage is deleted before QC, including after script reload | QC reports explicit missing managed state; package-only QC remains valid before any managed project state exists |
+| A22 | Combined footage or layer drift is present after script reload | Build fails before replacement import/layer creation and preserves the existing object |
+| A23 | Managed package root is moved while tagged managed objects remain | QC reports managed-state ownership failure instead of package-only PASS |
+| A24 | A late build operation fails after new footage/layer creation | Newly created managed footage/layers roll back; existing comp scaffold and artist work remain |
 
 ## S4 automated contract gate
 
@@ -77,7 +88,7 @@ These remain `MANUAL NOT EXECUTED` until real evidence is recorded.
 | Japanese package/pass/sequence paths | Correct file resolution and import |
 | Folder/file symlink or alias | Rejected before footage import |
 | Older ExtendScript without native JSON | Valid JSON loads; executable text is rejected |
-| Repeat package import | Behavior matches the S5 idempotency design once S5 is implemented |
+| Repeat package import | First build, repeated build, manifest reload and script reload retain singleton managed items/layers; tag/container drift blocks without adoption or duplication |
 | V001 → V002 revision | Preservation behavior is tested only after S6 is implemented |
 
 ## Target-user task test
@@ -92,3 +103,30 @@ After the product reaches the appropriate validation stage, measure with represe
 6. Revision/rework impact when V002 replaces V001.
 
 Do not claim timing, error-rate, usability, or Japanese target-user results until the test was actually run.
+
+## S5 ownership/cache automated gate
+
+`node tests/ae_s5_checks.cjs` executes the entire JSX panel with host mocks and re-evaluates it against the same project to simulate script reload. It runs through `tests/test_ae_s5.py` in CI. The source-guard, comp/layer rollback, and partial-retry-order regressions remain mandatory. The current harness contains 45 groups.
+
+| Change after successful Build | Expected same-session and script-reload result |
+|---|---|
+| Footage tag removed/changed/unreadable | Block ambiguous ownership; do not re-tag or import a duplicate |
+| Footage moved from managed render folder | Block folder ownership drift; preserve moved object |
+| Layer tag removed/changed/unreadable | Block ambiguous ownership; do not add a duplicate |
+| Tagged layer moved to another comp | Block expected-comp mismatch; preserve both comps |
+| Cached item/layer has wrong host type/container | Reject live ownership; never report safe reuse |
+| Duplicate persistent footage/layer tag | Block ambiguous ownership |
+| Moved or duplicate managed comp tag | Block before creating or mutating a replacement comp |
+| Cached reference removed; valid live replacement and matching layer source exist | Rediscover and validate live replacement; no import/layer duplication |
+| Artist footage/layers with unrelated names/sources | Preserve contents and artist relative order |
+| Comp metadata drift after script reload | Rediscover the managed comp and report the mismatch |
+| Optional pass folder disappears after a prior import | Warn/skip the optional pass without reordering its stale layer |
+| Pass names using inherited object keys | Accept valid names without false duplicate errors |
+| QC following footage ownership/source/FPS failure | Report managed-footage error even after cache invalidation or reload |
+| Cached footage or layer loses all identifying signals while the object remains live | Fail closed without importing footage or adding a layer over the live user-modified object |
+| Managed comp or required managed footage is deleted before QC | Report explicit missing managed state rather than a false package-only PASS |
+| Combined footage/layer drift remains after script reload | Preflight the existing managed comp/layer state before importing or adding replacements |
+| Managed package root is moved but tagged managed comp remains | Report managed-comp validation failure; do not issue package-only PASS |
+| Late build failure after new managed objects are created | Roll back only the newly created footage/layers and preserve unrelated project state |
+
+Manual repetition in a supported AE desktop installation remains `MANUAL NOT EXECUTED`. Mocks cannot certify native host handles, comment persistence, undo behavior or OS filesystem semantics.

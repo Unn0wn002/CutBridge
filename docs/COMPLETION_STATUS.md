@@ -1,16 +1,62 @@
 # CutBridge Completion Status
 
-- **Current Session:** S4.5 — Documentation Reconciliation; bounded documentation/status repair after S4 integration.
-- **Completed Sessions:** S1 — Baseline & Repository Integrity; S2 — Blender Render Mapping; S3 — Blender Production Hardening; S4 — AE Contract Hardening.
-- **Open Implementation PR:** None before S4.5 branch creation.
-- **Live baseline inspected:** `main` = `e282ef99b3fa5772b3d6d1dbbcbfa4957816b78c`; `develop` = `6864a1591c4e177ccd310cea36834d4fc583045f`.
-- **Automated Gate Status:** S4 merged through PR #12 at `6864a1591c4e177ccd310cea36834d4fc583045f`. Post-merge `develop` CI run `34048455452` PASS on that exact SHA. S4 branch/PR CI was also green before integration.
-- **Independent Review:** S4 received an independent review gate before merge; previous cross-realm array and negative-frame contract findings were resolved before integration.
-- **Manual Required:** Blender GUI validation beyond recorded repository evidence, After Effects GUI import/comp/QC, Blender→AE end-to-end, native Japanese-user validation, and production/client validation remain `MANUAL NOT EXECUTED` unless separately recorded with real evidence.
-- **Known Blockers:** No stable GitHub release exists. Negative export frames are intentionally unsupported until signed sequence ordering can be verified safely in After Effects; users must rebase export/preroll to frame 0 or later.
-- **Next Session:** S5 — AE Import & Composition Reliability, only after this S4.5 documentation PR is independently reviewed, merged to `develop`, and post-merge CI is green.
+- **Current Session:** S5 — AE Import & Composition Reliability; bounded implementation on `feature/session-5-ae-import-reliability`.
+- **Completed Sessions:** S1 — Baseline & Repository Integrity; S2 — Blender Render Mapping; S3 — Blender Production Hardening; S4 — AE Contract Hardening; S4.5 — Documentation Reconciliation.
+- **Open Implementation PR:** [#14](https://github.com/Unn0wn002/CutBridge/pull/14), `feature/session-5-ae-import-reliability` → `develop`.
+- **Live baseline inspected:** `main` = `e282ef99b3fa5772b3d6d1dbbcbfa4957816b78c`; `develop` = `aab6c9b8ce9236d07386b7bf6f0c95034587246c`.
+- **Automated Gate Status:** S4.5 merged through PR #13 at `aab6c9b8ce9236d07386b7bf6f0c95034587246c`; post-merge `develop` CI run `34051334080` PASS. S5 has green executable regression evidence on its implementation commits; the exact final PR head must remain green before independent integration.
+- **S5 Blocker / Review Status:** The stale-cache ownership bypass and all nine independent-review blockers were repaired on PR #14 through head `af410d985974abaae502a8afe690c8725c7268e2`; exact-head CI is green. The fresh independent review is clean. S5 is ready for integration but is **not complete** until it is merged to `develop` and post-merge `develop` CI is green.
+- **Independent Review:** Session 2 review found merge blockers; see [docs/S5_INDEPENDENT_REVIEW.md](S5_INDEPENDENT_REVIEW.md). Green CI is not self-approval; the implementation worker must not merge its own PR.
+- **Manual Required:** After Effects GUI import/comp/QC, Blender→AE end-to-end, native Japanese-user validation, and production/client validation remain `MANUAL NOT EXECUTED` unless separately recorded with real evidence.
+- **Known Blockers:** No stable GitHub release exists. Negative export frames remain intentionally unsupported until signed sequence ordering can be verified safely in After Effects; users must rebase export/preroll to frame 0 or later.
+- **S6 Status:** Has not started. This repair is bounded Session 1 of the completion prompt; it remains product session S5.
+- **Next Session:** S6 — Non-Destructive Revision Manager, only after S5 is independently reviewed, merged to `develop`, and authoritative post-merge CI is green.
 
-## Completed S4 contract scope
+## Session 2 independent-review gate
+
+The earlier independent review passes were **not safe to merge**. The first pass reproduced four S5 ownership/QC defects: a moved managed comp can cause a replacement comp before failure, duplicate managed comp tags are silently accepted, comp metadata QC disappears after script reload, and skipped optional passes can still be included in managed-layer ordering without current verification. It also found a reserved-prototype-key false duplicate in manifest membership validation. A follow-up pass against head `18b8f1105bd997c66783e5a305c716e97b224955` found combined tag/name/source/container drift and missing managed-state QC after reload. A further pass against head `cb0e6990805179dbdc5fcddda6f3f5320f7c9b56` found that combined drift could still create replacements after script reload and that moved package roots could hide tagged managed state from QC. The final repair at `af410d985974abaae502a8afe690c8725c7268e2` was independently reviewed clean; merge and post-merge CI remain the only S5 integration gates. These findings are recorded in [docs/S5_INDEPENDENT_REVIEW.md](S5_INDEPENDENT_REVIEW.md). S6 has not started.
+
+## S5 implementation scope
+
+- Required-pass sequence coverage is preflighted before CutBridge mutates the AE project, so known missing required frames do not leave partial managed folders/comps/imports.
+- CutBridge-managed comps, footage items, and pass layers receive deterministic package-scoped ownership tags in item/layer comments.
+- Repeated Build operations reuse only matching CutBridge-managed objects instead of duplicating footage, comps, or managed pass layers.
+- Reloading the same manifest rediscovers tagged project objects, so idempotency does not depend only on in-memory panel state.
+- Same-name non-CutBridge comps are not hijacked; CutBridge blocks with an actionable collision error rather than modifying manual work.
+- Existing managed comp metadata is checked against manifest resolution, pixel aspect, FPS, and duration. Drift blocks silent destructive correction.
+- Managed comps are resolved from all live project items before creation; moved, renamed, wrong-type, or duplicate tagged comps fail closed without replacement.
+- After every successful pass loop, including partial-build retries, deterministic manifest ordering is restored within the managed layer subset. Only managed layers are moved to the beginning; artist layers are not selected for movement and retain their relative order. Absolute artist indices/interleaving are not promised.
+- Layer ordering considers only passes verified in the current build; skipped optional passes are not reused or reordered.
+- A cached footage/layer reference that remains live but loses all ownership evidence blocks replacement instead of allowing a same-session duplicate; validated live layer lookups rehydrate the cache for later same-session checks.
+- QC reports missing managed comp and required managed footage when a package-owned project folder exists, while retaining package-only QC before any managed project state has been created.
+- Existing managed layers are preflighted before importing; source/tag drift and ambiguous unverified layers fail before new footage or layers are added. Late build failures roll back newly created footage/layers while preserving unrelated work.
+- QC treats a tagged managed comp outside the expected package root as an error instead of falling back to a misleading package-only PASS.
+- Duplicate pass names and invalid/duplicate `ae.layer_order` references are rejected at the contract boundary.
+- S5 behavior is covered by Node host-adapter regressions wired into pytest/CI. These mocks do not certify native After Effects APIs or desktop filesystem behavior.
+
+## Bounded Session 1 — ownership/cache repair
+
+**Reproduced before editing:** Removing a managed footage comment after Build still reported `reused safely` in the same panel session; re-evaluating the script then rebuilding created a second footage item. Removing a managed layer comment similarly produced false same-session success and a second layer after reload.
+
+**Root cause:** `state.imported[tag] || findTaggedProjectItem(...)` and the early `state.layers[tag]` return bypassed live tag/container checks. Type/path/FPS and layer-source checks alone did not establish managed ownership.
+
+**Repair policy:**
+
+- Caches are observations, never lookup authority. Each lookup discards its cache entry and scans live project items/layers, then records only validated reusable objects.
+- Footage must prove its exact package/pass tag, live project membership, `FootageItem` type, expected render-folder membership, source path, and readable matching conform FPS.
+- Layers must prove their exact package/pass tag, live membership in the expected comp, `AVLayer` type, `containingComp`, and a readable source equal to the validated managed footage.
+- Matching tags outside the expected folder/comp and duplicate managed tags block reuse. Removing/changing a tag does not grant permission to recreate or reclaim the object.
+- An unverified item using the expected source path or generated footage name, or a layer in the managed comp using the expected pass name/source, is an ambiguity that blocks Build. These signals establish a collision, **not** ownership. This also applies to intentionally duplicated artist items using those signals.
+- Errors preserve artist objects and request deliberate recovery: restore original managed metadata only if intended, move/remove a conflicting layer, or preserve the original project and build in a clean project. CutBridge does not automatically re-tag, replace, or delete them.
+- QC uses live footage discovery too, so invalidated caches cannot hide source/FPS/ownership errors after a failed retry or script reload.
+
+**Limits:** If an artist removes *all* identifying signals (tag, generated name, source association and managed container), there is no reliable persistent evidence tying the object to CutBridge after reload. It is treated as unrelated work and is never adopted. S5 does not introduce a hidden ownership registry or certify real AE runtime behavior.
+
+**Regression evidence:** The S5 Node host harness now has 45 groups. Added coverage includes live moved/duplicate managed comps, reload-safe QC metadata discovery, prototype-key pass names, optional-pass skip ordering, removed/changed/unreadable tags; moved footage/layers; wrong types/containers; repeated same-session failures; actual script re-evaluation against the same project; duplicate tags; valid persistent fallback after replacing a cached reference; combined multi-field cache drift before and after reload; missing managed comp/required footage after reload; moved package-root QC; late-build rollback; and preservation of actual mock artist footage/layers. Original source/FPS, rollback, coverage, and partial-retry ordering regressions remain required.
+
+**Validation:** Local S5 Node regressions: `PASS` (45 groups), plus the partial-retry, managed-layer guard, and rollback fixture checks. Local complete pytest remains `BLOCKED` at collection because official `bpy==5.2.1` is unavailable in this Python 3.12 environment. Exact-head CI run `34086643584` is `PASS` (static 32 tests + 2 subtests; official Blender 5.2.1 registration; full suite 60 tests + 2 subtests with 28 deprecation warnings). Independent review is `PASS`; merge and post-merge `develop` CI remain outstanding.
+
+## S4 contract retained
 
 - ES3-compatible cross-realm array validation and strict schema/schema-version handling.
 - Finite integer frame endpoints/counts with `count = end - start + 1` and consistent non-negative export policy across Blender, shared schema, AE validation, and tests.
@@ -19,12 +65,7 @@
 - Exact expected-frame coverage, unexpected/mis-padded sequence diagnostics, required-pass errors, and optional-pass warning/skip behavior.
 - Legacy JSON parsing without `eval` execution.
 - AE-facing product version checked against the canonical release version by the release builder.
-- Node is an explicit CI/release dependency for executable AE contract checks.
-
-## Negative-frame decision
-
-Blender formats signed frame numbers differently from the original AE helper, and native AE sequence ordering across negative-to-positive ranges has not been certified. CutBridge therefore rejects negative export ranges at the Blender producer, JSON Schema, and AE consumer boundaries. The tool does not silently clamp, renumber, or modify animation; the cut/preroll must be rebased to frame 0 or later before package generation.
 
 ## Session discipline
 
-S4.5 is documentation/status reconciliation only. It must not begin S5 implementation. S5 starts only after this documentation change is independently reviewed, merged, and verified on `develop`.
+S5 is limited to AE import/composition reliability and idempotency. It does not implement S6 revision replacement/preservation semantics. Real After Effects GUI behavior remains a manual gate until actually executed. S6 starts only after the S5 PR is independently reviewed, merged, and verified on `develop`.
