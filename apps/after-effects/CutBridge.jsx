@@ -739,6 +739,10 @@ if (typeof module !== "undefined" && module.exports) {
                         setItemComment(item.layer, item.layerComment);
                         setItemComment(item.oldSource, item.oldComment);
                         setItemComment(item.replacement, item.replacementComment);
+                        delete state.layers[CutBridgeContract.managedTag("layer", candidate, item.passName)];
+                        state.layers[CutBridgeContract.managedTag("layer", current, item.passName)] = item.layer;
+                        delete state.imported[CutBridgeContract.managedTag("footage", candidate, item.passName)];
+                        state.imported[CutBridgeContract.managedTag("footage", current, item.passName)] = item.oldSource;
                     }
                     migration = null;
                 }
@@ -753,14 +757,16 @@ if (typeof module !== "undefined" && module.exports) {
                 var targetName = newManifest.package_name || (newManifest.project + "_" + newManifest.cut), collision = findExistingChildFolder(app.project.rootFolder, targetName);
                 if (collision && collision !== folders.root) throw new Error("The candidate package root already exists in this project; revision is ambiguous and was not applied.");
                 migration = {rootName: folders.root.name, rootComment: itemComment(folders.root), compComment: itemComment(comp), items: []};
-                for (var i = 0; i < journal.length; i++) migration.items.push({layer: journal[i].layer, oldSource: journal[i].oldSource, replacement: journal[i].replacement, layerComment: itemComment(journal[i].layer), oldComment: itemComment(journal[i].oldSource), replacementComment: itemComment(journal[i].replacement)});
+                for (var i = 0; i < journal.length; i++) migration.items.push({layer: journal[i].layer, oldSource: journal[i].oldSource, replacement: journal[i].replacement, passName: journal[i].passName, layerComment: itemComment(journal[i].layer), oldComment: itemComment(journal[i].oldSource), replacementComment: itemComment(journal[i].replacement)});
                 for (i = 0; i < journal.length; i++) {
-                    var item = migration.items[i], passName = journal[i].passName;
+                    var item = migration.items[i], passName = item.passName;
                     if (!passName) throw new Error("Could not identify the managed pass during revision commit.");
                     item.passName = passName;
                     setItemComment(item.layer, CutBridgeContract.managedTag("layer", newManifest, passName));
                     setItemComment(item.oldSource, "");
                     setItemComment(item.replacement, CutBridgeContract.managedTag("footage", newManifest, passName));
+                    delete state.layers[CutBridgeContract.managedTag("layer", oldManifest, passName)];
+                    delete state.imported[CutBridgeContract.managedTag("footage", oldManifest, passName)];
                     state.layers[CutBridgeContract.managedTag("layer", newManifest, passName)] = item.layer;
                     state.imported[CutBridgeContract.managedTag("footage", newManifest, passName)] = item.replacement;
                 }
