@@ -334,7 +334,7 @@ if (typeof module !== "undefined" && module.exports) {
         if (!firstFile.exists) throw new Error(passInfo.name + ": expected first frame is missing: " + coverage.firstName);
         return firstFile;
     }
-    function validateReusableFootage(existing, firstFile, passInfo, manifest) {
+    function validateReusableFootage(existing, firstFile, passInfo, manifest, renderFolder) {
         var isFootage = typeof FootageItem !== "undefined" && existing instanceof FootageItem;
         var sourcePath = null, conformFrameRate = null;
         try { if (existing.file && existing.file.fsName) sourcePath = existing.file.fsName; } catch (e) {}
@@ -343,9 +343,43 @@ if (typeof module !== "undefined" && module.exports) {
             {path: firstFile.fsName, frameRate: manifest.fps},
             {isFootage: isFootage, path: sourcePath, conformFrameRate: conformFrameRate}
         );
-        if (mismatches.length) throw new Error(passInfo.name + ": managed footage no longer matches the package (" + mismatches.join(", ") + "). Preserve the existing project and remove/relabel the stale managed footage before rebuilding; S5 will not silently replace it.");
+        if (itemComment(existing) !== CutBridgeContract.managedTag("footage", manifest, passInfo.name)) mismatches.push("managed ownership tag");
+        if (!renderFolder || existing.parentFolder !== renderFolder) mismatches.push("managed render folder ownership");
+        if (mismatches.length) throw new Error(passInfo.name + ": managed footage no longer matches the package (" + mismatches.join(", ") + "). Preserve the existing project. Restore the intended source/FPS/tag/folder only if appropriate, or build in a clean project; S5 will not silently replace or reclaim it.");
         return existing;
     }
+    // Caches are observations only. Always resolve live project membership before reuse.
+    function findManagedFootage(passInfo, manifest, renderFolder, firstFile) {
+        var tag = CutBridgeContract.managedTag("footage", manifest, passInfo.name), found = null;
+        delete state.imported[tag];
+        for (var i = 1; i <= app.project.numItems; i++) {
+            var item = app.project.item(i), comment = itemComment(item), path = null;
+            if (comment === tag) {
+                if (found) throw new Error(passInfo.name + ": duplicate managed footage ownership. Preserve the project and resolve the duplicate tags before retrying.");
+                found = validateReusableFootage(item, firstFile, passInfo, manifest, renderFolder);
+            } else {
+                try { if (item.file) path = item.file.fsName; } catch (pathError) {}
+                // A matching source or generated name is a collision signal, never ownership proof.
+                if ((path && CutBridgeContract.sameFilesystemPath(path, firstFile.fsName)) ||
+                    (item.parentFolder === renderFolder && item.name === manifest.cut + "_" + passInfo.name)) {
+                    throw new Error(passInfo.name + ": ambiguous footage ownership: an unverified item uses the expected source or managed name. Preserve artist work; restore the original managed tag/folder only if intended, or remove the conflicting item from this project before retrying. CutBridge will not adopt it or import a duplicate.");
+                }
+            }
+        }
+        if (found) state.imported[tag] = found;
+        return found;
+    }
+
+    function existingRenderFolder(manifest) {
+        var rootName = manifest.package_name || (manifest.project + "_" + manifest.cut);
+        for (var i = 1; app.project && i <= app.project.numItems; i++) {
+            var item = app.project.item(i), parent = item.parentFolder;
+            if (item instanceof FolderItem && item.name === "02_RENDER" && parent instanceof FolderItem &&
+                parent.name === rootName && parent.parentFolder === app.project.rootFolder) return item;
+        }
+        return null;
+    }
+
     function conformAndVerifyImportedFootage(footage, firstFile, passInfo, manifest) {
         if (typeof FootageItem === "undefined" || !(footage instanceof FootageItem) || !footage.mainSource) {
             throw new Error(passInfo.name + ": imported item is not verifiable footage; build stopped before creating a managed layer.");
@@ -377,8 +411,8 @@ if (typeof module !== "undefined" && module.exports) {
     function importSequence(passInfo, manifest, renderFolder, coverage) {
         var tag = CutBridgeContract.managedTag("footage", manifest, passInfo.name);
         var firstFile = expectedFirstFile(passInfo, coverage);
-        var existing = state.imported[tag] || findTaggedProjectItem(renderFolder, tag);
-        if (existing) { existing = validateReusableFootage(existing, firstFile, passInfo, manifest); state.imported[tag] = existing; return existing; }
+        var existing = findManagedFootage(passInfo, manifest, renderFolder, firstFile);
+        if (existing) return existing;
         var io = new ImportOptions(firstFile); if (io.canImportAs && io.canImportAs(ImportAsType.FOOTAGE)) io.importAs = ImportAsType.FOOTAGE;
         io.sequence = true; io.forceAlphabetical = false;
         var footage = app.project.importFile(io);
@@ -426,20 +460,37 @@ if (typeof module !== "undefined" && module.exports) {
         return {comp: comp, created: false};
     }
 
-    function findManagedLayer(comp, tag) {
-        if (state.layers[tag]) return state.layers[tag];
-        if (typeof comp.layer === "function") {
-            for (var i = 1; i <= comp.numLayers; i++) { var layer = comp.layer(i); try { if (layer.comment === tag) { state.layers[tag] = layer; return layer; } } catch (e) {} }
+    function findManagedLayer(comp, tag, footage, passName) {
+        delete state.layers[tag];
+        var found = null;
+        // Scan project comps as well, so a moved tagged layer blocks after script reload too.
+        for (var p = 1; p <= app.project.numItems; p++) {
+            var owner = app.project.item(p);
+            if (!(owner instanceof CompItem)) continue;
+            for (var i = 1; i <= owner.numLayers; i++) {
+                var layer = owner.layer(i), comment = itemComment(layer);
+                if (comment === tag) {
+                    if (found) throw new Error("Duplicate managed layer ownership; resolve duplicate tags before retrying.");
+                    if (owner !== comp || typeof AVLayer === "undefined" || !(layer instanceof AVLayer) || layer.containingComp !== comp) {
+                        throw new Error("Managed layer ownership no longer belongs to a valid footage layer in the expected comp. Preserve artist work and restore the intended tag/container before retrying.");
+                    }
+                    // Source is checked by ensureManagedLayer before reuse/cache population.
+                    found = layer;
+                } else if (owner === comp && ((passName && layer.name === passName) || (footage && layer.source === footage))) {
+                    throw new Error("Ambiguous managed layer ownership: an unverified layer uses the expected pass name or footage. Preserve artist work; restore its original tag only if intended, or move/remove the conflicting layer before retrying. CutBridge will not adopt it or add a duplicate.");
+                }
+            }
         }
-        return null;
+        return found;
     }
     function ensureManagedLayer(comp, footage, manifest, passName) {
-        var tag = CutBridgeContract.managedTag("layer", manifest, passName), layer = findManagedLayer(comp, tag);
+        var tag = CutBridgeContract.managedTag("layer", manifest, passName), layer = findManagedLayer(comp, tag, footage, passName);
         if (layer) {
             var source;
             try { source = layer.source; }
             catch (sourceError) { throw new Error(passName + ": managed layer source cannot be read; refusing destructive replacement in S5."); }
             if (!source || source !== footage) throw new Error(passName + ": managed layer does not point to the expected footage; refusing destructive replacement in S5.");
+            state.layers[tag] = layer;
             return {layer: layer, created: false};
         }
         layer = comp.layers.add(footage);
@@ -499,11 +550,13 @@ if (typeof module !== "undefined" && module.exports) {
             if (!coverage.folderExists) { if (optional) warn(p.name + ": optional pass folder missing"); else bad(p.name + ": required pass folder missing"); continue; }
             if (!coverage.complete) { var missingMsg = p.name + ": missing frame(s): " + formatMissingFrames(coverage.missing); if (optional) warn(missingMsg + " (optional pass)"); else bad(missingMsg); continue; }
             ok(p.name + ": " + m.frames.count + "/" + m.frames.count + " expected frames present"); if (coverage.unexpected.length) warn(p.name + ": " + coverage.unexpected.length + " unexpected matching filename(s)");
-            var footageTag = CutBridgeContract.managedTag("footage", m, p.name), managedFootage = state.imported[footageTag];
-            if (managedFootage) {
-                try { validateReusableFootage(managedFootage, expectedFirstFile(p, coverage), p, m); ok(p.name + ": managed footage source/FPS matches manifest"); }
-                catch (footageError) { bad(p.name + ": managed footage validation failed — " + footageError.toString()); }
-            }
+            try {
+                var renderFolder = existingRenderFolder(m);
+                if (renderFolder) {
+                    var managedFootage = findManagedFootage(p, m, renderFolder, expectedFirstFile(p, coverage));
+                    if (managedFootage) ok(p.name + ": managed footage source/FPS matches manifest");
+                }
+            } catch (footageError) { bad(p.name + ": managed footage validation failed — " + footageError.toString()); }
         }
         if (state.comp) {
             var expected = CutBridgeContract.expectedCompSpec(m), mismatches = CutBridgeContract.compSpecErrors(expected, {width: state.comp.width, height: state.comp.height, pixelAspect: state.comp.pixelAspect, duration: state.comp.duration, frameRate: state.comp.frameRate});

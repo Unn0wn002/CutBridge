@@ -77,7 +77,7 @@ These remain `MANUAL NOT EXECUTED` until real evidence is recorded.
 | Japanese package/pass/sequence paths | Correct file resolution and import |
 | Folder/file symlink or alias | Rejected before footage import |
 | Older ExtendScript without native JSON | Valid JSON loads; executable text is rejected |
-| Repeat package import | Behavior matches the S5 idempotency design once S5 is implemented |
+| Repeat package import | First build, repeated build, manifest reload and script reload retain singleton managed items/layers; tag/container drift blocks without adoption or duplication |
 | V001 → V002 revision | Preservation behavior is tested only after S6 is implemented |
 
 ## Target-user task test
@@ -92,3 +92,21 @@ After the product reaches the appropriate validation stage, measure with represe
 6. Revision/rework impact when V002 replaces V001.
 
 Do not claim timing, error-rate, usability, or Japanese target-user results until the test was actually run.
+
+## S5 ownership/cache automated gate
+
+`node tests/ae_s5_checks.cjs` executes the entire JSX panel with host mocks and re-evaluates it against the same project to simulate script reload. It runs through `tests/test_ae_s5.py` in CI. The source-guard, comp/layer rollback, and partial-retry-order regressions remain mandatory.
+
+| Change after successful Build | Expected same-session and script-reload result |
+|---|---|
+| Footage tag removed/changed/unreadable | Block ambiguous ownership; do not re-tag or import a duplicate |
+| Footage moved from managed render folder | Block folder ownership drift; preserve moved object |
+| Layer tag removed/changed/unreadable | Block ambiguous ownership; do not add a duplicate |
+| Tagged layer moved to another comp | Block expected-comp mismatch; preserve both comps |
+| Cached item/layer has wrong host type/container | Reject live ownership; never report safe reuse |
+| Duplicate persistent footage/layer tag | Block ambiguous ownership |
+| Cached reference removed; valid live replacement and matching layer source exist | Rediscover and validate live replacement; no import/layer duplication |
+| Artist footage/layers with unrelated names/sources | Preserve contents and artist relative order |
+| QC following footage ownership/source/FPS failure | Report managed-footage error even after cache invalidation or reload |
+
+Manual repetition in a supported AE desktop installation remains `MANUAL NOT EXECUTED`. Mocks cannot certify native host handles, comment persistence, undo behavior or OS filesystem semantics.

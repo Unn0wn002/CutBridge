@@ -76,7 +76,7 @@ function host(m, files, options = {}) {
     });
   }
   function Layer(comp, sourceItem) {
-    this.comp = comp; this.source = sourceItem; this.name = ''; this.comment = ''; this.startTime = 0;
+    this.containingComp = comp; this.comp = comp; this.source = sourceItem; this.name = ''; this.comment = ''; this.startTime = 0;
   }
   Layer.prototype.moveToBeginning = function() {
     const list = this.comp._layers, index = list.indexOf(this);
@@ -104,10 +104,12 @@ function host(m, files, options = {}) {
 
   function ImportOptions(file) { this.file = file; this.sequence = false; this.forceAlphabetical = true; }
   ImportOptions.prototype.canImportAs = () => true;
-  const runtime = {File, Folder, Window, Panel, FolderItem, FootageItem, CompItem, ImportOptions, ImportAsType: {FOOTAGE: 1},
+  const runtime = {File, Folder, Window, Panel, FolderItem, FootageItem, CompItem, AVLayer: Layer, ImportOptions, ImportAsType: {FOOTAGE: 1},
     ScriptUI: {newFont() {}}, alert: message => alerts.push(String(message)), $: {writeln() {}},
     app: {project, beginUndoGroup() {}, endUndoGroup() {}, newProject() {}}};
   vm.createContext(runtime); vm.runInContext(source, runtime);
+
+  function reloadScript() { controls.length = 0; vm.runInContext(source, runtime); }
 
   function click(word) {
     const button = controls.find(x => x.type === 'button' && x.text.includes(word));
@@ -139,12 +141,31 @@ function host(m, files, options = {}) {
     projectItems.push(wrong);
     return wrong;
   }
+  function seedArtistWork(comp) {
+    const item = new FootageItem(new File('/artist/reference.png'));
+    item.name = 'Artist reference'; item.comment = 'Artist notes'; item.parentFolder = renderFolder();
+    projectItems.push(item);
+    const layer = comp.layers.add(item); layer.name = 'Artist title'; layer.comment = 'Artist layer notes';
+    return {item, layer};
+  }
+  function moveLayer(layer, from) {
+    const other = project.items.addComp('Artist comp', 640, 360, 1, 1, 24);
+    other.parentFolder = project.rootFolder;
+    from._layers.splice(from._layers.indexOf(layer), 1); other._layers.push(layer);
+    layer.containingComp = other; layer.comp = other;
+  }
+  function duplicateFootage(original) {
+    const item = new FootageItem(original.file);
+    item.name = original.name; item.comment = original.comment; item.parentFolder = original.parentFolder;
+    item.mainSource.conformFrameRate = original.mainSource.conformFrameRate;
+    projectItems.push(item); return item;
+  }
   function driftFootageSource(item, filePath) { item.file = new File(filePath); }
   function breakFootageFpsRead(item, mode) {
     item._conformGetterThrows = mode === 'throw';
     item._conformUnavailable = mode === 'unavailable';
   }
-  return {click, alerts, imports, projectItems, comps, footage, compFolder, renderFolder, seedManualComp, seedWrongTypeFootageTag, driftFootageSource, breakFootageFpsRead};
+  return {click, reloadScript, seedArtistWork, moveLayer, duplicateFootage, alerts, imports, projectItems, comps, footage, compFolder, renderFolder, seedManualComp, seedWrongTypeFootageTag, driftFootageSource, breakFootageFpsRead};
 }
 
 const beautyFiles = [1, 2, 3].map(n => `/packages/桜/render/beauty/C001_BEAUTY_000${n}.png`);
@@ -315,4 +336,96 @@ check('initial managed layer order is deterministic', () => {
   assert.deepEqual(h.comps()[0]._layers.map(x => x.name), ['BEAUTY', 'LINE']);
 });
 
+
+for (const kind of ['footage', 'layer']) {
+  for (const drift of ['removed', 'changed', 'moved', 'unreadable', 'wrong-type', 'wrong-container']) {
+    check(`${kind} ${drift} ownership blocks same-session and actual script reload without duplicates`, () => {
+      const h = host(manifest(), beautyFiles); h.click('Build');
+      assert.match(h.alerts.at(-1), /comp built/);
+      const comp = h.comps()[0], footage = h.footage()[0], layer = comp.layer(1);
+      const target = kind === 'footage' ? footage : layer;
+      if (drift === 'removed') target.comment = '';
+      if (drift === 'changed') target.comment = 'ARTIST: retained for manual work';
+      if (drift === 'moved' && kind === 'footage') target.parentFolder = h.compFolder();
+      if (drift === 'moved' && kind === 'layer') h.moveLayer(target, comp);
+      if (drift === 'wrong-container') {
+        if (kind === 'footage') target.parentFolder = null;
+        else target.containingComp = {};
+      }
+      if (drift === 'unreadable') Object.defineProperty(target, 'comment', {get() { throw new Error('comment unavailable'); }});
+      if (drift === 'wrong-type') Object.setPrototypeOf(target, {});
+      const {item: artistFootage, layer: artistLayer} = h.seedArtistWork(comp);
+      const beforeItems = h.projectItems.slice(), beforeLayers = comp._layers.slice();
+      const comment = drift === 'unreadable' ? null : target.comment;
+      for (const reload of [false, true, false]) {
+        if (reload) h.reloadScript();
+        h.click('Build');
+        assert.doesNotMatch(h.alerts.at(-1), /comp built|reused safely/, `${kind} ${drift} must fail closed`);
+        assert.match(h.alerts.at(-1), /ownership|ambiguous|managed.*folder|expected comp|item type/i);
+        if (drift !== 'unreadable') assert.equal(target.comment, comment, 'must not reclaim/re-tag artist-edited object');
+        assert.deepEqual(h.projectItems, beforeItems, 'no duplicate footage or project mutations');
+        assert.deepEqual(comp._layers, beforeLayers, 'no duplicate layers or reordering on rejection');
+        assert.equal(h.imports.length, 1);
+        assert.equal(artistFootage.comment, 'Artist notes');
+        assert.equal(artistLayer.source, artistFootage);
+        if (kind === 'footage') {
+          h.click('QC');
+          assert.match(h.alerts.at(-1), /managed footage validation failed/);
+          assert.doesNotMatch(h.alerts.at(-1), /PASS BEAUTY: managed footage source/);
+        }
+      }
+    });
+  }
+}
+
+check('valid live fallback survives replacing a cached reference and actual script reload', () => {
+  const h = host(manifest(), beautyFiles); h.click('Build');
+  const comp = h.comps()[0], old = h.footage()[0], replacement = h.duplicateFootage(old);
+  comp.layer(1).source = replacement; old.remove();
+  const artist = h.seedArtistWork(comp), count = h.projectItems.length;
+  for (const reload of [false, true]) {
+    if (reload) h.reloadScript();
+    h.click('Build');
+    assert.match(h.alerts.at(-1), /reused safely/);
+    assert.equal(h.projectItems.length, count);
+    assert.equal(comp.numLayers, 2);
+    assert.equal(comp._layers.find(x => x.name === 'BEAUTY').source, replacement);
+    assert.equal(artist.layer.source, artist.item);
+  }
+});
+
+check('live layer lookup discards a cached layer no longer in the comp', () => {
+  const h = host(manifest(), beautyFiles); h.click('Build');
+  const comp = h.comps()[0], old = comp.layer(1);
+  comp._layers.splice(comp._layers.indexOf(old), 1);
+  const replacement = comp.layers.add(old.source);
+  replacement.name = old.name; replacement.comment = old.comment;
+  const artist = h.seedArtistWork(comp);
+  for (const reload of [false, true]) {
+    if (reload) h.reloadScript();
+    h.click('Build');
+    assert.match(h.alerts.at(-1), /reused safely/);
+    assert.equal(comp.numLayers, 2);
+    assert.equal(comp._layers.find(x => x.name === 'BEAUTY'), replacement);
+    assert.equal(artist.layer.source, artist.item);
+    assert.equal(h.imports.length, 1);
+  }
+});
+
+for (const kind of ['footage', 'layer']) {
+  check(`duplicate live ${kind} tags fail closed in both cache states`, () => {
+    const h = host(manifest(), beautyFiles); h.click('Build');
+    const comp = h.comps()[0], original = comp.layer(1);
+    if (kind === 'footage') h.duplicateFootage(h.footage()[0]);
+    else { const duplicate = comp.layers.add(original.source); duplicate.name = original.name; duplicate.comment = original.comment; }
+    const count = h.projectItems.length, layers = comp._layers.slice();
+    for (const reload of [false, true]) {
+      if (reload) h.reloadScript();
+      h.click('Build');
+      assert.match(h.alerts.at(-1), /duplicate managed.*ownership/i);
+      assert.equal(h.projectItems.length, count);
+      assert.deepEqual(comp._layers, layers);
+    }
+  });
+}
 console.log(`PASS: ${checks} S5 AE import/comp reliability groups (Node mocks; AE GUI not executed)`);
