@@ -70,3 +70,16 @@ def test_revision_version_formatting_stays_in_contract_scope():
     assert source.count('CutBridgeContract.zeroPad(selected.manifest.version, 3)') == 2
     assert '+ zeroPad(manifest.version, 3)' not in source
     assert '+ zeroPad(selected.manifest.version, 3)' not in source
+
+
+def test_package_root_ownership_preflight_requires_unique_structure_before_mutation():
+    """A damaged/ambiguous managed root must fail before Build creates deterministic children."""
+    root = Path(__file__).resolve().parents[1]
+    source = (root / "apps/after-effects/CutBridge.jsx").read_text(encoding="utf-8")
+
+    assert 'if (rootCount > 1)' in source
+    assert 'if (childCounts[managedNames[c]] > 1)' in source
+    assert 'taggedCompItems !== 1 || ownedCompItems !== 1' in source
+    ownership_guard = source.index('taggedCompItems !== 1 || ownedCompItems !== 1')
+    child_creation = source.index('return {root: root, comp: findChildFolder(root, "01_COMP")')
+    assert ownership_guard < child_creation
