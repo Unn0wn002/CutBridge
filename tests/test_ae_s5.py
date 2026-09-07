@@ -20,3 +20,7 @@ def test_ae_s5_import_comp_reliability_host_regressions():
 
 def test_ae_s5_managed_layer_source_guard_regressions():
     _run_node("ae_s5_managed_layer_guard.cjs")
+
+
+def test_ae_s5_partial_retry_layer_order_regression():
+    _run_node("ae_s5_partial_retry_order.cjs")
