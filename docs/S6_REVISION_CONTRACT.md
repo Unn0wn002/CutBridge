@@ -68,22 +68,33 @@ The `ownershipKey` includes the collision-safe cut tuple, numeric version, packa
 and pass. It is verification context, not a replacement tag format for existing S5
 comments.
 
-The package root name by itself is never ownership proof. When Build encounters an existing
-top-level folder with the deterministic `package_name`, reuse is allowed only when **all** of
-the following are true before any Build mutation:
+## Package structure and ownership
 
-1. exactly one matching top-level package root exists;
-2. exactly one each of `01_COMP`, `02_RENDER`, `03_PRECOMP`, and `04_OUTPUT` exists directly
-   under that root;
-3. exactly one item carries the expected current managed-comp tag; and
-4. that item is the correctly named `CompItem` inside the unique `01_COMP` folder.
+The package root name by itself is never ownership proof. Existing managed project structure
+must be uniquely resolvable before CutBridge reuses it. The shared read-only resolver requires:
 
-Missing, duplicated, or misplaced deterministic structure is treated as package drift, not as
-permission to repair the project implicitly. Build fails before creating folders, comps,
-footage, or layers. Host-shaped regression coverage deliberately removes `03_PRECOMP` and
-adds a duplicate `02_RENDER`, then proves the retry leaves project-item identity/count and
-import count unchanged. This also prevents an existing same-name artist/studio root from being
-adopted merely because its name matches the manifest.
+1. exactly one matching top-level package root;
+2. exactly one each of `01_COMP`, `02_RENDER`, `03_PRECOMP`, and `04_OUTPUT` directly under
+   that root; and
+3. operation-specific managed-object ownership checks after structure resolution.
+
+For Build reuse, exactly one item must carry the expected current managed-comp tag and that item
+must be the correctly named `CompItem` inside the unique `01_COMP` folder. Missing, duplicated,
+or misplaced deterministic structure is treated as package drift, not permission to repair the
+project implicitly. Build fails before creating folders, comps, footage, or layers.
+
+Revision adapter construction uses the same unique root/folder resolver rather than a first-match
+lookup. Therefore duplicate current package roots or duplicate deterministic children block before
+confirmation, replacement import, or `replaceSource()`. Native-host-shaped regression coverage
+injects a duplicate current root and a duplicate `02_RENDER` between V002 and V003 and verifies
+that layer source, footage count, replacement-call count, confirmation count, and current root name
+remain unchanged.
+
+QC preserves package-only operation when no matching managed root exists. Once a matching managed
+root exists, QC also uses the strict unique resolver. A missing `03_PRECOMP` or duplicate
+`02_RENDER` therefore cannot be silently evaluated through an arbitrary first match or produce a
+false QC PASS. The host-shaped structure regression verifies QC remains read-only and reports the
+structural error for both cases.
 
 S5 did not claim the package-root `comment`, so S6 preserves unmanaged root comments during
 revision. Only an exact prior CutBridge root tag is migrated; artist/studio notes remain intact.
@@ -99,7 +110,7 @@ before migration.
 ## Transaction and recovery
 
 1. Prepare validates manifests, required managed-layer coverage, duplicate records/handles,
-   and live ownership/source associations.
+   unique current package structure, and live ownership/source associations.
 2. Apply revalidates the managed objects, stages and validates **all** replacement imports,
    then revalidates ownership before swaps. There are no swaps on import/validation failure.
 3. Record each old source before attempting its native `replaceSource()` swap, then verify the
@@ -129,7 +140,7 @@ there is no automatic revision mutation without a user confirmation surface.
 ## Automated evidence
 
 The latest verified implementation head before this documentation reconciliation is
-`6cc557ff3694979c6a3445328ce3538556558c93`. GitHub Actions run `34165081978` passed
+`d42db23b6e32d2f60bff41153ee65419357298ff`. GitHub Actions run `34165979335` passed
 `static-validation` and `blender-52-rna-runtime`.
 
 Static validation includes:
@@ -140,7 +151,8 @@ Static validation includes:
 - Build/QC after revision and script reload;
 - read-only `AVLayer.source` with `replaceSource(..., false)` as the source mutation path;
 - package-root artist-note preservation and same-name root collision rejection;
-- missing/duplicate deterministic-folder no-mutation coverage;
+- Build/QC rejection of missing/duplicate deterministic folders without mutation;
+- revision rejection of duplicate current root/folder before confirmation/import/source swap;
 - deterministic release-package simulation and checksum verification;
 - S6 Node contract checks; and
 - ExtendScript/JSX syntax validation.
