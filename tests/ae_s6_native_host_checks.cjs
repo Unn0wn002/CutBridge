@@ -30,6 +30,9 @@ function packagePath(version) { return "/packages/V" + String(version).padStart(
 function frameFiles(version) {
     return [1, 2, 3].map(n => packagePath(version) + "/render/beauty/C001_BEAUTY_000" + n + ".png");
 }
+function auditZeroPad(value, width) {
+    let s = String(value); while (s.length < width) s = "0" + s; return s;
+}
 
 function makeHost() {
     const controls = [], alerts = [], confirms = [], projectItems = [], dialogQueue = [], replaceFlags = [];
@@ -139,6 +142,9 @@ function makeHost() {
     const runtime = {
         File, Folder, Window, Panel, FolderItem, FootageItem, CompItem, AVLayer, ImportOptions,
         ImportAsType: {FOOTAGE: 1}, ScriptUI: {newFont() {}}, CutBridgeRevisionManager: Revision,
+        // AUDIT SHIM ONLY: production currently has an out-of-scope zeroPad blocker.
+        // Remove this shim as soon as CutBridge.jsx exposes/uses its own scoped helper correctly.
+        zeroPad: auditZeroPad,
         alert: message => alerts.push(String(message)),
         confirm: message => { confirms.push(String(message)); return true; },
         $: {writeln() {}},
@@ -210,4 +216,4 @@ assert.equal(h.footage().length, 3);
 assert.equal(h.topRoot(v3.package_name).comment, "Artist / studio package note");
 assert.ok(!h.alerts.some(x => /Revision failed|revision was not applied/.test(x)));
 
-console.log("S6 native-host lifecycle: PASS (V001→V002→V003 + Build/QC + reload; real AE MANUAL NOT EXECUTED)");
+console.log("S6 native-host lifecycle: PASS WITH zeroPad AUDIT SHIM (real AE MANUAL NOT EXECUTED)");
