@@ -69,11 +69,23 @@ and pass. It is verification context, not a replacement tag format for existing 
 comments.
 
 The package root name by itself is never ownership proof. When Build encounters an existing
-top-level folder with the deterministic `package_name`, it may reuse that root only when the
-expected `01_COMP` folder contains the correctly named comp with the exact current CutBridge
-managed-comp tag. Otherwise Build fails before adding child folders, comps or footage. This
-prevents CutBridge from adopting an artist/studio folder that happens to share the package name.
-S5 did not claim the package-root `comment`, so S6 also preserves unmanaged root comments during
+top-level folder with the deterministic `package_name`, reuse is allowed only when **all** of
+the following are true before any Build mutation:
+
+1. exactly one matching top-level package root exists;
+2. exactly one each of `01_COMP`, `02_RENDER`, `03_PRECOMP`, and `04_OUTPUT` exists directly
+   under that root;
+3. exactly one item carries the expected current managed-comp tag; and
+4. that item is the correctly named `CompItem` inside the unique `01_COMP` folder.
+
+Missing, duplicated, or misplaced deterministic structure is treated as package drift, not as
+permission to repair the project implicitly. Build fails before creating folders, comps,
+footage, or layers. Host-shaped regression coverage deliberately removes `03_PRECOMP` and
+adds a duplicate `02_RENDER`, then proves the retry leaves project-item identity/count and
+import count unchanged. This also prevents an existing same-name artist/studio root from being
+adopted merely because its name matches the manifest.
+
+S5 did not claim the package-root `comment`, so S6 preserves unmanaged root comments during
 revision. Only an exact prior CutBridge root tag is migrated; artist/studio notes remain intact.
 
 The native adapter preserves provenance across revisions: the active layer and replacement
@@ -117,20 +129,31 @@ there is no automatic revision mutation without a user confirmation surface.
 ## Automated evidence
 
 The latest verified implementation head before this documentation reconciliation is
-`3bc022846c46fd587b4d9709624d3d2c834b32fd`. GitHub Actions run `34148487085` passed
-`static-validation` and `blender-52-rna-runtime`. Static validation includes pytest,
-deterministic release-package simulation/checksums, S6 Node contract checks, JSX syntax,
-the native `AVLayer.replaceSource()` regression, V001→V002→V003 host-shaped revision with
-Build/QC after each revision and script reload, package-root note preservation, and unverified
-same-name root collision coverage. The Blender job includes the official bpy 5.2 RNA lifecycle
-and complete integration suite. This is strong regression evidence but is not a substitute for
-native After Effects execution. The final documentation-only review head must also have green
-exact-head CI; PR #15 records that final review SHA/run.
+`6cc557ff3694979c6a3445328ce3538556558c93`. GitHub Actions run `34165081978` passed
+`static-validation` and `blender-52-rna-runtime`.
+
+Static validation includes:
+
+- the complete pytest selection for static/release/AE contract/S5/S6 coverage;
+- S5/S6 host-shaped ownership regressions;
+- V001→V002→V003 revision lifecycle through the actual `CutBridge.jsx` adapter;
+- Build/QC after revision and script reload;
+- read-only `AVLayer.source` with `replaceSource(..., false)` as the source mutation path;
+- package-root artist-note preservation and same-name root collision rejection;
+- missing/duplicate deterministic-folder no-mutation coverage;
+- deterministic release-package simulation and checksum verification;
+- S6 Node contract checks; and
+- ExtendScript/JSX syntax validation.
+
+The Blender job includes the official bpy 5.2 registration → unregistration → re-registration
+lifecycle and complete Blender integration suite. This is strong regression evidence but is not
+a substitute for native After Effects execution. The final documentation review head must also
+have green exact-head CI; PR #15 records that final review SHA/run.
 
 ## Remaining S6 gate
 
 - Obtain independent clean full-PR review at the exact final head plus green CI before merge;
-  verify post-merge develop CI.
+  verify post-merge `develop` CI.
 - Execute the manual AE workflow and inspect V001→V002→V003, Build/QC after revision,
   save/reopen behavior, and property preservation in a real supported After Effects host.
 
