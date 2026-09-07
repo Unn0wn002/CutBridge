@@ -58,3 +58,15 @@ def test_revision_preserves_unmanaged_package_root_comments():
     assert 'if (migration.migrateRootComment) setItemComment(folders.root, CutBridgeContract.managedTag("root", newManifest, "PACKAGE"));' in source
     assert 'if (migration.migrateRootComment) setItemComment(folders.root, migration.rootComment);' in source
     assert '\n                setItemComment(folders.root, CutBridgeContract.managedTag("root", newManifest, "PACKAGE"));' not in source
+
+
+def test_revision_version_formatting_stays_in_contract_scope():
+    """The AE panel must not call the contract-private zeroPad helper as a free variable."""
+    root = Path(__file__).resolve().parents[1]
+    source = (root / "apps/after-effects/CutBridge.jsx").read_text(encoding="utf-8")
+
+    assert 'zeroPad: zeroPad' in source
+    assert 'CutBridgeContract.zeroPad(manifest.version, 3)' in source
+    assert source.count('CutBridgeContract.zeroPad(selected.manifest.version, 3)') == 2
+    assert '+ zeroPad(manifest.version, 3)' not in source
+    assert '+ zeroPad(selected.manifest.version, 3)' not in source
