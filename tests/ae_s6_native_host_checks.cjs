@@ -176,7 +176,7 @@ assert.equal(sourceV1.comment, Contract.managedTag("footage", v1, "BEAUTY"));
 
 h.queue(v2); h.click("Update Revision");
 packageRoot = h.topRoot(v2.package_name);
-assert.ok(packageRoot, "root should migrate to V002 name");
+assert.ok(packageRoot, "root should migrate to V002 name; alerts=" + JSON.stringify(h.alerts) + "; confirms=" + JSON.stringify(h.confirms));
 assert.equal(packageRoot.comment, "Artist / studio package note", "revision must preserve an unmanaged root comment");
 assert.equal(layer.comment, Contract.managedTag("layer", v2, "BEAUTY"));
 assert.equal(comp.comment, Contract.managedTag("comp", v2, v2.ae.comp_name));
@@ -189,7 +189,7 @@ assert.match(h.alerts.at(-1), /CutBridge QC — PASS/);
 
 h.queue(v3); h.click("Update Revision");
 packageRoot = h.topRoot(v3.package_name);
-assert.ok(packageRoot, "root should migrate to V003 name");
+assert.ok(packageRoot, "root should migrate to V003 name; alerts=" + JSON.stringify(h.alerts) + "; confirms=" + JSON.stringify(h.confirms));
 assert.equal(packageRoot.comment, "Artist / studio package note");
 assert.equal(sourceV2.comment, Contract.managedTag("footage", v2, "BEAUTY"));
 const sourceV3 = layer.source;
