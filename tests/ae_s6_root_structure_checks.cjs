@@ -1,7 +1,7 @@
 /*
  * Host-shaped regression for existing CutBridge package-root structure.
- * Proves Build fails before mutation when deterministic managed folders are
- * missing or duplicated. This is not native After Effects certification.
+ * Proves Build fails before mutation and QC cannot pass when deterministic
+ * managed folders are missing or duplicated. This is not native After Effects certification.
  */
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
@@ -170,6 +170,10 @@ h.assertSameItems(afterRemoval, "missing child folder retry must not mutate the 
 assert.equal(h.imports.length, importsBeforeMissingRetry, "missing child folder retry must not import footage");
 assert.equal(h.childFolders(root).filter(folder => folder.name === "03_PRECOMP").length, 0, "Build must not recreate missing managed folder implicitly");
 assert.match(h.alerts.at(-1), /03_PRECOMP.*must exist exactly once|must exist exactly once.*03_PRECOMP/i);
+h.click("Run QC");
+h.assertSameItems(afterRemoval, "QC on missing managed folder must remain read-only");
+assert.doesNotMatch(h.alerts.at(-1), /QC — PASS\b/);
+assert.match(h.alerts.at(-1), /03_PRECOMP.*must exist exactly once|must exist exactly once.*03_PRECOMP/i);
 
 // Restore the deliberately removed folder, then prove duplicate deterministic children also fail before mutation.
 h.projectItems.push(missingPrecomp);
@@ -182,5 +186,9 @@ h.assertSameItems(afterDuplicate, "duplicate child folder retry must not mutate 
 assert.equal(h.imports.length, importsBeforeDuplicateRetry, "duplicate child folder retry must not import footage");
 assert.equal(h.childFolders(root).filter(folder => folder.name === "02_RENDER").length, 2);
 assert.match(h.alerts.at(-1), /02_RENDER.*must exist exactly once|must exist exactly once.*02_RENDER/i);
+h.click("Run QC");
+h.assertSameItems(afterDuplicate, "QC on duplicate managed folder must remain read-only");
+assert.doesNotMatch(h.alerts.at(-1), /QC — PASS\b/);
+assert.match(h.alerts.at(-1), /02_RENDER.*must exist exactly once|must exist exactly once.*02_RENDER/i);
 
-console.log("S6 package-root structure: PASS (missing/duplicate managed folders fail before mutation; real AE MANUAL NOT EXECUTED)");
+console.log("S6 package-root structure: PASS (Build/QC reject missing/duplicate managed folders; real AE MANUAL NOT EXECUTED)");
