@@ -157,12 +157,14 @@ var CutBridgeContract = (function () {
         if (manifest.ae && isArray(manifest.ae.layer_order)) {
             for (var i = 0; i < manifest.ae.layer_order.length; i++) {
                 var ordered = manifest.ae.layer_order[i];
-                if (!seen[ordered]) { result.push(ordered); seen[ordered] = true; }
+                var orderedKey = "$" + ordered;
+                if (!seen[orderedKey]) { result.push(ordered); seen[orderedKey] = true; }
             }
         }
         for (var j = 0; j < manifest.passes.length; j++) {
             var name = manifest.passes[j].name;
-            if (!seen[name]) { result.push(name); seen[name] = true; }
+            var nameKey = "$" + name;
+            if (!seen[nameKey]) { result.push(name); seen[nameKey] = true; }
         }
         return result;
     }
@@ -213,8 +215,9 @@ var CutBridgeContract = (function () {
             for (var i = 0; i < manifest.passes.length; i++) {
                 var p = manifest.passes[i];
                 if (!p || typeof p.name !== "string" || !p.name.length) { errors.push("Manifest pass at index " + i + " needs a non-empty name."); continue; }
-                if (seenPass[p.name]) errors.push("Manifest contains duplicate render pass name: " + p.name + ".");
-                seenPass[p.name] = true;
+                var passKey = "$" + p.name;
+                if (seenPass[passKey]) errors.push("Manifest contains duplicate render pass name: " + p.name + ".");
+                seenPass[passKey] = true;
                 try { relativePassPath(p.path); } catch (pathError) { errors.push(p.name + ": " + pathError.message); }
                 try { patternToRegex(p.sequence_pattern); } catch (patternError) { errors.push(p.name + ": " + patternError.message); }
                 if (p.required !== undefined && typeof p.required !== "boolean") errors.push(p.name + ": required must be a boolean.");
@@ -225,9 +228,10 @@ var CutBridgeContract = (function () {
                     var seenOrder = {};
                     for (var q = 0; q < manifest.ae.layer_order.length; q++) {
                         var orderedName = manifest.ae.layer_order[q];
-                        if (typeof orderedName !== "string" || !seenPass[orderedName]) errors.push("Manifest ae.layer_order references an unknown pass at index " + q + ".");
-                        else if (seenOrder[orderedName]) errors.push("Manifest ae.layer_order contains duplicate pass: " + orderedName + ".");
-                        seenOrder[orderedName] = true;
+                        var orderKey = "$" + orderedName;
+                        if (typeof orderedName !== "string" || !seenPass[orderKey]) errors.push("Manifest ae.layer_order references an unknown pass at index " + q + ".");
+                        else if (seenOrder[orderKey]) errors.push("Manifest ae.layer_order contains duplicate pass: " + orderedName + ".");
+                        seenOrder[orderKey] = true;
                     }
                 }
             }
@@ -285,10 +289,20 @@ if (typeof module !== "undefined" && module.exports) {
         for (var i = 1; i <= app.project.numItems; i++) { var item = app.project.item(i); if (item instanceof FolderItem && item.name === name && item.parentFolder === parent) return item; }
         var folder = app.project.items.addFolder(name); folder.parentFolder = parent; return folder;
     }
+    function findExistingChildFolder(parent, name) {
+        if (!parent) return null;
+        for (var i = 1; i <= app.project.numItems; i++) { var item = app.project.item(i); if (item instanceof FolderItem && item.name === name && item.parentFolder === parent) return item; }
+        return null;
+    }
     function ensureProjectFolders(manifest) {
         var rootName = manifest.package_name || (manifest.project + "_" + manifest.cut);
         var root = findChildFolder(app.project.rootFolder, rootName);
         return {root: root, comp: findChildFolder(root, "01_COMP"), render: findChildFolder(root, "02_RENDER"), precomp: findChildFolder(root, "03_PRECOMP"), output: findChildFolder(root, "04_OUTPUT")};
+    }
+    function existingProjectFolders(manifest) {
+        var rootName = manifest.package_name || (manifest.project + "_" + manifest.cut), root = findExistingChildFolder(app.project.rootFolder, rootName);
+        if (!root) return null;
+        return {root: root, comp: findExistingChildFolder(root, "01_COMP"), render: findExistingChildFolder(root, "02_RENDER"), precomp: findExistingChildFolder(root, "03_PRECOMP"), output: findExistingChildFolder(root, "04_OUTPUT")};
     }
     function itemComment(item) { try { return item.comment || ""; } catch (e) { return ""; } }
     function setItemComment(item, value) { try { item.comment = value; } catch (e) { throw new Error("After Effects item comments are required for safe CutBridge managed-object tracking."); } }
@@ -433,10 +447,22 @@ if (typeof module !== "undefined" && module.exports) {
         }
     }
 
+    function findManagedComp(manifest, compFolder, compName) {
+        var tag = CutBridgeContract.managedTag("comp", manifest, compName), found = null;
+        for (var i = 1; i <= app.project.numItems; i++) {
+            var item = app.project.item(i);
+            if (itemComment(item) !== tag) continue;
+            if (found) throw new Error("Duplicate managed comp ownership for " + compName + "; resolve duplicate tags before retrying.");
+            if (typeof CompItem === "undefined" || !(item instanceof CompItem)) throw new Error("Managed comp tag collision for " + compName + "; the tagged item is not a composition.");
+            if (!compFolder || item.parentFolder !== compFolder) throw new Error("Managed comp ownership no longer belongs to the expected comp folder. Preserve the project and restore the intended folder before retrying.");
+            if (item.name !== compName) throw new Error("Managed comp name no longer matches the package identity. Preserve the project and restore the intended comp name before retrying.");
+            found = item;
+        }
+        return found;
+    }
     function ensureManagedComp(manifest, compFolder, compName) {
         var tag = CutBridgeContract.managedTag("comp", manifest, compName), expected = CutBridgeContract.expectedCompSpec(manifest);
-        var comp = findTaggedProjectItem(compFolder, tag);
-        if (comp && !(comp instanceof CompItem)) throw new Error("Managed comp tag collision for " + compName + ".");
+        var comp = findManagedComp(manifest, compFolder, compName);
         if (!comp) {
             var collision = findNamedComp(compFolder, compName);
             if (collision) throw new Error("A non-CutBridge comp named '" + compName + "' already exists in the managed folder. Rename or move it before building to avoid modifying manual work.");
@@ -474,7 +500,12 @@ if (typeof module !== "undefined" && module.exports) {
                     if (owner !== comp || typeof AVLayer === "undefined" || !(layer instanceof AVLayer) || layer.containingComp !== comp) {
                         throw new Error("Managed layer ownership no longer belongs to a valid footage layer in the expected comp. Preserve artist work and restore the intended tag/container before retrying.");
                     }
-                    // Source is checked by ensureManagedLayer before reuse/cache population.
+                    if (footage) {
+                        var liveSource;
+                        try { liveSource = layer.source; }
+                        catch (liveSourceError) { throw new Error("Managed layer source cannot be read; preserve artist work and restore the intended managed layer before retrying."); }
+                        if (!liveSource || liveSource !== footage) throw new Error("Managed layer does not point to the expected footage; preserve artist work and restore the intended managed layer before retrying.");
+                    }
                     found = layer;
                 } else if (owner === comp && ((passName && layer.name === passName) || (footage && layer.source === footage))) {
                     throw new Error("Ambiguous managed layer ownership: an unverified layer uses the expected pass name or footage. Preserve artist work; restore its original tag only if intended, or move/remove the conflicting layer before retrying. CutBridge will not adopt it or add a duplicate.");
@@ -510,10 +541,22 @@ if (typeof module !== "undefined" && module.exports) {
         state.layers[tag] = layer; return {layer: layer, created: true};
     }
 
-    function orderManagedLayers(comp, manifest) {
+    function findVerifiedPass(passName, verifiedPasses) {
+        for (var i = 0; verifiedPasses && i < verifiedPasses.length; i++) if (verifiedPasses[i].name === passName) return verifiedPasses[i];
+        return null;
+    }
+    function orderManagedLayers(comp, manifest, verifiedPasses) {
         if (typeof comp.layer !== "function") return;
         var ordered = CutBridgeContract.passNames(manifest);
-        for (var i = ordered.length - 1; i >= 0; i--) { var tag = CutBridgeContract.managedTag("layer", manifest, ordered[i]); var layer = findManagedLayer(comp, tag); if (layer && layer.moveToBeginning) layer.moveToBeginning(); }
+        var layers = [];
+        for (var i = 0; i < ordered.length; i++) {
+            var verified = findVerifiedPass(ordered[i], verifiedPasses);
+            if (!verified) continue;
+            var tag = CutBridgeContract.managedTag("layer", manifest, ordered[i]);
+            var layer = findManagedLayer(comp, tag, verified.footage, ordered[i]);
+            if (layer) layers.push(layer);
+        }
+        for (var j = layers.length - 1; j >= 0; j--) if (layers[j].moveToBeginning) layers[j].moveToBeginning();
     }
 
     function buildComp() {
@@ -524,13 +567,14 @@ if (typeof module !== "undefined" && module.exports) {
         var warnings = preflight.warnings.slice(0), compName = (m.ae && m.ae.comp_name) ? m.ae.comp_name : (m.cut + "_COMP");
         app.beginUndoGroup("CutBridge Build Comp");
         try {
-            var folders = ensureProjectFolders(m), compResult = ensureManagedComp(m, folders.comp, compName), comp = compResult.comp; state.comp = comp;
+            var folders = ensureProjectFolders(m), compResult = ensureManagedComp(m, folders.comp, compName), comp = compResult.comp, verifiedPasses = []; state.comp = comp;
             for (var i = 0; i < preflight.entries.length; i++) {
                 var entry = preflight.entries[i]; if (entry.skip) continue;
                 var footage = importSequence(entry.passInfo, m, folders.render, entry.coverage);
                 ensureManagedLayer(comp, footage, m, entry.passInfo.name);
+                verifiedPasses.push({name: entry.passInfo.name, footage: footage});
             }
-            orderManagedLayers(comp, m);
+            orderManagedLayers(comp, m, verifiedPasses);
             comp.openInViewer();
             var message = "CutBridge: comp " + (compResult.created ? "built" : "reused safely") + "\n" + comp.name + "\n" + m.resolution.width + "x" + m.resolution.height + " @ " + m.fps + " fps";
             if (warnings.length) message += "\n\nWarnings:\n- " + warnings.join("\n- ");
@@ -551,17 +595,22 @@ if (typeof module !== "undefined" && module.exports) {
             if (!coverage.complete) { var missingMsg = p.name + ": missing frame(s): " + formatMissingFrames(coverage.missing); if (optional) warn(missingMsg + " (optional pass)"); else bad(missingMsg); continue; }
             ok(p.name + ": " + m.frames.count + "/" + m.frames.count + " expected frames present"); if (coverage.unexpected.length) warn(p.name + ": " + coverage.unexpected.length + " unexpected matching filename(s)");
             try {
-                var renderFolder = existingRenderFolder(m);
+                var folders = existingProjectFolders(m), renderFolder = folders ? folders.render : null;
                 if (renderFolder) {
                     var managedFootage = findManagedFootage(p, m, renderFolder, expectedFirstFile(p, coverage));
                     if (managedFootage) ok(p.name + ": managed footage source/FPS matches manifest");
                 }
             } catch (footageError) { bad(p.name + ": managed footage validation failed — " + footageError.toString()); }
         }
-        if (state.comp) {
-            var expected = CutBridgeContract.expectedCompSpec(m), mismatches = CutBridgeContract.compSpecErrors(expected, {width: state.comp.width, height: state.comp.height, pixelAspect: state.comp.pixelAspect, duration: state.comp.duration, frameRate: state.comp.frameRate});
-            if (!mismatches.length) ok("Managed comp metadata matches manifest"); else bad("Managed comp metadata mismatch: " + mismatches.join(", "));
-        }
+        try {
+            var projectFolders = existingProjectFolders(m), compFolder = projectFolders ? projectFolders.comp : null;
+            var compName = (m.ae && m.ae.comp_name) ? m.ae.comp_name : (m.cut + "_COMP");
+            var liveComp = findManagedComp(m, compFolder, compName); state.comp = liveComp;
+            if (liveComp) {
+                var expected = CutBridgeContract.expectedCompSpec(m), mismatches = CutBridgeContract.compSpecErrors(expected, {width: liveComp.width, height: liveComp.height, pixelAspect: liveComp.pixelAspect, duration: liveComp.duration, frameRate: liveComp.frameRate});
+                if (!mismatches.length) ok("Managed comp metadata matches manifest"); else bad("Managed comp metadata mismatch: " + mismatches.join(", "));
+            }
+        } catch (compError) { state.comp = null; bad("Managed comp validation failed — " + compError.toString()); }
         var headline = errors === 0 ? (warnings === 0 ? "PASS" : ("PASS with " + warnings + " warning(s)")) : (errors + " error(s), " + warnings + " warning(s)"); alert("CutBridge QC — " + headline + "\n\n" + lines.join("\n"));
     }
 

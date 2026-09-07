@@ -5,7 +5,7 @@ const path = require('path');
 
 const root = path.resolve(__dirname, '..');
 const source = fs.readFileSync(path.join(root, 'apps', 'after-effects', 'CutBridge.jsx'), 'utf8');
-const match = source.match(/function ensureManagedLayer\(comp, footage, manifest, passName\) \{([\s\S]*?)\n    \}\n\n    function orderManagedLayers/);
+const match = source.match(/function ensureManagedLayer\(comp, footage, manifest, passName\) \{([\s\S]*?)\n    \}\n\n    function findVerifiedPass/);
 assert(match, 'ensureManagedLayer implementation must be discoverable');
 
 const implementation = `function ensureManagedLayer(comp, footage, manifest, passName) {${match[1]}\n}`;

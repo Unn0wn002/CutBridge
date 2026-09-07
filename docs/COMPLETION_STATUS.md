@@ -5,12 +5,16 @@
 - **Open Implementation PR:** [#14](https://github.com/Unn0wn002/CutBridge/pull/14), `feature/session-5-ae-import-reliability` → `develop`.
 - **Live baseline inspected:** `main` = `e282ef99b3fa5772b3d6d1dbbcbfa4957816b78c`; `develop` = `aab6c9b8ce9236d07386b7bf6f0c95034587246c`.
 - **Automated Gate Status:** S4.5 merged through PR #13 at `aab6c9b8ce9236d07386b7bf6f0c95034587246c`; post-merge `develop` CI run `34051334080` PASS. S5 has green executable regression evidence on its implementation commits; the exact final PR head must remain green before independent integration.
-- **S5 Blocker / Review Status:** The stale-cache ownership bypass was reproduced at `28853f4cec8f6b317d75813cb17fadfa6d9fae81` and repaired on this PR. Implementation is awaiting independent full review; S5 is **not complete**. Exact-head CI and green post-merge `develop` CI remain integration gates.
-- **Independent Review:** Still required on the complete S5 PR before integration. Green CI is not self-approval; the implementation worker must not merge its own PR.
+- **S5 Blocker / Review Status:** The stale-cache ownership bypass was repaired, but the independent review at PR head `cc2b20fb61a2dfdfa06704ea5e837f047dec8d98` found five additional S5 blockers. A bounded repair is now prepared on the same PR; S5 is **not complete** until it is pushed, passes exact-head CI, and receives fresh independent review.
+- **Independent Review:** Session 2 review found merge blockers; see [docs/S5_INDEPENDENT_REVIEW.md](S5_INDEPENDENT_REVIEW.md). Green CI is not self-approval; the implementation worker must not merge its own PR.
 - **Manual Required:** After Effects GUI import/comp/QC, Blender→AE end-to-end, native Japanese-user validation, and production/client validation remain `MANUAL NOT EXECUTED` unless separately recorded with real evidence.
 - **Known Blockers:** No stable GitHub release exists. Negative export frames remain intentionally unsupported until signed sequence ordering can be verified safely in After Effects; users must rebase export/preroll to frame 0 or later.
 - **S6 Status:** Has not started. This repair is bounded Session 1 of the completion prompt; it remains product session S5.
 - **Next Session:** S6 — Non-Destructive Revision Manager, only after S5 is independently reviewed, merged to `develop`, and authoritative post-merge CI is green.
+
+## Session 2 independent-review gate
+
+The first independent review pass was **not safe to merge**. It reproduced four S5 ownership/QC defects: a moved managed comp can cause a replacement comp before failure, duplicate managed comp tags are silently accepted, comp metadata QC disappears after script reload, and skipped optional passes can still be included in managed-layer ordering without current verification. It also found a reserved-prototype-key false duplicate in manifest membership validation. These findings are recorded in [docs/S5_INDEPENDENT_REVIEW.md](S5_INDEPENDENT_REVIEW.md). A bounded follow-up repair is prepared locally; no merge or S6 work is authorized until exact-head CI and a fresh independent review pass.
 
 ## S5 implementation scope
 
@@ -20,7 +24,9 @@
 - Reloading the same manifest rediscovers tagged project objects, so idempotency does not depend only on in-memory panel state.
 - Same-name non-CutBridge comps are not hijacked; CutBridge blocks with an actionable collision error rather than modifying manual work.
 - Existing managed comp metadata is checked against manifest resolution, pixel aspect, FPS, and duration. Drift blocks silent destructive correction.
+- Managed comps are resolved from all live project items before creation; moved, renamed, wrong-type, or duplicate tagged comps fail closed without replacement.
 - After every successful pass loop, including partial-build retries, deterministic manifest ordering is restored within the managed layer subset. Only managed layers are moved to the beginning; artist layers are not selected for movement and retain their relative order. Absolute artist indices/interleaving are not promised.
+- Layer ordering considers only passes verified in the current build; skipped optional passes are not reused or reordered.
 - Duplicate pass names and invalid/duplicate `ae.layer_order` references are rejected at the contract boundary.
 - S5 behavior is covered by Node host-adapter regressions wired into pytest/CI. These mocks do not certify native After Effects APIs or desktop filesystem behavior.
 
@@ -42,9 +48,9 @@
 
 **Limits:** If an artist removes *all* identifying signals (tag, generated name, source association and managed container), there is no reliable persistent evidence tying the object to CutBridge after reload. It is treated as unrelated work and is never adopted. S5 does not introduce a hidden ownership registry or certify real AE runtime behavior.
 
-**Regression evidence:** The S5 Node host harness now has 31 groups. Added coverage includes removed/changed/unreadable tags; moved footage/layers; wrong types/containers; repeated same-session failures; actual script re-evaluation against the same project; duplicate tags; valid persistent fallback after replacing a cached reference; and preservation of actual mock artist footage/layers. Original source/FPS, rollback, coverage, and partial-retry ordering regressions remain required.
+**Regression evidence:** The S5 Node host harness now has 36 groups. Added coverage includes live moved/duplicate managed comps, reload-safe QC metadata discovery, prototype-key pass names, optional-pass skip ordering, removed/changed/unreadable tags; moved footage/layers; wrong types/containers; repeated same-session failures; actual script re-evaluation against the same project; duplicate tags; valid persistent fallback after replacing a cached reference; and preservation of actual mock artist footage/layers. Original source/FPS, rollback, coverage, and partial-retry ordering regressions remain required.
 
-**Validation:** Local static/schema/release/AE pytest selection: `PASS` (34 tests and 2 subtests). Local complete pytest: `BLOCKED` at collection because official `bpy==5.2.1` is unavailable in this Python 3.12 environment. Authoritative CI on the exact final PR head must run the full suite plus the separate Blender RNA lifecycle; see PR #14 checks and its handoff for that evidence. Independent review is still required before any merge.
+**Validation:** Local S5 Node regressions: `PASS` (36 groups), including the new follow-up cases. Local complete pytest remains `BLOCKED` at collection because official `bpy==5.2.1` is unavailable in this Python 3.12 environment. The repaired files still require exact-head authoritative CI and a fresh independent review before any merge.
 
 ## S4 contract retained
 

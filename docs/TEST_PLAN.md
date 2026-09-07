@@ -47,6 +47,11 @@ Automated Blender checks run headlessly. They validate RNA lifecycle, render-map
 | A11 | Absolute/traversal/URI-escaped/unsafe pass path | Manifest or host adapter rejects path escape before footage import |
 | A12 | Legacy ExtendScript runtime without native `JSON.parse` | Valid JSON data parses; executable/malformed text is rejected without `eval` |
 | A13 | AE `PRODUCT_VERSION` differs from canonical release version | Release build fails before artifacts are written |
+| A14 | Tagged managed comp moved out of `01_COMP` | Build fails before replacement creation; the moved comp remains untouched |
+| A15 | Duplicate tagged managed comps | Build fails closed before footage/layer mutation |
+| A16 | Managed comp metadata drift after script reload | QC rediscovers the tagged comp and reports the mismatch |
+| A17 | Previously imported optional pass becomes unavailable | The stale optional layer is not treated as verified or reordered |
+| A18 | Valid pass names matching object prototype keys | `constructor`, `toString`, and `__proto__` values are not false duplicates |
 
 ## S4 automated contract gate
 
@@ -95,7 +100,7 @@ Do not claim timing, error-rate, usability, or Japanese target-user results unti
 
 ## S5 ownership/cache automated gate
 
-`node tests/ae_s5_checks.cjs` executes the entire JSX panel with host mocks and re-evaluates it against the same project to simulate script reload. It runs through `tests/test_ae_s5.py` in CI. The source-guard, comp/layer rollback, and partial-retry-order regressions remain mandatory.
+`node tests/ae_s5_checks.cjs` executes the entire JSX panel with host mocks and re-evaluates it against the same project to simulate script reload. It runs through `tests/test_ae_s5.py` in CI. The source-guard, comp/layer rollback, and partial-retry-order regressions remain mandatory. The current harness contains 36 groups.
 
 | Change after successful Build | Expected same-session and script-reload result |
 |---|---|
@@ -105,8 +110,12 @@ Do not claim timing, error-rate, usability, or Japanese target-user results unti
 | Tagged layer moved to another comp | Block expected-comp mismatch; preserve both comps |
 | Cached item/layer has wrong host type/container | Reject live ownership; never report safe reuse |
 | Duplicate persistent footage/layer tag | Block ambiguous ownership |
+| Moved or duplicate managed comp tag | Block before creating or mutating a replacement comp |
 | Cached reference removed; valid live replacement and matching layer source exist | Rediscover and validate live replacement; no import/layer duplication |
 | Artist footage/layers with unrelated names/sources | Preserve contents and artist relative order |
+| Comp metadata drift after script reload | Rediscover the managed comp and report the mismatch |
+| Optional pass folder disappears after a prior import | Warn/skip the optional pass without reordering its stale layer |
+| Pass names using inherited object keys | Accept valid names without false duplicate errors |
 | QC following footage ownership/source/FPS failure | Report managed-footage error even after cache invalidation or reload |
 
 Manual repetition in a supported AE desktop installation remains `MANUAL NOT EXECUTED`. Mocks cannot certify native host handles, comment persistence, undo behavior or OS filesystem semantics.

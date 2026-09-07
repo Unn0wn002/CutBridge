@@ -11,7 +11,7 @@ const buildStart = source.indexOf('    function buildComp() {');
 const buildEnd = source.indexOf('\n    function runQC()', buildStart);
 assert.ok(buildStart >= 0 && buildEnd > buildStart, 'buildComp function must exist');
 const buildSource = source.slice(buildStart, buildEnd);
-assert.match(buildSource, /\n\s*orderManagedLayers\(comp, m\);/,
+assert.match(buildSource, /\n\s*orderManagedLayers\(comp, m, verifiedPasses\);/,
   'buildComp must normalize managed layer order after all passes are ensured');
 assert.doesNotMatch(buildSource, /if\s*\(\s*compResult\.created\s*\)\s*orderManagedLayers/,
   'managed ordering must not be limited to newly created comps');
@@ -21,7 +21,7 @@ vm.createContext(contractContext);
 vm.runInContext(source, contractContext);
 const contract = contractContext.module.exports;
 
-const orderStart = source.indexOf('    function orderManagedLayers(comp, manifest) {');
+const orderStart = source.indexOf('    function orderManagedLayers(comp, manifest, verifiedPasses) {');
 const orderEnd = source.indexOf('\n    function buildComp()', orderStart);
 assert.ok(orderStart >= 0 && orderEnd > orderStart, 'orderManagedLayers function must exist');
 const orderSource = source.slice(orderStart, orderEnd);
@@ -60,6 +60,9 @@ layers.unshift(line);
 
 const context = {
   CutBridgeContract: contract,
+  findVerifiedPass(passName, verifiedPasses) {
+    return verifiedPasses.find(pass => pass.name === passName) || null;
+  },
   findManagedLayer(comp, tag) {
     return comp._layers.find(layer => layer.comment === tag) || null;
   }
@@ -72,7 +75,10 @@ const comp = {
   get numLayers() { return this._layers.length; },
   layer(index) { return this._layers[index - 1]; }
 };
-context.orderManagedLayers(comp, manifest);
+context.orderManagedLayers(comp, manifest, [
+  {name: 'BEAUTY', footage: {id: 'beauty'}},
+  {name: 'LINE', footage: {id: 'line'}}
+]);
 
 const managedNames = layers.filter(x => x.comment).map(x => x.name);
 assert.deepEqual(managedNames, ['BEAUTY', 'LINE'], 'retry must restore manifest managed-layer order');

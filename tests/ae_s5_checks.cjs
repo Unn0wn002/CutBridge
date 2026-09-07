@@ -203,6 +203,15 @@ check('duplicate pass names and invalid layer order are rejected before runtime'
   assert.match(c.validateManifest(dupOrder).join(' '), /duplicate pass/);
 });
 
+check('prototype-key pass names remain valid and deterministic', () => {
+  const c = contract();
+  for (const name of ['constructor', 'toString', '__proto__']) {
+    const m = manifest(); m.passes[0].name = name; m.ae.layer_order = [name];
+    assert.deepEqual(Array.from(c.validateManifest(m)), [], `${name} should not be treated as an inherited membership key`);
+    assert.deepEqual(Array.from(c.passNames(m)), [name]);
+  }
+});
+
 check('required-pass preflight fails before creating project items', () => {
   const h = host(manifest(), [beautyFiles[0], beautyFiles[2]]);
   h.click('Build');
@@ -234,11 +243,48 @@ check('manual same-name comp collision is blocked before footage import', () => 
   assert.match(h.alerts.join(' '), /non-CutBridge comp.*already exists/);
 });
 
+check('moved managed comp fails closed without creating a replacement', () => {
+  const h = host(manifest(), beautyFiles); h.click('Build');
+  const comp = h.comps()[0], beforeItems = h.projectItems.slice();
+  comp.parentFolder = h.renderFolder();
+  for (const reload of [false, true]) {
+    if (reload) h.reloadScript();
+    h.click('Build');
+    assert.equal(h.comps().length, 1);
+    assert.deepEqual(h.projectItems, beforeItems);
+    assert.match(h.alerts.at(-1), /managed comp ownership.*expected comp folder/i);
+  }
+});
+
+check('duplicate managed comp tags fail closed before build mutation', () => {
+  const h = host(manifest(), beautyFiles); h.click('Build');
+  const original = h.comps()[0];
+  const duplicate = new original.constructor(original.name, original.width, original.height, original.pixelAspect, original.duration, original.frameRate);
+  duplicate.parentFolder = original.parentFolder; duplicate.comment = original.comment; h.projectItems.push(duplicate);
+  const beforeItems = h.projectItems.slice();
+  for (const reload of [false, true]) {
+    if (reload) h.reloadScript();
+    h.click('Build');
+    assert.equal(h.comps().length, 2);
+    assert.deepEqual(h.projectItems, beforeItems);
+    assert.match(h.alerts.at(-1), /duplicate managed comp ownership/i);
+  }
+});
+
 check('managed comp metadata drift blocks silent destructive correction', () => {
   const h = host(manifest(), beautyFiles); h.click('Build');
   h.comps()[0].frameRate = 30; h.click('Build');
   assert.equal(h.comps().length, 1); assert.equal(h.footage().length, 1); assert.equal(h.comps()[0].numLayers, 1);
   assert.match(h.alerts.at(-1), /metadata no longer matches.*frame rate/);
+});
+
+check('QC rediscovers managed comp metadata after script reload', () => {
+  const h = host(manifest(), beautyFiles); h.click('Build');
+  h.comps()[0].frameRate = 30; h.click('QC');
+  assert.match(h.alerts.at(-1), /ERR.*Managed comp metadata mismatch.*frame rate/);
+  h.reloadScript(); h.click('QC');
+  assert.match(h.alerts.at(-1), /ERR.*Managed comp metadata mismatch.*frame rate/);
+  assert.doesNotMatch(h.alerts.at(-1), /QC — PASS\b/);
 });
 
 check('wrong-type project item carrying managed footage tag fails closed', () => {
@@ -334,6 +380,21 @@ check('initial managed layer order is deterministic', () => {
   const lineFiles = [1, 2, 3].map(n => `/packages/桜/render/line/C001_LINE_000${n}.png`);
   const h = host(m, [...beautyFiles, ...lineFiles]); h.click('Build');
   assert.deepEqual(h.comps()[0]._layers.map(x => x.name), ['BEAUTY', 'LINE']);
+});
+
+check('skipped optional pass is not reused or reordered as a verified layer', () => {
+  const m = manifest();
+  m.passes.push({name: 'LINE', path: 'render/line', sequence_pattern: 'C001_LINE_####.png', required: false});
+  m.ae.layer_order = ['LINE', 'BEAUTY'];
+  const lineFiles = [1, 2, 3].map(n => `/packages/桜/render/line/C001_LINE_000${n}.png`);
+  const files = [...beautyFiles, ...lineFiles], h = host(m, files); h.click('Build');
+  const comp = h.comps()[0], line = comp._layers.find(x => x.name === 'LINE');
+  assert.deepEqual(comp._layers.map(x => x.name), ['LINE', 'BEAUTY']);
+  line.source = null; files.splice(3);
+  h.reloadScript(); h.click('Build');
+  assert.match(h.alerts.at(-1), /optional pass skipped/);
+  assert.deepEqual(comp._layers.map(x => x.name), ['BEAUTY', 'LINE']);
+  assert.equal(line.source, null);
 });
 
 
