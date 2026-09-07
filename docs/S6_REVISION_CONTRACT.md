@@ -57,9 +57,24 @@ expression text while replacing managed footage; source identity is verified imm
 each swap by the revision core. Static regression coverage rejects direct `layer.source = ...`
 assignment in the S6 adapter.
 
+The S6 panel must also call helpers through the exported contract boundary. The repeated
+host-shaped revision lifecycle exposed a real scoping defect where outer panel code called the
+private `zeroPad()` helper directly, producing `ReferenceError: zeroPad is not defined` before
+V002 confirmation. The formatter is now exported as `CutBridgeContract.zeroPad`, and the outer
+revision path uses the namespaced helper for replacement names, confirmation text and success
+messages. Static coverage guards against reintroducing the bare out-of-scope calls.
+
 The `ownershipKey` includes the collision-safe cut tuple, numeric version, package name
 and pass. It is verification context, not a replacement tag format for existing S5
 comments.
+
+The package root name by itself is never ownership proof. When Build encounters an existing
+top-level folder with the deterministic `package_name`, it may reuse that root only when the
+expected `01_COMP` folder contains the correctly named comp with the exact current CutBridge
+managed-comp tag. Otherwise Build fails before adding child folders, comps or footage. This
+prevents CutBridge from adopting an artist/studio folder that happens to share the package name.
+S5 did not claim the package-root `comment`, so S6 also preserves unmanaged root comments during
+revision. Only an exact prior CutBridge root tag is migrated; artist/studio notes remain intact.
 
 The native adapter preserves provenance across revisions: the active layer and replacement
 footage receive the candidate package/version tags, while retired CutBridge footage retains
@@ -101,11 +116,16 @@ there is no automatic revision mutation without a user confirmation surface.
 
 ## Automated evidence
 
-Exact-head CI run `34144889247` on `540831f1a5b0f2dfbe58c73c277a4a66681bcc00`
-passed `static-validation` and `blender-52-rna-runtime`. Static validation includes pytest,
+The latest verified implementation head before this documentation reconciliation is
+`3bc022846c46fd587b4d9709624d3d2c834b32fd`. GitHub Actions run `34148487085` passed
+`static-validation` and `blender-52-rna-runtime`. Static validation includes pytest,
 deterministic release-package simulation/checksums, S6 Node contract checks, JSX syntax,
-and the native `AVLayer.replaceSource()` regression. This is strong regression evidence but
-is not a substitute for native After Effects execution.
+the native `AVLayer.replaceSource()` regression, V001→V002→V003 host-shaped revision with
+Build/QC after each revision and script reload, package-root note preservation, and unverified
+same-name root collision coverage. The Blender job includes the official bpy 5.2 RNA lifecycle
+and complete integration suite. This is strong regression evidence but is not a substitute for
+native After Effects execution. The final documentation-only review head must also have green
+exact-head CI; PR #15 records that final review SHA/run.
 
 ## Remaining S6 gate
 
