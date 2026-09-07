@@ -334,6 +334,27 @@ if (typeof module !== "undefined" && module.exports) {
         if (!root) return null;
         return {root: root, comp: findExistingChildFolder(root, "01_COMP"), render: findExistingChildFolder(root, "02_RENDER"), precomp: findExistingChildFolder(root, "03_PRECOMP"), output: findExistingChildFolder(root, "04_OUTPUT")};
     }
+    function uniqueExistingProjectFolders(manifest) {
+        var rootName = manifest.package_name || (manifest.project + "_" + manifest.cut), root = null, rootCount = 0, i;
+        for (i = 1; i <= app.project.numItems; i++) {
+            var rootCandidate = app.project.item(i);
+            if (rootCandidate instanceof FolderItem && rootCandidate.parentFolder === app.project.rootFolder && rootCandidate.name === rootName) {
+                rootCount++; if (!root) root = rootCandidate;
+            }
+        }
+        if (rootCount !== 1) throw new Error("Current CutBridge package root '" + rootName + "' must exist exactly once before revision. Resolve missing/duplicate roots; revision will not choose or create one.");
+        var names = ["01_COMP", "02_RENDER", "03_PRECOMP", "04_OUTPUT"], keys = ["comp", "render", "precomp", "output"], result = {root: root};
+        for (var n = 0; n < names.length; n++) {
+            var found = null, count = 0;
+            for (i = 1; i <= app.project.numItems; i++) {
+                var child = app.project.item(i);
+                if (child instanceof FolderItem && child.parentFolder === root && child.name === names[n]) { count++; if (!found) found = child; }
+            }
+            if (count !== 1) throw new Error("Current CutBridge managed folder '" + names[n] + "' must exist exactly once before revision. Resolve missing/duplicate folder drift; revision will not choose or create one.");
+            result[keys[n]] = found;
+        }
+        return result;
+    }
     function itemComment(item) { try { return item.comment || ""; } catch (e) { return ""; } }
     function isAnyManagedTag(comment) { return typeof comment === "string" && comment.indexOf("CUTBRIDGE|1|") === 0; }
     function setItemComment(item, value) { try { item.comment = value; } catch (e) { throw new Error("After Effects item comments are required for safe CutBridge managed-object tracking."); } }
@@ -695,7 +716,7 @@ if (typeof module !== "undefined" && module.exports) {
         return firstFile;
     }
     function makeRevisionAdapter(current, candidate, candidateRoot) {
-        var folders = existingProjectFolders(current), compName = (current.ae && current.ae.comp_name) ? current.ae.comp_name : (current.cut + "_COMP");
+        var folders = uniqueExistingProjectFolders(current), compName = (current.ae && current.ae.comp_name) ? current.ae.comp_name : (current.cut + "_COMP");
         if (!folders || !folders.root || !folders.comp || !folders.render) throw new Error("Current CutBridge package folders are missing; revision is blocked to protect the project.");
         var comp = findManagedComp(current, folders.comp, compName);
         if (!comp) throw new Error("Current managed comp is missing; revision is blocked to protect the project.");
