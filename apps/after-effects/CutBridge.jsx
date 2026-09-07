@@ -371,7 +371,7 @@ if (typeof module !== "undefined" && module.exports) {
         return {dir: dir, names: names};
     }
     function inspectSequence(passInfo, manifest) { var listing = listSequenceFileNames(passInfo); var coverage = CutBridgeContract.sequenceCoverage(passInfo, manifest, listing.names); coverage.folderExists = listing.dir.exists; coverage.dir = listing.dir; return coverage; }
-    function inspectSequenceAtRoot(passInfo, manifest, packageRoot) { var listing = listSequenceFileNamesAtRoot(passInfo, manifest, packageRoot); var coverage = CutBridgeContract.sequenceCoverage(passInfo, manifest, listing.names); coverage.folderExists = listing.dir.exists; coverage.dir = listing.dir; return coverage; }
+    function inspectSequenceAtRoot(passInfo, manifest, packageRoot) { var listing = listSequenceFileNamesAtRoot(passInfo, packageRoot); var coverage = CutBridgeContract.sequenceCoverage(passInfo, manifest, listing.names); coverage.folderExists = listing.dir.exists; coverage.dir = listing.dir; return coverage; }
     function formatMissingFrames(frames) { if (!frames.length) return ""; var shown = frames.slice(0, 12).join(", "); if (frames.length > 12) shown += " … +" + (frames.length - 12) + " more"; return shown; }
 
     function preflightSequences(manifest) {
@@ -420,6 +420,7 @@ if (typeof module !== "undefined" && module.exports) {
                 found = validateReusableFootage(item, firstFile, passInfo, manifest, renderFolder);
             } else if (!isAnyManagedTag(comment)) {
                 try { if (item.file) path = item.file.fsName; } catch (pathError) {}
+                // A matching source or generated name is a collision signal, never ownership proof.
                 if ((path && CutBridgeContract.sameFilesystemPath(path, firstFile.fsName)) ||
                     (item.parentFolder === renderFolder && item.name === manifest.cut + "_" + passInfo.name)) {
                     throw new Error(passInfo.name + ": ambiguous footage ownership: an unverified item uses the expected source or managed name. Preserve artist work; restore the original managed tag/folder only if intended, or remove the conflicting item from this project before retrying. CutBridge will not adopt it or import a duplicate.");
@@ -544,6 +545,7 @@ if (typeof module !== "undefined" && module.exports) {
         var cached = state.layers[tag];
         delete state.layers[tag];
         var found = null;
+        // Scan project comps as well, so a moved tagged layer blocks after script reload too.
         for (var p = 1; p <= app.project.numItems; p++) {
             var owner = app.project.item(p);
             if (!(owner instanceof CompItem)) continue;
@@ -796,6 +798,8 @@ if (typeof module !== "undefined" && module.exports) {
                     if (!passName) throw new Error("Could not identify the managed pass during revision commit.");
                     item.passName = passName;
                     setItemComment(item.layer, CutBridgeContract.managedTag("layer", newManifest, passName));
+                    // Preserve the retired source's old version-scoped CutBridge tag. Clearing it would
+                    // convert historical CutBridge footage into an unmanaged S5 collision on later Build/QC.
                     setItemComment(item.oldSource, item.oldComment);
                     setItemComment(item.replacement, CutBridgeContract.managedTag("footage", newManifest, passName));
                     delete state.layers[CutBridgeContract.managedTag("layer", oldManifest, passName)];
