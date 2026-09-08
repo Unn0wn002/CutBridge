@@ -94,10 +94,18 @@ var CutBridgeContract = (function () {
     function isFiniteNumber(value) { return typeof value === "number" && isFinite(value); }
     function isInteger(value) { return isFiniteNumber(value) && Math.floor(value) === value && Math.abs(value) <= 9007199254740991; }
 
+    // Python str.strip()/re \s use this set, independent of the JS host version.
+    // In particular U+001C..001F/U+0085 are whitespace; U+FEFF/U+180E are not.
+    var PYTHON_WHITESPACE = "[\\u0009-\\u000d\\u001c-\\u0020\\u0085\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000]";
+    var PYTHON_WHITESPACE_EDGES = new RegExp("^" + PYTHON_WHITESPACE + "+|" + PYTHON_WHITESPACE + "+$", "g");
+    var PYTHON_WHITESPACE_RUNS = new RegExp(PYTHON_WHITESPACE + "+", "g");
+    function trimPythonWhitespace(value) {
+        return value.replace(PYTHON_WHITESPACE_EDGES, "");
+    }
     function safePackageToken(value, fallback) {
-        var token = String(value || "").replace(/^\s+|\s+$/g, "");
+        var token = trimPythonWhitespace(String(value || ""));
         token = token.replace(/[<>:"\/\\|?*]+/g, "_");
-        token = token.replace(/\s+/g, "_");
+        token = token.replace(PYTHON_WHITESPACE_RUNS, "_");
         return token || fallback;
     }
     function expectedPackageName(manifest) {
@@ -288,7 +296,7 @@ var CutBridgeContract = (function () {
         return result;
     }
 
-    return {parseJSON: parseJSON, zeroPad: zeroPad, PRODUCT_VERSION: PRODUCT_VERSION, relativePassPath: relativePassPath, pathIsInside: pathIsInside,
+    return {parseJSON: parseJSON, zeroPad: zeroPad, trimPythonWhitespace: trimPythonWhitespace, PRODUCT_VERSION: PRODUCT_VERSION, relativePassPath: relativePassPath, pathIsInside: pathIsInside,
         SCHEMA: SCHEMA, SCHEMA_VERSION: SCHEMA_VERSION, validateManifest: validateManifest, patternToRegex: patternToRegex,
         expectedFrameName: expectedFrameName, sequenceCoverage: sequenceCoverage, managedIdentity: managedIdentity, managedTag: managedTag,
         expectedCompSpec: expectedCompSpec, compSpecErrors: compSpecErrors, passNames: passNames, sameFilesystemPath: sameFilesystemPath,

@@ -41,12 +41,12 @@
         catch (validationError) { return ["Manifest validator rejected data: " + errorText(validationError)]; }
         if (!m || typeof m !== "object" || array(m)) return errors;
         for (i = 0; i < IDS.length; i++) {
-            if (typeof m[IDS[i]] !== "string" || !/\S/.test(m[IDS[i]])) {
+            if (typeof m[IDS[i]] !== "string" || !Contract.trimPythonWhitespace(m[IDS[i]]).length) {
                 errors.push("S6 requires a non-empty " + IDS[i] + " identity field.");
             }
         }
         if (m.package_name !== undefined &&
-            (typeof m.package_name !== "string" || !/\S/.test(m.package_name))) {
+            (typeof m.package_name !== "string" || !Contract.trimPythonWhitespace(m.package_name).length)) {
             errors.push("package_name must be a non-empty string when provided.");
         }
         return errors;

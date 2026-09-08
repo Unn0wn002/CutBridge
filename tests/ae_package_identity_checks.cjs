@@ -88,3 +88,96 @@ check('invalid filesystem character runs collapse exactly like Blender', () => {
 });
 
 console.log(`PASS: ${checks} AE package identity checks`);
+
+// Run the same boundaries with native JSON and the ExtendScript fallback parser.
+// The exact tuple is ownership evidence; a sanitized filename is not its substitute.
+const revisionSource = fs.readFileSync(path.join(root, 'apps/after-effects/revision_manager.js'), 'utf8');
+const pythonWhitespace = [9, 10, 11, 12, 13, 28, 29, 30, 31, 32, 0x85, 0xa0, 0x1680,
+    0x2000, 0x2001, 0x2002, 0x2003, 0x2004, 0x2005, 0x2006, 0x2007, 0x2008, 0x2009,
+    0x200a, 0x2028, 0x2029, 0x202f, 0x205f, 0x3000];
+const ids = ['project', 'episode', 'scene', 'cut', 'take'];
+const fallbacks = ['PROJECT', 'EP00', 'SC000', 'C000', 'T01'];
+const producerCases = process.argv.includes('--producer-cases') ? JSON.parse(fs.readFileSync(0, 'utf8')) : [];
+let boundaries = 0;
+for (const fallbackJSON of [false, true]) {
+    const ctx = {module: {exports: {}}};
+    if (fallbackJSON) ctx.JSON = undefined;
+    vm.runInNewContext(source, ctx);
+    const C = ctx.module.exports;
+    const revContext = {CutBridgeContract: C};
+    vm.runInNewContext(revisionSource, revContext);
+    const R = revContext.CutBridgeRevisionManager;
+    const roundtrip = m => C.parseJSON(JSON.stringify(m));
+    function accepted(m) {
+        assert.deepEqual(plain(C.validateManifest(roundtrip(m))), []);
+        boundaries++;
+    }
+    function withToken(field, raw, token) {
+        const m = manifest();
+        m[field] = raw;
+        const parts = ['桜', 'EP01', 'SC010', 'C001', 'T01', 'V001'];
+        parts[ids.indexOf(field)] = token;
+        m.package_name = parts.join('_');
+        return m;
+    }
+    function newer(m) {
+        const n = plain(m);
+        n.version = 2;
+        if (typeof n.package_name === 'string') n.package_name = n.package_name.replace(/V001$/, 'V002');
+        return n;
+    }
+    for (const [index, field] of ids.entries()) {
+        for (const cp of pythonWhitespace) {
+            const w = String.fromCharCode(cp);
+            for (const [raw, token] of [[w + '桜', '桜'], ['桜' + w, '桜'],
+                [w + '桜' + w, '桜'], ['A' + w + w + 'B', 'A_B']]) {
+                const m = withToken(field, raw, token);
+                accepted(m);
+                assert.equal(R.assess(roundtrip(m), roundtrip(newer(m))).status, 'safe', `${field} U+${cp.toString(16)}`);
+            }
+            const blank = withToken(field, w + w, fallbacks[index]);
+            accepted(blank); // S5 compatibility; Blender Build and S6 reject blank tuples.
+            assert.match(R.assess(blank, newer(blank)).reasons.join(' '), /non-empty/, `${field} blank U+${cp.toString(16)}`);
+        }
+        const empty = withToken(field, '', fallbacks[index]);
+        accepted(empty);
+        assert.match(R.assess(empty, newer(empty)).reasons.join(' '), /non-empty/);
+        for (const bad of [undefined, null, 17, false, [], {}]) {
+            const m = manifest();
+            m[field] = bad;
+            assert.match(C.validateManifest(roundtrip(m)).join(' '), /must be a string/);
+            assert.equal(R.assess(m, newer(m)).status, 'incompatible');
+        }
+        for (const raw of ['Normal009du', '桜🌸', 'é', 'e\u0301', '\ufeff', '\u180e', '\u200b',
+            'A\ufeffB', '\u180e桜\u180e', '\u200b桜\u200b']) {
+            const m = withToken(field, raw, raw);
+            accepted(m);
+            assert.equal(R.assess(roundtrip(m), roundtrip(newer(m))).status, 'safe');
+        }
+        for (const raw of ['A B', ' A_B ', 'A<>B']) {
+            const m = withToken(field, raw, 'A_B');
+            const other = withToken(field, 'A_B', 'A_B');
+            accepted(m);
+            accepted(other);
+            assert.notEqual(R.identity(m), R.identity(other));
+            assert.notEqual(R.ownershipKey(m, 'BEAUTY'), R.ownershipKey(other, 'BEAUTY'));
+            assert.match(R.assess(m, newer(other)).reasons.join(' '), /identity differs/);
+        }
+    }
+    const original = manifest();
+    for (const invalid of ['', ' ', '\u0085', null, false, 0, [], {},
+        ' ' + original.package_name, original.package_name + ' ', '\ufeff' + original.package_name,
+        original.package_name.toLowerCase(), '../' + original.package_name]) {
+        const m = {...original, package_name: invalid};
+        assert.match(C.validateManifest(roundtrip(m)).join(' '), /package_name/);
+        assert.equal(R.assess(m, newer(m)).status, 'incompatible');
+    }
+    delete original.package_name;
+    accepted(original);
+    assert.equal(R.assess(original, newer(original)).status, 'safe');
+    for (const m of producerCases) {
+        accepted(m);
+        assert.equal(R.assess(roundtrip(m), roundtrip(newer(m))).status, 'safe');
+    }
+}
+console.log(`PASS: ${boundaries} package identity boundaries (native/fallback JSON)`);
