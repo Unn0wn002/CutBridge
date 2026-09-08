@@ -33,8 +33,7 @@ jobs:
           RELEASE_TAG: ${{ github.ref_name }}
           RELEASE_SHA: ${{ github.sha }}
         run: |
-          git fetch origin main --depth=1
-          MAIN_SHA="$(git rev-parse origin/main)"
+          MAIN_SHA="$(git rev-parse 'refs/remotes/origin/main^{commit}')"
           python tools/validate_release_authorization.py \
             --tag "$RELEASE_TAG" \
             --sha "$RELEASE_SHA" \
@@ -68,8 +67,7 @@ jobs:
           RELEASE_TAG: ${{ github.ref_name }}
           RELEASE_SHA: ${{ github.sha }}
         run: |
-          git fetch origin main --depth=1
-          MAIN_SHA="$(git rev-parse origin/main)"
+          MAIN_SHA="$(git rev-parse 'refs/remotes/origin/main^{commit}')"
           python tools/validate_release_authorization.py \
             --tag "$RELEASE_TAG" \
             --sha "$RELEASE_SHA" \
@@ -109,8 +107,7 @@ jobs:
           RELEASE_TAG: ${{ github.ref_name }}
           RELEASE_SHA: ${{ github.sha }}
         run: |
-          git fetch origin main --depth=1
-          MAIN_SHA="$(git rev-parse origin/main)"
+          MAIN_SHA="$(git rev-parse 'refs/remotes/origin/main^{commit}')"
           python tools/validate_release_authorization.py \
             --tag "$RELEASE_TAG" \
             --sha "$RELEASE_SHA" \
