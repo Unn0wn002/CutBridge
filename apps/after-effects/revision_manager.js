@@ -3,12 +3,138 @@
  * Host integration remains subject to native AE/manual release validation.
  */
 (function (root, factory) {
+    function aeContractFallback() {
+        var PYTHON_WHITESPACE = "[\\u0009-\\u000d\\u001c-\\u0020\\u0085\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000]";
+        var PYTHON_WHITESPACE_EDGES = new RegExp("^" + PYTHON_WHITESPACE + "+|" + PYTHON_WHITESPACE + "+$", "g");
+        var PYTHON_WHITESPACE_RUNS = new RegExp(PYTHON_WHITESPACE + "+", "g");
+        function trimPythonWhitespace(value) { return String(value).replace(PYTHON_WHITESPACE_EDGES, ""); }
+        function array(value) { return Object.prototype.toString.call(value) === "[object Array]"; }
+        function finite(value) { return typeof value === "number" && isFinite(value); }
+        function integer(value) {
+            return finite(value) && Math.floor(value) === value && Math.abs(value) <= 9007199254740991;
+        }
+        function zeroPad(n, width) {
+            var s = String(n);
+            while (s.length < width) s = "0" + s;
+            return s;
+        }
+        function safePackageToken(value, fallback) {
+            var token = trimPythonWhitespace(String(value || ""));
+            token = token.replace(/[<>:"\/\\|?*]+/g, "_");
+            token = token.replace(PYTHON_WHITESPACE_RUNS, "_");
+            return token || fallback;
+        }
+        function expectedPackageName(manifest) {
+            return [
+                safePackageToken(manifest.project, "PROJECT"),
+                safePackageToken(manifest.episode, "EP00"),
+                safePackageToken(manifest.scene, "SC000"),
+                safePackageToken(manifest.cut, "C000"),
+                safePackageToken(manifest.take, "T01"),
+                "V" + zeroPad(manifest.version, 3)
+            ].join("_");
+        }
+        function validatePattern(pattern) {
+            if (typeof pattern !== "string" || !pattern.length || /[\/\\:%\x00-\x1f\x7f<>"|?*]/.test(pattern) || /[ .]$/.test(pattern)) {
+                return false;
+            }
+            var first = pattern.indexOf("####");
+            return first >= 0 && pattern.replace("####", "").indexOf("#") < 0;
+        }
+        function validateRelativePath(path) {
+            if (typeof path !== "string" || !path.length) return false;
+            var normalized = path.replace(/\\/g, "/");
+            if (/^[\/~]/.test(normalized) || /[:%\x00-\x1f\x7f<>"|?*]/.test(normalized)) return false;
+            var parts = normalized.split("/");
+            for (var i = 0; i < parts.length; i++) {
+                if (!parts[i].length || parts[i] === "." || parts[i] === ".." || /[ .]$/.test(parts[i])) return false;
+            }
+            return true;
+        }
+        function validateManifest(manifest) {
+            var errors = [], i, p, key;
+            if (!manifest || typeof manifest !== "object" || array(manifest)) return ["Manifest is empty or invalid JSON data."];
+            if (manifest.schema !== "cutbridge-manifest") errors.push("Unsupported manifest schema.");
+            if (manifest.schema_version !== 1) errors.push("Unsupported manifest schema_version.");
+            var strings = ["cutbridge_version", "project", "episode", "scene", "cut", "take"];
+            var identityValid = true;
+            for (i = 0; i < strings.length; i++) {
+                if (typeof manifest[strings[i]] !== "string") {
+                    errors.push("Manifest " + strings[i] + " must be a string.");
+                    if (strings[i] !== "cutbridge_version") identityValid = false;
+                }
+            }
+            if (!integer(manifest.version) || manifest.version < 1) errors.push("Manifest version must be a positive integer.");
+            if (manifest.package_name !== undefined) {
+                if (typeof manifest.package_name !== "string") errors.push("Manifest package_name must be a string when provided.");
+                else if (identityValid && integer(manifest.version) && manifest.version >= 1 &&
+                    manifest.package_name !== expectedPackageName(manifest)) {
+                    errors.push("Manifest package_name does not match Project/Episode/Scene/Cut/Take/version identity.");
+                }
+            }
+            if (!finite(manifest.fps) || manifest.fps <= 0) errors.push("Manifest FPS must be greater than zero.");
+            if (!manifest.frames || !integer(manifest.frames.start) || !integer(manifest.frames.end) ||
+                !integer(manifest.frames.count) || manifest.frames.start < 0 || manifest.frames.end < manifest.frames.start ||
+                manifest.frames.count !== manifest.frames.end - manifest.frames.start + 1) {
+                errors.push("Manifest frame range/count is invalid.");
+            }
+            if (!manifest.resolution || !integer(manifest.resolution.width) || manifest.resolution.width < 1 ||
+                !integer(manifest.resolution.height) || manifest.resolution.height < 1) {
+                errors.push("Manifest resolution is invalid.");
+            } else if (manifest.resolution.pixel_aspect !== undefined &&
+                (!finite(manifest.resolution.pixel_aspect) || manifest.resolution.pixel_aspect <= 0)) {
+                errors.push("Manifest pixel aspect is invalid.");
+            }
+            if (!array(manifest.passes) || !manifest.passes.length) {
+                errors.push("Manifest contains no render passes.");
+            } else {
+                var seen = {};
+                for (i = 0; i < manifest.passes.length; i++) {
+                    p = manifest.passes[i];
+                    if (!p || typeof p.name !== "string" || !p.name.length) {
+                        errors.push("Manifest pass needs a non-empty name.");
+                        continue;
+                    }
+                    key = "$" + p.name;
+                    if (seen[key]) errors.push("Manifest contains duplicate render pass name: " + p.name + ".");
+                    seen[key] = true;
+                    if (!validateRelativePath(p.path)) errors.push(p.name + ": invalid package-relative path.");
+                    if (!validatePattern(p.sequence_pattern)) errors.push(p.name + ": invalid sequence pattern.");
+                    if (p.required !== undefined && typeof p.required !== "boolean") errors.push(p.name + ": required must be a boolean.");
+                }
+                if (manifest.ae && manifest.ae.layer_order !== undefined) {
+                    if (!array(manifest.ae.layer_order)) errors.push("Manifest ae.layer_order must be an array when provided.");
+                    else {
+                        var ordered = {};
+                        for (i = 0; i < manifest.ae.layer_order.length; i++) {
+                            key = "$" + manifest.ae.layer_order[i];
+                            if (typeof manifest.ae.layer_order[i] !== "string" || !seen[key]) {
+                                errors.push("Manifest ae.layer_order references an unknown pass.");
+                            } else if (ordered[key]) {
+                                errors.push("Manifest ae.layer_order contains a duplicate pass.");
+                            }
+                            ordered[key] = true;
+                        }
+                    }
+                }
+            }
+            return errors;
+        }
+        return {validateManifest: validateManifest, trimPythonWhitespace: trimPythonWhitespace};
+    }
+
     if (typeof module !== "undefined" && module.exports) {
         module.exports = factory(require("./CutBridge.jsx"));
     } else {
-        root.CutBridgeRevisionManager = factory(root.CutBridgeContract);
+        var contract = root && root.CutBridgeContract;
+        if ((!contract || typeof contract.validateManifest !== "function") &&
+            typeof $ !== "undefined" && $.global) {
+            contract = aeContractFallback();
+        }
+        if (!root) root = (typeof $ !== "undefined" && $.global) ? $.global : this;
+        root.CutBridgeRevisionManager = factory(contract);
     }
-}(this, function (Contract) {
+}(typeof $ !== "undefined" && $.global ? $.global : this, function (Contract) {
     "use strict";
     if (!Contract || typeof Contract.validateManifest !== "function") {
         throw new Error("Load CutBridgeContract before the revision core.");
@@ -59,7 +185,6 @@
         for (var i = 0; i < IDS.length; i++) if (a[IDS[i]] !== b[IDS[i]]) return false;
         return true;
     }
-    // Length prefixes prevent delimiter collisions without requiring native JSON.
     function encode(value) { value = String(value); return value.length + ":" + value; }
     function identity(m) {
         requireManifest(m);
@@ -67,7 +192,6 @@
         for (var i = 0; i < IDS.length; i++) value += encode(m[IDS[i]]);
         return value;
     }
-    // Verification key only, NOT a replacement for persisted S5 item comments.
     function ownershipKey(m, passName) {
         return "CUTBRIDGE-REVISION-1:" + identity(m) + encode(m.version) +
             encode(m.package_name === undefined ? "" : m.package_name) + encode(passName);
@@ -88,7 +212,6 @@
         var currentComp = current.ae && current.ae.comp_name ? current.ae.comp_name : current.cut + "_COMP";
         var candidateComp = candidate.ae && candidate.ae.comp_name ? candidate.ae.comp_name : candidate.cut + "_COMP";
         if (currentComp !== candidateComp) errors.push("Composition identity/name changes are unsupported.");
-        // Producer package names include V### and therefore normally differ across revisions.
         if (current.fps !== candidate.fps) errors.push("FPS changes are unsupported.");
         if (current.frames.start !== candidate.frames.start || current.frames.end !== candidate.frames.end ||
             current.frames.count !== candidate.frames.count) errors.push("Frame range/count changes are unsupported.");
@@ -136,7 +259,6 @@
                 out[i].ambiguous = true;
             }
         }
-        // Diagnostic rows retain input order; selection below never breaks ties by input order.
         return out;
     }
     function selectLatest(current, candidates) {
@@ -160,7 +282,6 @@
         return out;
     }
     function createExecutor(adapter) {
-        // The adapter is trusted host code. Package data and public plan records are not.
         var methods = ["listManagedLayers", "validateManagedLayer", "readSource", "importReplacement",
             "validateReplacement", "swapManagedSource", "restoreManagedSource", "removeImportedReplacement",
             "commitRevision"];
@@ -174,8 +295,6 @@
             if (poisoned) throw new Error("Rollback incomplete; recover the project before creating a new executor.");
         }
         function verify(action, current) {
-            // Callback must inspect live host type, project membership, comp/render folders,
-            // persisted package metadata/tags, uniqueness, source path and conform FPS.
             if (host.validateManagedLayer(action.layer, snapshot(current), action.passName,
                 ownershipKey(current, action.passName)) !== true ||
                 host.readSource(action.layer) !== action.oldSource) {
@@ -227,11 +346,9 @@
             }
             try {
                 for (j = 0; j < plan.actions.length; j++) verify(plan.actions[j], plan.current);
-                // Import AND validate every replacement before changing any existing layer.
                 for (j = 0; j < plan.actions.length; j++) {
                     var action = plan.actions[j], before = made.length;
                     var item = host.importReplacement(snapshot(plan.candidate), action.passName, track);
-                    // Adapter must track immediately after allocation, before any fallible setup.
                     if (made.length !== before + 1 || made[before] !== item) throw new Error("Import must register exactly one new replacement.");
                     if (host.validateReplacement(item, snapshot(plan.candidate), action.passName) !== true) {
                         throw new Error("Replacement validation failed: " + action.passName);
@@ -242,11 +359,10 @@
                 for (j = 0; j < plan.actions.length; j++) {
                     action = plan.actions[j];
                     verify(action, plan.current);
-                    attempted.push(action); // Record BEFORE a host write can mutate then throw.
+                    attempted.push(action);
                     host.swapManagedSource(action.layer, replacements[j], action.passName);
                     if (host.readSource(action.layer) !== replacements[j]) throw new Error("Source swap verification failed.");
                 }
-                // Package/tag migration is a commit step inside the same rollback boundary.
                 host.commitRevision(snapshot(plan.current), snapshot(plan.candidate), replacements);
                 return {status: "applied", replaced: attempted.length};
             } catch (error) {
@@ -259,7 +375,6 @@
                         failures.push("Restore " + attempted[j].passName + ": " + errorText(restoreError));
                     }
                 }
-                // Retain footage if any restoration failed: a layer may still reference it.
                 var retained = failures.length ? made.length : 0;
                 if (!failures.length) {
                     for (j = made.length - 1; j >= 0; j--) {
