@@ -23,8 +23,19 @@ const {host, manifest, beautyFiles} = fixtureModule.exports;
 function assertQcFailsManagedLayer(h, label) {
   h.click('QC');
   const message = h.alerts.at(-1);
-  assert.doesNotMatch(message, /CutBridge QC — PASS\b/, label + ': QC must not report clean PASS');
+  assert.doesNotMatch(message, /^CutBridge QC — PASS(?:\n| with)/, label + ': QC must not report a passing headline');
   assert.match(message, /managed layer|managed-layer|layer ownership/i, label + ': QC must report managed-layer ownership failure');
+}
+
+function manifestWithOptionalLine() {
+  const m = manifest();
+  m.passes.push({name: 'LINE', path: 'render/line', sequence_pattern: 'C001_LINE_####.png', required: false});
+  m.ae.layer_order = ['BEAUTY', 'LINE'];
+  return m;
+}
+
+function lineFiles() {
+  return [1, 2, 3].map(n => `/packages/桜/render/line/C001_LINE_000${n}.png`);
 }
 
 {
@@ -51,4 +62,37 @@ function assertQcFailsManagedLayer(h, label) {
   assertQcFailsManagedLayer(h, 'de-tagged required managed layer');
 }
 
-console.log('QC managed-layer regression: PASS (required layer presence/ownership must be validated; real AE MANUAL NOT EXECUTED)');
+{
+  const m = manifestWithOptionalLine();
+  const files = beautyFiles.concat(lineFiles());
+  const h = host(m, files);
+  h.click('Build');
+  const comp = h.comps()[0];
+  const line = comp._layers.find(layer => layer.name === 'LINE');
+  assert.ok(line, 'fixture should build the complete optional LINE layer');
+  line.remove();
+  h.click('QC');
+  const message = h.alerts.at(-1);
+  assert.match(message, /^CutBridge QC — PASS with 1 warning\(s\)/, 'missing complete optional managed layer should warn, not hard-fail');
+  assert.match(message, /WARN LINE: optional managed layer is missing from the expected comp/);
+  assert.doesNotMatch(message, /ERR\s+LINE:/, 'missing optional layer should not become a hard error when ownership is otherwise unambiguous');
+}
+
+{
+  const m = manifestWithOptionalLine();
+  const lineSequence = lineFiles();
+  const files = beautyFiles.concat(lineSequence);
+  const h = host(m, files);
+  h.click('Build');
+  for (const file of lineSequence) {
+    const index = files.indexOf(file);
+    if (index >= 0) files.splice(index, 1);
+  }
+  h.click('QC');
+  const message = h.alerts.at(-1);
+  assert.match(message, /^CutBridge QC — PASS with 1 warning\(s\)/, 'missing optional source sequence should remain the documented warning/skip path');
+  assert.match(message, /WARN LINE: optional pass folder missing/);
+  assert.doesNotMatch(message, /ERR\s+LINE:/, 'skipped optional source must not become a managed-layer hard error');
+}
+
+console.log('QC managed-layer regression: PASS (required ownership fails closed; optional complete-missing layer warns; skipped optional source stays warning-only; real AE MANUAL NOT EXECUTED)');
