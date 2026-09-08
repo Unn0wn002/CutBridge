@@ -1,0 +1,56 @@
+name: S7 Orphan Managed Tag Guard
+
+on:
+  push:
+    branches: ['feature/session-7-qc-plus']
+    paths:
+      - 'tools/apply_s7_orphan_tag_guard.py'
+      - '.github/workflows/s7-orphan-tag-guard.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: feature/session-7-qc-plus
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.13'
+      - name: Apply exact-anchor orphan managed-tag guard
+        run: python tools/apply_s7_orphan_tag_guard.py
+      - name: Syntax-check After Effects scripts
+        run: |
+          cp apps/after-effects/CutBridge.jsx /tmp/CutBridge.js
+          cp apps/after-effects/qc_plus.js /tmp/qc_plus.js
+          node --check /tmp/CutBridge.js
+          node --check /tmp/qc_plus.js
+      - name: Install regression dependencies
+        run: python -m pip install --disable-pip-version-check pytest jsonschema bpy==5.2.1
+      - name: Run complete regression suite
+        run: pytest -q
+      - name: Run S7 QC binding directly
+        run: |
+          node tests/ae_s7_qc_plus_checks.cjs
+          node tests/ae_s7_native_qc_binding_checks.cjs
+      - name: Commit only after all gates pass
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then
+            echo 'Patch already persisted.'
+            exit 0
+          fi
+          git config user.name 'CutBridge CI'
+          git config user.email 'actions@users.noreply.github.com'
+          git add apps/after-effects/CutBridge.jsx tests/ae_s7_native_qc_binding_checks.cjs
+          git commit -m 'S7: fail closed on orphan current managed tags'
+          git push origin HEAD:feature/session-7-qc-plus
