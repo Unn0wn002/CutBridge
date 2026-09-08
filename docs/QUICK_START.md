@@ -100,23 +100,24 @@ The AE contract expects exact frame coverage. A missing required frame blocks a 
 
 ## 8. Install/run the After Effects scripts
 
-The S6 After Effects workflow consists of **two adjacent files**:
+The S6 After Effects workflow consists of **two adjacent runtime files**:
 
 - `CutBridge.jsx` — panel/import/build/QC/native adapter
 - `revision_manager.js` — S6 revision core
 
-Keep both files in the same directory. The revision button loads `revision_manager.js` beside `CutBridge.jsx`; copying only the JSX leaves revision support unavailable.
+Keep both runtime files in the same directory. The revision button loads `revision_manager.js` beside `CutBridge.jsx`; copying only the JSX leaves revision support unavailable.
 
 For the first development test:
 
 1. Keep `apps/after-effects/CutBridge.jsx` and `apps/after-effects/revision_manager.js` together.
-2. Open After Effects.
-3. Choose `File > Scripts > Run Script File...`.
-4. Select `CutBridge.jsx`.
+2. Read `apps/after-effects/INSTALL.md` for the two-file installation requirement and native-test boundary.
+3. Open After Effects.
+4. Choose `File > Scripts > Run Script File...`.
+5. Select `CutBridge.jsx`.
 
-For a dockable panel, copy **both** files into the After Effects `Scripts/ScriptUI Panels` folder appropriate to the installed AE/OS version, restart AE, and open CutBridge from the `Window` menu.
+For a dockable panel, copy **both runtime files** into the After Effects `Scripts/ScriptUI Panels` folder appropriate to the installed AE/OS version, restart AE, and open CutBridge from the `Window` menu.
 
-The deterministic AE release ZIP also contains both scripts plus `LICENSE`. Adobe script paths vary by version/OS, so **Run Script File** is the least ambiguous first test.
+The deterministic AE release ZIP contains exact `CutBridge.jsx`, `revision_manager.js`, `INSTALL.md`, and `LICENSE` contents. Adobe script paths vary by version/OS, so **Run Script File** is the least ambiguous first test.
 
 ## 9. Import, build, and run QC
 
