@@ -13,12 +13,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
+      - name: Require explicit release authorization on current main
+        id: release_authorization
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_SHA: ${{ github.sha }}
+        run: |
+          git fetch origin main --depth=1
+          MAIN_SHA="$(git rev-parse origin/main)"
+          python tools/validate_release_authorization.py \
+            --tag "$RELEASE_TAG" \
+            --sha "$RELEASE_SHA" \
+            --main-sha "$MAIN_SHA" \
+            --github-output "$GITHUB_OUTPUT"
       - name: Install test dependencies
         run: python -m pip install pytest jsonschema bpy==5.2.1
       - name: Validate source
@@ -36,6 +51,7 @@ jobs:
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          prerelease: ${{ steps.release_authorization.outputs.prerelease }}
           files: |
             dist/CutBridge-Blender-*.zip
             dist/CutBridge-AfterEffects-*.zip
