@@ -267,6 +267,31 @@ assert.strictEqual(staleLayer.source, staleActiveSource, "blocked Build must not
 assert.equal(staleSourceV1.comment, Contract.managedTag("footage", staleV1, "BEAUTY"), "historical footage must remain version-scoped rather than becoming a collision");
 assert.match(staleLayerHost.alerts.at(-1), /managed layer ownership|unverified layer|ambiguous managed layer/i);
 
+// An extra prior-version managed layer in the active comp is still CutBridge-owned drift
+// even if its name/source no longer collide with the current pass. Build and QC must fail closed.
+const orphanLayerHost = makeHost();
+const orphanV1 = manifest(1), orphanV2 = manifest(2);
+orphanLayerHost.queue(orphanV1); orphanLayerHost.click("Import Package"); orphanLayerHost.click("Build Comp");
+const orphanComp = orphanLayerHost.comps()[0], orphanCurrentLayer = orphanComp.layer(1), orphanSourceV1 = orphanCurrentLayer.source;
+orphanLayerHost.queue(orphanV2); orphanLayerHost.click("Update Revision");
+const orphanSourceV2 = orphanCurrentLayer.source;
+assert.notEqual(orphanSourceV2, orphanSourceV1);
+const orphanLayer = orphanComp.layers.add(orphanSourceV1);
+orphanLayer.name = "ARCHIVE";
+orphanLayer.comment = Contract.managedTag("layer", orphanV1, "BEAUTY");
+const orphanLayerCount = orphanComp.numLayers;
+const orphanFootageCount = orphanLayerHost.footage().length;
+const orphanReplaceCount = orphanLayerHost.replaceFlags.length;
+orphanLayerHost.reload(); orphanLayerHost.queue(orphanV2); orphanLayerHost.click("Import Package"); orphanLayerHost.click("Build Comp");
+assert.equal(orphanComp.numLayers, orphanLayerCount, "orphan prior-version managed layer must not be removed or duplicated silently");
+assert.equal(orphanLayerHost.footage().length, orphanFootageCount, "blocked orphan-layer Build must not import footage");
+assert.equal(orphanLayerHost.replaceFlags.length, orphanReplaceCount, "blocked orphan-layer Build must not swap managed sources");
+assert.strictEqual(orphanCurrentLayer.source, orphanSourceV2, "blocked orphan-layer Build must preserve the active current source");
+assert.match(orphanLayerHost.alerts.at(-1), /stale|orphan|managed layer ownership|unverified layer|ambiguous managed layer/i);
+orphanLayerHost.click("Run QC");
+assert.doesNotMatch(orphanLayerHost.alerts.at(-1), /CutBridge QC — PASS\b/);
+assert.match(orphanLayerHost.alerts.at(-1), /stale|orphan|managed layer ownership|managed layer/i);
+
 // A user-owned top-level folder with the deterministic package name is a collision,
 // not ownership proof. Build must not create children or managed objects inside it.
 const collisionHost = makeHost();
@@ -278,4 +303,4 @@ assert.equal(collisionHost.childFolders(manualRoot).length, 0, "unverified packa
 assert.equal(manualRoot.comment, "Studio-owned folder");
 assert.match(collisionHost.alerts.at(-1), /project-root folder|package root|package folder|ownership|collision|not verified/i);
 
-console.log("S6 native-host lifecycle: PASS (V001→V002→V003 + Build/QC + reload + stale-layer/root collisions; real AE MANUAL NOT EXECUTED)");
+console.log("S6 native-host lifecycle: PASS (V001→V002→V003 + Build/QC + reload + stale/orphan-layer/root collisions; real AE MANUAL NOT EXECUTED)");
