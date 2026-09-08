@@ -990,6 +990,31 @@ if (typeof module !== "undefined" && module.exports) {
         finally { app.endUndoGroup(); }
     }
 
+    function exactCurrentManagedOrphans(manifest) {
+        var result = {footage: {}, layer: {}}, i, p, tag;
+        for (i = 0; i < manifest.passes.length; i++) {
+            result.footage["$" + manifest.passes[i].name] = 0;
+            result.layer["$" + manifest.passes[i].name] = 0;
+        }
+        if (!app.project) return result;
+        for (var itemIndex = 1; itemIndex <= app.project.numItems; itemIndex++) {
+            var item = app.project.item(itemIndex), comment = itemComment(item);
+            for (i = 0; i < manifest.passes.length; i++) {
+                p = manifest.passes[i]; tag = "$" + p.name;
+                if (comment === CutBridgeContract.managedTag("footage", manifest, p.name)) result.footage[tag]++;
+            }
+            if (typeof CompItem === "undefined" || !(item instanceof CompItem) || typeof item.layer !== "function") continue;
+            for (var layerIndex = 1; layerIndex <= item.numLayers; layerIndex++) {
+                var layerComment = itemComment(item.layer(layerIndex));
+                for (i = 0; i < manifest.passes.length; i++) {
+                    p = manifest.passes[i]; tag = "$" + p.name;
+                    if (layerComment === CutBridgeContract.managedTag("layer", manifest, p.name)) result.layer[tag]++;
+                }
+            }
+        }
+        return result;
+    }
+
     function runQC() {
         if (!ensureManifestLoaded()) return;
         var m = state.manifest, qc, records = [];
@@ -1111,8 +1136,27 @@ if (typeof module !== "undefined" && module.exports) {
                 }
             }
         } else {
-            // Before Build, QC remains a package/sequence-only inspection. Do not
-            // claim missing managed AE state when no CutBridge package root exists.
+            // A genuinely untouched project can be inspected package/sequence-only.
+            // Exact-current managed tags, however, prove that managed AE state exists
+            // somewhere in the project. If its package root/comp is gone, report the
+            // orphan state instead of silently treating it as pre-Build. Historical
+            // version-scoped tags do not match the current manifest and are ignored.
+            var orphans = exactCurrentManagedOrphans(m);
+            for (var oi = 0; oi < m.passes.length; oi++) {
+                var orphanPass = m.passes[oi], orphanKey = "$" + orphanPass.name;
+                if (orphans.footage[orphanKey] > 0) {
+                    append(qc.managedObjectRecords("footage", orphanPass, {
+                        status: "ownership_error",
+                        message: orphans.footage[orphanKey] + " exact-current managed footage item(s) exist without the expected CutBridge package root/comp."
+                    }));
+                }
+                if (orphans.layer[orphanKey] > 0) {
+                    append(qc.managedObjectRecords("layer", orphanPass, {
+                        status: "ownership_error",
+                        message: orphans.layer[orphanKey] + " exact-current managed layer(s) exist without the expected CutBridge package root/comp."
+                    }));
+                }
+            }
             state.comp = null;
         }
         finish();

@@ -64,4 +64,37 @@ const {host, manifest, beautyFiles} = fixtureModule.exports;
   assert.match(message, /Next:/);
 }
 
+{
+  const h = host(manifest(), beautyFiles.slice());
+  h.click('Build');
+  const comp = h.comps()[0];
+  const footage = h.footage()[0];
+  h.movePackageRoot();
+  h.projectItems.splice(h.projectItems.indexOf(comp), 1);
+  const beforeItems = h.projectItems.length;
+  h.click('QC');
+  const message = h.alerts.at(-1);
+  assert.match(message, /^CutBridge QC — ERROR/);
+  assert.match(message, /ERROR \[CBQ-FOOTAGE-OWNERSHIP-ERROR\] BEAUTY:/);
+  assert.match(message, /exact-current managed footage item\(s\) exist without the expected CutBridge package root\/comp/);
+  assert.equal(h.footage()[0], footage, 'orphan exact-current managed footage must be reported without mutation');
+  assert.equal(h.projectItems.length, beforeItems, 'orphan QC must not remove or relocate managed footage');
+}
+
+{
+  const m = manifest();
+  const h = host(m, beautyFiles.slice());
+  // Historical revision-retired footage uses another version-scoped identity and
+  // must not make a clean pre-Build current package fail QC.
+  h.projectItems.push({
+    name: 'retired V000 BEAUTY',
+    comment: `CUTBRIDGE|1|footage|Sakura_EP01_SC010_C001_T01_V000|BEAUTY`,
+    parentFolder: null
+  });
+  h.click('QC');
+  const message = h.alerts.at(-1);
+  assert.match(message, /^CutBridge QC — PASS/);
+  assert.doesNotMatch(message, /CBQ-FOOTAGE-OWNERSHIP-ERROR/);
+}
+
 console.log('S7 native QC+ binding: PASS (sidecar binding, stable codes, comp/ownership diagnostics, warning remediation, non-mutation)');
