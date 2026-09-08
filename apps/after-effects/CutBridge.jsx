@@ -622,7 +622,7 @@ if (typeof module !== "undefined" && module.exports) {
                         if (!liveSource || liveSource !== footage) throw new Error("Managed layer does not point to the expected footage; preserve artist work and restore the intended managed layer before retrying.");
                     }
                     found = layer;
-                } else if (owner === comp && !isAnyManagedTag(comment) && ((passName && layer.name === passName) || (footage && layer.source === footage))) {
+                } else if (owner === comp && ((passName && layer.name === passName) || (footage && layer.source === footage))) {
                     throw new Error("Ambiguous managed layer ownership: an unverified layer uses the expected pass name or footage. Preserve artist work; restore its original tag only if intended, or move/remove the conflicting layer before retrying. CutBridge will not adopt it or add a duplicate.");
                 }
             }
@@ -676,7 +676,7 @@ if (typeof module !== "undefined" && module.exports) {
         var hasUnverifiedLayer = false;
         for (var i = 1; i <= comp.numLayers; i++) {
             var layerComment = itemComment(comp.layer(i));
-            if (!isManagedLayerTagForManifest(layerComment, manifest) && !isAnyManagedTag(layerComment)) hasUnverifiedLayer = true;
+            if (!isManagedLayerTagForManifest(layerComment, manifest)) hasUnverifiedLayer = true;
         }
         for (var j = 0; j < entries.length; j++) {
             var entry = entries[j]; if (entry.skip) continue;
@@ -711,7 +711,7 @@ if (typeof module !== "undefined" && module.exports) {
     }
 
     function findVerifiedPass(passName, verifiedPasses) {
-        for (var i = 0; verifiedPasses && i < verifiedPasses.length; i++) if (verifiedPasses[i].name === passName) return verifiedPasses[i];
+        for (var i = 0; i < verifiedPasses && i < verifiedPasses.length; i++) if (verifiedPasses[i].name === passName) return verifiedPasses[i];
         return null;
     }
     function orderManagedLayers(comp, manifest, verifiedPasses) {
