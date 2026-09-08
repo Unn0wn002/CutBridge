@@ -345,14 +345,19 @@ def configure_render_outputs(context, package_root: Path) -> dict[str, str]:
             filename = f"{safe_token(settings.cut, 'C000')}_{pass_name}_####"
 
             if hasattr(output_node, "file_output_items") and hasattr(output_node, "directory"):
-                # Blender 5.x keeps the node format in multilayer EXR mode by
-                # default. Each image item can override that format, which is the
-                # supported route for independent PNG/OpenEXR/TIFF sequences.
+                # Blender 5.x File Output nodes can remain in Multi-Layer EXR media
+                # mode even when an individual item overrides its file format. In
+                # that mode the item name is treated as an EXR layer name, not as
+                # part of the disk filename, producing bare 0000.exr files while
+                # cutbridge.json promises C001_BEAUTY_####.exr. Force Image media
+                # mode so the per-item name is the actual sequence filename prefix.
                 output_node.directory = str(directory)
                 output_node.file_name = ""
+                output_node.format.media_type = "IMAGE"
                 output_node.file_output_items.clear()
                 item = output_node.file_output_items.new(PASS_MAPPINGS[pass_name]["socket_type"], filename)
                 item.override_node_format = True
+                item.format.media_type = "IMAGE"
                 item.format.file_format = settings.image_format
                 target_socket = output_node.inputs.get(item.name) or output_node.inputs[0]
             else:
