@@ -7,7 +7,7 @@ Before tagging a CutBridge release:
 - [ ] `version.py` (`__version__` and `VERSION`), `blender_manifest.toml`, `bl_info`, generated `cutbridge.json`, README, changelog and `CutBridge.jsx` `PRODUCT_VERSION` agree on the numeric product version.
 - [ ] Manifest schema compatibility is preserved or a schema change is intentional and supported by both apps.
 - [ ] Both versioned ZIPs contain the full LICENSE; no private client assets, credentials, or production data are included.
-- [ ] The After Effects ZIP contains both executable S6 files, `CutBridge.jsx` and `revision_manager.js`, beside the LICENSE; do not publish an AE artifact with the revision sidecar missing.
+- [ ] The After Effects ZIP contains `CutBridge.jsx`, `revision_manager.js`, `INSTALL.md`, and `LICENSE`; do not publish an AE artifact with the revision sidecar or two-file installation guidance missing.
 - [ ] Recompute SHA-256 values and compare them with both `SHA256SUMS.txt` and `release-metadata.json`.
 - [ ] Repeat the build with the same toolchain; artifacts are identical despite source timestamp/permission changes.
 - [ ] Record Blender version, OS, GUI installation, panel, Validate Cut and Build Package results.
@@ -23,13 +23,14 @@ Before tagging a CutBridge release:
 - [ ] Keep root `release-authorization.json` unapproved while any release gate is incomplete.
 - [ ] Decide the intended publication class and exact tag: stable `vX.Y.Z`, beta validation `vX.Y.Z-rc.N`/`vX.Y.Z-beta.N`, or development validation `vX.Y.Z-dev.N`.
 - [ ] On the validated current `main` candidate, change `release-authorization.json` to explicitly approve that exact tag, matching `channel` and `prerelease`; review/test that authorization commit as part of the release candidate.
-- [ ] Confirm the approved tag will point to the **current `main` HEAD**. The Release workflow must reject any tag on develop/feature/stale-main history.
+- [ ] Confirm the approved tag will point to the **current `main` HEAD** and that the workflow stored at that tagged commit contains the exact-main/authorization gate.
+- [ ] Do **not** assume current workflow hardening retroactively protects historical commits. Before release operations, use repository-admin controls to restrict tag creation/release publication to the intended maintainer path (for example an applicable ruleset/environment/Actions permission policy), or keep the Release workflow disabled globally when no release is being performed.
 - [ ] For RC/beta/development publication, verify the workflow marks the GitHub Release as a prerelease and `release-metadata.json` carries the matching prerelease version/channel.
 - [ ] For the intended Japanese-first market, complete the planned native-user/terminology validation appropriate to the release claim before describing the product as production-ready for Japanese animation/content teams.
 - [ ] Create the authorized tag only after all preceding gates are recorded.
 - [ ] Confirm the Release workflow publishes both ZIPs, checksums and metadata from the authorized `main` HEAD.
-- [ ] Download the published assets, verify the AE ZIP still contains both scripts, and recompute checksums before distribution.
+- [ ] Download the published assets, verify the AE ZIP still contains both scripts plus `INSTALL.md` and `LICENSE`, and recompute checksums before distribution.
 - [ ] If the publication is an RC/beta/development GitHub prerelease, install/test the downloaded artifacts deliberately. Do not claim in-plugin beta distribution until the external update endpoint and index publication path are deployed and verified.
 - [ ] Before any stable distribution, mirror only the deliberately approved stable artifacts/update metadata to the separate production distribution endpoint; never use the private source repository as the client update endpoint.
 
-At the 2026-09-08 S6 reconciliation there are still no GitHub Releases or tags. Package simulation and green branch CI do not prove that tag-triggered publication, release-asset download, or real After Effects desktop behavior works. The release authorization gate is intentionally `approved: false` until the real release candidate satisfies this checklist.
+At the 2026-09-08 S6 reconciliation there are still no GitHub Releases or tags. Package simulation and green branch CI do not prove that tag-triggered publication, release-asset download, historical-tag governance, or real After Effects desktop behavior works. The release authorization gate is intentionally `approved: false` until the real release candidate satisfies this checklist.
