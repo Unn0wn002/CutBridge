@@ -5,6 +5,7 @@ on:
     branches: ['feature/session-7-qc-plus']
     paths:
       - 'tools/apply_s7_native_qc_binding.py'
+      - 'tools/apply_s7_native_qc_binding_fix2.py'
       - '.github/workflows/s7-native-patch.yml'
 
 permissions:
@@ -26,7 +27,9 @@ jobs:
         with:
           python-version: '3.13'
       - name: Apply exact-anchor S7 native QC patch
-        run: python tools/apply_s7_native_qc_binding.py
+        run: |
+          python tools/apply_s7_native_qc_binding.py
+          python tools/apply_s7_native_qc_binding_fix2.py
       - name: Syntax-check AE scripts
         run: |
           cp apps/after-effects/CutBridge.jsx /tmp/CutBridge.js
