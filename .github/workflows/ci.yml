@@ -48,7 +48,9 @@ jobs:
           node tests/ae_s6_optional_pass_lifecycle_checks.cjs
           node tests/ae_s6_extend_script_binding_checks.cjs
       - name: Run S7 QC+ diagnostic checks
-        run: node tests/ae_s7_qc_plus_checks.cjs
+        run: |
+          node tests/ae_s7_qc_plus_checks.cjs
+          node tests/ae_s7_native_qc_binding_checks.cjs
       - name: Check ExtendScript syntax with Node parser
         run: |
           cp apps/after-effects/CutBridge.jsx /tmp/CutBridge.js
