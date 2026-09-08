@@ -161,6 +161,9 @@ def test_release_workflow_pins_actions_and_does_not_persist_git_credentials():
     assert _workflow_uses_are_pinned(workflow)
     assert "@v4" not in workflow and "@v5" not in workflow and "@v2" not in workflow
     assert workflow.count("persist-credentials: false") == 3
+    assert workflow.count("fetch-depth: 0") == 3
+    assert "git fetch origin main" not in workflow
+    assert workflow.count("refs/remotes/origin/main^{commit}") == 3
     assert "concurrency:\n  group: release-${{ github.ref }}\n  cancel-in-progress: false" in workflow
 
 
