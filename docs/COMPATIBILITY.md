@@ -45,7 +45,7 @@ Automated coverage currently includes:
 
 - **S4 contract coverage:** manifest/schema validation, frame semantics, required/optional passes, exact sequence coverage, path containment, Unicode filename handling in contract/host mocks, legacy data-only JSON parsing, and AE product-version synchronization.
 - **S5 reliability coverage:** deterministic managed comp/footage/layer ownership, repeated build and script-reload behavior, collision/drift rejection, cache rediscovery, managed-source/FPS validation, QC failure reporting, optional-pass behavior, and rollback of newly created managed objects.
-- **S6 revision coverage:** compatibility classification, opaque revision tickets, live ownership revalidation, stage-all/validate-all replacement import, native-adapter `AVLayer.replaceSource(..., false)` usage, source-swap rollback, V001→V002→V003 host-shaped lifecycle checks, historical-footage provenance, package-root note preservation, Build/QC after revision and reload, and fail-closed handling of missing/duplicate deterministic package structure.
+- **S6 revision coverage:** compatibility classification, opaque revision tickets, live ownership revalidation, stage-all/validate-all replacement import, native-adapter `AVLayer.replaceSource(..., false)` usage, source-swap rollback, V001→V002→V003 host-shaped lifecycle checks, historical-footage provenance, package-root note preservation, Build/QC after revision and reload, fail-closed handling of missing/duplicate deterministic package structure, and #26 coverage proving pass-set additions/removals—including optional-pass removal—are rejected before confirmation or mutation while required/optional status changes on retained passes use the warning/confirmation path.
 
 These tests run through Node, Python, contract helpers, and host-shaped/mocked adapters. They establish regression behavior and guard the intended native adapter code paths, but they do **not** certify a real After Effects desktop host, ScriptUI behavior, Undo semantics, save/reopen persistence, filesystem/sequence interpretation on a specific OS, or preservation of real artist properties in a supported AE installation.
 
@@ -58,7 +58,7 @@ Before a stable/release-ready compatibility claim for After Effects, record real
 3. perform V001→V002→V003 source-only revision updates using the shipped `CutBridge.jsx` + `revision_manager.js` pair;
 4. verify effects, masks, transforms, parenting, timing, layer order, artist-added layers, and unrelated project objects are preserved;
 5. save, close, reopen, reload CutBridge, and repeat Build/QC;
-6. verify warning/confirmation and incompatible-revision blocking behavior;
+6. verify a retained-pass required/optional status change follows the warning/confirmation path, and verify pass-set addition/removal plus geometry/timing drift block before mutation;
 7. verify missing/duplicate managed package structure fails closed without project mutation; and
 8. complete a real Blender → package → After Effects end-to-end smoke test.
 
