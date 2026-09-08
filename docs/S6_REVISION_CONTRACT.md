@@ -99,6 +99,17 @@ root exists, QC also uses the strict unique resolver. A missing `03_PRECOMP` or 
 false QC PASS. The host-shaped structure regression verifies QC remains read-only and reports the
 structural error for both cases.
 
+QC also validates the current managed-layer state for every complete pass after managed footage
+has been verified. It uses the same strict `findManagedLayer()` resolver as Build, including exact
+current tag, expected comp membership, exact managed footage source, duplicate-tag rejection,
+cache/live-object checks, and refusal to adopt an unmanaged layer merely because its name or source
+matches. A required complete pass with a deleted or de-tagged/ambiguous managed layer is a QC error.
+A complete optional pass with no layer is a warning when ownership is otherwise unambiguous. If an
+optional pass source sequence is unavailable, QC keeps the documented optional warning/skip path
+rather than generating a separate layer hard error. #27 added this contract after a regression
+proved that the previous QC could report clean PASS with valid footage and comp even after the
+required BEAUTY managed layer had been deleted.
+
 S5 did not claim the package-root `comment`, so S6 preserves unmanaged root comments during
 revision. Only an exact prior CutBridge root tag is migrated; artist/studio notes remain intact.
 
@@ -156,6 +167,9 @@ Static validation includes:
 - the #26 optional-pass lifecycle regression, which first reproduced the stale-layer failure and
   now proves optional-pass removal blocks before confirmation/import/source swap/root migration,
   leaving the original package coherent for reload, Build and QC;
+- the #27 QC current-layer regression, which first reproduced a clean QC PASS after deleting a
+  required managed layer and now verifies required deletion/de-tagging fails closed, a complete
+  optional missing layer warns, and an unavailable optional source remains warning/skip only;
 - read-only `AVLayer.source` with `replaceSource(..., false)` as the source mutation path;
 - package-root artist-note preservation and same-name root collision rejection;
 - Build/QC rejection of missing/duplicate deterministic folders without mutation;
@@ -174,8 +188,8 @@ have green exact-head CI; PR #15 records that final review SHA/run.
 - Obtain independent clean full-PR review at the exact final head plus green CI before merge;
   verify post-merge `develop` CI.
 - Execute the manual AE workflow and inspect V001→V002→V003, Build/QC after revision,
-  save/reopen behavior, property preservation, and fail-closed pass-set removal in a real
-  supported After Effects host.
+  save/reopen behavior, property preservation, fail-closed pass-set removal, and required/optional
+  managed-layer QC behavior in a real supported After Effects host.
 
 Keeping mock layer objects and their non-source properties unchanged is tested. Native AE
 property preservation, real revision execution, GUI/undo behavior and Blender→AE end-to-end
