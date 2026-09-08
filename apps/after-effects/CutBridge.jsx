@@ -944,7 +944,7 @@ if (typeof module !== "undefined" && module.exports) {
         var projectFolders = existingProjectFolders(m), managedCompFolder = projectFolders ? projectFolders.comp : null, compName = (m.ae && m.ae.comp_name) ? m.ae.comp_name : (m.cut + "_COMP"), liveComp = null, compLookupError = null;
         try { liveComp = findManagedComp(m, managedCompFolder, compName); } catch (compError) { compLookupError = compError; }
         for (var i = 0; i < m.passes.length; i++) {
-            var p = m.passes[i], coverage = inspectSequence(p, m), optional = p.required === false;
+            var p = m.passes[i], coverage = inspectSequence(p, m), optional = p.required === false, managedFootage = null;
             if (!coverage.folderExists) { if (optional) warn(p.name + ": optional pass folder missing"); else bad(p.name + ": required pass folder missing"); continue; }
             if (!coverage.complete) { var missingMsg = p.name + ": missing frame(s): " + formatMissingFrames(coverage.missing); if (optional) warn(missingMsg + " (optional pass)"); else bad(missingMsg); continue; }
             ok(p.name + ": " + m.frames.count + "/" + m.frames.count + " expected frames present"); if (coverage.unexpected.length) warn(p.name + ": " + coverage.unexpected.length + " unexpected matching filename(s)");
@@ -952,11 +952,19 @@ if (typeof module !== "undefined" && module.exports) {
                 if (!projectFolders.render) { if (optional) warn(p.name + ": managed render folder is missing"); else bad(p.name + ": managed render folder is missing"); }
                 else {
                     try {
-                        var managedFootage = findManagedFootage(p, m, projectFolders.render, expectedFirstFile(p, coverage));
+                        managedFootage = findManagedFootage(p, m, projectFolders.render, expectedFirstFile(p, coverage));
                         if (managedFootage) ok(p.name + ": managed footage source/FPS matches manifest");
                         else if (optional) warn(p.name + ": optional managed footage is missing from the expected render folder");
                         else bad(p.name + ": required managed footage is missing from the expected render folder");
                     } catch (footageError) { bad(p.name + ": managed footage validation failed — " + footageError.toString()); }
+                    if (liveComp && typeof liveComp.layer === "function" && managedFootage) {
+                        try {
+                            var managedLayer = findManagedLayer(liveComp, CutBridgeContract.managedTag("layer", m, p.name), managedFootage, p.name);
+                            if (managedLayer) ok(p.name + ": managed layer ownership/source matches manifest");
+                            else if (optional) warn(p.name + ": optional managed layer is missing from the expected comp");
+                            else bad(p.name + ": required managed layer is missing from the expected comp");
+                        } catch (layerError) { bad(p.name + ": managed layer validation failed — " + layerError.toString()); }
+                    }
                 }
             }
         }
