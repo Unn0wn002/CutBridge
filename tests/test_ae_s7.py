@@ -20,6 +20,8 @@ def test_s7_qc_plus_engine_is_host_independent_and_non_mutating():
     assert "function normalize(records)" in source
     assert "function sequenceRecords(passInfo, manifest, coverage)" in source
     assert "function compRecords(mismatches)" in source
+    assert "function managedObjectRecords(kind, passInfo, observation)" in source
+    assert "function hostRecords(observation)" in source
     assert "function revisionRecords(assessment, subject)" in source
 
     # S7 diagnostic core must stay data-only. Host mutation belongs to existing
