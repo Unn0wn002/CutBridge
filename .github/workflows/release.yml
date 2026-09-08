@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  package:
+  validate:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -49,7 +49,32 @@ jobs:
         run: |
           cp apps/after-effects/CutBridge.jsx /tmp/CutBridge.js
           node --check /tmp/CutBridge.js
-      - name: Build versioned packages
+
+  package:
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.13'
+      - name: Revalidate release authorization before clean packaging
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_SHA: ${{ github.sha }}
+        run: |
+          git fetch origin main --depth=1
+          MAIN_SHA="$(git rev-parse origin/main)"
+          python tools/validate_release_authorization.py \
+            --tag "$RELEASE_TAG" \
+            --sha "$RELEASE_SHA" \
+            --main-sha "$MAIN_SHA"
+      - name: Build versioned packages on clean runner
         run: python tools/build_release.py --tag "${GITHUB_REF_NAME}" --output dist
       - name: Verify release checksums
         run: cd dist && sha256sum --check SHA256SUMS.txt
@@ -101,6 +126,8 @@ jobs:
           RELEASE_TAG: ${{ github.ref_name }}
           EXPECTED_CHANNEL: ${{ steps.release_authorization.outputs.channel }}
           EXPECTED_PRERELEASE: ${{ steps.release_authorization.outputs.prerelease }}
+          EXPECTED_RELEASE_VERSION: ${{ steps.release_authorization.outputs.release_version }}
+          EXPECTED_PRODUCT_VERSION: ${{ steps.release_authorization.outputs.product_version }}
         run: |
           set -euo pipefail
           (cd dist && sha256sum --check SHA256SUMS.txt)
@@ -111,12 +138,28 @@ jobs:
 
           metadata = json.loads(Path("dist/release-metadata.json").read_text(encoding="utf-8"))
           expected_prerelease = os.environ["EXPECTED_PRERELEASE"] == "true"
-          if metadata.get("tag") != os.environ["RELEASE_TAG"]:
+          tag = os.environ["RELEASE_TAG"]
+          if metadata.get("tag") != tag:
               raise SystemExit("Downloaded release metadata tag does not match the triggering tag.")
           if metadata.get("channel") != os.environ["EXPECTED_CHANNEL"]:
               raise SystemExit("Downloaded release metadata channel does not match authorization.")
           if metadata.get("prerelease") is not expected_prerelease:
               raise SystemExit("Downloaded release metadata prerelease state does not match authorization.")
+          if metadata.get("version") != os.environ["EXPECTED_RELEASE_VERSION"]:
+              raise SystemExit("Downloaded release metadata version does not match authorization.")
+          if metadata.get("product_version") != os.environ["EXPECTED_PRODUCT_VERSION"]:
+              raise SystemExit("Downloaded release metadata product version does not match authorization.")
+          expected_files = {
+              "blender": f"CutBridge-Blender-{tag}.zip",
+              "after_effects": f"CutBridge-AfterEffects-{tag}.zip",
+          }
+          artifacts = metadata.get("artifacts")
+          if not isinstance(artifacts, dict):
+              raise SystemExit("Downloaded release metadata artifacts object is missing or invalid.")
+          for key, filename in expected_files.items():
+              entry = artifacts.get(key)
+              if not isinstance(entry, dict) or entry.get("filename") != filename:
+                  raise SystemExit(f"Downloaded release metadata artifact filename mismatch for {key}.")
           PY
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
