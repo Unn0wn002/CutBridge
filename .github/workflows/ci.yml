@@ -19,7 +19,7 @@ jobs:
       - name: Install test dependencies
         run: python -m pip install pytest jsonschema
       - name: Run tests
-        run: pytest -q tests/test_static.py tests/test_release_hygiene.py tests/test_ae_contract.py tests/test_ae_s5.py tests/test_ae_s6.py
+        run: pytest -q tests/test_static.py tests/test_release_hygiene.py tests/test_release_authorization.py tests/test_ae_contract.py tests/test_ae_s5.py tests/test_ae_s6.py tests/test_ae_install_docs.py
       - name: Simulate release packaging
         shell: bash
         run: |
