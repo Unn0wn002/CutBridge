@@ -171,9 +171,9 @@ Source-only revision deliberately blocks:
 - pixel-aspect change;
 - width/height resolution change;
 - addition of a new pass;
-- removal of a previously required pass.
+- removal of any existing pass, whether required or optional.
 
-Removed optional passes are retained unchanged. Required/optional status changes warn and require confirmation.
+Pass-set additions/removals require a deliberate rebuild/migration workflow. A required/optional **status change on a pass retained in both manifests** remains a warning + explicit-confirmation case.
 
 CutBridge also fails closed when current AE project ownership is ambiguous. A duplicate current package root, missing/duplicate `01_COMP` / `02_RENDER` / `03_PRECOMP` / `04_OUTPUT`, duplicate/misplaced managed comp ownership, or managed-layer/source drift must be resolved deliberately instead of being auto-adopted or repaired.
 
