@@ -58,7 +58,7 @@ The S6 revision workflow has automated host-shaped lifecycle coverage, including
 - Deterministic release builder.
 - Version/tag consistency validation, including AE product-version drift checks.
 - Blender + After Effects ZIP artifacts.
-- The After Effects release ZIP includes `CutBridge.jsx`, `revision_manager.js`, and the full LICENSE.
+- The After Effects release ZIP includes exact `CutBridge.jsx`, `revision_manager.js`, `INSTALL.md`, and `LICENSE` contents.
 - SHA-256 checksums and release metadata.
 - Separate release-index schema for future public distribution.
 
@@ -123,4 +123,4 @@ Stable publication remains blocked until the release checklist is satisfied, inc
 4. S9 — configurable studio presets.
 5. S10 — camera/null handoff investigation.
 6. S11-S14 — release engineering, end-to-end validation, manual-finding repair, and target-user validation preparation.
-7. Promote a verified candidate from `develop` to `main`, publish an RC/pre-release, verify downloaded artifacts/checksums, and only then consider a stable release.
+7. After repository-level release governance in issue #18 is available and validated, promote a verified candidate from `develop` to `main`, publish an authorized RC/pre-release, verify downloaded artifacts/checksums, and only then consider a stable release.
