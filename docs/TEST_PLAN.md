@@ -61,7 +61,7 @@ Automated Blender checks run headlessly. They validate RNA lifecycle, render-map
 | A25 | Existing managed root is missing `03_PRECOMP` or has duplicate `02_RENDER` | Build remains read-only and fails; QC cannot report PASS through an arbitrary first match |
 | A26 | Current V002 project has a duplicate package root or duplicate `02_RENDER`, then V003 revision is selected | Revision blocks before confirmation, replacement import, or `replaceSource()` |
 | A27 | V001 → V002 → V003 through the actual `CutBridge.jsx` adapter in the host-shaped VM | Managed source replacement, ownership migration, historical-footage provenance, Build/QC and script reload remain consistent |
-| A28 | AE release ZIP is built | Archive contains exact `CutBridge.jsx`, `revision_manager.js`, and `LICENSE` contents with valid release checksums |
+| A28 | AE release ZIP is built | Archive contains exact `CutBridge.jsx`, `revision_manager.js`, `INSTALL.md`, and `LICENSE` contents with valid release checksums |
 
 ## S4 automated contract gate
 
