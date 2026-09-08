@@ -247,6 +247,26 @@ assert.equal(h.footage().length, 3);
 assert.equal(h.topRoot(v3.package_name).comment, "Artist / studio package note");
 assert.ok(!h.alerts.some(x => /Revision failed|revision was not applied/.test(x)));
 
+// A prior-version managed layer tag inside the active comp is drift, not historical state.
+// Reload clears in-memory layer caches so this proves persistent discovery fails closed.
+const staleLayerHost = makeHost();
+const staleV1 = manifest(1), staleV2 = manifest(2);
+staleLayerHost.queue(staleV1); staleLayerHost.click("Import Package"); staleLayerHost.click("Build Comp");
+const staleComp = staleLayerHost.comps()[0], staleLayer = staleComp.layer(1), staleSourceV1 = staleLayer.source;
+staleLayerHost.queue(staleV2); staleLayerHost.click("Update Revision");
+assert.equal(staleLayer.comment, Contract.managedTag("layer", staleV2, "BEAUTY"));
+assert.equal(staleSourceV1.comment, Contract.managedTag("footage", staleV1, "BEAUTY"), "historical V001 footage provenance must remain allowed");
+const staleActiveSource = staleLayer.source;
+const staleLayerCount = staleComp.numLayers;
+const staleFootageCount = staleLayerHost.footage().length;
+staleLayer.comment = Contract.managedTag("layer", staleV1, "BEAUTY");
+staleLayerHost.reload(); staleLayerHost.queue(staleV2); staleLayerHost.click("Import Package"); staleLayerHost.click("Build Comp");
+assert.equal(staleComp.numLayers, staleLayerCount, "stale prior-version managed layer must not cause a duplicate layer after reload");
+assert.equal(staleLayerHost.footage().length, staleFootageCount, "blocked Build must not import extra footage");
+assert.strictEqual(staleLayer.source, staleActiveSource, "blocked Build must not change the active layer source");
+assert.equal(staleSourceV1.comment, Contract.managedTag("footage", staleV1, "BEAUTY"), "historical footage must remain version-scoped rather than becoming a collision");
+assert.match(staleLayerHost.alerts.at(-1), /managed layer ownership|unverified layer|ambiguous managed layer/i);
+
 // A user-owned top-level folder with the deterministic package name is a collision,
 // not ownership proof. Build must not create children or managed objects inside it.
 const collisionHost = makeHost();
@@ -258,4 +278,4 @@ assert.equal(collisionHost.childFolders(manualRoot).length, 0, "unverified packa
 assert.equal(manualRoot.comment, "Studio-owned folder");
 assert.match(collisionHost.alerts.at(-1), /project-root folder|package root|package folder|ownership|collision|not verified/i);
 
-console.log("S6 native-host lifecycle: PASS (V001→V002→V003 + Build/QC + reload + revision/root collisions; real AE MANUAL NOT EXECUTED)");
+console.log("S6 native-host lifecycle: PASS (V001→V002→V003 + Build/QC + reload + stale-layer/root collisions; real AE MANUAL NOT EXECUTED)");
