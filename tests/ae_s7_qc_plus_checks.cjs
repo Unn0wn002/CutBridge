@@ -86,6 +86,51 @@ function codes(records) {
 }
 
 {
+  const pass = {name: 'BEAUTY', required: true};
+  const footageOk = QC.managedObjectRecords('footage', pass, {status: 'ok'});
+  assert.equal(footageOk[0].code, 'CBQ-FOOTAGE-OK');
+  assert.equal(footageOk[0].severity, 'PASS');
+
+  const requiredMissing = QC.managedObjectRecords('layer', pass, {status: 'missing'});
+  assert.equal(requiredMissing[0].code, 'CBQ-LAYER-REQUIRED-MISSING');
+  assert.equal(requiredMissing[0].severity, 'ERROR');
+  assert.match(requiredMissing[0].remediation, /trusted package/);
+
+  const optionalMissing = QC.managedObjectRecords('layer', {name: 'LINE', required: false}, {status: 'missing'});
+  assert.equal(optionalMissing[0].code, 'CBQ-LAYER-OPTIONAL-MISSING');
+  assert.equal(optionalMissing[0].severity, 'WARNING');
+  assert.match(optionalMissing[0].remediation, /will not synthesize or adopt/);
+
+  const ownership = QC.managedObjectRecords('footage', pass, {
+    status: 'ownership_error',
+    message: 'Managed footage source/tag no longer matches.'
+  });
+  assert.equal(ownership[0].code, 'CBQ-FOOTAGE-OWNERSHIP-ERROR');
+  assert.equal(ownership[0].severity, 'ERROR');
+  assert.match(ownership[0].remediation, /will not adopt, retag, or replace/);
+}
+
+{
+  const cleanHost = QC.hostRecords({inspectable: true, staleManagedTags: 0, ownershipAmbiguous: false});
+  assert.equal(cleanHost[0].code, 'CBQ-HOST-OWNERSHIP-OK');
+  assert.equal(cleanHost[0].severity, 'PASS');
+
+  const unsafeHost = QC.hostRecords({
+    inspectable: false,
+    staleManagedTags: 2,
+    ownershipAmbiguous: true,
+    message: 'Duplicate managed roots conflict.'
+  });
+  assert.deepEqual(codes(unsafeHost), [
+    'CBQ-HOST-STATE-UNINSPECTABLE',
+    'CBQ-HOST-STALE-MANAGED-TAG',
+    'CBQ-HOST-OWNERSHIP-AMBIGUOUS'
+  ]);
+  assert.ok(unsafeHost.every(r => r.severity === 'ERROR'));
+  assert.ok(unsafeHost.every(r => r.remediation.length > 0));
+}
+
+{
   const safe = QC.revisionRecords({status: 'safe', reasons: [], warnings: []}, 'V004');
   assert.equal(safe[0].code, 'CBQ-REV-SAFE');
   assert.equal(safe[0].severity, 'PASS');
@@ -110,4 +155,4 @@ function codes(records) {
   assert.equal(QC.render(input).text, QC.render(input.slice().reverse()).text, 'QC output must be deterministic regardless of insertion order');
 }
 
-console.log('S7 QC+ diagnostic engine: PASS (severity/codes/remediation/deterministic ordering/sequence/comp/revision)');
+console.log('S7 QC+ diagnostic engine: PASS (severity/codes/remediation/determinism/sequence/comp/ownership/host/revision)');
