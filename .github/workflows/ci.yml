@@ -43,7 +43,9 @@ jobs:
           (cd dist-ci && sha256sum --check SHA256SUMS.txt)
 
       - name: Run S6 revision contract checks
-        run: node tests/ae_s6_revision_checks.cjs
+        run: |
+          node tests/ae_s6_revision_checks.cjs
+          node tests/ae_s6_optional_pass_lifecycle_checks.cjs
       - name: Check ExtendScript syntax with Node parser
         run: |
           cp apps/after-effects/CutBridge.jsx /tmp/CutBridge.js
