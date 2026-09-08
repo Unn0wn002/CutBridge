@@ -90,6 +90,21 @@ class ReleaseHygieneTests(unittest.TestCase):
             self.builder.build("v0.2.3", self.output)
         self.assertEqual(victim.read_text(), "preserve me")
 
+    def test_rc_build_uses_beta_prerelease_metadata(self):
+        metadata = self.builder.build("v0.2.3-rc.1", self.output)
+        self.assertEqual(metadata["version"], "0.2.3-rc.1")
+        self.assertEqual(metadata["product_version"], "0.2.3")
+        self.assertEqual(metadata["channel"], "beta")
+        self.assertIs(metadata["prerelease"], True)
+        self.assertTrue((self.output / "CutBridge-Blender-v0.2.3-rc.1.zip").is_file())
+        self.assertTrue((self.output / "CutBridge-AfterEffects-v0.2.3-rc.1.zip").is_file())
+
+    def test_development_build_uses_development_channel(self):
+        metadata = self.builder.build("v0.2.3-dev.1", self.output)
+        self.assertEqual(metadata["version"], "0.2.3-dev.1")
+        self.assertEqual(metadata["channel"], "development")
+        self.assertIs(metadata["prerelease"], True)
+
 
 if __name__ == "__main__":
     unittest.main()
