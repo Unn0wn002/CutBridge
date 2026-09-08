@@ -711,7 +711,7 @@ if (typeof module !== "undefined" && module.exports) {
     }
 
     function findVerifiedPass(passName, verifiedPasses) {
-        for (var i = 0; i < verifiedPasses && i < verifiedPasses.length; i++) if (verifiedPasses[i].name === passName) return verifiedPasses[i];
+        for (var i = 0; verifiedPasses && i < verifiedPasses.length; i++) if (verifiedPasses[i].name === passName) return verifiedPasses[i];
         return null;
     }
     function orderManagedLayers(comp, manifest, verifiedPasses) {
