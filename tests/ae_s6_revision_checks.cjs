@@ -113,7 +113,7 @@ test("malformed, duplicate and unsafe passes fail closed", () => {
         assert.equal(R.assess(m(1), m(2, {passes})).status, "incompatible");
     }
     assert.equal(R.assess(m(1), m(2, {passes: [m(2).passes[1]]})).status, "incompatible");
-    assert.equal(R.assess(m(1), m(2, {passes: [m(2).passes[0]]})).status, "warning");
+    assert.equal(R.assess(m(1), m(2, {passes: [m(2).passes[0]]})).status, "incompatible");
     assert.equal(R.assess(m(1), m(2, {passes: [...m(2).passes, {...m(2).passes[0], name: "NEW"}]})).status, "incompatible");
 });
 test("prototype pass names remain valid", () => {
@@ -296,10 +296,16 @@ test("malformed schema coercion cannot abort valid candidate discovery", () => {
         assert.equal(R.selectLatest(m(1), [m(3), bad]).version, 3);
     }
 });
-test("removed optional layer remains unchanged", () => {
+test("removed optional pass blocks source-only revision before mutation", () => {
     const f = fixture(); f.next.passes.pop();
-    const ex = R.createExecutor(f.adapter), ticket = ex.prepare(f.current, f.next);
-    ex.apply(ticket, true); assert.equal(f.layers[1].source, f.sources[1]);
+    const assessment = R.assess(f.current, f.next);
+    assert.equal(assessment.status, "incompatible");
+    assert.match(assessment.reasons.join("; "), /Removing an optional pass is unsupported by source-only revision: LINE/);
+    const ex = R.createExecutor(f.adapter);
+    assert.throws(() => ex.prepare(f.current, f.next), /Removing an optional pass is unsupported/);
+    assert.equal(f.imports.length, 0);
+    assert.deepEqual(f.layers.map(layer => layer.source), f.sources);
+    assert.equal(f.events.length, 0);
 });
 test("missing optional layer promoted to required blocks", () => {
     const f = fixture(); f.next.passes[1].required = true;
