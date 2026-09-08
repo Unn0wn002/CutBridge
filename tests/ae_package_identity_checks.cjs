@@ -87,4 +87,19 @@ check('invalid filesystem character runs collapse exactly like Blender', () => {
     assert.deepEqual(plain(contract.validateManifest(m)), []);
 });
 
+check('Python-only Unicode whitespace matches Blender strip and re semantics', () => {
+    for (const codePoint of [0x001c, 0x001d, 0x001e, 0x001f, 0x0085]) {
+        const whitespace = String.fromCharCode(codePoint);
+        const edge = manifest();
+        edge.project = whitespace + '桜' + whitespace;
+        edge.package_name = '桜_EP01_SC010_C001_T01_V001';
+        assert.deepEqual(plain(contract.validateManifest(edge)), [], `edge U+${codePoint.toString(16)}`);
+
+        const internal = manifest();
+        internal.project = 'A' + whitespace + 'B';
+        internal.package_name = 'A_B_EP01_SC010_C001_T01_V001';
+        assert.deepEqual(plain(contract.validateManifest(internal)), [], `internal U+${codePoint.toString(16)}`);
+    }
+});
+
 console.log(`PASS: ${checks} AE package identity checks`);

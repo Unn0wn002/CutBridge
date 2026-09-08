@@ -94,10 +94,14 @@ var CutBridgeContract = (function () {
     function isFiniteNumber(value) { return typeof value === "number" && isFinite(value); }
     function isInteger(value) { return isFiniteNumber(value) && Math.floor(value) === value && Math.abs(value) <= 9007199254740991; }
 
+    function trimPythonWhitespace(value) {
+        return value.replace(/^[\\u0009-\\u000d\\u001c-\\u0020\\u0085\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000]+/, "")
+            .replace(/[\\u0009-\\u000d\\u001c-\\u0020\\u0085\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000]+$/, "");
+    }
     function safePackageToken(value, fallback) {
-        var token = String(value || "").replace(/^\s+|\s+$/g, "");
+        var token = trimPythonWhitespace(String(value || ""));
         token = token.replace(/[<>:"\/\\|?*]+/g, "_");
-        token = token.replace(/\s+/g, "_");
+        token = token.replace(/[\\u0009-\\u000d\\u001c-\\u0020\\u0085\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000]+/g, "_");
         return token || fallback;
     }
     function expectedPackageName(manifest) {
