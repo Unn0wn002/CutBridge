@@ -25,6 +25,11 @@ def test_existing_managed_root_folder_drift_fails_before_mutation():
     _run_node_test("ae_s6_root_structure_checks.cjs")
 
 
+def test_qc_current_managed_layer_required_optional_boundary():
+    """Execute the dedicated #27 required/optional managed-layer QC regression."""
+    _run_node_test("ae_qc_managed_layer_checks.cjs")
+
+
 def test_native_revision_lifecycle_preserves_retired_footage_provenance():
     """Retired CutBridge footage must not become an unmanaged S5 collision."""
     root = Path(__file__).resolve().parents[1]
