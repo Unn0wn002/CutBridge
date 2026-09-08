@@ -1,0 +1,115 @@
+name: Integrate native-validated JSX guard
+
+on:
+  push:
+    branches: [feature/session-6-revision-manager]
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: feature/session-6-revision-manager
+          fetch-depth: 0
+      - name: Apply exact native-validated JSX pass-set guard
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('apps/after-effects/CutBridge.jsx')
+          source = path.read_text(encoding='utf-8')
+
+          if 'function directRevisionPassSetErrors(current, candidate)' in source:
+              raise SystemExit('CutBridge.jsx is already patched; refusing a second application')
+
+          needle = '''    function updateRevision() {
+              if (!ensureManifestLoaded()) return;
+              try {
+                  var selected = chooseRevisionPackage(); if (!selected) return;
+                  var manager = getRevisionManager(), assessment = manager.assess(state.manifest, selected.manifest);
+          '''
+
+          replacement = '''    // S6 JSX-native pass-set guard: intentionally independent of revision_manager.js host binding.
+              // This executes inside CutBridge.jsx before the revision confirmation UI can be reached.
+              function directRevisionPassSetErrors(current, candidate) {
+                  var reasons = [], currentNames = {}, candidateNames = {}, i, p, key;
+                  if (!current || !candidate || !current.passes || !candidate.passes) {
+                      return ["Revision pass-set guard could not inspect the current/candidate manifests."];
+                  }
+                  for (i = 0; i < current.passes.length; i++) {
+                      p = current.passes[i];
+                      if (!p || typeof p.name !== "string") return ["Revision pass-set guard found an invalid current pass."];
+                      currentNames["$" + p.name] = p;
+                  }
+                  for (i = 0; i < candidate.passes.length; i++) {
+                      p = candidate.passes[i];
+                      if (!p || typeof p.name !== "string") return ["Revision pass-set guard found an invalid candidate pass."];
+                      candidateNames["$" + p.name] = p;
+                  }
+                  for (i = 0; i < current.passes.length; i++) {
+                      p = current.passes[i]; key = "$" + p.name;
+                      if (!candidateNames[key]) {
+                          if (p.required !== false) reasons.push("Previously required pass missing: " + p.name);
+                          else reasons.push("Removing an optional pass is unsupported by source-only revision: " + p.name + ". Rebuild or migrate the comp deliberately.");
+                      }
+                  }
+                  for (i = 0; i < candidate.passes.length; i++) {
+                      p = candidate.passes[i]; key = "$" + p.name;
+                      if (!currentNames[key]) reasons.push("Adding passes is unsupported by source-only revision: " + p.name);
+                  }
+                  return reasons;
+              }
+              function updateRevision() {
+                  if (!ensureManifestLoaded()) return;
+                  try {
+                      var selected = chooseRevisionPackage(); if (!selected) return;
+                      var passSetReasons = directRevisionPassSetErrors(state.manifest, selected.manifest);
+                      if (passSetReasons.length) { alertError("Revision blocked:\\n- " + passSetReasons.join("\\n- ")); return; }
+                      var manager = getRevisionManager(), assessment = manager.assess(state.manifest, selected.manifest);
+          '''
+
+          if source.count(needle) != 1:
+              raise SystemExit(f'Expected exactly one updateRevision insertion point; found {source.count(needle)}')
+
+          patched = source.replace(needle, replacement, 1)
+          path.write_text(patched, encoding='utf-8', newline='')
+
+          # The native-tested file has this exact Git blob SHA. Fail closed if the
+          # repository base or patch text differs from the user-validated artifact.
+          import hashlib
+          payload = patched.encode('utf-8')
+          header = f'blob {len(payload)}\0'.encode()
+          blob_sha = hashlib.sha1(header + payload).hexdigest()
+          expected = '2acf04c0d7f821bb3c8ef5f88277266af35c116c'
+          if blob_sha != expected:
+              raise SystemExit(f'Patched JSX blob mismatch: {blob_sha} != {expected}')
+          print(f'Native-tested CutBridge.jsx blob verified: {blob_sha}')
+          PY
+      - name: Syntax and guard-order smoke
+        shell: bash
+        run: |
+          cp apps/after-effects/CutBridge.jsx /tmp/CutBridge.js
+          node --check /tmp/CutBridge.js
+          node --check apps/after-effects/revision_manager.js
+          python - <<'PY'
+          from pathlib import Path
+          s = Path('apps/after-effects/CutBridge.jsx').read_text(encoding='utf-8')
+          u = s[s.index('function updateRevision()'):]
+          assert u.index('directRevisionPassSetErrors(state.manifest, selected.manifest)') < u.index('getRevisionManager()') < u.index('confirm(message)')
+          print('JSX guard order: PASS')
+          PY
+      - name: Remove one-shot workflow and commit source integration
+        shell: bash
+        run: |
+          rm .github/workflows/integrate-native-jsx-guard.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/after-effects/CutBridge.jsx .github/workflows/integrate-native-jsx-guard.yml
+          git commit -m "Integrate native-validated JSX pass-set gate"
+          git push origin HEAD:feature/session-6-revision-manager
