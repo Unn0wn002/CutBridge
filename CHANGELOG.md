@@ -5,6 +5,8 @@ All notable CutBridge changes are tracked here.
 ## [0.2.3] - Unreleased
 
 ### Fixed
+- S6 revision now rejects orphan stale managed layers, duplicate current-footage ownership, and live comp metadata drift before confirmation or mutation, using the existing Build/QC ownership checks.
+- Windows test runners now send AE contract scripts over stdin, accept CRLF source, and read/write the Japanese AE version fixture as UTF-8; symlink safety coverage remains mandatory in Linux CI.
 - Release publication now fails closed unless the triggering tag points to the current `main` HEAD and `release-authorization.json` explicitly approves the exact tag/channel/prerelease combination; matching version constants or green CI alone no longer authorize publication.
 - Release tag parsing now distinguishes stable `vX.Y.Z`, beta validation `vX.Y.Z-rc.N` / `vX.Y.Z-beta.N`, and development `vX.Y.Z-dev.N`; prerelease metadata and GitHub prerelease status are derived from the tag instead of every build being labeled stable.
 - The After Effects release ZIP now ships `INSTALL.md` beside `CutBridge.jsx`, `revision_manager.js`, and `LICENSE`, so downloaded artifacts carry the required two-file installation guidance instead of relying on repository-only documentation.

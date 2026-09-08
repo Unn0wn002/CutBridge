@@ -20,6 +20,10 @@ def test_native_revision_host_lifecycle():
     _run_node_test("ae_s6_native_host_checks.cjs")
 
 
+def test_revision_rejects_existing_ownership_and_comp_drift():
+    _run_node_test("ae_s6_revision_ownership_checks.cjs")
+
+
 def test_existing_managed_root_folder_drift_fails_before_mutation():
     """Missing deterministic folders on an existing managed package must not be auto-repaired."""
     _run_node_test("ae_s6_root_structure_checks.cjs")

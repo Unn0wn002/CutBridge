@@ -93,6 +93,13 @@ injects a duplicate current root and a duplicate `02_RENDER` between V002 and V0
 that layer source, footage count, replacement-call count, confirmation count, and current root name
 remain unchanged.
 
+Revision preflight also enforces Build's stale/orphan managed-layer guard, verifies live comp
+geometry/timing against the current manifest, and resolves current footage through the same
+global ownership/source resolver as Build/QC. A duplicate current footage tag or orphan stale
+layer therefore blocks before confirmation or mutation. Historical footage and unrelated
+unmanaged artist layers remain allowed. The dedicated revision-entry regression covers each
+failure after script reload and verifies successful V003 Build/QC after deliberate recovery.
+
 QC preserves package-only operation when no matching managed root exists. Once a matching managed
 root exists, QC also uses the strict unique resolver. A missing `03_PRECOMP` or duplicate
 `02_RENDER` therefore cannot be silently evaluated through an arbitrary first match or produce a

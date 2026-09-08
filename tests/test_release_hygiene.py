@@ -77,7 +77,8 @@ class ReleaseHygieneTests(unittest.TestCase):
 
     def test_ae_version_mismatch_is_rejected_before_output(self):
         source = self.builder.AE_SCRIPT
-        source.write_text(source.read_text().replace('var PRODUCT_VERSION = "0.2.3";', 'var PRODUCT_VERSION = "0.2.2";'))
+        source.write_text(source.read_text(encoding="utf-8").replace(
+            'var PRODUCT_VERSION = "0.2.3";', 'var PRODUCT_VERSION = "0.2.2";'), encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "PRODUCT_VERSION"):
             self.builder.build("v0.2.3", self.output)
         self.assertFalse(self.output.exists())

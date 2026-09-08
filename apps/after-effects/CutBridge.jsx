@@ -761,6 +761,12 @@ if (typeof module !== "undefined" && module.exports) {
         if (!folders || !folders.root || !folders.comp || !folders.render) throw new Error("Current CutBridge package folders are missing; revision is blocked to protect the project.");
         var comp = findManagedComp(current, folders.comp, compName);
         if (!comp) throw new Error("Current managed comp is missing; revision is blocked to protect the project.");
+        var mismatches = CutBridgeContract.compSpecErrors(CutBridgeContract.expectedCompSpec(current),
+            {width: comp.width, height: comp.height, pixelAspect: comp.pixelAspect, duration: comp.duration, frameRate: comp.frameRate});
+        if (mismatches.length) throw new Error("Current managed comp metadata drift blocks revision (" + mismatches.join(", ") + "). Preserve artist work and restore the intended comp before retrying.");
+        // Revision must enforce the same persistent layer ownership gate as Build,
+        // including orphan stale tags that do not collide by current name/source.
+        preflightExistingManagedLayers(comp, current, preflightSequences(current).entries, folders.render);
         var journal = [], migration = null;
         function currentPass(name) { return passByName(current, name); }
         function candidatePass(name) { return passByName(candidate, name); }
@@ -772,12 +778,9 @@ if (typeof module !== "undefined" && module.exports) {
                     typeof AVLayer === "undefined" || !(layer instanceof AVLayer) || layer.containingComp !== comp ||
                     itemComment(layer) !== expectedTag || !layer.source || typeof FootageItem === "undefined" || !(layer.source instanceof FootageItem)) return false;
                 var firstFile = revisionFirstFile(p, expected, state.packageFolder), source = layer.source;
-                if (itemComment(source) !== CutBridgeContract.managedTag("footage", expected, passName) || source.parentFolder !== folders.render) return false;
-                var sourcePath = null, conformFrameRate = null;
-                try { if (source.file && source.file.fsName) sourcePath = source.file.fsName; } catch (pathError) {}
-                try { if (source.mainSource && typeof source.mainSource.conformFrameRate !== "undefined") conformFrameRate = source.mainSource.conformFrameRate; } catch (fpsError) {}
-                return CutBridgeContract.footageReuseErrors({path: firstFile.fsName, frameRate: expected.fps},
-                    {isFootage: true, path: sourcePath, conformFrameRate: conformFrameRate}).length === 0;
+                // Resolve globally rather than accepting a locally correct source whose
+                // ownership tag is duplicated elsewhere in the project.
+                return findManagedFootage(p, expected, folders.render, firstFile) === source;
             } catch (e) { return false; }
         }
         return {
