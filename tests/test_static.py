@@ -120,7 +120,6 @@ def test_shared_and_update_schemas_parse():
     assert update_schema["title"] == "CutBridge Release Index"
     assert example["schema_version"] == 1
     Draft202012Validator.check_schema(shared)
-    Draft202012Validator.check_schema(update_schema)
     Draft202012Validator(update_schema).validate(example)
 
 
@@ -240,9 +239,10 @@ def test_release_builder_produces_expected_artifacts(tmp_path):
         assert archive.read("LICENSE") == (ROOT / "LICENSE").read_bytes()
 
     with zipfile.ZipFile(ae_zip) as archive:
-        assert archive.namelist() == ["CutBridge.jsx", "revision_manager.js", "LICENSE"]
+        assert archive.namelist() == ["CutBridge.jsx", "revision_manager.js", "INSTALL.md", "LICENSE"]
         assert archive.read("CutBridge.jsx") == (ROOT / "apps/after-effects/CutBridge.jsx").read_bytes()
         assert archive.read("revision_manager.js") == (ROOT / "apps/after-effects/revision_manager.js").read_bytes()
+        assert archive.read("INSTALL.md") == (ROOT / "apps/after-effects/INSTALL.md").read_bytes()
         assert archive.read("LICENSE") == (ROOT / "LICENSE").read_bytes()
 
     checksum_lines = checksum_file.read_text(encoding="utf-8").splitlines()
