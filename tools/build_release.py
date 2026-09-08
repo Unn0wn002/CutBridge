@@ -21,6 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BLENDER_ROOT = ROOT / "apps" / "blender" / "cutbridge"
 AE_SCRIPT = ROOT / "apps" / "after-effects" / "CutBridge.jsx"
 AE_REVISION = ROOT / "apps" / "after-effects" / "revision_manager.js"
+AE_QC_PLUS = ROOT / "apps" / "after-effects" / "qc_plus.js"
 AE_INSTALL = ROOT / "apps" / "after-effects" / "INSTALL.md"
 UPDATE_SCHEMA_VERSION = 1
 RELEASE_TAG_RE = re.compile(
@@ -126,11 +127,12 @@ def _write_blender_zip(path: Path) -> None:
 
 
 def _write_ae_zip(path: Path) -> None:
-    if not AE_SCRIPT.is_file() or not AE_REVISION.is_file() or not AE_INSTALL.is_file():
+    if not AE_SCRIPT.is_file() or not AE_REVISION.is_file() or not AE_QC_PLUS.is_file() or not AE_INSTALL.is_file():
         raise RuntimeError("Missing After Effects scripts or installation guide required for release")
     with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
         _write_entry(archive, AE_SCRIPT, "CutBridge.jsx")
         _write_entry(archive, AE_REVISION, "revision_manager.js")
+        _write_entry(archive, AE_QC_PLUS, "qc_plus.js")
         _write_entry(archive, AE_INSTALL, "INSTALL.md")
         _write_entry(archive, ROOT / "LICENSE", "LICENSE")
 
@@ -146,9 +148,9 @@ def build(tag: str, output_dir: Path) -> dict:
         )
 
     _validate_source_version(version)
-    required_release_sources = (ROOT / "LICENSE", AE_SCRIPT, AE_REVISION, AE_INSTALL)
+    required_release_sources = (ROOT / "LICENSE", AE_SCRIPT, AE_REVISION, AE_QC_PLUS, AE_INSTALL)
     if not all(path.is_file() for path in required_release_sources):
-        raise ValueError("Release source must include LICENSE, CutBridge.jsx, revision_manager.js and INSTALL.md")
+        raise ValueError("Release source must include LICENSE, CutBridge.jsx, revision_manager.js, qc_plus.js and INSTALL.md")
     blender_name = f"CutBridge-Blender-{tag}.zip"
     ae_name = f"CutBridge-AfterEffects-{tag}.zip"
     output_dir = output_dir.resolve()
