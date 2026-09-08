@@ -94,6 +94,23 @@ var CutBridgeContract = (function () {
     function isFiniteNumber(value) { return typeof value === "number" && isFinite(value); }
     function isInteger(value) { return isFiniteNumber(value) && Math.floor(value) === value && Math.abs(value) <= 9007199254740991; }
 
+    function safePackageToken(value, fallback) {
+        var token = String(value || "").replace(/^\s+|\s+$/g, "");
+        token = token.replace(/[<>:"\/\\|?*]+/g, "_");
+        token = token.replace(/\s+/g, "_");
+        return token || fallback;
+    }
+    function expectedPackageName(manifest) {
+        return [
+            safePackageToken(manifest.project, "PROJECT"),
+            safePackageToken(manifest.episode, "EP00"),
+            safePackageToken(manifest.scene, "SC000"),
+            safePackageToken(manifest.cut, "C000"),
+            safePackageToken(manifest.take, "T01"),
+            "V" + zeroPad(manifest.version, 3)
+        ].join("_");
+    }
+
     function validateFrames(frames) {
         if (!frames || !isInteger(frames.start) || !isInteger(frames.end) || !isInteger(frames.count)) {
             return "Manifest frames.start/end/count must be finite, exactly representable integers.";
@@ -202,8 +219,21 @@ var CutBridgeContract = (function () {
         if (manifest.schema !== SCHEMA) errors.push("Unsupported manifest schema: " + String(manifest.schema));
         if (manifest.schema_version !== SCHEMA_VERSION) errors.push("Unsupported manifest schema_version " + String(manifest.schema_version) + "; CutBridge AE supports " + String(SCHEMA_VERSION) + ".");
         var strings = ["cutbridge_version", "project", "episode", "scene", "cut", "take"];
-        for (var n = 0; n < strings.length; n++) if (typeof manifest[strings[n]] !== "string") errors.push("Manifest " + strings[n] + " must be a string.");
-        if (!isInteger(manifest.version) || manifest.version < 1) errors.push("Manifest version must be a positive integer.");
+        var identityFieldsValid = true;
+        for (var n = 0; n < strings.length; n++) {
+            if (typeof manifest[strings[n]] !== "string") {
+                errors.push("Manifest " + strings[n] + " must be a string.");
+                if (strings[n] !== "cutbridge_version") identityFieldsValid = false;
+            }
+        }
+        var versionValid = isInteger(manifest.version) && manifest.version >= 1;
+        if (!versionValid) errors.push("Manifest version must be a positive integer.");
+        if (manifest.package_name !== undefined) {
+            if (typeof manifest.package_name !== "string") errors.push("Manifest package_name must be a string when provided.");
+            else if (identityFieldsValid && versionValid && manifest.package_name !== expectedPackageName(manifest)) {
+                errors.push("Manifest package_name does not match Project/Episode/Scene/Cut/Take/version identity.");
+            }
+        }
         var frameError = validateFrames(manifest.frames); if (frameError) errors.push(frameError);
         if (!isFiniteNumber(manifest.fps) || manifest.fps <= 0) errors.push("Manifest FPS must be a finite number greater than zero.");
         var r = manifest.resolution;
