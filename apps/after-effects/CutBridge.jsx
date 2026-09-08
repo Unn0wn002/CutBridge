@@ -968,12 +968,16 @@ if (typeof module !== "undefined" && module.exports) {
                 state.comp = liveComp;
                 var expected = CutBridgeContract.expectedCompSpec(m), mismatches = CutBridgeContract.compSpecErrors(expected, {width: liveComp.width, height: liveComp.height, pixelAspect: liveComp.pixelAspect, duration: liveComp.duration, frameRate: liveComp.frameRate});
                 if (!mismatches.length) ok("Managed comp metadata matches manifest"); else bad("Managed comp metadata mismatch: " + mismatches.join(", "));
-                var staleManagedLayerCount = 0;
-                for (var li = 1; li <= liveComp.numLayers; li++) {
-                    var qcLayerComment = itemComment(liveComp.layer(li));
-                    if (isAnyManagedTag(qcLayerComment) && !isManagedLayerTagForManifest(qcLayerComment, m)) staleManagedLayerCount++;
+                if (typeof liveComp.layer !== "function") {
+                    bad("Managed comp layers cannot be inspected in this After Effects host; QC cannot verify managed-layer ownership.");
+                } else {
+                    var staleManagedLayerCount = 0;
+                    for (var li = 1; li <= liveComp.numLayers; li++) {
+                        var qcLayerComment = itemComment(liveComp.layer(li));
+                        if (isAnyManagedTag(qcLayerComment) && !isManagedLayerTagForManifest(qcLayerComment, m)) staleManagedLayerCount++;
+                    }
+                    if (staleManagedLayerCount) bad("Managed comp contains " + staleManagedLayerCount + " stale or foreign CutBridge-managed layer tag(s); restore or remove the stale managed-layer ownership before QC can pass.");
                 }
-                if (staleManagedLayerCount) bad("Managed comp contains " + staleManagedLayerCount + " stale or foreign CutBridge-managed layer tag(s); restore or remove the stale managed-layer ownership before QC can pass.");
             }
         } else state.comp = null;
         var headline = errors === 0 ? (warnings === 0 ? "PASS" : ("PASS with " + warnings + " warning(s)")) : (errors + " error(s), " + warnings + " warning(s)"); alert("CutBridge QC — " + headline + "\n\n" + lines.join("\n"));
