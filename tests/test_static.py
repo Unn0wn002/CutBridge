@@ -120,6 +120,7 @@ def test_shared_and_update_schemas_parse():
     assert update_schema["title"] == "CutBridge Release Index"
     assert example["schema_version"] == 1
     Draft202012Validator.check_schema(shared)
+    Draft202012Validator.check_schema(update_schema)
     Draft202012Validator(update_schema).validate(example)
 
 
