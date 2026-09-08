@@ -41,6 +41,25 @@ Do not label a Blender/OS combination as *certified* until the required real ins
 
 The current ExtendScript/ScriptUI implementation targets After Effects 2024–2026. This is a project target, not a certification claim.
 
-S4 automated coverage validates the manifest/schema contract, frame semantics, required/optional passes, exact sequence coverage, path containment, Unicode filename handling in contract/host mocks, legacy data-only JSON parsing, and AE product-version synchronization. These tests run through Node and mocked host adapters; they do **not** certify native After Effects APIs, ScriptUI behavior, filesystem semantics, sequence interpretation, or composition behavior on a supported desktop installation.
+Automated coverage currently includes:
 
-Real AE GUI import/comp/QC and Blender→AE end-to-end execution remain manual validation gates until actual evidence is recorded.
+- **S4 contract coverage:** manifest/schema validation, frame semantics, required/optional passes, exact sequence coverage, path containment, Unicode filename handling in contract/host mocks, legacy data-only JSON parsing, and AE product-version synchronization.
+- **S5 reliability coverage:** deterministic managed comp/footage/layer ownership, repeated build and script-reload behavior, collision/drift rejection, cache rediscovery, managed-source/FPS validation, QC failure reporting, optional-pass behavior, and rollback of newly created managed objects.
+- **S6 revision coverage:** compatibility classification, opaque revision tickets, live ownership revalidation, stage-all/validate-all replacement import, native-adapter `AVLayer.replaceSource(..., false)` usage, source-swap rollback, V001→V002→V003 host-shaped lifecycle checks, historical-footage provenance, package-root note preservation, Build/QC after revision and reload, and fail-closed handling of missing/duplicate deterministic package structure.
+
+These tests run through Node, Python, contract helpers, and host-shaped/mocked adapters. They establish regression behavior and guard the intended native adapter code paths, but they do **not** certify a real After Effects desktop host, ScriptUI behavior, Undo semantics, save/reopen persistence, filesystem/sequence interpretation on a specific OS, or preservation of real artist properties in a supported AE installation.
+
+### Native After Effects validation required before stable claims
+
+Before a stable/release-ready compatibility claim for After Effects, record real desktop evidence for the intended AE version/OS combination, including:
+
+1. load/import a real CutBridge package;
+2. Build Comp and Run QC;
+3. perform V001→V002→V003 source-only revision updates using the shipped `CutBridge.jsx` + `revision_manager.js` pair;
+4. verify effects, masks, transforms, parenting, timing, layer order, artist-added layers, and unrelated project objects are preserved;
+5. save, close, reopen, reload CutBridge, and repeat Build/QC;
+6. verify warning/confirmation and incompatible-revision blocking behavior;
+7. verify missing/duplicate managed package structure fails closed without project mutation; and
+8. complete a real Blender → package → After Effects end-to-end smoke test.
+
+Until that evidence exists, After Effects 2024–2026 remains a **target range / unverified desktop-host matrix**, not a certified compatibility claim.
