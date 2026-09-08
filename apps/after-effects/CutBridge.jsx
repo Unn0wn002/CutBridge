@@ -887,10 +887,42 @@ if (typeof module !== "undefined" && module.exports) {
         if (errors.length) throw new Error("Candidate manifest contract rejected:\n- " + errors.join("\n- "));
         return {file: file, manifest: candidate, root: file.parent};
     }
+    // S6 JSX-native pass-set guard: intentionally independent of revision_manager.js host binding.
+    // This executes inside CutBridge.jsx before the revision confirmation UI can be reached.
+    function directRevisionPassSetErrors(current, candidate) {
+        var reasons = [], currentNames = {}, candidateNames = {}, i, p, key;
+        if (!current || !candidate || !current.passes || !candidate.passes) {
+            return ["Revision pass-set guard could not inspect the current/candidate manifests."];
+        }
+        for (i = 0; i < current.passes.length; i++) {
+            p = current.passes[i];
+            if (!p || typeof p.name !== "string") return ["Revision pass-set guard found an invalid current pass."];
+            currentNames["$" + p.name] = p;
+        }
+        for (i = 0; i < candidate.passes.length; i++) {
+            p = candidate.passes[i];
+            if (!p || typeof p.name !== "string") return ["Revision pass-set guard found an invalid candidate pass."];
+            candidateNames["$" + p.name] = p;
+        }
+        for (i = 0; i < current.passes.length; i++) {
+            p = current.passes[i]; key = "$" + p.name;
+            if (!candidateNames[key]) {
+                if (p.required !== false) reasons.push("Previously required pass missing: " + p.name);
+                else reasons.push("Removing an optional pass is unsupported by source-only revision: " + p.name + ". Rebuild or migrate the comp deliberately.");
+            }
+        }
+        for (i = 0; i < candidate.passes.length; i++) {
+            p = candidate.passes[i]; key = "$" + p.name;
+            if (!currentNames[key]) reasons.push("Adding passes is unsupported by source-only revision: " + p.name);
+        }
+        return reasons;
+    }
     function updateRevision() {
         if (!ensureManifestLoaded()) return;
         try {
             var selected = chooseRevisionPackage(); if (!selected) return;
+            var passSetReasons = directRevisionPassSetErrors(state.manifest, selected.manifest);
+            if (passSetReasons.length) { alertError("Revision blocked:\n- " + passSetReasons.join("\n- ")); return; }
             var manager = getRevisionManager(), assessment = manager.assess(state.manifest, selected.manifest);
             if (assessment.status === "incompatible") { alertError("Revision blocked:\n- " + assessment.reasons.join("\n- ")); return; }
             var adapter = makeRevisionAdapter(state.manifest, selected.manifest, selected.root), executor = manager.createExecutor(adapter), ticket = executor.prepare(state.manifest, selected.manifest);
