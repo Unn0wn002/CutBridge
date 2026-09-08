@@ -101,7 +101,7 @@
             p = current.passes[i];
             if (!own(next, "$" + p.name)) {
                 if (p.required !== false) errors.push("Previously required pass missing: " + p.name);
-                else warnings.push("Removed optional pass will be retained unchanged: " + p.name);
+                else errors.push("Removing an optional pass is unsupported by source-only revision: " + p.name + ". Rebuild or migrate the comp deliberately.");
             } else if ((p.required !== false) !== (next["$" + p.name].required !== false)) {
                 warnings.push("Required/optional status changed: " + p.name);
             }
