@@ -5,6 +5,8 @@ All notable CutBridge changes are tracked here.
 ## [0.2.3] - Unreleased
 
 ### Fixed
+- Release publication now fails closed unless the triggering tag points to the current `main` HEAD and `release-authorization.json` explicitly approves the exact tag/channel/prerelease combination; matching version constants or green CI alone no longer authorize publication.
+- Release tag parsing now distinguishes stable `vX.Y.Z`, beta validation `vX.Y.Z-rc.N` / `vX.Y.Z-beta.N`, and development `vX.Y.Z-dev.N`; prerelease metadata and GitHub prerelease status are derived from the tag instead of every build being labeled stable.
 - S6 revision repair now includes a native AE adapter, explicit panel confirmation/update flow, persistent package-root and managed-tag migration inside the rollback boundary, and deterministic shipping of the revision sidecar. Native AE GUI execution and independent review remain release gates.
 - S5 ownership/cache repair resolves footage and layers from live project state on every reuse, rejects tag/container drift and ambiguous duplicate identities without reclaiming artist objects, and applies the same live footage checks in QC.
 - S5 follow-up hardening resolves managed comps from live package-scoped ownership, rejects duplicate/moved comp tags before replacement, keeps QC live after script reload, excludes skipped optional layers from current-build ordering, and makes manifest membership safe for prototype-key names.
@@ -22,6 +24,7 @@ All notable CutBridge changes are tracked here.
 - Generated `cutbridge.json` files now read `cutbridge_version` from the canonical Blender extension version instead of emitting the stale `0.1.0` literal.
 
 ### Added
+- Release authorization/channel regressions cover unapproved publication, wrong branch/SHA, tag/channel/prerelease mismatches, supported prerelease tag forms, and deterministic stable/RC/development package metadata.
 - S5 deterministic managed-object tags and Node/pytest host-adapter regressions for repeated-build/reload idempotency, manual comp collision safety, comp metadata drift, layer order, and preflight no-mutation behavior.
 - S2 Blender render-output mapping for logical BEAUTY / LINE / SHADOW / DEPTH passes using CutBridge-owned compositor nodes and deterministic package-relative output locations.
 - S2 renderer/View Layer capability validation and Blender 5.2.1 regressions for mapping behavior without deleting unrelated artist nodes.
