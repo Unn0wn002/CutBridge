@@ -400,3 +400,72 @@
     return {assess: assess, identity: identity, ownershipKey: ownershipKey, revisionNumber: revisionNumber,
         discover: discover, selectLatest: selectLatest, createExecutor: createExecutor};
 }));
+
+/*
+ * Real After Effects host defense-in-depth.
+ *
+ * Native S6 validation found that a separately evaluated ExtendScript manager could
+ * reach the UI confirmation path even though the core compatibility rule already
+ * rejects pass additions/removals. Keep the core rule above, and independently
+ * re-check the pass-set at the exported AE-host boundary before CutBridge.jsx can
+ * consume assess(). This does not run in CommonJS/Node, so the portable core API
+ * and its tests remain unchanged.
+ */
+(function (root) {
+    if (typeof module !== "undefined" && module.exports) return;
+    if (!root || !root.CutBridgeRevisionManager ||
+        typeof root.CutBridgeRevisionManager.assess !== "function") return;
+
+    var manager = root.CutBridgeRevisionManager;
+    var coreAssess = manager.assess;
+
+    function hasPass(manifest, name) {
+        if (!manifest || !manifest.passes || typeof manifest.passes.length !== "number") return false;
+        for (var i = 0; i < manifest.passes.length; i++) {
+            if (manifest.passes[i] && manifest.passes[i].name === name) return true;
+        }
+        return false;
+    }
+
+    function hostPassSetErrors(current, candidate) {
+        var errors = [], i, p;
+        if (!current || !candidate || !current.passes || !candidate.passes) return errors;
+
+        for (i = 0; i < current.passes.length; i++) {
+            p = current.passes[i];
+            if (!p || typeof p.name !== "string") continue;
+            if (!hasPass(candidate, p.name)) {
+                if (p.required !== false) errors.push("Previously required pass missing: " + p.name);
+                else errors.push("Removing an optional pass is unsupported by source-only revision: " + p.name + ". Rebuild or migrate the comp deliberately.");
+            }
+        }
+        for (i = 0; i < candidate.passes.length; i++) {
+            p = candidate.passes[i];
+            if (!p || typeof p.name !== "string") continue;
+            if (!hasPass(current, p.name)) {
+                errors.push("Adding passes is unsupported by source-only revision: " + p.name);
+            }
+        }
+        return errors;
+    }
+
+    manager.assess = function (current, candidate) {
+        var result = coreAssess(current, candidate);
+        var hostErrors = hostPassSetErrors(current, candidate);
+        if (!hostErrors.length) return result;
+
+        var reasons = result && result.reasons && typeof result.reasons.slice === "function" ? result.reasons.slice(0) : [];
+        for (var i = 0; i < hostErrors.length; i++) {
+            var duplicate = false;
+            for (var j = 0; j < reasons.length; j++) if (reasons[j] === hostErrors[i]) { duplicate = true; break; }
+            if (!duplicate) reasons.push(hostErrors[i]);
+        }
+        return {
+            status: "incompatible",
+            reasons: reasons,
+            warnings: result && result.warnings && typeof result.warnings.slice === "function" ? result.warnings.slice(0) : []
+        };
+    };
+
+    root.CutBridgeRevisionManager = manager;
+}(typeof $ !== "undefined" && $.global ? $.global : this));
