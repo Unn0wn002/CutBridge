@@ -171,7 +171,8 @@ test("live host ownership rejects forged records, tag/type/container/source and 
     for (const mutate of [
         f => f.layers[0].tag = "artist", f => f.layers[0].type = "TextLayer",
         f => f.layers[0].comp = {}, f => f.sources[0].folder = {},
-        f => f.sources[0].fps = 30, f => f.layers[0].metadata.cut = "OTHER",
+        f => f.sources[0].fps = 30,
+        f => { f.layers[0].metadata.cut = "OTHER"; f.layers[0].metadata.package_name = m(1, {cut: "OTHER"}).package_name; },
         f => f.layers[0].source = {},
         f => f.adapter.listManagedLayers = () => [{layer: f.artist, passName: "BEAUTY", managed: true, tag: "forged"}]
     ]) {
