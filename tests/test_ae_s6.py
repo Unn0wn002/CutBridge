@@ -101,3 +101,20 @@ def test_package_root_ownership_preflight_requires_unique_structure_before_mutat
     ownership_guard = source.index('taggedCompItems !== 1 || ownedCompItems !== 1')
     child_creation = source.index('return {root: root, comp: findChildFolder(root, "01_COMP")')
     assert folder_guard < ownership_guard < child_creation
+
+
+def test_jsx_native_pass_set_guard_blocks_before_manager_and_confirmation():
+    """The real-AE pass-set guard must execute in CutBridge.jsx before manager/UI confirmation."""
+    root = Path(__file__).resolve().parents[1]
+    source = (root / "apps/after-effects/CutBridge.jsx").read_text(encoding="utf-8")
+
+    assert "function directRevisionPassSetErrors(current, candidate)" in source
+    assert 'Previously required pass missing: " + p.name' in source
+    assert 'Removing an optional pass is unsupported by source-only revision: " + p.name' in source
+    assert 'Adding passes is unsupported by source-only revision: " + p.name' in source
+
+    update = source[source.index("function updateRevision()"):]
+    guard_call = update.index("directRevisionPassSetErrors(state.manifest, selected.manifest)")
+    manager_call = update.index("getRevisionManager()")
+    confirm_call = update.index("confirm(message)")
+    assert guard_call < manager_call < confirm_call
