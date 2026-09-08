@@ -26,6 +26,7 @@ class ReleaseHygieneTests(unittest.TestCase):
         self.builder.BLENDER_ROOT = self.root / "apps/blender/cutbridge"
         self.builder.AE_SCRIPT = self.root / "apps/after-effects/CutBridge.jsx"
         self.builder.AE_REVISION = self.root / "apps/after-effects/revision_manager.js"
+        self.builder.AE_QC_PLUS = self.root / "apps/after-effects/qc_plus.js"
         self.builder.AE_INSTALL = self.root / "apps/after-effects/INSTALL.md"
         self.output = Path(self.temp.name) / "dist"
 
@@ -80,6 +81,12 @@ class ReleaseHygieneTests(unittest.TestCase):
         source.write_text(source.read_text(encoding="utf-8").replace(
             'var PRODUCT_VERSION = "0.2.3";', 'var PRODUCT_VERSION = "0.2.2";'), encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "PRODUCT_VERSION"):
+            self.builder.build("v0.2.3", self.output)
+        self.assertFalse(self.output.exists())
+
+    def test_missing_qc_plus_sidecar_is_rejected_before_output(self):
+        self.builder.AE_QC_PLUS.unlink()
+        with self.assertRaisesRegex(ValueError, "qc_plus"):
             self.builder.build("v0.2.3", self.output)
         self.assertFalse(self.output.exists())
 
