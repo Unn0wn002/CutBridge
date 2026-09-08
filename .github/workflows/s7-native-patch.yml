@@ -46,7 +46,7 @@ jobs:
         run: |
           node tests/ae_s7_qc_plus_checks.cjs
           node tests/ae_s7_native_qc_binding_checks.cjs
-      - name: Commit only after all gates pass
+      - name: Commit native code only after all gates pass
         shell: bash
         run: |
           set -euo pipefail
@@ -56,6 +56,10 @@ jobs:
           fi
           git config user.name 'CutBridge CI'
           git config user.email 'actions@users.noreply.github.com'
-          git add apps/after-effects/CutBridge.jsx apps/after-effects/qc_plus.js tests .github/workflows/ci.yml
+          git add apps/after-effects/CutBridge.jsx apps/after-effects/qc_plus.js tests
+          if git diff --cached --quiet; then
+            echo 'Native code/tests are already persisted; CI workflow update remains connector-managed.'
+            exit 0
+          fi
           git commit -m 'S7: wire native After Effects QC+ diagnostics'
           git push origin HEAD:feature/session-7-qc-plus
