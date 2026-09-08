@@ -106,6 +106,14 @@ class ReleaseHygieneTests(unittest.TestCase):
         self.assertEqual(metadata["channel"], "development")
         self.assertIs(metadata["prerelease"], True)
 
+    def test_release_workflow_publishes_verification_assets(self):
+        workflow = (ROOT / ".github/workflows/release.yml").read_text(encoding="utf-8")
+        marker = "- name: Publish GitHub Release"
+        self.assertIn(marker, workflow)
+        publish_step = workflow.split(marker, 1)[1]
+        self.assertIn("dist/SHA256SUMS.txt", publish_step)
+        self.assertIn("dist/release-metadata.json", publish_step)
+
 
 if __name__ == "__main__":
     unittest.main()
