@@ -1,144 +1,115 @@
 # S7 QC+ Contract
 
-Status: implementation contract for `feature/session-7-qc-plus`.
+Status: **implementation in progress** on `feature/session-7-qc-plus`.
 
 Base: green S6 integration commit `5d309f51d75b357974d17c94090792d27dea6163`.
-Tracking issue: #33.
+Tracking issue: #33. Draft PR: #35.
 
 ## Objective
 
-S7 upgrades CutBridge QC from a flat human-readable check list into a deterministic diagnostic system that is more actionable for production artists and future localization, while preserving S5/S6 fail-closed ownership and revision behavior.
+S7 upgrades CutBridge QC from a flat human-readable checklist into a deterministic diagnostic system that is more actionable for production artists and future localization, while preserving S5/S6 fail-closed ownership and revision behavior.
 
 S7 must not silently repair, adopt, rename, retag, migrate, or guess ownership/source state.
 
+## Implemented foundation
+
+The first S7 implementation slice is committed and CI-tested:
+
+- `apps/after-effects/qc_plus.js` provides the pure, host-independent diagnostic engine.
+- Diagnostics use stable `CBQ-*` identifiers.
+- Every WARNING/ERROR requires remediation text.
+- Diagnostic output is deterministically sorted and rendered.
+- Sequence required/optional severity is implemented.
+- Comp-drift and revision compatibility records are implemented.
+- The diagnostic engine is explicitly non-mutating.
+- `tests/ae_s7_qc_plus_checks.cjs` and `tests/test_ae_s7.py` provide dedicated regressions.
+- Fast CI runs the S7 pytest wrapper, direct Node checks, and syntax validation.
+- The deterministic AE release package now requires and contains `qc_plus.js`.
+
+Native panel wiring into `CutBridge.jsx` is still in progress. Do not claim S7 native AE execution merely because the diagnostic engine and host-independent regressions pass.
+
 ## Diagnostic record
 
-Each QC finding should be representable by the following conceptual fields:
+Each finding uses:
 
 - `severity`: `PASS`, `WARNING`, or `ERROR`.
-- `code`: stable machine-testable identifier, e.g. `SEQ_MISSING_REQUIRED_FRAMES`.
-- `scope`: package, manifest, pass, sequence, revision, comp, footage, layer, or project.
-- `subject`: human-readable target such as pass name or comp name.
+- `code`: stable machine-testable identifier in the `CBQ-*` namespace.
+- `scope`: package, manifest, sequence, footage, layer, comp, revision, or host.
+- `subject`: optional human-readable target such as pass/revision name.
 - `message`: concise condition summary.
-- `remediation`: safe next action; mandatory for warnings and errors.
+- `detail`: optional deterministic supporting detail.
+- `remediation`: safe next action; mandatory for WARNING and ERROR.
 
 The initial UI may remain a text alert, but formatting and ordering must derive from deterministic records rather than ad-hoc concatenation.
 
 ## Severity policy
 
 ### PASS
-
 Use when an explicitly checked invariant is satisfied. PASS findings never imply native AE behavior that was not actually inspected.
 
 ### WARNING
-
 Use when the package/work can remain usable but intervention or awareness is required, including optional-pass absence, unexpected extra matching frames, and policy changes that require confirmation rather than automatic mutation.
 
 ### ERROR
-
 Use when CutBridge cannot safely trust or operate on the inspected state, including invalid manifests, missing required frames, incompatible comp geometry/timing, ambiguous managed ownership, stale/foreign managed tags, missing required managed objects, or unsupported revision structure.
 
-## Stable diagnostic categories
+## Stable diagnostic identifiers
 
-### Package / manifest
-
-- `MANIFEST_SCHEMA_OK`
-- `MANIFEST_CONTRACT_ERROR`
-- `PACKAGE_IDENTITY_OK`
-- `PACKAGE_VERSION_OK`
-- `PASS_DEFINITION_ERROR`
-- `LAYER_ORDER_ERROR`
-- `PATH_SAFETY_ERROR`
-- `PATTERN_SAFETY_ERROR`
+Implemented identifiers currently include:
 
 ### Sequence
+- `CBQ-SEQ-COMPLETE`
+- `CBQ-SEQ-REQUIRED-FOLDER-MISSING`
+- `CBQ-SEQ-OPTIONAL-FOLDER-MISSING`
+- `CBQ-SEQ-REQUIRED-FRAMES-MISSING`
+- `CBQ-SEQ-OPTIONAL-FRAMES-MISSING`
+- `CBQ-SEQ-UNEXPECTED-MATCHES`
 
-- `SEQ_COMPLETE`
-- `SEQ_FOLDER_MISSING_REQUIRED`
-- `SEQ_FOLDER_MISSING_OPTIONAL`
-- `SEQ_MISSING_REQUIRED_FRAMES`
-- `SEQ_MISSING_OPTIONAL_FRAMES`
-- `SEQ_UNEXPECTED_MATCHES`
-
-### Managed AE state
-
-- `ROOT_OWNERSHIP_AMBIGUOUS`
-- `MANAGED_FOLDER_MISSING`
-- `MANAGED_FOLDER_AMBIGUOUS`
-- `COMP_MISSING`
-- `COMP_OWNERSHIP_ERROR`
-- `COMP_SPEC_OK`
-- `COMP_SPEC_DRIFT`
-- `FOOTAGE_OK`
-- `FOOTAGE_MISSING_REQUIRED`
-- `FOOTAGE_MISSING_OPTIONAL`
-- `FOOTAGE_OWNERSHIP_ERROR`
-- `LAYER_OK`
-- `LAYER_MISSING_REQUIRED`
-- `LAYER_MISSING_OPTIONAL`
-- `LAYER_OWNERSHIP_ERROR`
-- `STALE_MANAGED_TAG`
+### Managed comp
+- `CBQ-COMP-SPEC-OK`
+- `CBQ-COMP-DRIFT-RESOLUTION`
+- `CBQ-COMP-DRIFT-PIXEL-ASPECT`
+- `CBQ-COMP-DRIFT-FRAME-RATE`
+- `CBQ-COMP-DRIFT-DURATION`
 
 ### Revision
+- `CBQ-REV-SAFE`
+- `CBQ-REV-POLICY-WARNING`
+- `CBQ-REV-INCOMPATIBLE`
+- `CBQ-REV-NOT-ASSESSED`
 
-- `REVISION_IDENTITY_OK`
-- `REVISION_NEWER_AVAILABLE`
-- `REVISION_INCOMPATIBLE`
-- `REVISION_POLICY_WARNING`
-
-Revision discovery must remain fail closed and must not scan/adopt ambiguous project state merely to produce a more attractive QC result.
+Additional host/ownership/package codes will be added as existing `runQC()` checks migrate into QC+ records. Existing identifiers must not be casually renamed once consumed by tests or future localization.
 
 ## Deterministic output order
 
-Recommended order:
-
-1. manifest/contract;
-2. package identity/version;
-3. global FPS/frame-count/resolution summary;
-4. passes in manifest order;
-5. sequence findings for each pass;
-6. managed footage/layer findings for each pass;
-7. managed comp/project findings;
-8. revision findings when safely available;
-9. summary counts.
-
-Repeated QC on unchanged state must produce the same ordered findings.
+The engine sorts by severity (`ERROR`, `WARNING`, `PASS`), stable scope rank, diagnostic code, subject, then message. Repeated QC on unchanged observations must produce the same rendered report regardless of insertion order.
 
 ## Remediation rules
 
-Warnings and errors must contain safe next actions. Examples:
-
-- missing required frames → re-render the missing frame range into the expected pass folder, then rerun QC;
-- optional pass missing → render or remove the optional pass deliberately in the source package; do not create placeholder footage;
-- comp spec drift → restore the intended FPS/duration/resolution/pixel aspect or rebuild/migrate deliberately; do not auto-resize artist work;
-- stale/foreign managed tag → inspect and deliberately restore/remove the stale managed object; CutBridge must not adopt it automatically;
-- ownership ambiguity → resolve duplicates manually before Build/Revision/QC continues;
-- incompatible revision → rebuild/migrate deliberately rather than source-only replacement.
-
-Remediation text must not claim an automatic fix exists unless such a fix is separately designed, tested, and explicitly invoked by the user.
+Warnings and errors must contain safe next actions. Missing required frames should direct the artist to restore/re-render frames and rerun QC. Optional-pass absence should remain optional. Comp drift must never auto-resize artist work. Stale/foreign tags and ambiguous ownership must require deliberate manual resolution. Incompatible revisions must use rebuild/migration rather than source-only replacement.
 
 ## Regression requirements
 
-S7 tests must cover at minimum:
-
-- stable severity/code formatting;
-- deterministic ordering;
-- required vs optional sequence severity;
-- missing-frame remediation;
-- unexpected-match warning;
-- comp FPS/duration/resolution/pixel-aspect drift diagnostics;
-- stale/foreign managed-layer diagnostics;
-- missing required footage/layer diagnostics;
-- ownership ambiguity remains fail closed;
-- revision incompatibility/warning classification does not bypass S6 gates;
-- no automatic mutation from QC;
-- existing S5/S6 tests remain green.
+- [x] stable severity/code formatting.
+- [x] deterministic ordering.
+- [x] required vs optional sequence severity.
+- [x] missing-frame remediation.
+- [x] unexpected-match warning.
+- [x] comp FPS/duration/resolution/pixel-aspect diagnostic generation.
+- [x] revision incompatibility/warning classification without bypassing S6 policy.
+- [x] no automatic mutation from QC engine.
+- [x] existing S5/S6 complete suite remains green after the first implementation slice.
+- [ ] stale/foreign managed-layer diagnostics wired from real inspectable AE state.
+- [ ] missing required footage/layer diagnostics wired from real inspectable AE state.
+- [ ] ownership ambiguity mapped to stable QC+ records while remaining fail closed.
+- [ ] native `CutBridge.jsx` QC output rendered from QC+ records.
+- [ ] release/install boundary revalidated after native panel wiring.
 
 ## Native-host boundary
 
-Headless/Node tests may validate formatting, classification, ordering, and host-shaped adapter logic. They are not evidence that After Effects GUI behavior executed successfully.
+Headless/Node tests may validate formatting, classification, ordering, packaging, and host-shaped adapter logic. They are not evidence that After Effects GUI behavior executed successfully.
 
-Any native AE S7 claim must be recorded separately with exact source/package identity and real After Effects evidence.
+Any native AE S7 claim must be recorded separately with exact source/package identity and real After Effects evidence when native host behavior materially changes.
 
 ## Merge gate
 
@@ -148,6 +119,7 @@ Before S7 merges:
 2. existing S5/S6 tests pass;
 3. release authorization remains fail closed;
 4. authoritative CI is green;
-5. solo-maintainer adversarial review finds no unresolved merge blocker;
-6. if native AE behavior materially changes, execute and record the relevant real-host validation;
-7. merge to `develop` and require green post-merge CI before S8 begins.
+5. native `CutBridge.jsx` uses the QC+ engine for the S7 diagnostic path;
+6. solo-maintainer adversarial review finds no unresolved merge blocker;
+7. if native AE behavior materially changes, execute and record the relevant real-host validation;
+8. merge to `develop` and require green post-merge CI before S8 begins.
