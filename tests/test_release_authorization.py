@@ -15,6 +15,11 @@ from build_release import parse_release_tag  # noqa: E402
 from validate_release_authorization import validate_authorization  # noqa: E402
 
 
+def _workflow_uses_are_pinned(workflow: str) -> bool:
+    uses = re.findall(r"^\s*- uses: ([^\s#]+)", workflow, flags=re.MULTILINE)
+    return bool(uses) and all(re.fullmatch(r"[^@\s]+@[0-9a-f]{40}", item) for item in uses)
+
+
 def test_release_tag_channels_are_explicit():
     stable = parse_release_tag("v0.2.3")
     assert stable == {
@@ -124,10 +129,17 @@ def test_release_workflow_separates_read_only_packaging_from_write_publication()
 
 def test_release_workflow_pins_actions_and_does_not_persist_git_credentials():
     workflow = (ROOT / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
-    uses = re.findall(r"^\s*- uses: ([^\s#]+)", workflow, flags=re.MULTILINE)
 
-    assert uses
-    assert all(re.fullmatch(r"[^@\s]+@[0-9a-f]{40}", item) for item in uses)
-    assert not any(re.search(r"@v\d", item) for item in uses)
+    assert _workflow_uses_are_pinned(workflow)
+    assert "@v4" not in workflow and "@v5" not in workflow and "@v2" not in workflow
     assert workflow.count("persist-credentials: false") == 2
     assert "concurrency:\n  group: release-${{ github.ref }}\n  cancel-in-progress: false" in workflow
+
+
+def test_ci_workflow_is_read_only_and_pins_actions():
+    workflow = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
+
+    assert "permissions:\n  contents: read" in workflow
+    assert _workflow_uses_are_pinned(workflow)
+    assert "@v4" not in workflow and "@v5" not in workflow
+    assert workflow.count("persist-credentials: false") == 2
