@@ -15,6 +15,7 @@ Before tagging a CutBridge release:
 - [ ] In a real After Effects desktop host, perform V001 → V002 → V003 on a representative package and verify only CutBridge-managed sources/metadata change.
 - [ ] During the real revision test, verify effects, masks, transforms, parenting, timing, layer order, artist-added layers, unrelated footage/comps/folders, and artist/studio package-root notes are preserved.
 - [ ] Save the revised AE project, close/reopen it, reload CutBridge, then run Build Comp and QC again; record the result.
+- [ ] In a disposable real-AE copy, delete and separately de-tag a required managed layer while its managed footage and comp remain valid; QC must fail closed on managed-layer ownership/source instead of reporting PASS. Also verify an unambiguous complete optional managed layer can be absent with a warning, and an unavailable optional source sequence remains warning/skip only.
 - [ ] Exercise at least one supported required/optional **status** change and confirm the explicit warning/confirmation path.
 - [ ] Exercise at least one incompatible geometry/timing revision (for example FPS/frame-range/pixel-aspect/resolution drift) and confirm fail-closed behavior.
 - [ ] Exercise candidate removal of an optional pass and confirm source-only revision blocks **before** confirmation, import, `replaceSource()`, or package/tag migration; verify the original package remains coherent for reload, Build and QC. Added-pass and required-pass-removal cases must also remain fail-closed.
