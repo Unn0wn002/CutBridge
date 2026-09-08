@@ -191,6 +191,91 @@
         return out;
     }
 
+    function managedObjectRecords(kind, passInfo, observation) {
+        kind = clean(kind).toLowerCase();
+        if (kind !== "footage" && kind !== "layer") throw new Error("Managed QC kind must be footage or layer.");
+        observation = observation || {};
+        var status = clean(observation.status).toLowerCase();
+        var optional = passInfo && passInfo.required === false;
+        var name = passInfo && passInfo.name ? String(passInfo.name) : "UNKNOWN";
+        var prefix = kind === "footage" ? "CBQ-FOOTAGE-" : "CBQ-LAYER-";
+        var label = kind === "footage" ? "managed footage" : "managed layer";
+        if (status === "ok") {
+            return [diagnostic({
+                severity: SEVERITY.PASS,
+                code: prefix + "OK",
+                scope: kind,
+                subject: name,
+                message: label.charAt(0).toUpperCase() + label.slice(1) + " ownership/source matches the manifest."
+            })];
+        }
+        if (status === "missing") {
+            return [diagnostic({
+                severity: optional ? SEVERITY.WARNING : SEVERITY.ERROR,
+                code: prefix + (optional ? "OPTIONAL-MISSING" : "REQUIRED-MISSING"),
+                scope: kind,
+                subject: name,
+                message: (optional ? "Optional " : "Required ") + label + " is missing.",
+                remediation: optional ?
+                    "Rebuild this optional pass only if the shot needs it; CutBridge will not synthesize or adopt a replacement automatically." :
+                    "Restore/rebuild the required managed object from the trusted package, then run QC again."
+            })];
+        }
+        if (status === "ownership_error") {
+            return [diagnostic({
+                severity: SEVERITY.ERROR,
+                code: prefix + "OWNERSHIP-ERROR",
+                scope: kind,
+                subject: name,
+                message: observation.message || (label.charAt(0).toUpperCase() + label.slice(1) + " ownership cannot be verified."),
+                remediation: "Preserve artist work and deliberately resolve the tag/source/container conflict. CutBridge will not adopt, retag, or replace the ambiguous object automatically."
+            })];
+        }
+        throw new Error("Unsupported managed QC observation status: " + status);
+    }
+
+    function hostRecords(observation) {
+        observation = observation || {};
+        var out = [];
+        if (observation.inspectable === false) {
+            out.push(diagnostic({
+                severity: SEVERITY.ERROR,
+                code: "CBQ-HOST-STATE-UNINSPECTABLE",
+                scope: "host",
+                message: "After Effects project state required by QC cannot be inspected safely.",
+                remediation: "Use a supported After Effects host/project state and retry QC; CutBridge will not guess ownership when inspection APIs are unavailable."
+            }));
+        }
+        var stale = Number(observation.staleManagedTags || 0);
+        if (stale > 0) {
+            out.push(diagnostic({
+                severity: SEVERITY.ERROR,
+                code: "CBQ-HOST-STALE-MANAGED-TAG",
+                scope: "host",
+                message: stale + " stale or foreign CutBridge-managed tag(s) were found.",
+                remediation: "Inspect the tagged objects and deliberately restore or remove stale ownership. CutBridge will not reclaim those objects automatically."
+            }));
+        }
+        if (observation.ownershipAmbiguous === true) {
+            out.push(diagnostic({
+                severity: SEVERITY.ERROR,
+                code: "CBQ-HOST-OWNERSHIP-AMBIGUOUS",
+                scope: "host",
+                message: observation.message || "Managed ownership is ambiguous.",
+                remediation: "Resolve duplicate/conflicting managed objects manually before Build, Revision, or QC continues."
+            }));
+        }
+        if (!out.length) {
+            out.push(diagnostic({
+                severity: SEVERITY.PASS,
+                code: "CBQ-HOST-OWNERSHIP-OK",
+                scope: "host",
+                message: "Inspectable managed ownership has no stale or ambiguous host-state finding."
+            }));
+        }
+        return out;
+    }
+
     function revisionRecords(assessment, subject) {
         var out = [], i;
         if (!assessment || !assessment.status) {
@@ -238,6 +323,8 @@
         render: render,
         sequenceRecords: sequenceRecords,
         compRecords: compRecords,
+        managedObjectRecords: managedObjectRecords,
+        hostRecords: hostRecords,
         revisionRecords: revisionRecords
     };
 }));
