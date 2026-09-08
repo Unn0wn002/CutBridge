@@ -184,7 +184,7 @@
                 severity: SEVERITY.ERROR,
                 code: "CBQ-COMP-DRIFT-" + token,
                 scope: "comp",
-                message: "Managed comp " + mismatches[i] + " differs from the manifest.",
+                message: "Managed comp metadata mismatch: " + mismatches[i] + ".",
                 remediation: "Restore the intended managed-comp metadata or deliberately rebuild/migrate the package; QC will not rewrite comp settings automatically."
             }));
         }
@@ -215,7 +215,7 @@
                 code: prefix + (optional ? "OPTIONAL-MISSING" : "REQUIRED-MISSING"),
                 scope: kind,
                 subject: name,
-                message: (optional ? "Optional " : "Required ") + label + " is missing.",
+                message: (optional ? "optional " : "required ") + label + " is missing.",
                 remediation: optional ?
                     "Rebuild this optional pass only if the shot needs it; CutBridge will not synthesize or adopt a replacement automatically." :
                     "Restore/rebuild the required managed object from the trusted package, then run QC again."

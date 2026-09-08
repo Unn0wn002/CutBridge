@@ -5,6 +5,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const root = path.resolve(__dirname, '..');
 const source = fs.readFileSync(path.join(root, 'apps/after-effects/CutBridge.jsx'), 'utf8');
+const QCPlus = require(path.join(root, 'apps/after-effects/qc_plus.js'));
 const version = fs.readFileSync(path.join(root, 'apps/blender/cutbridge/blender_manifest.toml'), 'utf8').match(/^version = "([^"]+)"/m)[1];
 function contractContext(legacy = false) {
     const context = {module: {exports: {}}};
@@ -159,7 +160,7 @@ function host(m, files, aliases = []) {
         addComp(...args) { const comp = new CompItem(...args); comps.push(comp); project.numItems++; return comp; }
     }, importFile(io) { imports.push(io); const item = new FootageItem(io.file); footageItems.push(item); project.numItems++; return item; }};
     const runtime = {File, Folder, Window, Panel: function() {}, FolderItem, FootageItem, CompItem,
-        ImportOptions: function(file) {this.file = file;}, ImportAsType: {FOOTAGE: 1}, ScriptUI: {newFont() {}},
+        ImportOptions: function(file) {this.file = file;}, ImportAsType: {FOOTAGE: 1}, ScriptUI: {newFont() {}}, CutBridgeQCPlus: QCPlus,
         alert: message => alerts.push(message), $: {writeln() {}},
         app: {project, beginUndoGroup() {}, endUndoGroup() {}}};
     vm.createContext(runtime); vm.runInContext(source, runtime);

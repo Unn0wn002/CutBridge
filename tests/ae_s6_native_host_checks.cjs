@@ -12,6 +12,7 @@ const vm = require("node:vm");
 const root = path.resolve(__dirname, "..");
 const source = fs.readFileSync(path.join(root, "apps/after-effects/CutBridge.jsx"), "utf8");
 const Revision = require(path.join(root, "apps/after-effects/revision_manager.js"));
+const QCPlus = require(path.join(root, "apps/after-effects/qc_plus.js"));
 const Contract = require(path.join(root, "apps/after-effects/CutBridge.jsx"));
 
 function manifest(version) {
@@ -138,7 +139,7 @@ function makeHost() {
 
     const runtime = {
         File, Folder, Window, Panel, FolderItem, FootageItem, CompItem, AVLayer, ImportOptions,
-        ImportAsType: {FOOTAGE: 1}, ScriptUI: {newFont() {}}, CutBridgeRevisionManager: Revision,
+        ImportAsType: {FOOTAGE: 1}, ScriptUI: {newFont() {}}, CutBridgeRevisionManager: Revision, CutBridgeQCPlus: QCPlus,
         alert: message => alerts.push(String(message)),
         confirm: message => { confirms.push(String(message)); return true; },
         $: {writeln() {}},

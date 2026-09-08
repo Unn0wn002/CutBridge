@@ -6,6 +6,7 @@ const vm = require('node:vm');
 
 const root = path.resolve(__dirname, '..');
 const source = fs.readFileSync(path.join(root, 'apps/after-effects/CutBridge.jsx'), 'utf8');
+const QCPlus = require(path.join(root, 'apps/after-effects/qc_plus.js'));
 const version = fs.readFileSync(path.join(root, 'apps/blender/cutbridge/blender_manifest.toml'), 'utf8').match(/^version = "([^"]+)"/m)[1];
 
 function manifest() {
@@ -110,7 +111,7 @@ function host(m, files, options = {}) {
   function ImportOptions(file) { this.file = file; this.sequence = false; this.forceAlphabetical = true; }
   ImportOptions.prototype.canImportAs = () => true;
   const runtime = {File, Folder, Window, Panel, FolderItem, FootageItem, CompItem, AVLayer: Layer, ImportOptions, ImportAsType: {FOOTAGE: 1},
-    ScriptUI: {newFont() {}}, alert: message => alerts.push(String(message)), $: {writeln() {}},
+    ScriptUI: {newFont() {}}, CutBridgeQCPlus: QCPlus, alert: message => alerts.push(String(message)), $: {writeln() {}},
     app: {project, beginUndoGroup() {}, endUndoGroup() {}, newProject() {}}};
   vm.createContext(runtime); vm.runInContext(source, runtime);
 
