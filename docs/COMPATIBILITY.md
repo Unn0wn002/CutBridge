@@ -45,7 +45,7 @@ Automated coverage currently includes:
 
 - **S4 contract coverage:** manifest/schema validation, frame semantics, required/optional passes, exact sequence coverage, path containment, Unicode filename handling in contract/host mocks, legacy data-only JSON parsing, and AE product-version synchronization.
 - **S5 reliability coverage:** deterministic managed comp/footage/layer ownership, repeated build and script-reload behavior, collision/drift rejection, cache rediscovery, managed-source/FPS validation, QC failure reporting, optional-pass behavior, and rollback of newly created managed objects.
-- **S6 revision coverage:** compatibility classification, opaque revision tickets, live ownership revalidation, stage-all/validate-all replacement import, native-adapter `AVLayer.replaceSource(..., false)` usage, source-swap rollback, V001→V002→V003 host-shaped lifecycle checks, historical-footage provenance, package-root note preservation, Build/QC after revision and reload, fail-closed handling of missing/duplicate deterministic package structure, and #26 coverage proving pass-set additions/removals—including optional-pass removal—are rejected before confirmation or mutation while required/optional status changes on retained passes use the warning/confirmation path.
+- **S6 revision/QC coverage:** compatibility classification, opaque revision tickets, live ownership revalidation, stage-all/validate-all replacement import, native-adapter `AVLayer.replaceSource(..., false)` usage, source-swap rollback, V001→V002→V003 host-shaped lifecycle checks, historical-footage provenance, package-root note preservation, Build/QC after revision and reload, fail-closed handling of missing/duplicate deterministic package structure, #26 pass-set rejection semantics, and #27 current managed-layer QC verification. #27 proves QC does not clean-PASS when a required managed layer is deleted or de-tagged while footage/comp remain valid; complete optional-layer absence warns when ownership is unambiguous, while unavailable optional source sequences retain warning/skip behavior.
 
 These tests run through Node, Python, contract helpers, and host-shaped/mocked adapters. They establish regression behavior and guard the intended native adapter code paths, but they do **not** certify a real After Effects desktop host, ScriptUI behavior, Undo semantics, save/reopen persistence, filesystem/sequence interpretation on a specific OS, or preservation of real artist properties in a supported AE installation.
 
@@ -59,7 +59,8 @@ Before a stable/release-ready compatibility claim for After Effects, record real
 4. verify effects, masks, transforms, parenting, timing, layer order, artist-added layers, and unrelated project objects are preserved;
 5. save, close, reopen, reload CutBridge, and repeat Build/QC;
 6. verify a retained-pass required/optional status change follows the warning/confirmation path, and verify pass-set addition/removal plus geometry/timing drift block before mutation;
-7. verify missing/duplicate managed package structure fails closed without project mutation; and
-8. complete a real Blender → package → After Effects end-to-end smoke test.
+7. in a disposable managed comp, delete/de-tag a required managed layer while leaving its footage and comp valid and confirm QC fails closed; also verify unambiguous complete optional-layer absence warns rather than hard-fails;
+8. verify missing/duplicate managed package structure fails closed without project mutation; and
+9. complete a real Blender → package → After Effects end-to-end smoke test.
 
 Until that evidence exists, After Effects 2024–2026 remains a **target range / unverified desktop-host matrix**, not a certified compatibility claim.
