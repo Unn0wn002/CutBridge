@@ -15,7 +15,9 @@ Before tagging a CutBridge release:
 - [ ] In a real After Effects desktop host, perform V001 → V002 → V003 on a representative package and verify only CutBridge-managed sources/metadata change.
 - [ ] During the real revision test, verify effects, masks, transforms, parenting, timing, layer order, artist-added layers, unrelated footage/comps/folders, and artist/studio package-root notes are preserved.
 - [ ] Save the revised AE project, close/reopen it, reload CutBridge, then run Build Comp and QC again; record the result.
-- [ ] Exercise at least one warning/confirmation revision and at least one incompatible revision (for example FPS/frame-range/pixel-aspect/resolution drift) and confirm the expected fail-closed behavior.
+- [ ] Exercise at least one supported required/optional **status** change and confirm the explicit warning/confirmation path.
+- [ ] Exercise at least one incompatible geometry/timing revision (for example FPS/frame-range/pixel-aspect/resolution drift) and confirm fail-closed behavior.
+- [ ] Exercise candidate removal of an optional pass and confirm source-only revision blocks **before** confirmation, import, `replaceSource()`, or package/tag migration; verify the original package remains coherent for reload, Build and QC. Added-pass and required-pass-removal cases must also remain fail-closed.
 - [ ] Exercise a missing/duplicate deterministic managed-folder condition in a safe test project and confirm Build/revision/QC do not silently choose, recreate, or mutate ambiguous structure.
 - [ ] Complete a real Blender → package → After Effects smoke test. Do not replace it with headless or host-shaped evidence.
 - [ ] Update compatibility records and changelog release status with actual evidence.
