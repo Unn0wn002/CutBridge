@@ -2,7 +2,8 @@
 """Build deterministic CutBridge release artifacts.
 
 The script is intentionally independent from Blender so CI can verify packaging
-on every pull request. A release tag must match blender_manifest.toml exactly.
+on every pull request. Stable and prerelease tags must share the source product
+version declared by Blender and After Effects.
 """
 
 from __future__ import annotations
@@ -21,6 +22,9 @@ BLENDER_ROOT = ROOT / "apps" / "blender" / "cutbridge"
 AE_SCRIPT = ROOT / "apps" / "after-effects" / "CutBridge.jsx"
 AE_REVISION = ROOT / "apps" / "after-effects" / "revision_manager.js"
 UPDATE_SCHEMA_VERSION = 1
+RELEASE_TAG_RE = re.compile(
+    r"^v(?P<base>[0-9]+\.[0-9]+\.[0-9]+)(?:-(?P<label>rc|beta|dev)\.(?P<number>[1-9][0-9]*))?$"
+)
 
 
 def _sha256(path: Path) -> str:
@@ -36,11 +40,39 @@ def _read_manifest() -> dict:
         return tomllib.load(handle)
 
 
-def _release_version(tag: str) -> str:
+def parse_release_tag(tag: str) -> dict:
+    """Return product/release version, channel, and prerelease semantics."""
     tag = tag.strip()
-    if not tag.startswith("v") or len(tag) <= 1:
-        raise ValueError("Release tag must use vMAJOR.MINOR.PATCH")
-    return tag[1:]
+    match = RELEASE_TAG_RE.fullmatch(tag)
+    if not match:
+        raise ValueError(
+            "Release tag must use vMAJOR.MINOR.PATCH, vMAJOR.MINOR.PATCH-rc.N, "
+            "vMAJOR.MINOR.PATCH-beta.N, or vMAJOR.MINOR.PATCH-dev.N"
+        )
+    base_version = match.group("base")
+    label = match.group("label")
+    release_version = tag[1:]
+    if label is None:
+        channel = "stable"
+        prerelease = False
+    elif label in {"rc", "beta"}:
+        channel = "beta"
+        prerelease = True
+    else:
+        channel = "development"
+        prerelease = True
+    return {
+        "tag": tag,
+        "base_version": base_version,
+        "release_version": release_version,
+        "channel": channel,
+        "prerelease": prerelease,
+    }
+
+
+def _release_version(tag: str) -> str:
+    """Backward-compatible helper returning the source/product version."""
+    return parse_release_tag(tag)["base_version"]
 
 
 def _validate_source_version(version: str) -> None:
@@ -103,10 +135,12 @@ def _write_ae_zip(path: Path) -> None:
 
 def build(tag: str, output_dir: Path) -> dict:
     manifest = _read_manifest()
-    version = _release_version(tag)
+    release = parse_release_tag(tag)
+    version = release["base_version"]
     if manifest["version"] != version:
         raise ValueError(
-            f"Tag {tag!r} does not match blender_manifest.toml version {manifest['version']!r}"
+            f"Tag {tag!r} targets product version {version!r}, which does not match "
+            f"blender_manifest.toml version {manifest['version']!r}"
         )
 
     _validate_source_version(version)
@@ -142,9 +176,11 @@ def build(tag: str, output_dir: Path) -> dict:
 
     release_metadata = {
         "schema_version": UPDATE_SCHEMA_VERSION,
-        "version": version,
+        "version": release["release_version"],
+        "product_version": version,
         "tag": tag,
-        "channel": "stable",
+        "channel": release["channel"],
+        "prerelease": release["prerelease"],
         "blender_version_min": manifest["blender_version_min"],
         "artifacts": {
             "blender": {
@@ -171,11 +207,15 @@ def build(tag: str, output_dir: Path) -> dict:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--tag", required=True, help="Release tag, e.g. v0.2.0")
+    parser.add_argument(
+        "--tag",
+        required=True,
+        help="Release tag, e.g. v0.2.3 or v0.2.3-rc.1",
+    )
     parser.add_argument("--output", default="dist", help="Output directory")
     args = parser.parse_args()
 
-    metadata = build(args.tag, (ROOT / args.output).resolve() if not Path(args.output).is_absolute() else Path(args.output))
+    metadata = build(tag=args.tag, output_dir=(ROOT / args.output).resolve() if not Path(args.output).is_absolute() else Path(args.output))
     print(json.dumps(metadata, indent=2))
     return 0
 
