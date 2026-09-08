@@ -1,6 +1,7 @@
 """Release publication authorization and channel regressions."""
 
 from pathlib import Path
+import re
 import sys
 
 import pytest
@@ -113,9 +114,20 @@ def test_release_workflow_separates_read_only_packaging_from_write_publication()
     assert "package:\n    runs-on: ubuntu-latest\n    permissions:\n      contents: read" in workflow
     assert "publish:\n    needs: package\n    runs-on: ubuntu-latest\n    permissions:\n      contents: write" in workflow
     assert workflow.count("validate_release_authorization.py") == 2
-    assert "actions/upload-artifact@v4" in workflow
-    assert "actions/download-artifact@v4" in workflow
+    assert "actions/upload-artifact@" in workflow
+    assert "actions/download-artifact@" in workflow
     assert "Revalidate downloaded release bundle" in workflow
     assert "fail_on_unmatched_files: true" in workflow
     assert workflow.index("Upload validated release bundle") < workflow.index("\n  publish:")
-    assert workflow.index("\n  publish:") < workflow.index("uses: softprops/action-gh-release@v2")
+    assert workflow.index("\n  publish:") < workflow.index("uses: softprops/action-gh-release@")
+
+
+def test_release_workflow_pins_actions_and_does_not_persist_git_credentials():
+    workflow = (ROOT / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
+    uses = re.findall(r"^\s*- uses: ([^\s#]+)", workflow, flags=re.MULTILINE)
+
+    assert uses
+    assert all(re.fullmatch(r"[^@\s]+@[0-9a-f]{40}", item) for item in uses)
+    assert not any(re.search(r"@v\d", item) for item in uses)
+    assert workflow.count("persist-credentials: false") == 2
+    assert "concurrency:\n  group: release-${{ github.ref }}\n  cancel-in-progress: false" in workflow
