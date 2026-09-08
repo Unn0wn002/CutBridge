@@ -104,3 +104,18 @@ def test_release_authorization_rejects_mismatched_approval(override, message):
             release_sha="same-sha",
             main_sha="same-sha",
         )
+
+
+def test_release_workflow_separates_read_only_packaging_from_write_publication():
+    workflow = (ROOT / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
+
+    assert "permissions:\n  contents: read" in workflow
+    assert "package:\n    runs-on: ubuntu-latest\n    permissions:\n      contents: read" in workflow
+    assert "publish:\n    needs: package\n    runs-on: ubuntu-latest\n    permissions:\n      contents: write" in workflow
+    assert workflow.count("validate_release_authorization.py") == 2
+    assert "actions/upload-artifact@v4" in workflow
+    assert "actions/download-artifact@v4" in workflow
+    assert "Revalidate downloaded release bundle" in workflow
+    assert "fail_on_unmatched_files: true" in workflow
+    assert workflow.index("Upload validated release bundle") < workflow.index("\n  publish:")
+    assert workflow.index("\n  publish:") < workflow.index("uses: softprops/action-gh-release@v2")
