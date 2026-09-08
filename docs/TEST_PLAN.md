@@ -62,6 +62,7 @@ Automated Blender checks run headlessly. They validate RNA lifecycle, render-map
 | A26 | Current V002 project has a duplicate package root or duplicate `02_RENDER`, then V003 revision is selected | Revision blocks before confirmation, replacement import, or `replaceSource()` |
 | A27 | V001 → V002 → V003 through the actual `CutBridge.jsx` adapter in the host-shaped VM | Managed source replacement, ownership migration, historical-footage provenance, Build/QC and script reload remain consistent |
 | A28 | AE release ZIP is built | Archive contains exact `CutBridge.jsx`, `revision_manager.js`, `INSTALL.md`, and `LICENSE` contents with valid release checksums |
+| A29 | Required managed layer is deleted or loses its current ownership tag while managed footage and comp remain valid | QC fails closed on managed-layer ownership/source instead of reporting clean PASS; complete optional missing layer warns, and unavailable optional source remains warning/skip only |
 
 ## S4 automated contract gate
 
@@ -94,11 +95,13 @@ These remain `MANUAL NOT EXECUTED` until real evidence is recorded.
 | Folder/file symlink or alias | Rejected before footage import |
 | Older ExtendScript without native JSON | Valid JSON loads; executable text is rejected |
 | Repeat package import | First build, repeated build, manifest reload and script reload retain singleton managed items/layers; tag/container drift blocks without adoption or duplication |
+| Delete or de-tag a required managed layer while its footage/comp remain valid | QC reports managed-layer ownership/source failure; it must not report clean PASS |
+| Delete a complete optional managed layer while its footage remains valid | QC reports an optional-layer warning without converting unambiguous optional absence into a hard error |
 | V001 → V002 revision in native AE | Explicit confirmation is shown; only verified CutBridge-managed sources/metadata change; effects, masks, transforms, parenting, timing, switches, blend mode, and unrelated artist layers remain unchanged |
 | V002 → V003 revision followed by Build/QC | New managed sources are active, historical managed footage retains prior-version provenance, Build safely reuses the current managed state, and QC passes only when the project is consistent |
 | Save/close/reopen after revision | Reloading the newer manifest rediscovers managed project state; Build/QC do not duplicate or adopt unrelated objects |
 | Duplicate/missing managed root/folder before revision or QC | Revision blocks before confirmation/import/source swap; QC reports structural failure and never reports PASS |
-| Native AE rollback/undo failure exercise where safely reproducible | Failed revision reports the failure accurately; original source/property state is restored when host rollback succeeds; incomplete rollback is never described as successful |
+| Native AE rollback/undo failure exercise where safely reproducible | Failed revision reports failure accurately; original source/property state is restored when host rollback succeeds; incomplete rollback is never described as successful |
 | Blender → package → AE V001 → V002 smoke test | Real producer output imports, builds, revises, and QCs in the selected Blender/AE/OS combination without replacing unrelated artist work |
 
 ## Target-user task test
@@ -116,7 +119,7 @@ Do not claim timing, error-rate, usability, or Japanese target-user results unti
 
 ## S5 ownership/cache automated gate
 
-`node tests/ae_s5_checks.cjs` executes the entire JSX panel with host mocks and re-evaluates it against the same project to simulate script reload. It runs through `tests/test_ae_s5.py` in CI. The source-guard, comp/layer rollback, and partial-retry-order regressions remain mandatory. The current harness contains 45 groups.
+`node tests/ae_s5_checks.cjs` executes the entire JSX panel with host mocks and re-evaluates it against the same project to simulate script reload. It runs through `tests/test_ae_s5.py` in CI. The source-guard, comp/layer rollback, partial-retry-order, and dedicated QC managed-layer regressions remain mandatory. The core S5 harness contains 45 groups; `ae_qc_managed_layer_checks.cjs` adds the required/optional QC boundary cases separately.
 
 | Change after successful Build | Expected same-session and script-reload result |
 |---|---|
@@ -135,6 +138,8 @@ Do not claim timing, error-rate, usability, or Japanese target-user results unti
 | QC following footage ownership/source/FPS failure | Report managed-footage error even after cache invalidation or reload |
 | Cached footage or layer loses all identifying signals while the object remains live | Fail closed without importing footage or adding a layer over the live user-modified object |
 | Managed comp or required managed footage is deleted before QC | Report explicit missing managed state rather than a false package-only PASS |
+| Required managed layer is deleted or de-tagged while managed footage/comp remain valid | QC reports managed-layer error rather than clean PASS; strict resolver prevents artist-layer adoption |
+| Complete optional managed layer is deleted while optional source remains valid | QC warning only when ownership is otherwise unambiguous |
 | Combined footage/layer drift remains after script reload | Preflight the existing managed comp/layer state before importing or adding replacements |
 | Managed package root is moved but tagged managed comp remains | Report managed-comp validation failure; do not issue package-only PASS |
 | Late build failure after new managed objects are created | Roll back only the newly created footage/layers and preserve unrelated project state |
@@ -167,6 +172,9 @@ interrupt recovery.
 - `ae_s6_root_structure_checks.cjs` removes/duplicates deterministic managed folders and proves
   Build performs no implicit structural repair while QC remains read-only and cannot report PASS
   through an ambiguous first match.
+- `ae_qc_managed_layer_checks.cjs` proves QC requires current managed-layer ownership/source for
+  complete required passes, treats unambiguous complete optional-layer absence as a warning, and
+  retains warning/skip behavior when an optional source sequence is unavailable.
 - Static guards verify the formatter scope, native source-replacement API, root-ownership rules,
   release sidecar inclusion and other source invariants.
 
