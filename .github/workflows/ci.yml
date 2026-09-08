@@ -46,10 +46,13 @@ jobs:
         run: |
           node tests/ae_s6_revision_checks.cjs
           node tests/ae_s6_optional_pass_lifecycle_checks.cjs
+          node tests/ae_s6_extend_script_binding_checks.cjs
       - name: Check ExtendScript syntax with Node parser
         run: |
           cp apps/after-effects/CutBridge.jsx /tmp/CutBridge.js
+          cp apps/after-effects/revision_manager.js /tmp/revision_manager.js
           node --check /tmp/CutBridge.js
+          node --check /tmp/revision_manager.js
 
   blender-52-rna-runtime:
     runs-on: ubuntu-latest
