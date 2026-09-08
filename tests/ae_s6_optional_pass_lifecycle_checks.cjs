@@ -1,6 +1,6 @@
 /*
- * S6 regression for optional-pass removal across revision + reload + Build/QC.
- * Reuses the native-host-shaped fixture so this executes the actual CutBridge.jsx adapter.
+ * S6 regression for optional-pass removal across the native-host-shaped revision path.
+ * Reuses the existing fixture so this executes the actual CutBridge.jsx adapter.
  * Real After Effects validation remains a separate manual gate.
  */
 const assert = require("node:assert/strict");
@@ -24,7 +24,7 @@ const v1 = manifest(1);
 const v2 = manifest(2);
 
 // Use the same deterministic sequence for the optional LINE pass so the fixture
-// can exercise the ownership lifecycle without adding unrelated filesystem mocks.
+// exercises pass-set policy without adding unrelated filesystem mocks.
 v1.passes.push({
     name: "LINE",
     path: "render/beauty",
@@ -38,41 +38,47 @@ h.click("Import Package");
 h.click("Build Comp");
 const comp = h.comps()[0];
 assert.equal(comp.numLayers, 2, "V001 should contain required BEAUTY and optional LINE managed layers");
+const beauty = comp._layers.find(layer => layer.name === "BEAUTY");
 const line = comp._layers.find(layer => layer.name === "LINE");
-assert.ok(line, "V001 optional LINE layer should exist");
+assert.ok(beauty && line, "V001 managed layers should exist");
+const beautySource = beauty.source;
 const lineSource = line.source;
+const v1Root = h.topRoot(v1.package_name);
+assert.ok(v1Root, "V001 package root should exist");
 assert.equal(line.comment, Contract.managedTag("layer", v1, "LINE"));
 
-// V002 removes only the optional pass. S6 classifies this as warning/confirm and
-// promises to retain the removed optional pass rather than destructively deleting it.
+const footageBefore = h.footage().length;
+const layersBefore = comp.numLayers;
+const replaceBefore = h.replaceFlags.length;
+const confirmsBefore = h.confirms.length;
+
+// V002 removes an optional pass. S6 source-only revision must reject pass-set
+// removal before confirmation/import/source swap/metadata migration. A deliberate
+// rebuild or future migration workflow is required for pass-set changes.
 h.queue(v2);
 h.click("Update Revision");
-assert.strictEqual(line.source, lineSource, "removed optional pass source must be preserved");
-assert.equal(comp._layers.includes(line), true, "removed optional pass layer must be preserved");
-assert.match(h.alerts.at(-1), /revision updated to V002/i);
+assert.match(h.alerts.at(-1), /Revision blocked|Removing an optional pass is unsupported/i);
+assert.equal(h.confirms.length, confirmsBefore, "blocked pass removal must not reach confirmation");
+assert.equal(h.replaceFlags.length, replaceBefore, "blocked pass removal must not call replaceSource");
+assert.equal(h.footage().length, footageBefore, "blocked pass removal must not import replacement footage");
+assert.equal(comp.numLayers, layersBefore, "blocked pass removal must not add or remove layers");
+assert.strictEqual(beauty.source, beautySource, "blocked pass removal must preserve the active BEAUTY source");
+assert.strictEqual(line.source, lineSource, "blocked pass removal must preserve the optional LINE source");
+assert.equal(line.comment, Contract.managedTag("layer", v1, "LINE"), "blocked revision must preserve V001 ownership metadata");
+assert.equal(comp.comment, Contract.managedTag("comp", v1, v1.ae.comp_name), "blocked revision must preserve V001 comp ownership");
+assert.strictEqual(h.topRoot(v1.package_name), v1Root, "blocked revision must preserve the V001 package root");
+assert.equal(h.topRoot(v2.package_name), undefined, "blocked revision must not migrate/create a V002 project root");
 
-// Reload clears in-memory observations. The persisted project state produced by a
-// successful revision must remain internally coherent for the new current manifest.
+// Reload the original V001 package and prove the blocked attempt left a coherent,
+// idempotent project rather than a half-migrated state.
 h.reload();
-h.queue(v2);
+h.queue(v1);
 h.click("Import Package");
-const footageBeforeBuild = h.footage().length;
-const layersBeforeBuild = comp.numLayers;
 h.click("Build Comp");
-assert.match(
-    h.alerts.at(-1),
-    /comp built|comp reused safely/i,
-    "Build after optional-pass removal must not reject the intentionally retained layer as stale/foreign"
-);
-assert.equal(comp.numLayers, layersBeforeBuild, "post-revision Build must not duplicate or delete the retained optional layer");
-assert.equal(h.footage().length, footageBeforeBuild, "post-revision Build must not import duplicate footage");
-assert.strictEqual(line.source, lineSource, "post-revision Build must preserve the retained optional source");
-
+assert.match(h.alerts.at(-1), /comp reused safely/i);
+assert.equal(comp.numLayers, layersBefore);
+assert.equal(h.footage().length, footageBefore);
 h.click("Run QC");
-assert.match(
-    h.alerts.at(-1),
-    /CutBridge QC — PASS/,
-    "QC after optional-pass removal must not fail solely because the intentionally retained optional layer survived"
-);
+assert.match(h.alerts.at(-1), /CutBridge QC — PASS/);
 
-console.log("S6 optional-pass lifecycle: PASS (removed optional layer preserved across revision/reload/Build/QC; real AE MANUAL NOT EXECUTED)");
+console.log("S6 optional-pass lifecycle: PASS (pass removal blocked before mutation; original project remains coherent; real AE MANUAL NOT EXECUTED)");
