@@ -69,12 +69,15 @@ def test_revision_version_formatting_stays_in_contract_scope():
     """The AE panel must not call the contract-private zeroPad helper as a free variable."""
     root = Path(__file__).resolve().parents[1]
     source = (root / "apps/after-effects/CutBridge.jsx").read_text(encoding="utf-8")
+    marker = 'if (typeof module !== "undefined" && module.exports)'
+    contract_source, panel_source = source.split(marker, 1)
 
     assert 'zeroPad: zeroPad' in source
-    assert 'CutBridgeContract.zeroPad(manifest.version, 3)' in source
-    assert source.count('CutBridgeContract.zeroPad(selected.manifest.version, 3)') == 2
-    assert '+ zeroPad(manifest.version, 3)' not in source
-    assert '+ zeroPad(selected.manifest.version, 3)' not in source
+    assert '"V" + zeroPad(manifest.version, 3)' in contract_source
+    assert 'CutBridgeContract.zeroPad(manifest.version, 3)' in panel_source
+    assert panel_source.count('CutBridgeContract.zeroPad(selected.manifest.version, 3)') == 2
+    assert '+ zeroPad(manifest.version, 3)' not in panel_source
+    assert '+ zeroPad(selected.manifest.version, 3)' not in panel_source
 
 
 def test_package_root_ownership_preflight_requires_unique_structure_before_mutation():
