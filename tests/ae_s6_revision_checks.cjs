@@ -5,11 +5,14 @@ const R = require("../apps/after-effects/revision_manager.js");
 const C = require("../apps/after-effects/CutBridge.jsx");
 let groups = 0;
 function test(name, fn) { fn(); groups++; console.log("PASS " + name); }
+function packageToken(value, fallback) {
+    const token = String(value || "").trim().replace(/[<>:"/\\|?*]+/g, "_").replace(/\s+/g, "_");
+    return token || fallback;
+}
 function m(version, overrides = {}) {
-    return Object.assign({
+    const manifest = Object.assign({
         schema: "cutbridge-manifest", schema_version: 1, cutbridge_version: "0.2.3",
         project: "作品", episode: "E01", scene: "S001", cut: "C001", take: "T01",
-        package_name: "作品_E01_S001_C001_T01_V" + String(version).padStart(3, "0"),
         version, fps: 24, frames: {start: 0, end: 23, count: 24},
         resolution: {width: 1920, height: 1080, pixel_aspect: 1},
         passes: [
@@ -17,6 +20,14 @@ function m(version, overrides = {}) {
             {name: "LINE", path: "line", sequence_pattern: "l####.png", required: false}
         ]
     }, overrides);
+    if (!Object.prototype.hasOwnProperty.call(overrides, "package_name")) {
+        manifest.package_name = [
+            packageToken(manifest.project, "PROJECT"), packageToken(manifest.episode, "EP00"),
+            packageToken(manifest.scene, "SC000"), packageToken(manifest.cut, "C000"),
+            packageToken(manifest.take, "T01"), "V" + String(manifest.version).padStart(3, "0")
+        ].join("_");
+    }
+    return manifest;
 }
 const clone = value => JSON.parse(JSON.stringify(value));
 function fixture(overrides = {}) {
@@ -82,7 +93,7 @@ test("canonical revision token helper rejects malformed values", () => {
     for (const value of ["V002", -1, 0, 1.5]) assert.equal(R.assess(m(1), m(value)).status, "incompatible");
 });
 test("duplicate candidate numbers cannot select by input order", () => {
-    const a = m(3), b = m(3, {package_name: "other-location"});
+    const a = m(3), b = m(3); b.passes[0].sequence_pattern = "other####.png";
     for (const list of [[a, b, m(2)], [b, a, m(2)]]) {
         assert.equal(R.selectLatest(m(1), list), null);
         assert.equal(R.discover(m(1), list).filter(r => r.ambiguous).length, 2);
