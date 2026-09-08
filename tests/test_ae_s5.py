@@ -24,3 +24,7 @@ def test_ae_s5_managed_layer_source_guard_regressions():
 
 def test_ae_s5_partial_retry_layer_order_regression():
     _run_node("ae_s5_partial_retry_order.cjs")
+
+
+def test_ae_qc_requires_current_managed_layer_ownership():
+    _run_node("ae_qc_managed_layer_checks.cjs")

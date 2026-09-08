@@ -25,6 +25,8 @@ class ReleaseHygieneTests(unittest.TestCase):
         self.builder.ROOT = self.root
         self.builder.BLENDER_ROOT = self.root / "apps/blender/cutbridge"
         self.builder.AE_SCRIPT = self.root / "apps/after-effects/CutBridge.jsx"
+        self.builder.AE_REVISION = self.root / "apps/after-effects/revision_manager.js"
+        self.builder.AE_INSTALL = self.root / "apps/after-effects/INSTALL.md"
         self.output = Path(self.temp.name) / "dist"
 
     def test_identical_sources_produce_identical_artifacts(self):
@@ -75,7 +77,8 @@ class ReleaseHygieneTests(unittest.TestCase):
 
     def test_ae_version_mismatch_is_rejected_before_output(self):
         source = self.builder.AE_SCRIPT
-        source.write_text(source.read_text().replace('var PRODUCT_VERSION = "0.2.3";', 'var PRODUCT_VERSION = "0.2.2";'))
+        source.write_text(source.read_text(encoding="utf-8").replace(
+            'var PRODUCT_VERSION = "0.2.3";', 'var PRODUCT_VERSION = "0.2.2";'), encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "PRODUCT_VERSION"):
             self.builder.build("v0.2.3", self.output)
         self.assertFalse(self.output.exists())
@@ -88,6 +91,29 @@ class ReleaseHygieneTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.builder.build("v0.2.3", self.output)
         self.assertEqual(victim.read_text(), "preserve me")
+
+    def test_rc_build_uses_beta_prerelease_metadata(self):
+        metadata = self.builder.build("v0.2.3-rc.1", self.output)
+        self.assertEqual(metadata["version"], "0.2.3-rc.1")
+        self.assertEqual(metadata["product_version"], "0.2.3")
+        self.assertEqual(metadata["channel"], "beta")
+        self.assertIs(metadata["prerelease"], True)
+        self.assertTrue((self.output / "CutBridge-Blender-v0.2.3-rc.1.zip").is_file())
+        self.assertTrue((self.output / "CutBridge-AfterEffects-v0.2.3-rc.1.zip").is_file())
+
+    def test_development_build_uses_development_channel(self):
+        metadata = self.builder.build("v0.2.3-dev.1", self.output)
+        self.assertEqual(metadata["version"], "0.2.3-dev.1")
+        self.assertEqual(metadata["channel"], "development")
+        self.assertIs(metadata["prerelease"], True)
+
+    def test_release_workflow_publishes_verification_assets(self):
+        workflow = (ROOT / ".github/workflows/release.yml").read_text(encoding="utf-8")
+        marker = "- name: Publish GitHub Release"
+        self.assertIn(marker, workflow)
+        publish_step = workflow.split(marker, 1)[1]
+        self.assertIn("dist/SHA256SUMS.txt", publish_step)
+        self.assertIn("dist/release-metadata.json", publish_step)
 
 
 if __name__ == "__main__":

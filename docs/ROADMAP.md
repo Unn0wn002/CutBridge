@@ -1,6 +1,6 @@
 # Roadmap
 
-Status reconciled after S4 integration on 2026-09-07. Versions 0.2.1–0.2.3 remain unreleased development history; milestone labels below describe product sessions rather than guaranteed release numbers unless explicitly assigned.
+Status reconciled during S6 repair after S5 integration. Versions 0.2.1–0.2.3 remain unreleased development history; milestone labels below describe product sessions rather than guaranteed release numbers unless explicitly assigned.
 
 ## Implemented foundation — v0.2.0 through v0.2.3 (unreleased)
 - Harden Blender Extension packaging and manifest metadata.
@@ -35,17 +35,21 @@ Status reconciled after S4 integration on 2026-09-07. Versions 0.2.1–0.2.3 rem
 
 Real AE GUI/end-to-end behavior remains a separate manual validation gate.
 
-## Next — S5 AE Import & Composition Reliability
+## Completed S5 — AE Import & Composition Reliability
 - Harden malformed-package and manifest-loading behavior.
 - Make composition/folder/layer creation deterministic and safe across repeated imports.
 - Verify FPS, resolution, pixel aspect, duration, layer ordering, Japanese/Unicode/Windows paths, and actionable failures.
 - Expand runtime-independent regression coverage without claiming native AE GUI execution.
 
-## S6 — Non-Destructive Revision Manager
-- Detect newer compatible cut revisions.
-- Replace only CutBridge-managed footage/sources where technically safe.
-- Preserve manual effects, masks, transforms, parenting, timing, layers, and compositor work where possible.
-- Surface compatibility warnings and require confirmation for risky changes.
+## S6 implementation complete — Non-Destructive Revision Manager (integration blocked)
+- PR #15 contains the revision core, native AE adapter, panel confirmation/update flow, persistent package-root/tag migration, deterministic release sidecar, and automated lifecycle regressions.
+- Detect newer compatible cut revisions and reject incompatible structural/geometry changes.
+- Replace only verified CutBridge-managed footage/sources where technically safe.
+- Preserve manual effects, masks, transforms, parenting, timing, layers, and compositor work by using source-only replacement in the native adapter.
+- Surface compatibility warnings and require explicit confirmation for warning-class revisions.
+- Fail closed on ambiguous/missing managed package structure across Build, revision, and QC.
+- Automated exact-head CI is required after every branch change and has been green on repaired implementation/documentation heads; the final review SHA/run is recorded in PR #15.
+- Integration remains blocked until an independent full-PR review is clean, the documented native After Effects desktop validation is executed with real evidence, PR #15 is merged to `develop`, and post-merge `develop` CI passes.
 
 ## S7 — QC+
 - PASS / WARNING / ERROR diagnostics for package, manifest, pass, sequence, version, and inspectable AE state.
@@ -71,7 +75,7 @@ Real AE GUI/end-to-end behavior remains a separate manual validation gate.
 
 ## S12 — End-to-End Validation Harness
 - Maintain legal/original/synthetic fixtures.
-- Provide a deterministic manual Blender 5.2.1 → After Effects checklist including V001→V002 revision preservation.
+- Provide a deterministic manual Blender 5.2.1 → After Effects checklist including V001→V002→V003 revision preservation and save/reopen verification.
 - Never infer GUI success from headless tests.
 
 ## S13 — Manual-Finding Repair

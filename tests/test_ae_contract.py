@@ -25,11 +25,13 @@ const contract = moduleObj.exports;
 {script}
 """
     result = subprocess.run(
-        [node, "-e", runner],
+        [node, "-"],
+        input=runner,
         cwd=ROOT,
         check=True,
         capture_output=True,
         text=True,
+        encoding="utf-8",
     )
     return json.loads(result.stdout)
 
@@ -132,6 +134,16 @@ def test_ae_source_honors_optional_passes_and_has_no_stale_mvp_label():
     assert "MVP v0.1" not in source
     assert "CutBridge After Effects" in source
     assert "CutBridgeContract.PRODUCT_VERSION" in source
+
+
+def test_ae_revision_entrypoint_and_release_sidecar_are_wired():
+    source = AE.read_text(encoding="utf-8")
+    revision = (ROOT / "apps/after-effects/revision_manager.js").read_text(encoding="utf-8")
+    assert "function getRevisionManager()" in source
+    assert "$.evalFile(scriptFile)" in source
+    assert "Update Revision" in source
+    assert "commitRevision" in source
+    assert "CutBridgeRevisionManager" in revision
 
 
 def test_ae_executable_contract_and_host_adapter_regressions():

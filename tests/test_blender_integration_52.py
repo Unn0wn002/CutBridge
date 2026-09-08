@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import json
 import pathlib
+import shutil
+import subprocess
 import sys
 from types import SimpleNamespace
 
@@ -98,6 +100,47 @@ def _build_and_read_manifest(settings):
     package_root = pathlib.Path(settings.last_package_path)
     manifest_path = package_root / "cutbridge.json"
     return package_root, manifest_path, json.loads(manifest_path.read_text(encoding="utf-8"))
+
+
+@pytest.mark.parametrize("separator", [chr(cp) for cp in range(0x110000) if chr(cp).isspace()]
+                         + ["\ufeff", "\u180e", "\u200b"])
+def test_generated_unicode_identity_roundtrips_into_ae(configured_scene, separator):
+    """Real RNA -> Build Package -> UTF-8 file -> AE contract and revision preflight."""
+    _, settings, _ = configured_scene
+    raw = separator + "桜" + separator + "花" + separator
+    for attr in ("project", "episode", "scene_id", "cut", "take"):
+        setattr(settings, attr, raw)
+    root, manifest_path, manifest = _build_and_read_manifest(settings)
+    assert manifest["package_name"] == root.name
+    for field in ("project", "episode", "scene", "cut", "take"):
+        assert manifest[field] == raw
+    node = shutil.which("node")
+    assert node, "Node is required for Blender/AE parity"
+    subprocess.run([node, "-e", """
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const C = require('./apps/after-effects/CutBridge.jsx');
+const R = require('./apps/after-effects/revision_manager.js');
+const m = C.parseJSON(fs.readFileSync(process.argv[1], 'utf8'));
+assert.deepEqual(C.validateManifest(m), []);
+const next = C.parseJSON(JSON.stringify(m));
+next.version = 2;
+next.package_name = next.package_name.replace(/V001$/, 'V002');
+assert.equal(R.assess(m, next).status, 'safe');
+""", str(manifest_path)], cwd=ROOT, check=True)
+
+
+@pytest.mark.parametrize("raw", [""] + [chr(cp) for cp in range(0x110000) if chr(cp).isspace()])
+def test_python_whitespace_only_identity_blocks_blender_build(configured_scene, raw):
+    _, settings, output = configured_scene
+    for attr in ("project", "episode", "scene_id", "cut", "take"):
+        previous = getattr(settings, attr)
+        setattr(settings, attr, raw)
+        assert any(i["code"] == "ID_MISSING" for i in validate_scene(bpy.context))
+        with pytest.raises(RuntimeError, match="empty"):
+            bpy.ops.cutbridge.build_package()
+        setattr(settings, attr, previous)
+    assert not list(output.iterdir())
 
 
 def _assert_validation_failure(expected_code: str, expected_message: str, context=bpy.context):

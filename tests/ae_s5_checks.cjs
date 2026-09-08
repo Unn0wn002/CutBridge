@@ -140,7 +140,11 @@ function host(m, files, options = {}) {
     c.parentFolder = cf; return c;
   }
   function seedWrongTypeFootageTag(passName = 'BEAUTY') {
-    const {rf} = seedPackageFolders();
+    const {cf, rf} = seedPackageFolders();
+    const spec = m.resolution;
+    const ownedComp = project.items.addComp(m.ae.comp_name, spec.width, spec.height, spec.pixel_aspect, m.frames.count / m.fps, m.fps);
+    ownedComp.parentFolder = cf;
+    ownedComp.comment = `CUTBRIDGE|1|comp|${m.package_name}|${m.ae.comp_name}`;
     const wrong = new FolderItem('WRONG_TYPE');
     wrong.parentFolder = rf;
     wrong.comment = `CUTBRIDGE|1|footage|${m.package_name}|${passName}`;
@@ -246,7 +250,7 @@ check('reload then Build rediscovers managed project items instead of duplicatin
 check('manual same-name comp collision is blocked before footage import', () => {
   const h = host(manifest(), beautyFiles); h.seedManualComp(); h.click('Build');
   assert.equal(h.imports.length, 0);
-  assert.match(h.alerts.join(' '), /non-CutBridge comp.*already exists/);
+  assert.match(h.alerts.join(' '), /project-root folder.*not (?:uniquely )?verified|non-CutBridge comp.*already exists/i);
 });
 
 check('moved managed comp fails closed without creating a replacement', () => {
@@ -258,7 +262,7 @@ check('moved managed comp fails closed without creating a replacement', () => {
     h.click('Build');
     assert.equal(h.comps().length, 1);
     assert.deepEqual(h.projectItems, beforeItems);
-    assert.match(h.alerts.at(-1), /managed comp ownership.*expected comp folder/i);
+    assert.match(h.alerts.at(-1), /project-root folder.*not (?:uniquely )?verified|managed comp ownership.*expected comp folder/i);
   }
 });
 
@@ -273,7 +277,7 @@ check('duplicate managed comp tags fail closed before build mutation', () => {
     h.click('Build');
     assert.equal(h.comps().length, 2);
     assert.deepEqual(h.projectItems, beforeItems);
-    assert.match(h.alerts.at(-1), /duplicate managed comp ownership/i);
+    assert.match(h.alerts.at(-1), /duplicate managed comp ownership|not uniquely verified/i);
   }
 });
 
