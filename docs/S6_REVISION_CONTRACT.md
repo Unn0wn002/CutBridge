@@ -24,9 +24,12 @@ MANUAL NOT EXECUTED.
 - FPS, frame range/count, pixel-aspect **and resolution** changes block. S6 is deliberately
   source-only and does not resize/re-time an existing composition; accepting a new resolution
   while retaining old comp geometry would leave Build/QC inconsistent with the new manifest.
-- Required/optional status changes warn and require explicit confirmation. Missing previously
-  required passes block. Removed optional passes remain untouched. Added passes block this
-  source-only operation; it does not create layers.
+- Required/optional **status** changes for a pass that exists in both revisions warn and require
+  explicit confirmation. Pass-set changes do not use that warning path: removing either a
+  required or optional pass blocks source-only revision, and adding a pass also blocks. Use a
+  deliberate rebuild/migration workflow for pass-set changes. This fail-closed rule was added
+  after #26 proved that retaining a removed optional layer with its prior-version ownership tag
+  makes the newly migrated project internally inconsistent with the #23/#24 stale-layer rules.
 
 ## Trusted host-adapter boundary
 
@@ -99,18 +102,19 @@ structural error for both cases.
 S5 did not claim the package-root `comment`, so S6 preserves unmanaged root comments during
 revision. Only an exact prior CutBridge root tag is migrated; artist/studio notes remain intact.
 
-The native adapter preserves provenance across revisions: the active layer and replacement
-footage receive the candidate package/version tags, while retired CutBridge footage retains
-its previous version-scoped CutBridge tag. Retired footage is removed from current-version
-caches but is not converted into an unmanaged item. This allows historical footage to remain
-available for artist references without weakening S5's unmanaged-collision protections.
+The native adapter preserves provenance across supported same-pass-set revisions: the active layer
+and replacement footage receive the candidate package/version tags, while retired CutBridge
+footage retains its previous version-scoped CutBridge tag. Retired footage is removed from
+current-version caches but is not converted into an unmanaged item. This allows historical footage
+to remain available for artist references without weakening S5's unmanaged-collision protections.
 Rollback restores the exact pre-revision root/comp/layer/footage comments and names recorded
 before migration.
 
 ## Transaction and recovery
 
-1. Prepare validates manifests, required managed-layer coverage, duplicate records/handles,
-   unique current package structure, and live ownership/source associations.
+1. Prepare validates manifests, pass-set compatibility, required managed-layer coverage,
+   duplicate records/handles, unique current package structure, and live ownership/source
+   associations. Unsupported pass addition/removal stops here before confirmation or mutation.
 2. Apply revalidates the managed objects, stages and validates **all** replacement imports,
    then revalidates ownership before swaps. There are no swaps on import/validation failure.
 3. Record each old source before attempting its native `replaceSource()` swap, then verify the
@@ -139,9 +143,9 @@ there is no automatic revision mutation without a user confirmation surface.
 
 ## Automated evidence
 
-The latest verified implementation head before this documentation reconciliation is
-`d42db23b6e32d2f60bff41153ee65419357298ff`. GitHub Actions run `34165979335` passed
-`static-validation` and `blender-52-rna-runtime`.
+The exact current candidate SHA and authoritative green CI run are intentionally maintained in
+PR #15 and blocker issues #19/#20 rather than duplicated here, because any documentation commit
+changes the candidate SHA.
 
 Static validation includes:
 
@@ -149,6 +153,9 @@ Static validation includes:
 - S5/S6 host-shaped ownership regressions;
 - V001→V002→V003 revision lifecycle through the actual `CutBridge.jsx` adapter;
 - Build/QC after revision and script reload;
+- the #26 optional-pass lifecycle regression, which first reproduced the stale-layer failure and
+  now proves optional-pass removal blocks before confirmation/import/source swap/root migration,
+  leaving the original package coherent for reload, Build and QC;
 - read-only `AVLayer.source` with `replaceSource(..., false)` as the source mutation path;
 - package-root artist-note preservation and same-name root collision rejection;
 - Build/QC rejection of missing/duplicate deterministic folders without mutation;
@@ -167,7 +174,8 @@ have green exact-head CI; PR #15 records that final review SHA/run.
 - Obtain independent clean full-PR review at the exact final head plus green CI before merge;
   verify post-merge `develop` CI.
 - Execute the manual AE workflow and inspect V001→V002→V003, Build/QC after revision,
-  save/reopen behavior, and property preservation in a real supported After Effects host.
+  save/reopen behavior, property preservation, and fail-closed pass-set removal in a real
+  supported After Effects host.
 
 Keeping mock layer objects and their non-source properties unchanged is tested. Native AE
 property preservation, real revision execution, GUI/undo behavior and Blender→AE end-to-end
