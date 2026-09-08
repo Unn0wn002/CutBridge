@@ -13,6 +13,36 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Require explicit release authorization on current main
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_SHA: ${{ github.sha }}
+        run: |
+          git fetch origin main --depth=1
+          MAIN_SHA="$(git rev-parse origin/main)"
+          if [ "$RELEASE_SHA" != "$MAIN_SHA" ]; then
+            echo "Refusing release: tagged commit $RELEASE_SHA is not current main $MAIN_SHA." >&2
+            exit 1
+          fi
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          path = Path("release-authorization.json")
+          if not path.is_file():
+              raise SystemExit("Refusing release: release-authorization.json is missing.")
+          approval = json.loads(path.read_text(encoding="utf-8"))
+          tag = os.environ["RELEASE_TAG"]
+          if approval.get("approved") is not True:
+              raise SystemExit("Refusing release: release authorization is not approved.")
+          if approval.get("tag") != tag:
+              raise SystemExit(
+                  f"Refusing release: authorization tag {approval.get('tag')!r} does not match {tag!r}."
+              )
+          PY
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
