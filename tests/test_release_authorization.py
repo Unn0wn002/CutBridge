@@ -112,19 +112,47 @@ def test_release_authorization_rejects_mismatched_approval(override, message):
         )
 
 
-def test_release_workflow_separates_read_only_packaging_from_write_publication():
+def test_release_workflow_uses_validate_clean_package_and_write_only_publish_jobs():
     workflow = (ROOT / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
 
     assert "permissions:\n  contents: read" in workflow
-    assert "package:\n    runs-on: ubuntu-latest\n    permissions:\n      contents: read" in workflow
+    assert "validate:\n    runs-on: ubuntu-latest\n    permissions:\n      contents: read" in workflow
+    assert "package:\n    needs: validate\n    runs-on: ubuntu-latest\n    permissions:\n      contents: read" in workflow
     assert "publish:\n    needs: package\n    runs-on: ubuntu-latest\n    permissions:\n      contents: write" in workflow
-    assert workflow.count("validate_release_authorization.py") == 2
-    assert "actions/upload-artifact@" in workflow
-    assert "actions/download-artifact@" in workflow
-    assert "Revalidate downloaded release bundle" in workflow
-    assert "fail_on_unmatched_files: true" in workflow
-    assert workflow.index("Upload validated release bundle") < workflow.index("\n  publish:")
-    assert workflow.index("\n  publish:") < workflow.index("uses: softprops/action-gh-release@")
+    assert workflow.count("validate_release_authorization.py") == 3
+
+    validate_start = workflow.index("\n  validate:")
+    package_start = workflow.index("\n  package:")
+    publish_start = workflow.index("\n  publish:")
+    validate_section = workflow[validate_start:package_start]
+    package_section = workflow[package_start:publish_start]
+    publish_section = workflow[publish_start:]
+
+    assert "Install test dependencies" in validate_section
+    assert "pip install" in validate_section
+    assert "Build versioned packages" not in validate_section
+    assert "pip install" not in package_section
+    assert "Build versioned packages on clean runner" in package_section
+    assert "Upload validated release bundle" in package_section
+    assert "pip install" not in publish_section
+    assert "Download validated release bundle" in publish_section
+    assert "Revalidate downloaded release bundle" in publish_section
+    assert "uses: softprops/action-gh-release@" in publish_section
+    assert "fail_on_unmatched_files: true" in publish_section
+
+
+def test_release_publish_revalidates_exact_metadata_identity():
+    workflow = (ROOT / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
+
+    for token in [
+        "EXPECTED_RELEASE_VERSION",
+        "EXPECTED_PRODUCT_VERSION",
+        'metadata.get("version")',
+        'metadata.get("product_version")',
+        'CutBridge-Blender-{tag}.zip',
+        'CutBridge-AfterEffects-{tag}.zip',
+    ]:
+        assert token in workflow
 
 
 def test_release_workflow_pins_actions_and_does_not_persist_git_credentials():
@@ -132,7 +160,7 @@ def test_release_workflow_pins_actions_and_does_not_persist_git_credentials():
 
     assert _workflow_uses_are_pinned(workflow)
     assert "@v4" not in workflow and "@v5" not in workflow and "@v2" not in workflow
-    assert workflow.count("persist-credentials: false") == 2
+    assert workflow.count("persist-credentials: false") == 3
     assert "concurrency:\n  group: release-${{ github.ref }}\n  cancel-in-progress: false" in workflow
 
 
