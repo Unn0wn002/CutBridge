@@ -1,6 +1,7 @@
 name: S8 Native Validation Package
 
 on:
+  workflow_dispatch:
   push:
     branches: ['validation/s8-native-bd3c9877']
     paths:
