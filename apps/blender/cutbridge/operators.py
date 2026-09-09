@@ -14,6 +14,7 @@ from .core import (
     validate_scene,
     write_manifest,
 )
+from .localization import format_localized_issue, tr
 from .package_safety import (
     assert_package_integrity,
     format_issue,
@@ -36,25 +37,38 @@ def _all_validation_issues(context) -> list[dict]:
     return issues
 
 
+def _language(context) -> str:
+    return getattr(context.scene.cutbridge, "language", "EN")
+
+
 class CUTBRIDGE_OT_Validate(bpy.types.Operator):
     bl_idname = "cutbridge.validate"
     bl_label = "Validate Cut"
     bl_description = "Check cut metadata, scene settings, render mapping, and package target safety"
 
     def execute(self, context):
+        language = _language(context)
         issues = _all_validation_issues(context)
         errors = [i for i in issues if i["level"] == "ERROR"]
         warnings = [i for i in issues if i["level"] == "WARNING"]
 
         if errors:
-            first = format_issue(errors[0])
-            self.report({"ERROR"}, f"CutBridge: {len(errors)} error(s), {len(warnings)} warning(s). {first}")
+            first = format_localized_issue(language, errors[0])
+            self.report(
+                {"ERROR"},
+                tr(language, "validation_failed", errors=len(errors), warnings=len(warnings), detail=first),
+            )
         elif warnings:
-            first = format_issue(warnings[0])
-            self.report({"WARNING"}, f"CutBridge: valid with {len(warnings)} warning(s). {first}")
+            first = format_localized_issue(language, warnings[0])
+            self.report(
+                {"WARNING"},
+                tr(language, "validation_warning", warnings=len(warnings), detail=first),
+            )
         else:
-            self.report({"INFO"}, "CutBridge: validation passed. Package target is safe to build.")
+            self.report({"INFO"}, tr(language, "validation_passed"))
 
+        # Console output intentionally keeps the canonical English technical
+        # details for support/debugging while the interactive UI is localized.
         if issues:
             print("\n=== CutBridge Validation ===")
             for item in issues:
@@ -70,11 +84,12 @@ class CUTBRIDGE_OT_BuildPackage(bpy.types.Operator):
     bl_description = "Configure deterministic render outputs and create a new non-overwriting CutBridge package"
 
     def execute(self, context):
+        language = _language(context)
         issues = _all_validation_issues(context)
         errors = [i for i in issues if i["level"] == "ERROR"]
         if errors:
             for item in errors[:3]:
-                self.report({"ERROR"}, format_issue(item))
+                self.report({"ERROR"}, format_localized_issue(language, item))
             return {"CANCELLED"}
 
         settings = context.scene.cutbridge
@@ -87,7 +102,7 @@ class CUTBRIDGE_OT_BuildPackage(bpy.types.Operator):
         try:
             configure_render_outputs(context, root)
         except RuntimeError as exc:
-            self.report({"ERROR"}, str(exc))
+            self.report({"ERROR"}, tr(language, "package_build_failed", detail=str(exc)))
             return {"CANCELLED"}
 
         try:
@@ -96,12 +111,12 @@ class CUTBRIDGE_OT_BuildPackage(bpy.types.Operator):
             manifest_path = write_manifest(manifest, root)
             assert_package_integrity(root, manifest, passes)
         except (OSError, RuntimeError, ValueError) as exc:
-            self.report({"ERROR"}, f"CutBridge package build failed: {exc}")
+            self.report({"ERROR"}, tr(language, "package_build_failed", detail=str(exc)))
             return {"CANCELLED"}
 
         settings.last_package_path = str(root)
 
-        self.report({"INFO"}, f"CutBridge package created: {manifest_path}")
+        self.report({"INFO"}, tr(language, "package_created", path=manifest_path))
         print(f"CutBridge package: {root}")
         return {"FINISHED"}
 
@@ -111,9 +126,10 @@ class CUTBRIDGE_OT_OpenPackageFolder(bpy.types.Operator):
     bl_label = "Open Package Folder"
 
     def execute(self, context):
+        language = _language(context)
         path = context.scene.cutbridge.last_package_path
         if not path or not os.path.isdir(path):
-            self.report({"WARNING"}, "Build a package first.")
+            self.report({"WARNING"}, tr(language, "build_first"))
             return {"CANCELLED"}
         _open_folder(path)
         return {"FINISHED"}
