@@ -1,6 +1,6 @@
 # CutBridge Roadmap
 
-Status reconciled after S8 integration. Version labels 0.2.0–0.2.3 remain unreleased development history; session numbers describe bounded product work and do not guarantee public release numbers.
+Status reconciled through the completed S8.5 documentation-maintenance session. Version labels 0.2.0–0.2.3 remain unreleased development history; session numbers describe bounded product work and do not guarantee public release numbers.
 
 ## Completed foundation — S1–S8
 
@@ -79,17 +79,22 @@ Completed and integrated.
 S8 delivers Japanese-first UI with deterministic English fallback in Blender and After Effects while stable machine identifiers and safety decisions remain locale-independent.
 
 ## S8.5 — Repository State Reconciliation
-Current documentation-maintenance session.
+Completed and integrated.
 
-Scope:
+Scope completed:
 
-- reconcile README/completion/roadmap/quick-start/test/release status after S8;
-- add Japanese onboarding documentation;
-- record technical debt and current release-governance blockers;
-- keep `main` and runtime implementation untouched;
-- make S9 the next active engineering feature.
+- reconciled README/completion/roadmap/Quick Start/Test Plan/changelog/AE installation status after S8;
+- added Japanese onboarding documentation;
+- recorded technical debt and current release-governance blockers;
+- kept `main`, runtime implementation, workflow behavior, and release authorization untouched;
+- established S9 as the next engineering feature.
 
-Completion gate: documentation PR merged to `develop` with green CI and green post-merge `develop` CI.
+Evidence:
+
+- PR #42 final head: `e61a1fc7c14e49c062c2d29b95e829636ef16bb7`;
+- PR CI `34383043982`: PASS;
+- merge: `00b6e8fd62826d9cecfda542f6cb85f7174a7dd2`;
+- post-merge `develop` CI `34383182746`: PASS.
 
 ## S9 — Studio Presets
 **Next engineering session.**
