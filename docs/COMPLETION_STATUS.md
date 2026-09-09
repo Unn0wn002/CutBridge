@@ -2,14 +2,14 @@
 
 ## Current state
 
-- **Current reconciliation session:** S8.5 — repository/documentation state reconciliation.
 - **Completed product sessions:** S1–S8.
-- **Current `develop`:** `368b977582feadc26543825b4d31ffd5f6266a4f` — merged S8 Japanese-first UX.
-- **Current `main`:** `cc6dc4dacce55b730b37eeb1d65afdf6ea98c50c` — conservative unreleased/release-locked baseline.
+- **Completed maintenance session:** S8.5 — repository/documentation state reconciliation.
+- **S8.5 integration evidence:** PR #42 merged as `00b6e8fd62826d9cecfda542f6cb85f7174a7dd2`; post-merge `develop` CI `34383182746` passed both jobs.
+- **Current release branch baseline:** `main` = `cc6dc4dacce55b730b37eeb1d65afdf6ea98c50c` — conservative unreleased/release-locked baseline.
 - **Product version:** `0.2.3` unreleased.
 - **Release authorization:** fail-closed; `release-authorization.json` remains `approved: false`.
 - **Git tags / GitHub Releases:** none.
-- **Next feature session after S8.5:** S9 — Studio Presets.
+- **Next engineering session:** S9 — Studio Presets.
 
 ## Integrated sessions
 
@@ -74,7 +74,7 @@ Real native S8 repair evidence:
 - Blender 5.2.1 LTS, approximately 245 px N-panel: Japanese/English core UI materially readable; localized validation, Validate Cut, and Build Package passed.
 - Adobe After Effects 2026 v26.3.0 Build 87: persisted JA + missing `localization.js` fell back coherently to English with selector synchronization and zero project mutation; restoring the sidecar returned the UI to Japanese.
 
-Post-merge automated evidence on `368b977...`:
+Post-S8 automated evidence on `368b977...`:
 
 - `static-validation`: **88 passed + 2 subtests**;
 - full Blender/runtime suite: **179 passed + 2 subtests**;
@@ -82,19 +82,22 @@ Post-merge automated evidence on `368b977...`:
 - release simulation/checksums: PASS;
 - ExtendScript/JS syntax: PASS.
 
-## S8.5 — Repository state reconciliation
+### S8.5 — Repository state reconciliation
+PASS / integrated.
 
-Documentation-only maintenance. This session must not redesign runtime behavior, authorize a release, or change `main`.
+Documentation/status maintenance only; no runtime redesign, release authorization, or `main` promotion.
 
-Required reconciliation:
+Completed work:
 
-- [x] mark S1–S8 integrated in the main README/status narrative;
-- [x] make S9 the next engineering feature;
-- [x] add Japanese Quick Start documentation;
-- [x] record current release lock and governance boundary;
-- [x] record Blender 6.0 and GitHub Actions runtime technical debt;
-- [ ] merge the S8.5 documentation PR to `develop` after CI is green;
-- [ ] verify post-merge `develop` CI.
+- [x] reconciled README/completion/roadmap/Quick Start/Test Plan/changelog/AE install status through S8;
+- [x] established S9 as the next engineering feature;
+- [x] added Japanese Quick Start documentation;
+- [x] recorded the current release lock and governance boundary;
+- [x] added `TECHNICAL_DEBT.md` for Blender 6.0, GitHub Actions runtime, promotion, governance, target-user, and documentation-drift debt;
+- [x] preserved `release-authorization.json` as unapproved;
+- [x] PR #42 exact final head `e61a1fc7c14e49c062c2d29b95e829636ef16bb7` passed CI run `34383043982`;
+- [x] PR #42 merged to `develop` as `00b6e8fd62826d9cecfda542f6cb85f7174a7dd2`;
+- [x] post-merge `develop` CI `34383182746` passed.
 
 ## Release boundary
 
@@ -128,7 +131,7 @@ Priority items:
 
 1. Blender 6.0 migration away from deprecated `Scene.use_nodes` behavior. Current Blender 5.2.1 suite passes with 61 deprecation warnings.
 2. Refresh pinned GitHub Actions revisions that still target deprecated Node 20 runtimes. GitHub currently forces them onto Node 24 and CI passes, but the compatibility override should not be permanent.
-3. Reconcile `main`/`develop` deliberately before a release candidate; do not treat the currently diverged branches as a trivial promotion merge.
+3. Reconcile `main`/`develop` deliberately before a release candidate; do not treat the diverged histories as a trivial promotion merge.
 
 ## Next engineering session
 

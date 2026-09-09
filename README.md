@@ -10,9 +10,9 @@ CutBridge is not a renderer, toon shader, animation generator, or asset manager.
 
 **v0.2.3 — unreleased development baseline**
 
-The current `develop` baseline has completed and integrated **Sessions S1–S8**. S8 merged as `368b977582feadc26543825b4d31ffd5f6266a4f`; post-merge CI run `34380737455` passed both `static-validation` and `blender-52-rna-runtime` on that exact merge commit.
+Sessions **S1–S8 are integrated**, and the bounded **S8.5 repository-state reconciliation is complete**. S8 merged as `368b977582feadc26543825b4d31ffd5f6266a4f`; post-S8 CI run `34380737455` passed both `static-validation` and `blender-52-rna-runtime`. S8.5 documentation reconciliation merged through PR #42 as `00b6e8fd62826d9cecfda542f6cb85f7174a7dd2`; post-merge CI run `34383182746` also passed both jobs.
 
-S7 QC+ and S8 Japanese-first UX both completed their native After Effects / Blender validation gates before integration. Stable or RC publication remains blocked by repository-level release governance issue #18 and the deliberate fail-closed release authorization state.
+S7 QC+ and S8 Japanese-first UX completed their native After Effects / Blender validation gates before integration. Stable or RC publication remains blocked by repository-level release governance issue #18 and the deliberate fail-closed release authorization state.
 
 ### Blender
 
@@ -48,13 +48,15 @@ S8 targeted native retesting passed on exact candidate `f477b745cc600b85708b63d0
 - Blender 5.2.1 LTS at approximately 245 px N-panel width: JA/EN readability, localized validation, Validate Cut, and Build Package passed.
 - Adobe After Effects 2026 v26.3.0 Build 87: persisted Japanese locale, missing-`localization.js` English fallback, visible selector synchronization, zero unintended project mutation, restored JA behavior, and representative fail-closed guards passed.
 
-Automated post-merge evidence on `368b977...`:
+Automated post-S8 evidence on `368b977...`:
 
 - static suite: **88 passed + 2 subtests**;
 - complete Blender/runtime suite: **179 passed + 2 subtests**;
 - deterministic release simulation and checksums: PASS;
 - S5/S6/S7/S8 regression suites: PASS;
 - ExtendScript/JS syntax: PASS.
+
+S8.5 subsequently changed documentation/status only. Its exact merge `00b6e8fd...` also passed authoritative post-merge CI `34383182746`.
 
 The Blender suite currently emits 61 `Scene.use_nodes` deprecation warnings associated with future Blender 6.0 compatibility work; they are tracked as technical debt rather than current test failures.
 
@@ -97,7 +99,7 @@ The private source repository is **not** the customer update endpoint. CutBridge
 ## Development flow
 
 - `main` — conservative unreleased/release-locked baseline; only deliberate promotion after validation.
-- `develop` — active integration branch; S1–S8 are integrated.
+- `develop` — active integration branch; S1–S8 plus the completed S8.5 documentation reconciliation are integrated.
 - `feature/*`, `fix/*`, `docs/*` — bounded work branched from current `develop`.
 
 See [`docs/TEST_PLAN.md`](docs/TEST_PLAN.md), [`docs/COMPLETION_STATUS.md`](docs/COMPLETION_STATUS.md), [`docs/ROADMAP.md`](docs/ROADMAP.md), and [`docs/TECHNICAL_DEBT.md`](docs/TECHNICAL_DEBT.md).
@@ -114,12 +116,11 @@ Stable/RC publication is blocked until repository-level release governance in is
 
 ## Next product work
 
-1. **S8.5 — repository state reconciliation**: documentation/status cleanup only; no runtime redesign and no release authorization.
-2. **S9 — Studio Presets**: configurable naming, folders, passes, layer ordering, formats, and version-pattern presets with a safe data-only schema.
-3. **S10 — Camera / Null handoff investigation**.
-4. **S11 — QA / docs / release engineering**.
-5. **S12 — End-to-end validation harness**.
-6. **S13 — Manual-finding repair**, only when real manual failures exist.
-7. **S14 — Japanese target-user validation preparation**.
+1. **S9 — Studio Presets**: configurable naming, folders, passes, layer ordering, formats, and version-pattern presets with a safe data-only schema.
+2. **S10 — Camera / Null handoff investigation**.
+3. **S11 — QA / docs / release engineering**.
+4. **S12 — End-to-end validation harness**.
+5. **S13 — Manual-finding repair**, only when real manual failures exist.
+6. **S14 — Japanese target-user validation preparation**.
 
-Release-governance work remains independent of S9+ feature development. Do not interpret green CI or S8 integration as publication authorization.
+Release-governance work remains independent of S9+ feature development. Do not interpret green CI, S8 integration, or S8.5 completion as publication authorization.
