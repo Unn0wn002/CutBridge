@@ -6,6 +6,7 @@ on:
       - feature/session-8-japanese-first-ux
     paths:
       - 'tools/s8_ae_localization_patch.py'
+      - 'tools/s8_ae_localization_contract_fix.py'
       - '.github/workflows/s8-ae-localization-patch.yml'
 
 permissions:
@@ -21,7 +22,9 @@ jobs:
           fetch-depth: 0
 
       - name: Apply exact-anchor S8 JSX patch
-        run: python tools/s8_ae_localization_patch.py
+        run: |
+          python tools/s8_ae_localization_patch.py
+          python tools/s8_ae_localization_contract_fix.py
 
       - name: Set up Node
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
