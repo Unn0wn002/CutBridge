@@ -20,6 +20,9 @@ jobs:
       - name: Apply idempotent native-AE repairs
         run: python tools/s7_native_repair.py
 
+      - name: Install focused test dependency
+        run: python -m pip install --disable-pip-version-check -q pytest
+
       - name: Run focused regression gate
         run: |
           node --check apps/after-effects/qc_plus.js
