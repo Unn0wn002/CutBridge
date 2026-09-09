@@ -57,7 +57,7 @@ Do not treat missing `revision_manager.js` or `qc_plus.js` as equivalent to miss
 
 S7 native validation passed in real Adobe After Effects and found/repaired native ExtendScript/revision-state defects before integration.
 
-S8 final targeted native retest passed on exact candidate `f477b745cc600b85708b63d059d6c4eaed9f0249` in **Adobe After Effects 2026 v26.3.0 Build 87**.
+S8 final targeted native retest passed on exact candidate `f477b745cc600b85708b63d059d6c4eaed9f0249` in **After Effects 2026 (26.3 Build 87)**.
 
 The repaired S8 test verified:
 
@@ -71,9 +71,13 @@ The repaired S8 test verified:
 
 S8 merged to `develop` as `368b977582feadc26543825b4d31ffd5f6266a4f`; post-merge CI `34380737455` passed.
 
+## Validation boundary
+
+The S7/S8 native evidence establishes behavior in the explicitly tested real Adobe host, but automated Node/host-shaped coverage is **not native After Effects certification** and the S8 native campaign does not certify every OS/AE configuration.
+
 ## Release boundary
 
-This native evidence establishes the tested S8 candidate behavior; it does **not** authorize publication of v0.2.3 or certify every OS/AE configuration.
+This native evidence does **not** authorize publication of v0.2.3.
 
 There is currently no GitHub Release/tag. Release governance issue #18 and the broader release checklist remain required before RC/stable publication.
 
