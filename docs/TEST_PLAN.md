@@ -1,187 +1,199 @@
 # CutBridge v0.2.3 — Test Plan
 
-Run the complete automated commands in [CONTRIBUTING.md](CONTRIBUTING.md). Release safety coverage also checks repeatability, license inclusion, output preservation, artifact symlinks, source/output separation, and mismatched version constants.
+This plan describes the current **S1–S8 integrated `develop` baseline**. Automated tests are regression evidence; native GUI/end-to-end claims require real-host evidence.
 
-## Blender tests
+Authoritative post-S8 baseline:
 
-| ID | Test | Expected |
+- `develop`: `368b977582feadc26543825b4d31ffd5f6266a4f`;
+- CI run `34380737455`: PASS;
+- static suite: **88 passed + 2 subtests**;
+- full Blender/runtime suite: **179 passed + 2 subtests**;
+- S5/S6/S7/S8 regression suites: PASS;
+- deterministic release simulation/checksums: PASS;
+- JS/ExtendScript syntax: PASS.
+
+The Blender suite currently emits 61 `Scene.use_nodes` deprecation warnings expected to matter for Blender 6.0; see `TECHNICAL_DEBT.md`.
+
+## 1. Core automated gates
+
+### Static / release / AE contract
+
+CI must run the maintained pytest and Node suites covering:
+
+- canonical product-version synchronization;
+- JSON schema/example validation;
+- deterministic release packaging and SHA-256 checks;
+- release authorization fail-closed behavior;
+- AE manifest, path, sequence, pass, package-identity, ownership, revision, QC+, and localization contracts;
+- JS/ExtendScript syntax for all shipped AE runtime files;
+- Japanese/English localization fallback and stable machine identifiers.
+
+Any missing mandatory dependency must fail the gate rather than silently skipping coverage.
+
+### Blender 5.2.1 runtime
+
+Authoritative CI installs official `bpy==5.2.1` and verifies:
+
+- register → unregister → register → unregister lifecycle;
+- scene metadata and validation behavior;
+- render mapping and rollback;
+- package generation/integrity;
+- producer/consumer filename and manifest contracts;
+- Japanese/UTF-8 handling;
+- S8 Blender localization behavior;
+- the complete pytest suite.
+
+## 2. Blender behavioral matrix
+
+| ID | Scenario | Expected |
 |---|---|---|
-| B01 | Empty Cut ID | Validation error |
+| B01 | Required metadata missing | Actionable validation error; package creation blocked |
 | B02 | No active camera | Validation error |
-| B03 | Frame 1–12, 24 fps | Manifest count = 12, fps = 24 |
-| B04 | Japanese metadata e.g. `テスト作品` | UTF-8 JSON is created correctly |
-| B05 | BEAUTY+LINE only | Only two render pass folders + manifest entries |
-| B06 | Build V001 then V002 | Two deterministic package folders |
-| B07 | Register CutBridge 0.2.3 with official `bpy 5.2.1` | Extension registers without `StringProperty` or RNA registration errors |
-| B08 | Disable and re-enable CutBridge in the same Blender session | No `already registered as a subclass` error |
-| B09 | Simulate/encounter a failed registration, then retry enable | CutBridge cleans partial registrations and can retry without restarting Blender |
-| B10 | Open Environment panel on Blender 5.2 | Reports CutBridge 0.2.3, Blender 5.2.x, platform, Python, and Target LTS status |
-| B11 | Build a package with CutBridge 0.2.3 | Generated manifest version matches the canonical extension version |
-| B12 | Missing camera, Cut ID, output, passes, or valid frame range | Validation reports the corresponding error and blocks package generation |
-| B13 | BEAUTY; BEAUTY+LINE; all four passes | Folder tree and manifest entries match the selected passes exactly |
-| B14 | Build a release artifact | Root manifest/modules, synchronized metadata, and recomputed SHA-256 values pass |
-| B15 | Configure BEAUTY/LINE/SHADOW/DEPTH render outputs on supported Blender 5.2.1 setup | CutBridge-owned compositor outputs use deterministic package locations/patterns |
-| B16 | Existing unrelated artist compositor nodes before CutBridge mapping | Artist-owned nodes remain untouched |
-| B17 | Replacement render mapping fails after a prior valid mapping exists | Pending nodes/settings roll back and the previous valid CutBridge mapping is preserved |
-| B18 | Same-version package contains rendered/user payload | Build is blocked with actionable version/package guidance; payload is preserved |
-| B19 | Empty CutBridge scaffold exists for the same version | Safe refresh is allowed with the documented warning path |
-| B20 | Build V001/V002/V003 with Japanese metadata and filesystem-invalid source characters | Version folders coexist, prior payload is preserved, and safe package tokens are deterministic |
-| B21 | Negative export range | Validation and direct manifest production reject it with rebase-to-frame-0 guidance |
+| B03 | Valid non-negative frame range | Manifest frame count/FPS agree with scene |
+| B04 | Negative export range | Rejected with rebase-to-frame-0 guidance |
+| B05 | Japanese metadata/path content | UTF-8 manifest/package handling remains correct |
+| B06 | BEAUTY / selected pass combinations | Folder tree and manifest match selected passes |
+| B07 | Unsupported renderer/pass source | Fail explicitly; do not fabricate output |
+| B08 | Existing unrelated compositor nodes | Preserved |
+| B09 | Replacement mapping fails | Pending changes roll back; prior valid mapping preserved |
+| B10 | Same-version package already has render/user payload | Build blocked; payload preserved |
+| B11 | Empty same-version CutBridge scaffold | Supported safe refresh only |
+| B12 | V001/V002/V003 package workflow | Versions coexist deterministically |
+| B13 | Extension enable/disable/re-enable | No stale RNA registration error |
+| B14 | Partial registration failure then retry | Transactional cleanup permits retry |
+| B15 | JA → EN locale switch | Only locale/UI state changes; workflow data unchanged |
+| B16 | Narrow ~245 px N-panel | Core JA/EN labels/values/actions materially readable |
+| B17 | Validate Cut / Build Package in JA and EN | Same safety decision; localized user-facing text |
 
-Automated Blender checks run headlessly. They validate RNA lifecycle, render-mapping state transitions, package generation/integrity, schema/producer contracts, and selected Blender API behavior. Blender GUI installation/panel behavior and After Effects GUI behavior remain separate manual test areas unless real evidence is recorded.
+## 3. After Effects contract / Build matrix
 
-## After Effects tests
-
-| ID | Test | Expected |
+| ID | Scenario | Expected |
 |---|---|---|
-| A01 | Load a valid CutBridge manifest | Status shows package / FPS / frame count |
-| A02 | Build comp from prepared image sequences | Resolution, FPS, and duration match manifest |
-| A03 | Layer order | Layers follow `ae.layer_order` in manifest |
-| A04 | Remove a required pass folder and run QC/import inspection | Required pass blocks import/build with actionable error |
-| A05 | Change manifest FPS and build a new comp | Comp uses manifest FPS |
-| A06 | Japanese path/package name | Manifest loads without encoding failure |
-| A07 | Missing optional pass | Warning/skip; complete required passes remain usable |
-| A08 | Missing expected middle frame | Missing frame number is diagnosed before complete-sequence import |
-| A09 | Extra or wrong-padding matching filename | QC reports unexpected sequence filename without treating it as the expected frame |
-| A10 | Unsupported `schema_version` | Manifest is rejected before import |
-| A11 | Absolute/traversal/URI-escaped/unsafe pass path | Manifest or host adapter rejects path escape before footage import |
-| A12 | Legacy ExtendScript runtime without native `JSON.parse` | Valid JSON data parses; executable/malformed text is rejected without `eval` |
-| A13 | AE `PRODUCT_VERSION` differs from canonical release version | Release build fails before artifacts are written |
-| A14 | Tagged managed comp moved out of `01_COMP` | Build fails before replacement creation; the moved comp remains untouched |
-| A15 | Duplicate tagged managed comps | Build fails closed before footage/layer mutation |
-| A16 | Managed comp metadata drift after script reload | QC rediscovers the tagged comp and reports the mismatch |
-| A17 | Previously imported optional pass becomes unavailable | The stale optional layer is not treated as verified or reordered |
-| A18 | Valid pass names matching object prototype keys | `constructor`, `toString`, and `__proto__` values are not false duplicates |
-| A19 | Cached footage loses tag, name, source, and folder in one session | Build fails closed without importing a replacement or reclaiming the live artist item |
-| A20 | Cached layer loses tag, name, source, and comp ownership evidence in one session | Build fails closed without adding a replacement layer or reordering the artist layer |
-| A21 | Managed comp or required footage is deleted before QC, including after script reload | QC reports explicit missing managed state; package-only QC remains valid before any managed project state exists |
-| A22 | Combined footage or layer drift is present after script reload | Build fails before replacement import/layer creation and preserves the existing object |
-| A23 | Managed package root is moved while tagged managed objects remain | QC reports managed-state ownership failure instead of package-only PASS |
-| A24 | A late build operation fails after new footage/layer creation | Newly created managed footage/layers roll back; existing comp scaffold and artist work remain |
-| A25 | Existing managed root is missing `03_PRECOMP` or has duplicate `02_RENDER` | Build remains read-only and fails; QC cannot report PASS through an arbitrary first match |
-| A26 | Current V002 project has a duplicate package root or duplicate `02_RENDER`, then V003 revision is selected | Revision blocks before confirmation, replacement import, or `replaceSource()` |
-| A27 | V001 → V002 → V003 through the actual `CutBridge.jsx` adapter in the host-shaped VM | Managed source replacement, ownership migration, historical-footage provenance, Build/QC and script reload remain consistent |
-| A28 | AE release ZIP is built | Archive contains exact `CutBridge.jsx`, `revision_manager.js`, `INSTALL.md`, and `LICENSE` contents with valid release checksums |
-| A29 | Required managed layer is deleted or loses its current ownership tag while managed footage and comp remain valid | QC fails closed on managed-layer ownership/source instead of reporting clean PASS; complete optional missing layer warns, and unavailable optional source remains warning/skip only |
+| A01 | Valid `cutbridge.json` | Package identity/FPS/frame information loads |
+| A02 | Unsupported schema/version | Reject before project mutation |
+| A03 | Unsafe absolute/traversal/escaped path | Reject before footage import |
+| A04 | Required sequence missing frame | Build/import blocked with diagnostic |
+| A05 | Optional sequence unavailable | Warning/skip within policy |
+| A06 | Extra or mis-padded matching file | Diagnosed; never treated as the expected frame |
+| A07 | Valid Japanese package/sequence path | Resolves without encoding failure |
+| A08 | Existing artist same-name/source object | Not automatically adopted |
+| A09 | Duplicate/moved/ambiguous managed object | Fail closed before unsafe mutation |
+| A10 | Late Build failure | Newly created managed state rolls back; artist work preserved |
+| A11 | Script/project reload | Verified managed state is rediscovered without duplication |
+| A12 | Required managed layer deleted/de-tagged | QC reports ownership/source error; never clean PASS |
+| A13 | Optional managed layer absent with valid optional source | Warning-only when otherwise unambiguous |
 
-## S4 automated contract gate
+## 4. S6 revision-manager gate
 
-`node tests/ae_contract_checks.cjs` executes pure helpers and a mocked host adapter. `pytest -q tests/test_ae_contract.py` also checks Draft 2020-12 schema agreement. Missing Node is a failure, never a silent skip. CI installs Node explicitly.
+Required regression coverage includes:
 
-Coverage includes host/third-realm arrays; schema/version fields; positive/zero/single-frame ranges; rejection of negative, fractional, non-finite, reversed and wrong-count ranges; strict FPS/resolution; traversal/absolute/URI/malformed paths; Unicode filenames; exact missing/extra frame detection; required/optional pass behavior; alias rejection; legacy data-only JSON parsing; and canonical AE product version.
+- producer-style V001/V002/V003 identity;
+- strict revision token parsing and duplicate candidate rejection;
+- package/tuple drift and delimiter-collision safety;
+- required/optional pass-set compatibility policy;
+- live ownership/source/container/FPS revalidation;
+- staged import before source replacement;
+- native-adapter use of `AVLayer.replaceSource(..., false)` rather than direct source assignment;
+- validation/import/swap/commit failure rollback;
+- historical-footage provenance;
+- package-root/folder ambiguity blocking;
+- Build/QC/reload consistency after successful revision.
 
-Official `bpy 5.2.1` integration tests observe Blender's signed frame filename (`-0001`), verify actionable negative-export rejection, and feed real generated zero/positive manifests plus Blender-formatted names to the AE contract. No render or AE GUI success is inferred from those tests.
+Real native AE validation for S6 is recorded in issue #19. Green host-shaped tests are not a substitute for that evidence.
 
-Release validation rejects AE version drift before writing artifacts. Release simulation checks ZIP contents, reproducibility and SHA-256 sums.
+## 5. S7 QC+ gate
 
-## Manual application tests
+QC+ must remain deterministic and diagnostic-only.
 
-These remain `MANUAL NOT EXECUTED` until real evidence is recorded.
+Automated coverage must verify:
 
-| Case | Expected |
-|---|---|
-| Install/enable current Blender extension in supported GUI build | Add-on/extension enables and CutBridge panel is usable |
-| Validate and Build Package in Blender GUI | Actionable diagnostics match automated contract and package is created safely |
-| Render configured pass sequences | Expected files are produced for the selected renderer/View Layer setup |
-| Install/run AE development scripts | `CutBridge.jsx` runs with `revision_manager.js` beside it; the panel exposes Import, Build, QC, and Update Revision actions |
-| Load a real package in After Effects | Manifest loads without host/runtime error |
-| Build AE comp | Resolution/FPS/duration/folders/layers agree with manifest |
-| Export range begins at 0 | Blender package and AE import/comp/QC agree |
-| Negative export range | Actionable rejection; animation is not changed |
-| Required middle frame absent | Import blocked with missing frame number |
-| Optional folder/frame absent | Warning and skip; other complete passes import |
-| Extra matching file | Build/QC warning names the affected pass |
-| Japanese package/pass/sequence paths | Correct file resolution and import |
-| Folder/file symlink or alias | Rejected before footage import |
-| Older ExtendScript without native JSON | Valid JSON loads; executable text is rejected |
-| Repeat package import | First build, repeated build, manifest reload and script reload retain singleton managed items/layers; tag/container drift blocks without adoption or duplication |
-| Delete or de-tag a required managed layer while its footage/comp remain valid | QC reports managed-layer ownership/source failure; it must not report clean PASS |
-| Delete a complete optional managed layer while its footage remains valid | QC reports an optional-layer warning without converting unambiguous optional absence into a hard error |
-| V001 → V002 revision in native AE | Explicit confirmation is shown; only verified CutBridge-managed sources/metadata change; effects, masks, transforms, parenting, timing, switches, blend mode, and unrelated artist layers remain unchanged |
-| V002 → V003 revision followed by Build/QC | New managed sources are active, historical managed footage retains prior-version provenance, Build safely reuses the current managed state, and QC passes only when the project is consistent |
-| Save/close/reopen after revision | Reloading the newer manifest rediscovers managed project state; Build/QC do not duplicate or adopt unrelated objects |
-| Duplicate/missing managed root/folder before revision or QC | Revision blocks before confirmation/import/source swap; QC reports structural failure and never reports PASS |
-| Native AE rollback/undo failure exercise where safely reproducible | Failed revision reports failure accurately; original source/property state is restored when host rollback succeeds; incomplete rollback is never described as successful |
-| Blender → package → AE V001 → V002 smoke test | Real producer output imports, builds, revises, and QCs in the selected Blender/AE/OS combination without replacing unrelated artist work |
+- stable `CBQ-*` identifiers;
+- PASS / WARNING / ERROR severity;
+- remediation text for every warning/error;
+- required/optional sequence diagnostics;
+- unexpected matching files;
+- resolution, pixel aspect, FPS, and duration drift;
+- managed footage/layer ownership state;
+- stale/foreign/ambiguous managed tags;
+- revision compatibility diagnostics;
+- no adoption/import/deletion/retagging/source replacement/automatic repair from QC.
 
-## Target-user task test
+S7 real Adobe After Effects validation found and repaired native ExtendScript/revision-state defects before integration. Treat that evidence as the native gate, not the Node harness alone.
 
-After the product reaches the appropriate validation stage, measure with representative users:
+## 6. S8 localization / UX gate
 
-1. Manual setup time for one cut in AE.
-2. CutBridge setup time.
-3. Number/type of handoff errors.
-4. Whether the tester understood diagnostics without developer intervention.
-5. Which automation was useful versus intrusive.
-6. Revision/rework impact when V002 replaces V001.
+### Blender
 
-Do not claim timing, error-rate, usability, or Japanese target-user results until the test was actually run.
+Automated and native validation must establish:
 
-## S5 ownership/cache automated gate
+- Japanese first-class/default UI;
+- deterministic English switch/fallback;
+- no slash-combined pseudo-localization for primary controls;
+- stable machine identifiers and canonical support detail;
+- locale changes do not alter unrelated scene/package state;
+- practical narrow-panel readability.
 
-`node tests/ae_s5_checks.cjs` executes the entire JSX panel with host mocks and re-evaluates it against the same project to simulate script reload. It runs through `tests/test_ae_s5.py` in CI. The source-guard, comp/layer rollback, partial-retry-order, and dedicated QC managed-layer regressions remain mandatory. The core S5 harness contains 45 groups; `ae_qc_managed_layer_checks.cjs` adds the required/optional QC boundary cases separately.
+Final repaired S8 Blender native test passed on candidate `f477b745...` in Blender 5.2.1 LTS at approximately 245 px N-panel width.
 
-| Change after successful Build | Expected same-session and script-reload result |
-|---|---|
-| Footage tag removed/changed/unreadable | Block ambiguous ownership; do not re-tag or import a duplicate |
-| Footage moved from managed render folder | Block folder ownership drift; preserve moved object |
-| Layer tag removed/changed/unreadable | Block ambiguous ownership; do not add a duplicate |
-| Tagged layer moved to another comp | Block expected-comp mismatch; preserve both comps |
-| Cached item/layer has wrong host type/container | Reject live ownership; never report safe reuse |
-| Duplicate persistent footage/layer tag | Block ambiguous ownership |
-| Moved or duplicate managed comp tag | Block before creating or mutating a replacement comp |
-| Cached reference removed; valid live replacement and matching layer source exist | Rediscover and validate live replacement; no import/layer duplication |
-| Artist footage/layers with unrelated names/sources | Preserve contents and artist relative order |
-| Comp metadata drift after script reload | Rediscover the managed comp and report the mismatch |
-| Optional pass folder disappears after a prior import | Warn/skip the optional pass without reordering its stale layer |
-| Pass names using inherited object keys | Accept valid names without false duplicate errors |
-| QC following footage ownership/source/FPS failure | Report managed-footage error even after cache invalidation or reload |
-| Cached footage or layer loses all identifying signals while the object remains live | Fail closed without importing footage or adding a layer over the live user-modified object |
-| Managed comp or required managed footage is deleted before QC | Report explicit missing managed state rather than a false package-only PASS |
-| Required managed layer is deleted or de-tagged while managed footage/comp remain valid | QC reports managed-layer error rather than clean PASS; strict resolver prevents artist-layer adoption |
-| Complete optional managed layer is deleted while optional source remains valid | QC warning only when ownership is otherwise unambiguous |
-| Combined footage/layer drift remains after script reload | Preflight the existing managed comp/layer state before importing or adding replacements |
-| Managed package root is moved but tagged managed comp remains | Report managed-comp validation failure; do not issue package-only PASS |
-| Late build failure after new managed objects are created | Roll back only the newly created footage/layers and preserve unrelated project state |
+### After Effects
 
-Manual repetition in a supported AE desktop installation remains `MANUAL NOT EXECUTED`. Mocks cannot certify native host handles, comment persistence, undo behavior or OS filesystem semantics.
+Automated and native validation must establish:
 
-## S6 revision-manager repair gate
+- Japanese first-class/default UI;
+- explicit English selection and persistence;
+- `CBQ-*` codes and safety decisions remain locale-independent;
+- missing/invalid `localization.js` yields deterministic English fallback;
+- the visible selector reflects the effective fallback locale;
+- fallback/localization changes cause zero unintended project mutation;
+- Build/QC/Revision remain fail-closed under fallback.
 
-Run `node tests/ae_s6_revision_checks.cjs` or `pytest -q tests/test_ae_s6.py`.
-The latter makes S6 mandatory in the complete pytest suite; missing Node fails.
+Final repaired S8 AE native test passed on candidate `f477b745...` in Adobe After Effects 2026 v26.3.0 Build 87.
 
-The core revision harness contains 30 groups covering producer-style versioned package names,
-structural tuple drift, delimiter collisions, strict numeric revisions/display tokens, ambiguous
-duplicate candidates, shared schema/path/frame/pass validation, prototype-key names, required
-and optional policy, mandatory callbacks, forged/stale tickets, confirmation bypass attempts,
-live ownership/source/container/FPS drift, duplicate/missing layers, staging all imports before
-swaps, validation-failure cleanup, allocation-then-throw, multi-action mutate-then-throw
-restoration, silent swap failure, failed restoration, failed cleanup, retained replacements and
-mock layer-property/order preservation. It also covers unprintable thrown values during rollback
-and malformed schema values within otherwise valid discovery lists, so error reporting cannot
-interrupt recovery.
+## 7. Release-simulation gate
 
-`tests/test_ae_s6.py` also executes the actual `CutBridge.jsx` adapter in host-shaped Node VMs:
+Every relevant branch/PR should simulate packaging using the canonical product version and verify:
 
-- `ae_s6_native_host_checks.cjs` runs V001 → V002 → V003, uses a deliberately read-only
-  `AVLayer.source`, permits source mutation only through `replaceSource(..., false)`, verifies
-  package/tag migration, historical-footage provenance, Build/QC after revision, script reload,
-  artist root-comment preservation, and rejection of ambiguous current root/folder structure
-  before confirmation/import/source replacement.
-- `ae_s6_root_structure_checks.cjs` removes/duplicates deterministic managed folders and proves
-  Build performs no implicit structural repair while QC remains read-only and cannot report PASS
-  through an ambiguous first match.
-- `ae_qc_managed_layer_checks.cjs` proves QC requires current managed-layer ownership/source for
-  complete required passes, treats unambiguous complete optional-layer absence as a warning, and
-  retains warning/skip behavior when an optional source sequence is unavailable.
-- Static guards verify the formatter scope, native source-replacement API, root-ownership rules,
-  release sidecar inclusion and other source invariants.
+- expected Blender ZIP;
+- expected After Effects ZIP;
+- `SHA256SUMS.txt`;
+- `release-metadata.json`;
+- archive contents and license inclusion;
+- deterministic checksums for identical sources/toolchain;
+- version/tag/channel/prerelease consistency;
+- release authorization remains separate from build success.
 
-The native adapter, panel/discovery flow, package-root/tag migration, Build/QC/reload lifecycle,
-and deterministic release-sidecar packaging are therefore **implemented and regression-tested**.
-These host-shaped tests still do **not** execute an Adobe After Effects desktop host. Native AE
-property preservation, ScriptUI/undo behavior, item-comment persistence across real project
-save/reopen, OS filesystem/sequence interpretation, real V001 → V002 → V003 execution, and the
-Blender → After Effects end-to-end workflow remain **MANUAL NOT EXECUTED** until actual evidence
-is recorded.
+A successful simulation does **not** authorize publication.
+
+## 8. Manual / real-host release gates still required
+
+Before a stable release claim, execute and record the appropriate real application/end-to-end checks, including:
+
+- installation and normal use in supported Blender GUI builds;
+- real render sequence production for release-target renderer/View Layer configurations;
+- Blender → package → After Effects handoff using release-candidate artifacts;
+- representative Build/QC/revision/save-reopen workflow;
+- real filesystem/path behavior for the supported OS matrix;
+- published release-asset checksum/content verification;
+- production update-index/update-discovery verification;
+- Japanese target-user validation appropriate to the claim.
+
+Already-passed S6/S7/S8 native gates should not be relabeled as unexecuted, but they also do not automatically certify every release-target host/OS/workflow combination.
+
+## 9. S8.5 documentation gate
+
+For the repository-state reconciliation PR:
+
+- documentation only; no runtime behavior changes;
+- `main` untouched;
+- `release-authorization.json` unchanged and unapproved;
+- docs consistently state S1–S8 integrated and S9 next;
+- Japanese Quick Start exists and matches the current S8 workflow;
+- release-governance issue #18 remains open;
+- CI passes on the exact documentation head;
+- after merge, `develop` CI passes on the exact merge commit.
+
+## 10. S9 entry criteria
+
+S9 Studio Presets may start after S8.5 is integrated and post-merge `develop` CI is green.
+
+S9 must preserve all existing fail-closed ownership, revision, QC, localization, and release-authority boundaries. Presets must be data-only and must not introduce arbitrary code execution or hidden filesystem/network actions.
