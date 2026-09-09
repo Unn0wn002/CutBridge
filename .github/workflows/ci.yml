@@ -24,7 +24,7 @@ jobs:
       - name: Install test dependencies
         run: python -m pip install pytest jsonschema
       - name: Run tests
-        run: pytest -q tests/test_static.py tests/test_release_hygiene.py tests/test_release_authorization.py tests/test_ae_contract.py tests/test_ae_s5.py tests/test_ae_s6.py tests/test_ae_s7.py tests/test_s8_blender_localization.py tests/test_ae_install_docs.py tests/test_ae_package_identity.py
+        run: pytest -q tests/test_static.py tests/test_release_hygiene.py tests/test_release_authorization.py tests/test_ae_contract.py tests/test_ae_s5.py tests/test_ae_s6.py tests/test_ae_s7.py tests/test_ae_s8.py tests/test_s8_blender_localization.py tests/test_ae_install_docs.py tests/test_ae_package_identity.py
       - name: Simulate release packaging
         shell: bash
         run: |
@@ -51,14 +51,19 @@ jobs:
         run: |
           node tests/ae_s7_qc_plus_checks.cjs
           node tests/ae_s7_native_qc_binding_checks.cjs
+      - name: Run S8 localization checks
+        run: |
+          node tests/ae_s8_localization_checks.cjs
       - name: Check ExtendScript syntax with Node parser
         run: |
           cp apps/after-effects/CutBridge.jsx /tmp/CutBridge.js
           cp apps/after-effects/revision_manager.js /tmp/revision_manager.js
           cp apps/after-effects/qc_plus.js /tmp/qc_plus.js
+          cp apps/after-effects/localization.js /tmp/localization.js
           node --check /tmp/CutBridge.js
           node --check /tmp/revision_manager.js
           node --check /tmp/qc_plus.js
+          node --check /tmp/localization.js
 
   blender-52-rna-runtime:
     runs-on: ubuntu-latest
