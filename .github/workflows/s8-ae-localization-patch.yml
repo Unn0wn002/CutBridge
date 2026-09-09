@@ -1,0 +1,67 @@
+name: S8 AE localization patch gate
+
+on:
+  push:
+    branches:
+      - feature/session-8-japanese-first-ux
+    paths:
+      - 'tools/s8_ae_localization_patch.py'
+      - '.github/workflows/s8-ae-localization-patch.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+
+      - name: Apply exact-anchor S8 JSX patch
+        run: python tools/s8_ae_localization_patch.py
+
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+
+      - name: Install focused test dependencies
+        run: python -m pip install --disable-pip-version-check -q pytest jsonschema
+
+      - name: Verify patched After Effects surface
+        run: |
+          cp apps/after-effects/CutBridge.jsx /tmp/CutBridge.js
+          node --check /tmp/CutBridge.js
+          node --check apps/after-effects/localization.js
+          node --check apps/after-effects/revision_manager.js
+          node --check apps/after-effects/qc_plus.js
+          node tests/ae_s5_checks.cjs
+          node tests/ae_s6_revision_checks.cjs
+          node tests/ae_s6_optional_pass_lifecycle_checks.cjs
+          node tests/ae_s6_extend_script_binding_checks.cjs
+          node tests/ae_s7_qc_plus_checks.cjs
+          node tests/ae_s7_native_qc_binding_checks.cjs
+          node tests/ae_s8_localization_checks.cjs
+          python -m pytest -q tests/test_ae_s5.py tests/test_ae_s6.py tests/test_ae_s7.py tests/test_ae_s8.py tests/test_ae_install_docs.py tests/test_release_hygiene.py
+
+      - name: Commit verified JSX patch when needed
+        shell: bash
+        run: |
+          git add apps/after-effects/CutBridge.jsx
+          if git diff --cached --quiet; then
+            echo "No JSX product changes to commit."
+            exit 0
+          fi
+          git diff --cached --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "feat: bind S8 localization into After Effects panel"
+          git push origin HEAD:feature/session-8-japanese-first-ux
