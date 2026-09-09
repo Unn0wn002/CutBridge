@@ -1,0 +1,68 @@
+name: S8 Native Validation Package
+
+on:
+  push:
+    branches: ['validation/s8-native-bd3c9877']
+    paths:
+      - '.github/workflows/s8-native-validation-package.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build-exact-ae-validation-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: bd3c98773f94e6379713fb885ca3f2c10917780b
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.11'
+      - name: Build exact S8 validation package
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = 'bd3c98773f94e6379713fb885ca3f2c10917780b'
+          python tools/build_release.py --tag v0.2.3 --output dist-native
+          AE_ZIP='dist-native/CutBridge-AfterEffects-v0.2.3.zip'
+          EXPECTED='d2a718706f47cf75976a6494bc1a1508db3a9bf007386cc8b972b4b839a06b42'
+          ACTUAL="$(sha256sum "$AE_ZIP" | awk '{print $1}')"
+          test "$ACTUAL" = "$EXPECTED"
+          printf '%s  %s\n' "$ACTUAL" 'CutBridge-AfterEffects-v0.2.3.zip' > dist-native/AE-SHA256.txt
+          python - <<'PY'
+          import zipfile
+          from pathlib import Path
+          path = Path('dist-native/CutBridge-AfterEffects-v0.2.3.zip')
+          expected = [
+              'CutBridge.jsx',
+              'revision_manager.js',
+              'qc_plus.js',
+              'localization.js',
+              'INSTALL.md',
+              'LICENSE',
+          ]
+          with zipfile.ZipFile(path) as archive:
+              assert archive.namelist() == expected, archive.namelist()
+          PY
+          cat > dist-native/NATIVE_VALIDATION.txt <<'EOF'
+          CutBridge S8 native validation artifact
+          Source commit: bd3c98773f94e6379713fb885ca3f2c10917780b
+          After Effects ZIP SHA-256: d2a718706f47cf75976a6494bc1a1508db3a9bf007386cc8b972b4b839a06b42
+          Validation gate: GitHub Issue #38
+          Purpose: real Adobe After Effects Japanese/English desktop validation only.
+          Expected AE runtime files: CutBridge.jsx, revision_manager.js, qc_plus.js, localization.js.
+          This artifact is not a release and does not authorize publication.
+          EOF
+      - name: Upload exact After Effects validation artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: CutBridge-S8-AE-bd3c9877-native-validation
+          path: |
+            dist-native/CutBridge-AfterEffects-v0.2.3.zip
+            dist-native/AE-SHA256.txt
+            dist-native/release-metadata.json
+            dist-native/NATIVE_VALIDATION.txt
+          if-no-files-found: error
+          retention-days: 30
