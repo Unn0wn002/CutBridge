@@ -7,10 +7,18 @@ ROOT = Path(__file__).resolve().parents[1]
 AE = ROOT / "apps" / "after-effects"
 
 
-def test_ae_s8_localization_engine():
+def _run_node(script_name: str) -> None:
     node = shutil.which("node")
-    assert node, "Node is required for S8 After Effects localization checks"
-    subprocess.run([node, str(ROOT / "tests" / "ae_s8_localization_checks.cjs")], cwd=ROOT, check=True)
+    assert node, "Node is required for S8 After Effects checks"
+    subprocess.run([node, str(ROOT / "tests" / script_name)], cwd=ROOT, check=True)
+
+
+def test_ae_s8_localization_engine():
+    _run_node("ae_s8_localization_checks.cjs")
+
+
+def test_ae_s8_native_scriptui_binding():
+    _run_node("ae_s8_native_ui_binding_checks.cjs")
 
 
 def test_ae_s8_localization_sidecar_is_host_independent_and_parser_safe():
@@ -27,9 +35,6 @@ def test_ae_s8_localization_sidecar_is_host_independent_and_parser_safe():
 
 def test_ae_s8_panel_binding_contract_is_present_after_native_patch():
     source = (AE / "CutBridge.jsx").read_text(encoding="utf-8")
-    # These anchors are populated by the guarded S8 JSX patch. Keeping the test
-    # here makes the branch fail closed until the native panel actually binds the
-    # localization engine rather than merely shipping an unused dictionary.
     assert "function getLocalization()" in source
     assert '"/localization.js"' in source
     assert "CutBridgeLocalization" in source
@@ -42,5 +47,7 @@ def test_ae_s8_panel_binding_contract_is_present_after_native_patch():
     assert 'tr("update_revision")' in source
     assert "localizeRecords" in source
     assert "formatRevisionBlocked" in source
+    assert "qc.render(records)" in source
+    assert 'if (typeof confirm !== "function") throw new Error("After Effects confirmation UI is unavailable; revision was not applied.");' in source
     assert "CutBridge / カットブリッジ" not in source
     assert "Import Package / 読み込み" not in source
