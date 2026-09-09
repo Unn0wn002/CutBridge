@@ -166,7 +166,27 @@ def localized_issue(language: str | None, item: dict) -> tuple[str, str]:
 
 
 def format_localized_issue(language: str | None, item: dict) -> str:
-    message, fix = localized_issue(language, item)
-    if not fix:
-        return message
-    return f"{message} {tr(language, 'fix', value=fix)}"
+    """Format JP-first interactive text while preserving canonical support text.
+
+    Existing production tests, support recipes, and automation consume stable
+    English diagnostic substrings. Japanese therefore leads the interactive
+    report, but mapped Japanese diagnostics append their canonical English
+    message/fix. Machine-facing validation codes remain outside this formatter.
+    """
+    lang = normalize_language(language)
+    canonical_message = str(item.get("message", "CutBridge validation issue.")).strip()
+    canonical_fix = str(item.get("fix", "")).strip()
+    message, fix = localized_issue(lang, item)
+
+    localized = message
+    if fix:
+        localized += " " + tr(lang, "fix", value=fix)
+
+    # English and untranslated Japanese fallbacks are already canonical.
+    if lang != "JA" or (message == canonical_message and fix == canonical_fix):
+        return localized
+
+    canonical = canonical_message
+    if canonical_fix:
+        canonical += " Fix: " + canonical_fix
+    return localized + " [EN] " + canonical
