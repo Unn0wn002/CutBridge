@@ -41,7 +41,7 @@ replace_once(
 
 # Regression: missing sidecar + persisted JA must render coherent English UI.
 ae_test = ROOT / "tests/ae_s8_native_ui_binding_checks.cjs"
-anchor = "for (const text of makeRuntime().buttonTexts()) assert.doesNotMatch(text, /\\s \\/ \\s/, 'S8 must not use decorative slash-bilingual buttons');\n"
+anchor = "console.log('S8 native ScriptUI localization binding: PASS (JA default, EN switch/persistence, safe fallback, non-mutation)');\n"
 insert = '''{\n  const h = makeRuntime({injectLocalization: false, savedLocale: 'JA'});\n  assert.equal(h.dropdown().selection.index, 1, 'persisted JA must not remain visibly selected when only English fallback strings are available');\n  assert.deepEqual(h.buttonTexts(), ['1. Import Package', '2. Build Comp', '3. Run QC', '4. Update Revision']);\n  assert.equal(h.projectMutationCount(), 0, 'persisted-locale fallback must remain UX-only');\n}\n\n''' + anchor
 replace_once(ae_test, anchor, insert)
 
