@@ -64,7 +64,7 @@ def test_s7_native_after_effects_parser_regressions():
     assert 'else if (warnings.length > 0) {' in revision_source
     assert 'errors.length ? "incompatible" : warnings.length ? "warning" : "safe"' not in revision_source
 '''
-    pytest_file.write_text(text.rstrip() + addition + "\n", encoding="utf-8")
+    pytest_file.write_text(text.rstrip() + addition.rstrip() + "\n", encoding="utf-8")
     print("added: native AE parser regression test")
 else:
     print("already present: native AE parser regression test")
