@@ -54,6 +54,7 @@ jobs:
       - name: Run S8 localization checks
         run: |
           node tests/ae_s8_localization_checks.cjs
+          node tests/ae_s8_native_ui_binding_checks.cjs
       - name: Check ExtendScript syntax with Node parser
         run: |
           cp apps/after-effects/CutBridge.jsx /tmp/CutBridge.js
