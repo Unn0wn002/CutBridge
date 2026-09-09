@@ -46,3 +46,20 @@ def test_s7_qc_plus_engine_is_host_independent_and_non_mutating():
     forbidden = ["replaceSource(", ".remove()", "app.project.importFile", "items.addFolder", "layers.add("]
     for token in forbidden:
         assert token not in source
+
+
+def test_s7_native_after_effects_parser_regressions():
+    root = Path(__file__).resolve().parents[1]
+    qc_source = (root / "apps/after-effects/qc_plus.js").read_text(encoding="utf-8")
+    revision_source = (root / "apps/after-effects/revision_manager.js").read_text(encoding="utf-8")
+
+    # AE 26.3 ExtendScript rejects an unquoted reserved `package` key.
+    assert '        "package": 0,' in qc_source
+    assert "\n        package: 0," not in qc_source
+
+    # AE 26.3 evaluated the previous nested ternary as warning for errors=1/warnings=0.
+    # Keep the compatibility decision explicit and parser-safe.
+    assert 'if (errors.length > 0) {' in revision_source
+    assert 'status = "incompatible";' in revision_source
+    assert 'else if (warnings.length > 0) {' in revision_source
+    assert 'errors.length ? "incompatible" : warnings.length ? "warning" : "safe"' not in revision_source

@@ -17,7 +17,7 @@
     var SEVERITY = {PASS: "PASS", WARNING: "WARNING", ERROR: "ERROR"};
     var SEVERITY_ORDER = {ERROR: 0, WARNING: 1, PASS: 2};
     var SCOPE_ORDER = {
-        package: 0,
+        "package": 0,
         manifest: 1,
         sequence: 2,
         footage: 3,
