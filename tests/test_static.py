@@ -240,9 +240,10 @@ def test_release_builder_produces_expected_artifacts(tmp_path):
         assert archive.read("LICENSE") == (ROOT / "LICENSE").read_bytes()
 
     with zipfile.ZipFile(ae_zip) as archive:
-        assert archive.namelist() == ["CutBridge.jsx", "revision_manager.js", "INSTALL.md", "LICENSE"]
+        assert archive.namelist() == ["CutBridge.jsx", "revision_manager.js", "qc_plus.js", "INSTALL.md", "LICENSE"]
         assert archive.read("CutBridge.jsx") == (ROOT / "apps/after-effects/CutBridge.jsx").read_bytes()
         assert archive.read("revision_manager.js") == (ROOT / "apps/after-effects/revision_manager.js").read_bytes()
+        assert archive.read("qc_plus.js") == (ROOT / "apps/after-effects/qc_plus.js").read_bytes()
         assert archive.read("INSTALL.md") == (ROOT / "apps/after-effects/INSTALL.md").read_bytes()
         assert archive.read("LICENSE") == (ROOT / "LICENSE").read_bytes()
 

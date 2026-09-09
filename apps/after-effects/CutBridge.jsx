@@ -309,6 +309,7 @@ if (typeof module !== "undefined" && module.exports) {
 (function CutBridge(thisObj) {
     var state = {manifestFile: null, manifest: null, packageFolder: null, comp: null, imported: {}, layers: {}};
     var revisionManager = null;
+    var qcPlus = null;
     function log(msg) { $.writeln("[CutBridge] " + msg); }
     function alertError(msg) { alert("CutBridge\n\n" + msg); }
     function readTextFile(file) { file.encoding = "UTF-8"; if (!file.open("r")) throw new Error("Could not open: " + file.fsName); var text = file.read(); file.close(); return text; }
@@ -731,6 +732,25 @@ if (typeof module !== "undefined" && module.exports) {
         for (var j = layers.length - 1; j >= 0; j--) if (layers[j].moveToBeginning) layers[j].moveToBeginning();
     }
 
+    function getQCPlus() {
+        if (qcPlus) return qcPlus;
+        if (typeof CutBridgeQCPlus !== "undefined") qcPlus = CutBridgeQCPlus;
+        else {
+            if (typeof $ === "undefined" || !$.fileName) throw new Error("CutBridge QC+ requires qc_plus.js beside CutBridge.jsx.");
+            var scriptFile = new File(new File($.fileName).parent.fsName + "/qc_plus.js");
+            if (!scriptFile.exists) throw new Error("CutBridge QC+ requires qc_plus.js beside CutBridge.jsx.");
+            $.evalFile(scriptFile);
+            if (typeof CutBridgeQCPlus === "undefined") throw new Error("CutBridge could not load qc_plus.js beside CutBridge.jsx.");
+            qcPlus = CutBridgeQCPlus;
+        }
+        if (!qcPlus || typeof qcPlus.diagnostic !== "function" || typeof qcPlus.render !== "function" ||
+            typeof qcPlus.sequenceRecords !== "function" || typeof qcPlus.compRecords !== "function" ||
+            typeof qcPlus.managedObjectRecords !== "function" || typeof qcPlus.hostRecords !== "function") {
+            throw new Error("CutBridge QC+ engine is invalid.");
+        }
+        return qcPlus;
+    }
+
     function getRevisionManager() {
         if (revisionManager) return revisionManager;
         if (typeof CutBridgeRevisionManager !== "undefined") revisionManager = CutBridgeRevisionManager;
@@ -970,60 +990,176 @@ if (typeof module !== "undefined" && module.exports) {
         finally { app.endUndoGroup(); }
     }
 
-    function runQC() {
-        if (!ensureManifestLoaded()) return;
-        var m = state.manifest, lines = [], errors = 0, warnings = 0;
-        function ok(msg) { lines.push("PASS " + msg); } function warn(msg) { warnings++; lines.push("WARN " + msg); } function bad(msg) { errors++; lines.push("ERR  " + msg); }
-        var contractErrors = CutBridgeContract.validateManifest(m); if (contractErrors.length) { alertError("Manifest contract rejected:\n- " + contractErrors.join("\n- ")); return; } else ok("Manifest schema " + CutBridgeContract.SCHEMA + " v" + CutBridgeContract.SCHEMA_VERSION);
-        ok("FPS " + m.fps); ok("Frame count " + m.frames.count); ok("Resolution " + m.resolution.width + "x" + m.resolution.height);
-        var projectFolders = existingProjectFolders(m), managedCompFolder = projectFolders ? projectFolders.comp : null, compName = (m.ae && m.ae.comp_name) ? m.ae.comp_name : (m.cut + "_COMP"), liveComp = null, compLookupError = null;
-        try { liveComp = findManagedComp(m, managedCompFolder, compName); } catch (compError) { compLookupError = compError; }
-        for (var i = 0; i < m.passes.length; i++) {
-            var p = m.passes[i], coverage = inspectSequence(p, m), optional = p.required === false, managedFootage = null;
-            if (!coverage.folderExists) { if (optional) warn(p.name + ": optional pass folder missing"); else bad(p.name + ": required pass folder missing"); continue; }
-            if (!coverage.complete) { var missingMsg = p.name + ": missing frame(s): " + formatMissingFrames(coverage.missing); if (optional) warn(missingMsg + " (optional pass)"); else bad(missingMsg); continue; }
-            ok(p.name + ": " + m.frames.count + "/" + m.frames.count + " expected frames present"); if (coverage.unexpected.length) warn(p.name + ": " + coverage.unexpected.length + " unexpected matching filename(s)");
-            if (projectFolders) {
-                if (!projectFolders.render) { if (optional) warn(p.name + ": managed render folder is missing"); else bad(p.name + ": managed render folder is missing"); }
-                else {
-                    try {
-                        managedFootage = findManagedFootage(p, m, projectFolders.render, expectedFirstFile(p, coverage));
-                        if (managedFootage) ok(p.name + ": managed footage source/FPS matches manifest");
-                        else if (optional) warn(p.name + ": optional managed footage is missing from the expected render folder");
-                        else bad(p.name + ": required managed footage is missing from the expected render folder");
-                    } catch (footageError) { bad(p.name + ": managed footage validation failed — " + footageError.toString()); }
-                    if (liveComp && typeof liveComp.layer === "function" && managedFootage) {
-                        try {
-                            var managedLayer = findManagedLayer(liveComp, CutBridgeContract.managedTag("layer", m, p.name), managedFootage, p.name);
-                            if (managedLayer) ok(p.name + ": managed layer ownership/source matches manifest");
-                            else if (optional) warn(p.name + ": optional managed layer is missing from the expected comp");
-                            else bad(p.name + ": required managed layer is missing from the expected comp");
-                        } catch (layerError) { bad(p.name + ": managed layer validation failed — " + layerError.toString()); }
-                    }
+    function exactCurrentManagedOrphans(manifest) {
+        var result = {footage: {}, layer: {}}, i, p, tag;
+        for (i = 0; i < manifest.passes.length; i++) {
+            result.footage["$" + manifest.passes[i].name] = 0;
+            result.layer["$" + manifest.passes[i].name] = 0;
+        }
+        if (!app.project) return result;
+        for (var itemIndex = 1; itemIndex <= app.project.numItems; itemIndex++) {
+            var item = app.project.item(itemIndex), comment = itemComment(item);
+            for (i = 0; i < manifest.passes.length; i++) {
+                p = manifest.passes[i]; tag = "$" + p.name;
+                if (comment === CutBridgeContract.managedTag("footage", manifest, p.name)) result.footage[tag]++;
+            }
+            if (typeof CompItem === "undefined" || !(item instanceof CompItem) || typeof item.layer !== "function") continue;
+            for (var layerIndex = 1; layerIndex <= item.numLayers; layerIndex++) {
+                var layerComment = itemComment(item.layer(layerIndex));
+                for (i = 0; i < manifest.passes.length; i++) {
+                    p = manifest.passes[i]; tag = "$" + p.name;
+                    if (layerComment === CutBridgeContract.managedTag("layer", manifest, p.name)) result.layer[tag]++;
                 }
             }
         }
-        if (compLookupError) bad("Managed comp validation failed — " + compLookupError.toString());
-        else if (projectFolders) {
-            if (!managedCompFolder) bad("Managed comp folder is missing from the expected package folder");
-            else if (!liveComp) bad("Managed comp is missing from the expected comp folder");
-            else {
+        return result;
+    }
+
+    function runQC() {
+        if (!ensureManifestLoaded()) return;
+        var m = state.manifest, qc, records = [];
+        function append(items) {
+            for (var ai = 0; items && ai < items.length; ai++) records.push(items[ai]);
+        }
+        function add(spec) { records.push(qc.diagnostic(spec)); }
+        function finish() {
+            var report = qc.render(records);
+            alert("CutBridge QC — " + report.headline + "\n\n" + report.text);
+        }
+
+        try { qc = getQCPlus(); }
+        catch (qcLoadError) { alertError(qcLoadError.toString()); return; }
+
+        var contractErrors = CutBridgeContract.validateManifest(m);
+        if (contractErrors.length) {
+            for (var ce = 0; ce < contractErrors.length; ce++) {
+                add({severity: "ERROR", code: "CBQ-MANIFEST-CONTRACT-ERROR", scope: "manifest",
+                    message: contractErrors[ce], remediation: "Repair or regenerate cutbridge.json from the trusted Blender package, then load it again before Build, Revision, or QC."});
+            }
+            finish(); return;
+        }
+
+        add({severity: "PASS", code: "CBQ-PACKAGE-IDENTITY-OK", scope: "package", subject: m.package_name || m.cut,
+            message: "Package identity and manifest naming are valid."});
+        add({severity: "PASS", code: "CBQ-MANIFEST-SCHEMA-OK", scope: "manifest",
+            message: "Manifest schema " + CutBridgeContract.SCHEMA + " v" + CutBridgeContract.SCHEMA_VERSION + " is supported."});
+        add({severity: "PASS", code: "CBQ-MANIFEST-FPS-OK", scope: "manifest", message: "FPS " + m.fps + " is valid."});
+        add({severity: "PASS", code: "CBQ-MANIFEST-FRAMES-OK", scope: "manifest", message: "Frame count " + m.frames.count + " is internally consistent."});
+        add({severity: "PASS", code: "CBQ-MANIFEST-RESOLUTION-OK", scope: "manifest", message: "Resolution " + m.resolution.width + "x" + m.resolution.height + " is valid."});
+
+        if (!app.project) {
+            append(qc.hostRecords({inspectable: false})); state.comp = null; finish(); return;
+        }
+
+        var projectFolders = null, folderLookupError = null;
+        try { projectFolders = existingProjectFolders(m); }
+        catch (folderError) { folderLookupError = folderError; }
+
+        var managedCompFolder = projectFolders ? projectFolders.comp : null;
+        var compName = (m.ae && m.ae.comp_name) ? m.ae.comp_name : (m.cut + "_COMP");
+        var liveComp = null, compLookupError = null;
+        // Even when the expected package root is absent, scan globally for the
+        // exact managed-comp tag. A moved/tagged comp is ownership drift, not a
+        // package-only state that QC may silently pass.
+        try { liveComp = findManagedComp(m, managedCompFolder, compName); }
+        catch (compError) { compLookupError = compError; }
+
+        for (var i = 0; i < m.passes.length; i++) {
+            var p = m.passes[i], coverage = null, managedFootage = null;
+            try { coverage = inspectSequence(p, m); }
+            catch (sequenceError) {
+                add({severity: "ERROR", code: "CBQ-SEQ-INSPECTION-ERROR", scope: "sequence", subject: p.name,
+                    message: "Sequence inspection failed — " + sequenceError.toString(),
+                    remediation: "Verify the package-relative pass path, aliases, and sequence filenames. CutBridge will not follow unsafe paths or guess the intended source."});
+                continue;
+            }
+            append(qc.sequenceRecords(p, m, coverage));
+            if (!coverage.folderExists || !coverage.complete || !projectFolders) continue;
+
+            if (!projectFolders.render) {
+                add({severity: p.required === false ? "WARNING" : "ERROR", code: p.required === false ? "CBQ-FOOTAGE-OPTIONAL-MISSING" : "CBQ-FOOTAGE-REQUIRED-MISSING", scope: "footage", subject: p.name,
+                    message: (p.required === false ? "optional" : "required") + " managed render folder is missing.",
+                    remediation: "Restore the deterministic CutBridge package folders or rebuild/migrate deliberately; QC will not create or adopt folders automatically."});
+                continue;
+            }
+
+            try {
+                managedFootage = findManagedFootage(p, m, projectFolders.render, expectedFirstFile(p, coverage));
+                append(qc.managedObjectRecords("footage", p, {status: managedFootage ? "ok" : "missing"}));
+            } catch (footageError) {
+                append(qc.managedObjectRecords("footage", p, {status: "ownership_error", message: "managed footage validation failed — " + footageError.toString()}));
+            }
+
+            if (liveComp && typeof liveComp.layer === "function" && managedFootage) {
+                try {
+                    var managedLayer = findManagedLayer(liveComp, CutBridgeContract.managedTag("layer", m, p.name), managedFootage, p.name);
+                    append(qc.managedObjectRecords("layer", p, {status: managedLayer ? "ok" : "missing"}));
+                } catch (layerError) {
+                    append(qc.managedObjectRecords("layer", p, {status: "ownership_error", message: "managed layer validation failed — " + layerError.toString()}));
+                }
+            }
+        }
+
+        if (folderLookupError) {
+            append(qc.hostRecords({ownershipAmbiguous: true, message: "Managed comp validation failed — " + folderLookupError.toString()}));
+            state.comp = null;
+        } else if (compLookupError) {
+            add({severity: "ERROR", code: "CBQ-COMP-OWNERSHIP-ERROR", scope: "comp", subject: compName,
+                message: "Managed comp validation failed — " + compLookupError.toString(),
+                remediation: "Preserve artist work and resolve duplicate, misplaced, renamed, or incorrectly tagged managed-comp ownership before running QC again."});
+            state.comp = null;
+        } else if (projectFolders) {
+            if (!managedCompFolder) {
+                add({severity: "ERROR", code: "CBQ-COMP-FOLDER-MISSING", scope: "comp", subject: compName,
+                    message: "Managed comp folder is missing from the expected package folder.",
+                    remediation: "Restore the deterministic 01_COMP folder or rebuild/migrate deliberately; CutBridge will not create it during QC."});
+                state.comp = null;
+            } else if (!liveComp) {
+                add({severity: "ERROR", code: "CBQ-COMP-MISSING", scope: "comp", subject: compName,
+                    message: "Managed comp is missing from the expected comp folder.",
+                    remediation: "Restore or deliberately rebuild the trusted CutBridge comp; QC will not create or adopt a replacement automatically."});
+                state.comp = null;
+            } else {
                 state.comp = liveComp;
-                var expected = CutBridgeContract.expectedCompSpec(m), mismatches = CutBridgeContract.compSpecErrors(expected, {width: liveComp.width, height: liveComp.height, pixelAspect: liveComp.pixelAspect, duration: liveComp.duration, frameRate: liveComp.frameRate});
-                if (!mismatches.length) ok("Managed comp metadata matches manifest"); else bad("Managed comp metadata mismatch: " + mismatches.join(", "));
+                var expected = CutBridgeContract.expectedCompSpec(m);
+                var mismatches = CutBridgeContract.compSpecErrors(expected, {width: liveComp.width, height: liveComp.height, pixelAspect: liveComp.pixelAspect, duration: liveComp.duration, frameRate: liveComp.frameRate});
+                append(qc.compRecords(mismatches));
                 if (typeof liveComp.layer !== "function") {
-                    bad("Managed comp layers cannot be inspected in this After Effects host; QC cannot verify managed-layer ownership.");
+                    append(qc.hostRecords({inspectable: false}));
                 } else {
                     var staleManagedLayerCount = 0;
                     for (var li = 1; li <= liveComp.numLayers; li++) {
                         var qcLayerComment = itemComment(liveComp.layer(li));
                         if (isAnyManagedTag(qcLayerComment) && !isManagedLayerTagForManifest(qcLayerComment, m)) staleManagedLayerCount++;
                     }
-                    if (staleManagedLayerCount) bad("Managed comp contains " + staleManagedLayerCount + " stale or foreign CutBridge-managed layer tag(s); restore or remove the stale managed-layer ownership before QC can pass.");
+                    append(qc.hostRecords({staleManagedTags: staleManagedLayerCount}));
                 }
             }
-        } else state.comp = null;
-        var headline = errors === 0 ? (warnings === 0 ? "PASS" : ("PASS with " + warnings + " warning(s)")) : (errors + " error(s), " + warnings + " warning(s)"); alert("CutBridge QC — " + headline + "\n\n" + lines.join("\n"));
+        } else {
+            // A genuinely untouched project can be inspected package/sequence-only.
+            // Exact-current managed tags, however, prove that managed AE state exists
+            // somewhere in the project. If its package root/comp is gone, report the
+            // orphan state instead of silently treating it as pre-Build. Historical
+            // version-scoped tags do not match the current manifest and are ignored.
+            var orphans = exactCurrentManagedOrphans(m);
+            for (var oi = 0; oi < m.passes.length; oi++) {
+                var orphanPass = m.passes[oi], orphanKey = "$" + orphanPass.name;
+                if (orphans.footage[orphanKey] > 0) {
+                    append(qc.managedObjectRecords("footage", orphanPass, {
+                        status: "ownership_error",
+                        message: orphans.footage[orphanKey] + " exact-current managed footage item(s) exist without the expected CutBridge package root/comp."
+                    }));
+                }
+                if (orphans.layer[orphanKey] > 0) {
+                    append(qc.managedObjectRecords("layer", orphanPass, {
+                        status: "ownership_error",
+                        message: orphans.layer[orphanKey] + " exact-current managed layer(s) exist without the expected CutBridge package root/comp."
+                    }));
+                }
+            }
+            state.comp = null;
+        }
+        finish();
     }
 
     function loadOnly(statusText) { try { var m = chooseManifest(); if (m) statusText.text = (m.package_name || m.cut) + " | " + m.fps + "fps | " + m.frames.count + "f"; } catch (e) { alertError(e.toString()); } }

@@ -235,8 +235,15 @@
                 errors.push("Adding passes is unsupported by source-only revision: " + p.name);
             }
         }
-        return {status: errors.length ? "incompatible" : warnings.length ? "warning" : "safe",
-            reasons: errors, warnings: warnings};
+        var status;
+        if (errors.length > 0) {
+            status = "incompatible";
+        } else if (warnings.length > 0) {
+            status = "warning";
+        } else {
+            status = "safe";
+        }
+        return {status: status, reasons: errors, warnings: warnings};
     }
     function discover(current, candidates) {
         requireManifest(current);

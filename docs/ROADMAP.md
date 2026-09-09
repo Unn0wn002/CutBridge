@@ -1,6 +1,6 @@
 # Roadmap
 
-Status reconciled during S6 repair after S5 integration. Versions 0.2.1–0.2.3 remain unreleased development history; milestone labels below describe product sessions rather than guaranteed release numbers unless explicitly assigned.
+Status reconciled after S6 integration. Versions 0.2.1–0.2.3 remain unreleased development history; milestone labels below describe product sessions rather than guaranteed release numbers unless explicitly assigned.
 
 ## Implemented foundation — v0.2.0 through v0.2.3 (unreleased)
 - Harden Blender Extension packaging and manifest metadata.
@@ -33,7 +33,7 @@ Status reconciled during S6 repair after S5 integration. Versions 0.2.1–0.2.3 
 - Replace executable legacy JSON fallback with a data-only parser.
 - Reconcile stale AE MVP/version labeling and enforce release-time AE version consistency.
 
-Real AE GUI/end-to-end behavior remains a separate manual validation gate.
+Real AE GUI/end-to-end behavior remains a separate manual validation gate where applicable.
 
 ## Completed S5 — AE Import & Composition Reliability
 - Harden malformed-package and manifest-loading behavior.
@@ -41,20 +41,30 @@ Real AE GUI/end-to-end behavior remains a separate manual validation gate.
 - Verify FPS, resolution, pixel aspect, duration, layer ordering, Japanese/Unicode/Windows paths, and actionable failures.
 - Expand runtime-independent regression coverage without claiming native AE GUI execution.
 
-## S6 implementation complete — Non-Destructive Revision Manager (integration blocked)
-- PR #15 contains the revision core, native AE adapter, panel confirmation/update flow, persistent package-root/tag migration, deterministic release sidecar, and automated lifecycle regressions.
-- Detect newer compatible cut revisions and reject incompatible structural/geometry changes.
+## Completed S6 — Non-Destructive Revision Manager
+- Integrated to `develop` as merge commit `5d309f51d75b357974d17c94090792d27dea6163` from frozen candidate `f996d64182c292c32361b9af145d85d0128f63dc`.
+- Add revision core, native AE adapter, panel confirmation/update flow, persistent package-root/tag migration, deterministic release sidecar, and automated lifecycle regressions.
+- Detect newer compatible cut revisions and reject incompatible structural/geometry/pass-set changes.
 - Replace only verified CutBridge-managed footage/sources where technically safe.
 - Preserve manual effects, masks, transforms, parenting, timing, layers, and compositor work by using source-only replacement in the native adapter.
 - Surface compatibility warnings and require explicit confirmation for warning-class revisions.
 - Fail closed on ambiguous/missing managed package structure across Build, revision, and QC.
-- Automated exact-head CI is required after every branch change and has been green on repaired implementation/documentation heads; the final review SHA/run is recorded in PR #15.
-- Integration remains blocked until an independent full-PR review is clean, the documented native After Effects desktop validation is executed with real evidence, PR #15 is merged to `develop`, and post-merge `develop` CI passes.
+- Native AE S6 validation is recorded in issue #19 and is PASS/closed on the exact packaged candidate.
+- Solo-maintainer adversarial validation is recorded in issue #20 and is PASS/closed; it is not described as independent review.
+- Post-merge `develop` CI run `34260351796` passed both `static-validation` and `blender-52-rna-runtime` on the exact merge commit.
 
-## S7 — QC+
-- PASS / WARNING / ERROR diagnostics for package, manifest, pass, sequence, version, and inspectable AE state.
-- Missing/extra-frame, FPS/duration/resolution/pixel-aspect, naming, and revision compatibility checks.
-- Actionable remediation text without dangerous automatic fixes.
+## S7 — QC+ (in progress)
+Tracking: issue #33, branch `feature/session-7-qc-plus`.
+
+- Convert QC findings into deterministic PASS / WARNING / ERROR diagnostics with stable testable identifiers/categories.
+- Cover package, manifest, pass, sequence, version/revision, and inspectable AE state.
+- Diagnose missing/extra-frame, FPS/duration/resolution/pixel-aspect, naming/ownership, and revision compatibility conditions.
+- Attach safe actionable remediation to warnings/errors without dangerous automatic fixes, ownership adoption, source guessing, or silent migration.
+- Preserve all S5/S6 fail-closed ownership and revision behavior.
+- Keep native AE claims separate from headless/host-shaped regression evidence.
+- Require dedicated S7 tests, green existing suites, solo-maintainer adversarial validation, merge to `develop`, and green post-merge CI before S8 begins.
+
+See `docs/S7_QC_PLUS_CONTRACT.md` for the implementation/acceptance contract.
 
 ## S8 — Japanese-First UX
 - Maintainable English/Japanese user-facing string architecture.

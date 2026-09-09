@@ -10,6 +10,7 @@ const vm = require("node:vm");
 
 const rootDir = path.resolve(__dirname, "..");
 const source = fs.readFileSync(path.join(rootDir, "apps/after-effects/CutBridge.jsx"), "utf8");
+const QCPlus = require(path.join(rootDir, "apps/after-effects/qc_plus.js"));
 
 const manifest = {
     schema: "cutbridge-manifest", schema_version: 1, cutbridge_version: "0.2.3",
@@ -122,7 +123,7 @@ function makeHost() {
 
     const runtime = {
         File, Folder, Window, Panel, FolderItem, FootageItem, CompItem, AVLayer, ImportOptions,
-        ImportAsType: {FOOTAGE: 1}, ScriptUI: {newFont() {}},
+        ImportAsType: {FOOTAGE: 1}, ScriptUI: {newFont() {}}, CutBridgeQCPlus: QCPlus,
         alert: message => alerts.push(String(message)), $: {writeln() {}},
         app: {project, beginUndoGroup() {}, endUndoGroup() {}, newProject() {}}
     };

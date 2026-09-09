@@ -73,9 +73,9 @@ function lineFiles() {
   line.remove();
   h.click('QC');
   const message = h.alerts.at(-1);
-  assert.match(message, /^CutBridge QC — PASS with 1 warning\(s\)/, 'missing complete optional managed layer should warn, not hard-fail');
-  assert.match(message, /WARN LINE: optional managed layer is missing from the expected comp/);
-  assert.doesNotMatch(message, /ERR\s+LINE:/, 'missing optional layer should not become a hard error when ownership is otherwise unambiguous');
+  assert.match(message, /^CutBridge QC — WARNING — 1 warning\(s\)/, 'missing complete optional managed layer should warn, not hard-fail');
+  assert.match(message, /WARNING \[CBQ-LAYER-OPTIONAL-MISSING\] LINE: optional managed layer is missing/);
+  assert.doesNotMatch(message, /ERROR \[[^\]]+\] LINE:/, 'missing optional layer should not become a hard error when ownership is otherwise unambiguous');
 }
 
 {
@@ -90,9 +90,9 @@ function lineFiles() {
   }
   h.click('QC');
   const message = h.alerts.at(-1);
-  assert.match(message, /^CutBridge QC — PASS with 1 warning\(s\)/, 'missing optional source sequence should remain the documented warning/skip path');
-  assert.match(message, /WARN LINE: optional pass folder missing/);
-  assert.doesNotMatch(message, /ERR\s+LINE:/, 'skipped optional source must not become a managed-layer hard error');
+  assert.match(message, /^CutBridge QC — WARNING — 1 warning\(s\)/, 'missing optional source sequence should remain the documented warning/skip path');
+  assert.match(message, /WARNING \[CBQ-SEQ-OPTIONAL-FOLDER-MISSING\] LINE: Optional pass folder is missing/);
+  assert.doesNotMatch(message, /ERROR \[[^\]]+\] LINE:/, 'skipped optional source must not become a managed-layer hard error');
 }
 
 console.log('QC managed-layer regression: PASS (required ownership fails closed; optional complete-missing layer warns; skipped optional source stays warning-only; real AE MANUAL NOT EXECUTED)');
