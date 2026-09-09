@@ -334,9 +334,9 @@ if (typeof module !== "undefined" && module.exports) {
         }
         return {
             DEFAULT_LOCALE: "EN", FALLBACK_LOCALE: "EN",
-            normalizeLocale: function(value) { return String(value || "").toUpperCase() === "JA" ? "JA" : "EN"; },
+            normalizeLocale: function(value) { return "EN"; },
             tr: function(value, key, values) { return format(strings[key] || key, values); },
-            setLocale: function(value) { locale = String(value || "").toUpperCase() === "JA" ? "JA" : "EN"; return locale; },
+            setLocale: function(value) { locale = "EN"; return locale; },
             getLocale: function() { return locale; },
             formatError: function(value, detail) { return "CutBridge\n\n" + detail; },
             localizeRevisionReason: function(value, reason) { return String(reason); },
@@ -1256,6 +1256,10 @@ if (typeof module !== "undefined" && module.exports) {
         btnLoad.onClick = function() { loadOnly(status); }; btnBuild.onClick = function() { buildComp(); }; btnQC.onClick = function() { try { runQC(); } catch (e) { alertError(e.toString()); } }; btnRevision.onClick = function() { updateRevision(); };
         var note = pal.add("statictext", undefined, tr("workflow_note", {version: CutBridgeContract.PRODUCT_VERSION}), {multiline: true}); note.preferredSize.height = 32;
         function refreshLocale() {
+            // Keep the visible selector synchronized with the effective locale.
+            // This matters when localization.js is missing and fallback can only
+            // provide English even if app.settings previously stored JA.
+            localeSelect.selection = currentLocale === "JA" ? 0 : 1;
             localeLabel.text = tr("language_label"); status.text = packageStatusText(state.manifest);
             btnLoad.text = tr("import_package"); btnBuild.text = tr("build_comp"); btnQC.text = tr("run_qc"); btnRevision.text = tr("update_revision");
             note.text = tr("workflow_note", {version: CutBridgeContract.PRODUCT_VERSION});

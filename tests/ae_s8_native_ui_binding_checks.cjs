@@ -112,4 +112,11 @@ function makeRuntime({injectLocalization = true, savedLocale = null} = {}) {
 
 for (const text of makeRuntime().buttonTexts()) assert.doesNotMatch(text, /\s\/\s/, 'S8 must not use decorative slash-bilingual buttons');
 
+{
+  const h = makeRuntime({injectLocalization: false, savedLocale: 'JA'});
+  assert.equal(h.dropdown().selection.index, 1, 'persisted JA must not remain visibly selected when only English fallback strings are available');
+  assert.deepEqual(h.buttonTexts(), ['1. Import Package', '2. Build Comp', '3. Run QC', '4. Update Revision']);
+  assert.equal(h.projectMutationCount(), 0, 'persisted-locale fallback must remain UX-only');
+}
+
 console.log('S8 native ScriptUI localization binding: PASS (JA default, EN switch/persistence, safe fallback, non-mutation)');

@@ -22,19 +22,22 @@ class CUTBRIDGE_PT_MainPanel(bpy.types.Panel):
         s = scene.cutbridge
         language = s.language
 
-        language_row = layout.row(align=True)
-        language_row.prop(s, "language", text=tr(language, "language"))
+        def labeled_prop(container, data, property_name, label_text):
+            # Labels and editable values use separate full-width rows so core
+            # identifiers remain readable in a practical narrow N-panel.
+            container.label(text=label_text)
+            container.prop(data, property_name, text="")
+
+        labeled_prop(layout, s, "language", tr(language, "language"))
 
         box = layout.box()
         box.label(text=tr(language, "project_setup"))
-        box.prop(s, "project", text=tr(language, "project"))
-        row = box.row(align=True)
-        row.prop(s, "episode", text=tr(language, "episode"))
-        row.prop(s, "scene_id", text=tr(language, "scene"))
-        row = box.row(align=True)
-        row.prop(s, "cut", text=tr(language, "cut"))
-        row.prop(s, "take", text=tr(language, "take"))
-        row.prop(s, "version", text=tr(language, "version"))
+        labeled_prop(box, s, "project", tr(language, "project"))
+        labeled_prop(box, s, "episode", tr(language, "episode"))
+        labeled_prop(box, s, "scene_id", tr(language, "scene"))
+        labeled_prop(box, s, "cut", tr(language, "cut"))
+        labeled_prop(box, s, "take", tr(language, "take"))
+        labeled_prop(box, s, "version", tr(language, "version"))
 
         box = layout.box()
         box.label(text=tr(language, "scene_metadata"))
@@ -47,20 +50,17 @@ class CUTBRIDGE_PT_MainPanel(bpy.types.Panel):
 
         box = layout.box()
         box.label(text=tr(language, "pass_package"))
-        row = box.row(align=True)
-        row.prop(s, "pass_beauty", text=tr(language, "beauty"))
-        row.prop(s, "pass_line", text=tr(language, "line"))
-        row.prop(s, "pass_shadow", text=tr(language, "shadow"))
-        row = box.row(align=True)
-        row.prop(s, "pass_depth", text=tr(language, "depth"))
-        row.prop(s, "image_format", text=tr(language, "sequence_format"))
+        box.prop(s, "pass_beauty", text=tr(language, "beauty"))
+        box.prop(s, "pass_line", text=tr(language, "line"))
+        box.prop(s, "pass_shadow", text=tr(language, "shadow"))
+        box.prop(s, "pass_depth", text=tr(language, "depth"))
+        labeled_prop(box, s, "image_format", tr(language, "sequence_format"))
 
         box = layout.box()
         box.label(text=tr(language, "export"))
-        box.prop(s, "output_dir", text=tr(language, "package_output"))
-        row = box.row(align=True)
-        row.operator("cutbridge.validate", text=tr(language, "validate_cut"), icon="CHECKMARK")
-        row.operator("cutbridge.build_package", text=tr(language, "build_package"), icon="PACKAGE")
+        labeled_prop(box, s, "output_dir", tr(language, "package_output"))
+        box.operator("cutbridge.validate", text=tr(language, "validate_cut"), icon="CHECKMARK")
+        box.operator("cutbridge.build_package", text=tr(language, "build_package"), icon="PACKAGE")
         if s.last_package_path:
             box.operator(
                 "cutbridge.open_package_folder",

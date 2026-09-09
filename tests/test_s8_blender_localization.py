@@ -114,3 +114,17 @@ def test_blender_language_property_defaults_to_japanese():
     source = (BLENDER / "properties.py").read_text(encoding="utf-8")
     assert 'items=(("JA", "日本語", "Japanese"), ("EN", "English", "English"))' in source
     assert 'default="JA"' in source
+
+
+def test_blender_panel_uses_narrow_safe_full_width_identity_controls():
+    source = (BLENDER / "ui.py").read_text(encoding="utf-8")
+    assert "def labeled_prop" in source
+    for property_name in ("language", "project", "episode", "scene_id", "cut", "take", "version", "image_format", "output_dir"):
+        assert f'"{property_name}"' in source
+    assert 'row.prop(s, "episode"' not in source
+    assert 'row.prop(s, "scene_id"' not in source
+    assert 'row.prop(s, "cut"' not in source
+    assert 'row.prop(s, "take"' not in source
+    assert 'row.prop(s, "version"' not in source
+    assert 'row.operator("cutbridge.validate"' not in source
+    assert 'row.operator("cutbridge.build_package"' not in source
