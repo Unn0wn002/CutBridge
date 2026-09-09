@@ -10,44 +10,17 @@ permissions:
 
 jobs:
   repair-and-verify:
-    if: github.event.head_commit.message == 'chore: fix S7 native repair gate'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout exact branch head
+      - name: Checkout branch
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Apply exact native-AE repairs and parser regression guards
-        shell: bash
-        run: |
-          python - <<'PY'
-          from pathlib import Path
+      - name: Apply idempotent native-AE repairs
+        run: python tools/s7_native_repair.py
 
-          qc = Path('apps/after-effects/qc_plus.js')
-          text = qc.read_text(encoding='utf-8')
-          old = '    var SCOPE_ORDER = {\n        package: 0,\n'
-          new = '    var SCOPE_ORDER = {\n        "package": 0,\n'
-          assert text.count(old) == 1, 'qc_plus.js reserved-key anchor changed'
-          qc.write_text(text.replace(old, new, 1), encoding='utf-8')
-
-          rev = Path('apps/after-effects/revision_manager.js')
-          text = rev.read_text(encoding='utf-8')
-          old = '        return {status: errors.length ? "incompatible" : warnings.length ? "warning" : "safe",\n            reasons: errors, warnings: warnings};\n'
-          new = '        var status;\n        if (errors.length > 0) {\n            status = "incompatible";\n        } else if (warnings.length > 0) {\n            status = "warning";\n        } else {\n            status = "safe";\n        }\n        return {status: status, reasons: errors, warnings: warnings};\n'
-          assert text.count(old) == 1, 'revision_manager.js status anchor changed'
-          rev.write_text(text.replace(old, new, 1), encoding='utf-8')
-
-          py = Path('tests/test_ae_s7.py')
-          text = py.read_text(encoding='utf-8')
-          addition = '\n\ndef test_s7_native_after_effects_parser_regressions():\n    root = Path(__file__).resolve().parents[1]\n    qc_source = (root / "apps/after-effects/qc_plus.js").read_text(encoding="utf-8")\n    revision_source = (root / "apps/after-effects/revision_manager.js").read_text(encoding="utf-8")\n\n    # AE 26.3 ExtendScript rejects an unquoted reserved `package` key.\n    assert \'        "package": 0,\' in qc_source\n    assert "\\n        package: 0," not in qc_source\n\n    # AE 26.3 evaluated the previous nested ternary as warning for errors=1/warnings=0.\n    # Keep the compatibility decision explicit and parser-safe.\n    assert \'if (errors.length > 0) {\' in revision_source\n    assert \'status = "incompatible";\' in revision_source\n    assert \'else if (warnings.length > 0) {\' in revision_source\n    assert \'errors.length ? "incompatible" : warnings.length ? "warning" : "safe"\' not in revision_source\n'
-          marker = 'def test_s7_native_after_effects_parser_regressions():'
-          assert marker not in text, 'native parser regression test already present unexpectedly'
-          py.write_text(text.rstrip() + addition + '\n', encoding='utf-8')
-          PY
-
-      - name: Parser and focused regression gate
-        shell: bash
+      - name: Run focused regression gate
         run: |
           node --check apps/after-effects/qc_plus.js
           node --check apps/after-effects/revision_manager.js
@@ -56,12 +29,16 @@ jobs:
           node tests/ae_s7_native_qc_binding_checks.cjs
           python -m pytest -q tests/test_ae_s7.py
 
-      - name: Commit only verified product and regression repairs
+      - name: Commit verified repairs when needed
         shell: bash
         run: |
+          git add apps/after-effects/qc_plus.js apps/after-effects/revision_manager.js tests/test_ae_s7.py
+          if git diff --cached --quiet; then
+            echo "No product repair changes to commit."
+            exit 0
+          fi
+          git diff --cached --check
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add apps/after-effects/qc_plus.js apps/after-effects/revision_manager.js tests/test_ae_s7.py
-          git diff --cached --check
           git commit -m "fix: repair S7 native After Effects regressions"
           git push origin HEAD:feature/session-7-qc-plus
