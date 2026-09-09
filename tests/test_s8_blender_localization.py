@@ -53,7 +53,7 @@ def test_missing_translation_falls_back_without_breaking_ui():
     assert loc.tr("invalid", "build_package") == "Build Package"
 
 
-def test_issue_localization_preserves_machine_code_outside_user_text():
+def test_issue_localization_preserves_machine_code_and_canonical_support_text():
     loc = _load_localization()
     item = {
         "level": "ERROR",
@@ -71,11 +71,29 @@ def test_issue_localization_preserves_machine_code_outside_user_text():
     assert en_fix == item["fix"]
     assert item["code"] == "CAMERA_MISSING"
 
+    formatted = loc.format_localized_issue("JA", item)
+    assert formatted.startswith("アクティブカメラが設定されていません。")
+    assert "[EN] No active scene camera." in formatted
+    assert "Fix: Assign an active camera in Scene Properties." in formatted
+    assert "CAMERA_MISSING" not in formatted
+
+
+def test_untranslated_japanese_issue_falls_back_without_duplicate_english_block():
+    loc = _load_localization()
+    item = {
+        "code": "UNKNOWN_FUTURE_CODE",
+        "message": "Canonical future diagnostic.",
+        "fix": "Keep the workflow safe.",
+    }
+    formatted = loc.format_localized_issue("JA", item)
+    assert formatted == "Canonical future diagnostic. 対処: Keep the workflow safe."
+    assert "[EN]" not in formatted
+
 
 def test_blender_panel_uses_locale_contract_instead_of_bilingual_slash_labels():
     source = (BLENDER / "ui.py").read_text(encoding="utf-8")
     assert "from .localization import localized_issue, tr" in source
-    assert 's.language' in source
+    assert "s.language" in source
     assert 'tr(language, "validate_cut")' in source
     assert 'tr(language, "build_package")' in source
     assert 'tr(language, "validation_status")' in source
