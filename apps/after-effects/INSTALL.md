@@ -7,7 +7,7 @@ CutBridge S8 development packages use **four adjacent runtime files**:
 - `qc_plus.js` — S7 deterministic QC+ diagnostic engine.
 - `localization.js` — S8 Japanese-first / English-fallback localization engine.
 
-Keep all four files together for normal development use. `revision_manager.js` and `qc_plus.js` are safety-critical runtime sidecars. `localization.js` is UX-only: if it cannot be loaded, the panel must fall back deterministically to English without weakening Build/QC/Revision validation.
+**Keep these files together.** All four files should remain adjacent for normal development use. `revision_manager.js` and `qc_plus.js` are safety-critical runtime sidecars. `localization.js` is UX-only: if it cannot be loaded, the panel must fall back deterministically to English without weakening Build/QC/Revision validation.
 
 ## First development test
 
