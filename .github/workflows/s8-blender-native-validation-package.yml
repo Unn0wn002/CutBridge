@@ -1,0 +1,70 @@
+name: S8 Blender Native Validation Package
+
+on:
+  push:
+    branches: ['validation/s8-native-bd3c9877']
+    paths:
+      - '.github/workflows/s8-blender-native-validation-package.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build-exact-blender-validation-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: bd3c98773f94e6379713fb885ca3f2c10917780b
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.11'
+      - name: Build exact S8 Blender validation package
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = 'bd3c98773f94e6379713fb885ca3f2c10917780b'
+          python tools/build_release.py --tag v0.2.3 --output dist-native-blender
+          BLENDER_ZIP='dist-native-blender/CutBridge-Blender-v0.2.3.zip'
+          EXPECTED='2d0f917c68c65440928b1349758ac2a1a3b1138a61610463ea0ded02799fcc00'
+          ACTUAL="$(sha256sum "$BLENDER_ZIP" | awk '{print $1}')"
+          test "$ACTUAL" = "$EXPECTED"
+          printf '%s  %s\n' "$ACTUAL" 'CutBridge-Blender-v0.2.3.zip' > dist-native-blender/BLENDER-SHA256.txt
+          python - <<'PY'
+          import zipfile
+          from pathlib import Path
+          path = Path('dist-native-blender/CutBridge-Blender-v0.2.3.zip')
+          with zipfile.ZipFile(path) as archive:
+              names = set(archive.namelist())
+              required = {
+                  'blender_manifest.toml',
+                  '__init__.py',
+                  'properties.py',
+                  'ui.py',
+                  'operators.py',
+                  'localization.py',
+                  'LICENSE',
+              }
+              missing = required - names
+              assert not missing, sorted(missing)
+          PY
+          cat > dist-native-blender/NATIVE_VALIDATION.txt <<'EOF'
+          CutBridge S8 Blender native validation artifact
+          Source commit: bd3c98773f94e6379713fb885ca3f2c10917780b
+          Blender ZIP SHA-256: 2d0f917c68c65440928b1349758ac2a1a3b1138a61610463ea0ded02799fcc00
+          Validation gate: GitHub Issue #41
+          Purpose: actual Blender GUI Japanese/English UI validation only.
+          This artifact is not a release and does not authorize publication.
+          EOF
+      - name: Upload exact Blender validation artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: CutBridge-S8-Blender-bd3c9877-native-validation
+          path: |
+            dist-native-blender/CutBridge-Blender-v0.2.3.zip
+            dist-native-blender/BLENDER-SHA256.txt
+            dist-native-blender/release-metadata.json
+            dist-native-blender/NATIVE_VALIDATION.txt
+          if-no-files-found: error
+          retention-days: 30
