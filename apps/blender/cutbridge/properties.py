@@ -42,8 +42,9 @@ class CUTBRIDGE_PG_Settings(bpy.types.PropertyGroup):
 
     language: EnumProperty(
         name="UI Language",
-        items=(("EN", "English", "English"), ("JA", "日本語", "Japanese")),
-        default="EN",
+        description="CutBridge display language. Stable package data and diagnostic codes are never translated",
+        items=(("JA", "日本語", "Japanese"), ("EN", "English", "English")),
+        default="JA",
     )
 
     last_package_path: StringProperty(name="Last Package", default="", options={"HIDDEN"})

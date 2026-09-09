@@ -27,6 +27,7 @@ class ReleaseHygieneTests(unittest.TestCase):
         self.builder.AE_SCRIPT = self.root / "apps/after-effects/CutBridge.jsx"
         self.builder.AE_REVISION = self.root / "apps/after-effects/revision_manager.js"
         self.builder.AE_QC_PLUS = self.root / "apps/after-effects/qc_plus.js"
+        self.builder.AE_LOCALIZATION = self.root / "apps/after-effects/localization.js"
         self.builder.AE_INSTALL = self.root / "apps/after-effects/INSTALL.md"
         self.output = Path(self.temp.name) / "dist"
 
@@ -62,6 +63,20 @@ class ReleaseHygieneTests(unittest.TestCase):
                 self.assertIn("LICENSE", archive.namelist())
                 self.assertEqual(archive.read("LICENSE"), (ROOT / "LICENSE").read_bytes())
 
+    def test_ae_package_contains_all_required_runtime_sidecars(self):
+        self.builder.build("v0.2.3", self.output)
+        archive_path = self.output / "CutBridge-AfterEffects-v0.2.3.zip"
+        with zipfile.ZipFile(archive_path) as archive:
+            assert archive.namelist() == [
+                "CutBridge.jsx",
+                "revision_manager.js",
+                "qc_plus.js",
+                "localization.js",
+                "INSTALL.md",
+                "LICENSE",
+            ]
+            self.assertEqual(archive.read("localization.js"), (ROOT / "apps/after-effects/localization.js").read_bytes())
+
     def test_tag_mismatch_preserves_output(self):
         self.builder.build("v0.2.3", self.output)
         before = {p.name: p.read_bytes() for p in self.output.iterdir()}
@@ -87,6 +102,12 @@ class ReleaseHygieneTests(unittest.TestCase):
     def test_missing_qc_plus_sidecar_is_rejected_before_output(self):
         self.builder.AE_QC_PLUS.unlink()
         with self.assertRaisesRegex(ValueError, "qc_plus"):
+            self.builder.build("v0.2.3", self.output)
+        self.assertFalse(self.output.exists())
+
+    def test_missing_localization_sidecar_is_rejected_before_output(self):
+        self.builder.AE_LOCALIZATION.unlink()
+        with self.assertRaisesRegex(ValueError, "localization"):
             self.builder.build("v0.2.3", self.output)
         self.assertFalse(self.output.exists())
 
