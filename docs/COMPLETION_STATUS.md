@@ -1,32 +1,137 @@
 # CutBridge Completion Status
 
-- **Current Session:** S6 — non-destructive After Effects revision-manager completion, native-host repair, and release-governance hardening.
-- **Completed Sessions:** S1–S5. S5 merged through PR #14. The current `develop` baseline also includes the release-publication safety lock from PR #17.
-- **Live integration baseline before S6 merge:** `main` = `cc6dc4dacce55b730b37eeb1d65afdf6ea98c50c` (README/status reconciliation merge over release-lock head `80669c148a7dc03fd9c645ec183bf95a21efb310`); `develop` = `9d16f7d87e476790283a103673978262899f47cd`. Stable product promotion has not happened; both long-lived branches carry an unapproved-by-default tag-publication lock.
-- **Long-lived branch release-lock evidence:** PR #16 merged the emergency lock to `main`; post-merge run [34175417617](https://github.com/Unn0wn002/CutBridge/actions/runs/34175417617) passed both jobs. PR #17 merged the equivalent lock to `develop`; post-merge run [34175547628](https://github.com/Unn0wn002/CutBridge/actions/runs/34175547628) passed both jobs. No tag or GitHub Release was created.
-- **Open S6 implementation PR:** [#15](https://github.com/Unn0wn002/CutBridge/pull/15), `feature/session-6-revision-manager` → `develop`. The branch explicitly incorporates the `develop` release-lock baseline while retaining the stricter long-term authorization/prerelease implementation.
-- **S6 status: IMPLEMENTED / REVIEW BLOCKED.** The branch contains the revision core, native AE adapter, package selection, confirmation UI, staged import/validation, source-swap rollback, package/root/tag migration, release sidecar packaging, automated S6 regression coverage, and the durable release-authorization/prerelease pipeline intended for future promotion.
-- **Repaired review/audit findings:** rollback behavior, optional-pass validation, live ownership verification, structural identity/tuple collision safety, strict revision parsing/tie handling, malformed-pass rejection, opaque plans, replacement validation, mutate-then-throw recovery, historical-footage provenance, resolution/comp-geometry consistency, native `AVLayer.replaceSource()` usage, revision formatter scoping, artist package-root comment preservation, fail-closed same-name root adoption, exact deterministic managed-folder ownership before Build mutation, revision-path package-structure ambiguity, QC package-structure ambiguity, stale/non-current active managed-layer rejection (#23/#24), optional-pass-removal lifecycle inconsistency (#26), QC required-layer false PASS (#27), fail-closed release publication authorization, and self-contained After Effects release installation guidance.
-- **Native source-replacement repair:** `AVLayer.source` is observation-only for this workflow. Revision swaps use `AVLayer.replaceSource(newSource, false)` and rollback uses `replaceSource(oldSource, false)`, with live-source verification after mutation. Static regression coverage rejects reintroduction of direct source assignment.
-- **Native formatter-scope repair:** the host-shaped V001→V002 path exposed `ReferenceError: zeroPad is not defined`; the formatter is exposed as `CutBridgeContract.zeroPad` and every S6 outer call is namespaced. Static and repeated native-host-shaped lifecycle regressions prevent reintroduction.
-- **Historical-footage lifecycle repair:** retired CutBridge footage retains its old version-scoped managed provenance tag; replacement footage receives the new manifest tag and active-version caches point only at the replacement. This prevents later Build/QC cycles from treating successful revision history as unmanaged collisions.
-- **Package-root safety repair:** unmanaged artist/studio root comments are preserved. A package-name match is not ownership proof. Existing managed roots are reusable only with exactly one package root, exactly one each of `01_COMP`, `02_RENDER`, `03_PRECOMP`, `04_OUTPUT`, and exactly one correctly named/tagged managed comp in the expected folder. Missing, duplicated, or misplaced structure fails before Build mutation.
-- **Revision/QC structural-consistency repair:** revision and QC use the same read-only unique package resolver. Duplicate package roots/folders, missing deterministic folders, or misplaced managed comp ownership cannot be silently selected or repaired. Revision rejects ambiguity before confirmation/import/source swap; QC cannot produce a false PASS from ambiguous managed structure.
-- **QC managed-layer ownership repair / #27:** QC now requires every complete active pass with managed footage to resolve through the same strict `findManagedLayer()` ownership/source checks used by Build. A missing required managed layer or de-tagged/ambiguous/wrong-source layer is an error rather than a clean PASS. A complete optional pass with no managed layer remains a warning when ownership is otherwise unambiguous, and an optional pass whose source sequence is unavailable keeps the documented warning/skip behavior. The red regression first proved that valid footage + valid comp could previously yield `CutBridge QC — PASS` after deleting the required BEAUTY layer; the repaired tests verify required-layer fail-closed behavior without weakening #23/#24 or adopting artist layers.
-- **Source-only geometry policy:** FPS, frame range/count, pixel aspect, and width/height resolution drift block S6 revision. The workflow replaces verified sources; it does not resize or re-time the existing composition.
-- **Pass-set policy / #26 repair:** required/optional **status changes** for passes present in both manifests remain warning + explicit-confirmation cases. Adding a pass, removing a required pass, or removing an optional pass now blocks source-only revision before confirmation/import/source swap/metadata migration. The #26 regression first proved the old optional-removal warning path produced a stale prior-version layer that the next Build rejected; the repaired lifecycle verifies the blocked attempt leaves the original package, sources, tags, layers, Build and QC coherent. Pass-set changes require deliberate rebuild/migration.
-- **Confirmation safety repair:** supported required/optional status changes use the warning/confirmation path. If the AE host cannot provide confirmation, revision fails closed.
-- **Release-governance repair:** matching version constants and green CI no longer imply publication authorization. The long-term S6 workflow requires the tagged SHA to equal current `main`, requires `release-authorization.json` to explicitly approve the exact tag/channel/prerelease combination, and otherwise fails before packaging. Supported tags are `vX.Y.Z` (stable), `vX.Y.Z-rc.N` / `vX.Y.Z-beta.N` (beta GitHub prerelease), and `vX.Y.Z-dev.N` (development GitHub prerelease). Authorization remains `approved: false` by default. RC/beta/development publication is a manual validation-artifact path until an external update endpoint/index publication process is deployed and verified.
-- **Release workflow isolation:** release execution is separated into read-only validation, a fresh read-only packaging runner with no pip test dependencies installed, and a write-enabled publication runner. CI/Release actions are pinned to exact commits, checkout credentials are not persisted, and current-main verification uses the full-history checkout's `refs/remotes/origin/main` rather than a credential-dependent post-checkout fetch.
-- **After Effects installation/release repair:** `apps/after-effects/INSTALL.md` explicitly requires `CutBridge.jsx` and `revision_manager.js` to remain together, documents first-run/dockable-panel placement, and repeats the native V001→V002→V003 validation boundary. `tools/build_release.py` ships that guide inside the After Effects ZIP, and release tests require exact `CutBridge.jsx`, `revision_manager.js`, `INSTALL.md`, and `LICENSE` contents. The executable JSX was deliberately not whole-file rewritten solely to edit its legacy header comment.
-- **Authoritative automated evidence:** PR #15 has repeatedly passed exact-head `static-validation` and `blender-52-rna-runtime` after each material repair, including release authorization/isolation/private-repo credential guards, four-file AE artifact checks, deterministic stable/RC/dev package simulation, S5/S6 host regressions, V001→V002→V003 source replacement, Build/QC/reload, #23/#24 stale-layer guards, the #26 optional-pass-removal fail-closed lifecycle, #27 QC current-layer ownership/optional-boundary checks, official bpy 5.2 RNA lifecycle, and the complete Blender integration suite. Release publication also has an explicit regression requiring the final GitHub Release step to include `SHA256SUMS.txt` and `release-metadata.json`, and the release-index schema is meta-validated with `Draft202012Validator.check_schema`. The current exact review SHA and green run are intentionally maintained in the PR #15 body and blocker issues #19/#20 rather than duplicated here, because every documentation commit changes the candidate SHA.
-- **Historical tag-governance boundary:** the workflow stored in a tagged commit controls that tag event; current branch hardening does not retroactively rewrite older history. Repository-level tag/branch/Actions or environment enforcement is therefore still required before real publication. Issue [#18](https://github.com/Unn0wn002/CutBridge/issues/18) records the current limitation: `main`/`develop` remain unprotected, the private-repository rulesets API reports that the feature requires GitHub Pro or a public repository, and the connected integration cannot administer classic branch protection. CutBridge must not be made public merely to satisfy this checklist without an explicit repository-visibility decision.
-- **Required S6 integration gate:** obtain a genuinely independent full-PR review of the current exact candidate, execute/record the native After Effects manual gate, then merge to `develop` and verify green post-merge `develop` CI. Any implementation or documentation change invalidates the prior exact review target. See [S6_REVISION_CONTRACT.md](S6_REVISION_CONTRACT.md), issue [#19](https://github.com/Unn0wn002/CutBridge/issues/19), and issue [#20](https://github.com/Unn0wn002/CutBridge/issues/20).
-- **Independent-review identity boundary:** historical review submissions on earlier CutBridge PRs were useful adversarial self-review, but the inspected GitHub review metadata for PRs #10, #12, #13, and #14 identifies `Unn0wn002` as the reviewer, while PR #11 has no submitted review. The legacy file name `S5_INDEPENDENT_REVIEW.md` therefore reflects historical project terminology and must not be used as evidence that a separate reviewer identity exists for S6. Issue #20 requires a different GitHub account/person; do not count author self-review as independent approval.
-- **Documentation/release reconciliation:** README and Quick Start describe the exact four-file AE release artifact (`CutBridge.jsx`, `revision_manager.js`, `INSTALL.md`, `LICENSE`); S6 Revision Contract/Test Plan/Compatibility/Release Checklist describe the real source-only/manual boundaries; Versioning/Update Architecture describe explicit release authorization and prerelease semantics; the Blender extension manifest no longer uses the temporary `Student Project` maintainer label on the S6 branch.
-- **Manual boundary:** Native AE GUI revision/import/QC, real V001→V002→V003 behavior, save/reopen behavior, real property preservation, native pass-set rejection behavior, native required/optional managed-layer QC behavior, Blender → package → After Effects end-to-end, Japanese native-user validation, and production/client validation remain **MANUAL NOT EXECUTED** unless separately recorded with real evidence.
-- **Native AE execution handoff:** issue #19 contains the evidence-grade checklist and deterministic disposable V001/V002/V003 test recipe. Passing Node/host-shaped tests does not close that issue.
-- **Release/governance:** No GitHub tag or Release exists. Accidental tag publication from the current long-lived branch workflows is fail-closed, but historical-tag governance and branch/tag enforcement are not yet repository-admin enforced. Stable publication remains unauthorized while S6, issue #18, and the real-app release checklist are incomplete.
-- **S7:** Has not started.
+## Current state
 
-S5 review history remains available in [S5_INDEPENDENT_REVIEW.md](S5_INDEPENDENT_REVIEW.md) and PR #14 as technical history, subject to the reviewer-identity clarification above. S6 cannot be integrated until the current candidate is genuinely independently reviewed clean, the real After Effects/manual gate is recorded, PR #15 is merged to `develop`, and post-merge `develop` CI passes.
+- **Current reconciliation session:** S8.5 — repository/documentation state reconciliation.
+- **Completed product sessions:** S1–S8.
+- **Current `develop`:** `368b977582feadc26543825b4d31ffd5f6266a4f` — merged S8 Japanese-first UX.
+- **Current `main`:** `cc6dc4dacce55b730b37eeb1d65afdf6ea98c50c` — conservative unreleased/release-locked baseline.
+- **Product version:** `0.2.3` unreleased.
+- **Release authorization:** fail-closed; `release-authorization.json` remains `approved: false`.
+- **Git tags / GitHub Releases:** none.
+- **Next feature session after S8.5:** S9 — Studio Presets.
+
+## Integrated sessions
+
+### S1 — Baseline / release packaging
+PASS / integrated.
+
+Repository baseline, GPL license inclusion, deterministic packaging, checksum verification, release-output safety, and documentation/release hygiene foundation.
+
+### S2 — Blender render mapping
+PASS / integrated.
+
+Transactional BEAUTY / LINE / SHADOW / DEPTH mapping, deterministic output paths, renderer/View Layer capability checks, and artist-node preservation.
+
+### S3 — Blender production hardening
+PASS / integrated.
+
+Same-version payload overwrite protection, package integrity, V001/V002/V003 coexistence, Japanese/UTF-8 filesystem handling, and actionable Blender validation.
+
+### S4 — After Effects handoff contract hardening
+PASS / integrated.
+
+Schema/version gates, strict frame semantics, safe package paths, required/optional pass rules, exact sequence coverage, legacy JSON data parsing, and AE/version consistency checks.
+
+### S5 — AE import / composition reliability
+PASS / integrated.
+
+Deterministic managed ownership, repeated-build/reload safety, collision handling, rollback, package-structure checks, and stricter QC ownership validation.
+
+### S6 — Non-destructive revision manager
+PASS / integrated.
+
+- Candidate: `f996d64182c292c32361b9af145d85d0128f63dc`.
+- Merge commit: `5d309f51d75b357974d17c94090792d27dea6163`.
+- Native AE gate #19: PASS / closed.
+- Solo-maintainer adversarial gate #20: PASS / closed.
+- Post-merge CI `34260351796`: PASS.
+
+Compatible revision updates use verified managed-source replacement, rollback, package/tag migration, and historical-footage provenance while preserving unrelated artist work.
+
+### S7 — QC+
+PASS / integrated.
+
+- Candidate: `b17b9d3cd5b67d7bfd3741a58df403d5946e2327`.
+- Merge commit: `ef88d68f0178ed33ed4ba096416fcfe595c1eb6d`.
+- PR #35: merged.
+- Native AE validation: PASS after repairing real ExtendScript and revision-state defects.
+
+QC+ provides deterministic `CBQ-*` PASS / WARNING / ERROR diagnostics, actionable remediation, sequence/comp/ownership/revision checks, and remains diagnostic-only/non-mutating.
+
+### S8 — Japanese-first UX
+PASS / integrated.
+
+- Repaired candidate: `f477b745cc600b85708b63d059d6c4eaed9f0249`.
+- Merge commit: `368b977582feadc26543825b4d31ffd5f6266a4f`.
+- PR #40: merged.
+- AE native gate #38: PASS / closed.
+- Blender native gate #41: PASS / closed.
+- Post-merge CI `34380737455`: PASS.
+
+Real native S8 repair evidence:
+
+- Blender 5.2.1 LTS, approximately 245 px N-panel: Japanese/English core UI materially readable; localized validation, Validate Cut, and Build Package passed.
+- Adobe After Effects 2026 v26.3.0 Build 87: persisted JA + missing `localization.js` fell back coherently to English with selector synchronization and zero project mutation; restoring the sidecar returned the UI to Japanese.
+
+Post-merge automated evidence on `368b977...`:
+
+- `static-validation`: **88 passed + 2 subtests**;
+- full Blender/runtime suite: **179 passed + 2 subtests**;
+- S5/S6/S7/S8 regression suites: PASS;
+- release simulation/checksums: PASS;
+- ExtendScript/JS syntax: PASS.
+
+## S8.5 — Repository state reconciliation
+
+Documentation-only maintenance. This session must not redesign runtime behavior, authorize a release, or change `main`.
+
+Required reconciliation:
+
+- [x] mark S1–S8 integrated in the main README/status narrative;
+- [x] make S9 the next engineering feature;
+- [x] add Japanese Quick Start documentation;
+- [x] record current release lock and governance boundary;
+- [x] record Blender 6.0 and GitHub Actions runtime technical debt;
+- [ ] merge the S8.5 documentation PR to `develop` after CI is green;
+- [ ] verify post-merge `develop` CI.
+
+## Release boundary
+
+Release governance issue #18 remains **OPEN** and independent of product-session completion.
+
+Current safeguards:
+
+- tag publication workflow fails closed unless the tag targets current `main` and exact release authorization is explicitly approved;
+- release-sensitive actions are pinned;
+- packaging/checksum validation is deterministic;
+- `release-authorization.json` is unapproved by default.
+
+Still required before any RC/stable publication:
+
+- actual repository-level protection for `main` and `develop`;
+- controlled `v*` tag creation/update/deletion policy or equivalent;
+- repository-level protection against historical-workflow publication;
+- explicit auditable authorization for the exact current-main/tag/channel/prerelease tuple;
+- deliberate promotion of a fully validated candidate to `main`;
+- real authorized tag-triggered publication and downloaded-asset checksum/content verification;
+- production update-endpoint/index verification;
+- remaining release/end-to-end and target-user validation appropriate to the release claim.
+
+Green CI alone is never release authorization.
+
+## Known technical debt
+
+See `TECHNICAL_DEBT.md`.
+
+Priority items:
+
+1. Blender 6.0 migration away from deprecated `Scene.use_nodes` behavior. Current Blender 5.2.1 suite passes with 61 deprecation warnings.
+2. Refresh pinned GitHub Actions revisions that still target deprecated Node 20 runtimes. GitHub currently forces them onto Node 24 and CI passes, but the compatibility override should not be permanent.
+3. Reconcile `main`/`develop` deliberately before a release candidate; do not treat the currently diverged branches as a trivial promotion merge.
+
+## Next engineering session
+
+**S9 — Studio Presets**
+
+The preset system should remain data-driven and safe: naming, folders, pass defaults, layer order, output formats, and version patterns may be configurable, but presets must not execute arbitrary code or embed confidential studio workflows in public/customer distributions.
