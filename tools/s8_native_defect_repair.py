@@ -41,16 +41,14 @@ replace_once(
 
 # Regression: missing sidecar + persisted JA must render coherent English UI.
 ae_test = ROOT / "tests/ae_s8_native_ui_binding_checks.cjs"
-replace_once(
-    ae_test,
-    '''{\n  const h = makeRuntime({injectLocalization: false});\n  assert.equal(h.dropdown().selection.index, 1, 'missing localization sidecar must fall back to English');\n  assert.deepEqual(h.buttonTexts(), ['1. Import Package', '2. Build Comp', '3. Run QC', '4. Update Revision']);\n  assert.equal(h.projectMutationCount(), 0, 'fallback must remain UX-only');\n}\n\nfor (const text of makeRuntime().buttonTexts()) assert.doesNotMatch(text, /\\s \\/ \\s/, 'S8 must not use decorative slash-bilingual buttons');\n''',
-    '''{\n  const h = makeRuntime({injectLocalization: false});\n  assert.equal(h.dropdown().selection.index, 1, 'missing localization sidecar must fall back to English');\n  assert.deepEqual(h.buttonTexts(), ['1. Import Package', '2. Build Comp', '3. Run QC', '4. Update Revision']);\n  assert.equal(h.projectMutationCount(), 0, 'fallback must remain UX-only');\n}\n\n{\n  const h = makeRuntime({injectLocalization: false, savedLocale: 'JA'});\n  assert.equal(h.dropdown().selection.index, 1, 'persisted JA must not remain visibly selected when only English fallback strings are available');\n  assert.deepEqual(h.buttonTexts(), ['1. Import Package', '2. Build Comp', '3. Run QC', '4. Update Revision']);\n  assert.equal(h.projectMutationCount(), 0, 'persisted-locale fallback must remain UX-only');\n}\n\nfor (const text of makeRuntime().buttonTexts()) assert.doesNotMatch(text, /\\s \\/ \\s/, 'S8 must not use decorative slash-bilingual buttons');\n''',
-)
+anchor = "for (const text of makeRuntime().buttonTexts()) assert.doesNotMatch(text, /\\s \\/ \\s/, 'S8 must not use decorative slash-bilingual buttons');\n"
+insert = '''{\n  const h = makeRuntime({injectLocalization: false, savedLocale: 'JA'});\n  assert.equal(h.dropdown().selection.index, 1, 'persisted JA must not remain visibly selected when only English fallback strings are available');\n  assert.deepEqual(h.buttonTexts(), ['1. Import Package', '2. Build Comp', '3. Run QC', '4. Update Revision']);\n  assert.equal(h.projectMutationCount(), 0, 'persisted-locale fallback must remain UX-only');\n}\n\n''' + anchor
+replace_once(ae_test, anchor, insert)
 
 # Regression: core editable Blender identifiers/actions must not be compressed
 # into shared horizontal rows at narrow sidebar widths.
 blender_test = ROOT / "tests/test_s8_blender_localization.py"
 with blender_test.open("a", encoding="utf-8") as fh:
-    fh.write('''\n\ndef test_blender_panel_uses_narrow_safe_full_width_identity_controls():\n    source = (BLENDER / "ui.py").read_text(encoding="utf-8")\n    assert "def labeled_prop" in source\n    for property_name in ("language", "project", "episode", "scene_id", "cut", "take", "version", "image_format", "output_dir"):\n        assert f'labeled_prop(' in source\n        assert f'"{property_name}"' in source\n    assert 'row.prop(s, "episode"' not in source\n    assert 'row.prop(s, "scene_id"' not in source\n    assert 'row.prop(s, "cut"' not in source\n    assert 'row.prop(s, "take"' not in source\n    assert 'row.prop(s, "version"' not in source\n    assert 'row.operator("cutbridge.validate"' not in source\n    assert 'row.operator("cutbridge.build_package"' not in source\n''')
+    fh.write('''\n\ndef test_blender_panel_uses_narrow_safe_full_width_identity_controls():\n    source = (BLENDER / "ui.py").read_text(encoding="utf-8")\n    assert "def labeled_prop" in source\n    for property_name in ("language", "project", "episode", "scene_id", "cut", "take", "version", "image_format", "output_dir"):\n        assert f'"{property_name}"' in source\n    assert 'row.prop(s, "episode"' not in source\n    assert 'row.prop(s, "scene_id"' not in source\n    assert 'row.prop(s, "cut"' not in source\n    assert 'row.prop(s, "take"' not in source\n    assert 'row.prop(s, "version"' not in source\n    assert 'row.operator("cutbridge.validate"' not in source\n    assert 'row.operator("cutbridge.build_package"' not in source\n''')
 
 print("S8 native defect repair applied")
