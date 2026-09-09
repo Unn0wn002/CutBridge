@@ -1,100 +1,168 @@
-# Roadmap
+# CutBridge Roadmap
 
-Status reconciled after S6 integration. Versions 0.2.1–0.2.3 remain unreleased development history; milestone labels below describe product sessions rather than guaranteed release numbers unless explicitly assigned.
+Status reconciled after S8 integration. Version labels 0.2.0–0.2.3 remain unreleased development history; session numbers describe bounded product work and do not guarantee public release numbers.
 
-## Implemented foundation — v0.2.0 through v0.2.3 (unreleased)
-- Harden Blender Extension packaging and manifest metadata.
-- Add central version constants and release-time version drift checks.
-- Add environment/version/platform diagnostics.
-- Add LTS-first compatibility policy.
-- Add Stable/Beta/Development update discovery.
-- Add deterministic release builder, ZIP validation, checksums, and release metadata.
-- Keep private source control separate from distribution/update hosting.
-- Add Blender 5.2.1 automated RNA lifecycle and package-generation coverage.
+## Completed foundation — S1–S8
 
-## Completed S2 — Blender Render Mapping
-- Map logical BEAUTY / LINE / SHADOW / DEPTH package passes to supported Blender render/View Layer/compositor outputs.
-- Configure deterministic output directories and sequence patterns.
-- Preserve unrelated artist compositor nodes and commit CutBridge mapping transactionally.
-- Validate renderer/View Layer capability before committing replacement mapping.
+### S1 — Baseline and release packaging
+Completed.
 
-## Completed S3 — Blender Production Hardening
-- Add actionable validation UI and package-target safety checks.
-- Prevent silent same-version overwrite when render/user payload exists.
-- Preserve V001 / V002 / V003 package coexistence.
-- Harden package integrity, UTF-8/Japanese metadata, and filesystem-safe naming behavior.
+- deterministic Blender + After Effects packaging;
+- version consistency and checksums;
+- GPL license inclusion;
+- release-output safety and baseline documentation.
 
-## Completed S4 — AE Handoff Contract Hardening
-- Gate manifest schema and schema version explicitly.
-- Enforce finite integer frame semantics and a consistent non-negative export policy.
-- Respect required versus optional passes.
-- Check exact expected sequence frame coverage and diagnose extra/mis-padded matches.
-- Harden package-relative path handling and reject unsafe aliases/escapes.
-- Replace executable legacy JSON fallback with a data-only parser.
-- Reconcile stale AE MVP/version labeling and enforce release-time AE version consistency.
+### S2 — Blender Render Mapping
+Completed.
 
-Real AE GUI/end-to-end behavior remains a separate manual validation gate where applicable.
+- BEAUTY / LINE / SHADOW / DEPTH logical pass mapping;
+- renderer/View Layer capability validation;
+- deterministic output paths;
+- transactional replacement with unrelated artist nodes preserved.
 
-## Completed S5 — AE Import & Composition Reliability
-- Harden malformed-package and manifest-loading behavior.
-- Make composition/folder/layer creation deterministic and safe across repeated imports.
-- Verify FPS, resolution, pixel aspect, duration, layer ordering, Japanese/Unicode/Windows paths, and actionable failures.
-- Expand runtime-independent regression coverage without claiming native AE GUI execution.
+### S3 — Blender Production Hardening
+Completed.
 
-## Completed S6 — Non-Destructive Revision Manager
-- Integrated to `develop` as merge commit `5d309f51d75b357974d17c94090792d27dea6163` from frozen candidate `f996d64182c292c32361b9af145d85d0128f63dc`.
-- Add revision core, native AE adapter, panel confirmation/update flow, persistent package-root/tag migration, deterministic release sidecar, and automated lifecycle regressions.
-- Detect newer compatible cut revisions and reject incompatible structural/geometry/pass-set changes.
-- Replace only verified CutBridge-managed footage/sources where technically safe.
-- Preserve manual effects, masks, transforms, parenting, timing, layers, and compositor work by using source-only replacement in the native adapter.
-- Surface compatibility warnings and require explicit confirmation for warning-class revisions.
-- Fail closed on ambiguous/missing managed package structure across Build, revision, and QC.
-- Native AE S6 validation is recorded in issue #19 and is PASS/closed on the exact packaged candidate.
-- Solo-maintainer adversarial validation is recorded in issue #20 and is PASS/closed; it is not described as independent review.
-- Post-merge `develop` CI run `34260351796` passed both `static-validation` and `blender-52-rna-runtime` on the exact merge commit.
+- package-target safety;
+- same-version payload overwrite prevention;
+- V001/V002/V003 coexistence;
+- package integrity and Japanese/UTF-8 filesystem handling.
 
-## S7 — QC+ (in progress)
-Tracking: issue #33, branch `feature/session-7-qc-plus`.
+### S4 — AE Handoff Contract Hardening
+Completed.
 
-- Convert QC findings into deterministic PASS / WARNING / ERROR diagnostics with stable testable identifiers/categories.
-- Cover package, manifest, pass, sequence, version/revision, and inspectable AE state.
-- Diagnose missing/extra-frame, FPS/duration/resolution/pixel-aspect, naming/ownership, and revision compatibility conditions.
-- Attach safe actionable remediation to warnings/errors without dangerous automatic fixes, ownership adoption, source guessing, or silent migration.
-- Preserve all S5/S6 fail-closed ownership and revision behavior.
-- Keep native AE claims separate from headless/host-shaped regression evidence.
-- Require dedicated S7 tests, green existing suites, solo-maintainer adversarial validation, merge to `develop`, and green post-merge CI before S8 begins.
+- schema/version gates;
+- finite integer/non-negative frame contract;
+- safe package-relative paths;
+- required/optional pass semantics;
+- exact sequence coverage;
+- data-only legacy JSON parsing;
+- canonical product-version enforcement.
 
-See `docs/S7_QC_PLUS_CONTRACT.md` for the implementation/acceptance contract.
+### S5 — AE Import & Composition Reliability
+Completed.
 
-## S8 — Japanese-First UX
-- Maintainable English/Japanese user-facing string architecture.
-- Japanese quick-start documentation and terminology pass.
-- English fallback and explicit native-user validation boundary.
+- deterministic managed ownership;
+- repeated-build/reload safety;
+- collision/ambiguity blocking;
+- rollback and managed-package structure validation;
+- stricter QC ownership behavior.
+
+### S6 — Non-Destructive Revision Manager
+Completed and integrated.
+
+- merge: `5d309f51d75b357974d17c94090792d27dea6163`;
+- native AE gate #19 PASS;
+- solo-maintainer adversarial gate #20 PASS;
+- post-merge CI PASS.
+
+Compatible revisions replace only verified managed sources, preserve unrelated artist work, migrate current managed metadata, retain historical-footage provenance, and fail closed on incompatible/ambiguous state.
+
+### S7 — QC+
+Completed and integrated.
+
+- repaired candidate: `b17b9d3cd5b67d7bfd3741a58df403d5946e2327`;
+- merge: `ef88d68f0178ed33ed4ba096416fcfe595c1eb6d`;
+- real AE validation found and repaired ExtendScript/revision-state defects before merge.
+
+QC+ supplies deterministic `CBQ-*` diagnostics with severity, remediation, sequence/comp/ownership/revision checks, and no automatic mutation or repair.
+
+### S8 — Japanese-First UX
+Completed and integrated.
+
+- repaired candidate: `f477b745cc600b85708b63d059d6c4eaed9f0249`;
+- merge: `368b977582feadc26543825b4d31ffd5f6266a4f`;
+- AE gate #38 PASS in After Effects 2026 v26.3.0 Build 87;
+- Blender gate #41 PASS in Blender 5.2.1 LTS at approximately 245 px N-panel width;
+- post-merge CI `34380737455` PASS.
+
+S8 delivers Japanese-first UI with deterministic English fallback in Blender and After Effects while stable machine identifiers and safety decisions remain locale-independent.
+
+## S8.5 — Repository State Reconciliation
+Current documentation-maintenance session.
+
+Scope:
+
+- reconcile README/completion/roadmap/quick-start/test/release status after S8;
+- add Japanese onboarding documentation;
+- record technical debt and current release-governance blockers;
+- keep `main` and runtime implementation untouched;
+- make S9 the next active engineering feature.
+
+Completion gate: documentation PR merged to `develop` with green CI and green post-merge `develop` CI.
 
 ## S9 — Studio Presets
-- External/configurable naming, folder, pass, layer-order, output-format, and version-pattern presets.
-- Safe schema/defaults with no arbitrary code execution or confidential studio preset distribution.
+**Next engineering session.**
+
+Goal: make CutBridge adaptable to different animation/content-production teams without hard-coding a studio workflow.
+
+Candidate scope:
+
+- external data-only preset format;
+- naming conventions;
+- deterministic folder structure;
+- default pass sets and required/optional policy defaults;
+- AE layer ordering;
+- output formats;
+- version-pattern/display conventions;
+- built-in safe default preset;
+- explicit preset validation and fallback behavior;
+- migration/versioning policy for preset schema.
+
+Safety boundaries:
+
+- no arbitrary code execution from preset files;
+- no hidden filesystem/network actions;
+- no automatic ownership adoption;
+- no confidential real-studio preset bundled without explicit permission;
+- existing S5/S6/S7 fail-closed ownership/revision/QC behavior remains authoritative.
 
 ## S10 — Camera / Null Handoff Investigation
-- Research Blender/AE coordinate, axis, handedness, units, camera/lens/FOV/sensor, parenting, null/empty, and frame-timing constraints.
-- Ship only a minimal reliable subset with tests; defer anything not technically established.
+
+Research Blender ↔ AE coordinate systems, axes, units, camera/lens/FOV/sensor representation, parenting, empties/nulls, and frame timing. Ship only a minimal subset whose behavior can be established and tested reliably.
 
 ## S11 — QA / Docs / Release Engineering
-- Reconcile full CI/test matrix, release packaging, compatibility, security, install/usage/revision/QC/troubleshooting documentation, and distribution metadata.
-- Keep the private source repository separate from customer update delivery.
+
+- reconcile final CI/test matrix;
+- update installation/usage/revision/QC/troubleshooting documentation;
+- verify packaging and compatibility metadata;
+- prepare controlled distribution/update infrastructure;
+- address release-governance issue #18 before publication.
 
 ## S12 — End-to-End Validation Harness
-- Maintain legal/original/synthetic fixtures.
-- Provide a deterministic manual Blender 5.2.1 → After Effects checklist including V001→V002→V003 revision preservation and save/reopen verification.
-- Never infer GUI success from headless tests.
+
+Maintain legal/original/synthetic fixtures and an evidence-grade Blender → package → AE checklist, including V001→V002→V003 revision preservation and save/reopen behavior. Never infer GUI success from headless tests.
 
 ## S13 — Manual-Finding Repair
-- Run only when real manual Blender/AE failure evidence exists.
-- Do not invent defects to keep development moving.
 
-## S14 — Target-User Validation Prep
-- Prepare Japanese-oriented usability, timing, error, and rework validation protocol plus feedback templates.
-- Do not fabricate participants or results.
+Run only when actual real-host/manual testing produces a reproducible defect. Do not invent defects merely to continue a session.
+
+## S14 — Japanese Target-User Validation Preparation
+
+Prepare Japanese-oriented task scripts, timing/error/rework metrics, feedback templates, and acceptance criteria. Do not fabricate participants, measurements, or usability claims.
+
+## Release-governance track — independent blocker
+
+Issue #18 remains open independently of feature development.
+
+Before any RC/stable publication:
+
+- protect `main` and `develop` through repository-level governance;
+- restrict `v*` tag mutation to the intended release path or equivalent;
+- protect against publication from historical workflow commits;
+- explicitly authorize the exact current-main/tag/channel/prerelease tuple;
+- deliberately promote a validated candidate to `main`;
+- publish through the authorized tag workflow;
+- download and independently verify release artifact checksums/contents;
+- validate the production update endpoint/index;
+- satisfy the remaining release/end-to-end and target-user gates.
+
+## Technical-debt track
+
+See `TECHNICAL_DEBT.md`.
+
+Current priorities include Blender 6.0 migration away from deprecated `Scene.use_nodes` behavior and updating pinned GitHub Actions revisions that still target deprecated Node 20 runtimes.
 
 ## Stable-release goal
-A production-oriented Blender → After Effects handoff tool with deterministic packaging, revision-safe updates, QC, studio presets, documented compatibility, controlled distribution/update architecture, green automated gates, and recorded real-app/manual validation appropriate to the release claim.
+
+A production-oriented Japanese-first Blender → After Effects handoff tool with deterministic packaging, revision-safe source updates, actionable QC, safe studio presets, documented compatibility, controlled distribution/update architecture, green automated gates, and recorded real-host/target-user validation appropriate to the release claim.
