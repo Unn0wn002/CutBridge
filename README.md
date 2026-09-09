@@ -1,70 +1,67 @@
 # CutBridge
 
-**CutBridge is a Blender-to-After Effects production pipeline tool for animation cuts.** It standardizes cut metadata, render-pass packaging, versioning, JSON handoff, compositing setup, QC, and controlled revision handling so artists can move work from Blender into After Effects with less repetitive setup and fewer handoff errors.
+**CutBridge is a Blender-to-After Effects production pipeline tool for animation cuts.** It standardizes cut metadata, render-pass packaging, versioning, JSON handoff, compositing setup, QC, controlled revision handling, and Japanese-first workflow UX so artists can move work from Blender into After Effects with less repetitive setup and fewer handoff errors.
 
-The primary audience is Japanese animation and content-creation artists and studios, with English usability retained and no single studio workflow hard-coded.
+The primary audience is Japanese animation and content-production artists and studios. English remains a deterministic supported fallback, and CutBridge intentionally avoids hard-coding a single studio workflow.
 
-CutBridge is designed around cut-based animation production workflows. It is not a renderer, toon shader, animation generator, or asset manager. Its job is to provide a structured handoff layer between 3D production and compositing: validate the cut in Blender, configure deterministic render outputs, build a deterministic package, transfer the manifest and render sequences, reconstruct the expected composition context in After Effects, run QC, and apply compatible revisions without silently replacing unrelated artist work.
+CutBridge is not a renderer, toon shader, animation generator, or asset manager. Its role is the handoff layer between 3D cut production and compositing: validate the cut in Blender, configure deterministic render outputs, build a deterministic package, transfer the manifest and render sequences, reconstruct the expected AE context, run QC, and apply compatible revisions without silently replacing unrelated artist work.
 
 ## Current development version
 
 **v0.2.3 — unreleased development baseline**
 
-The integrated `develop` baseline contains completed Sessions S1-S5. Session S6 (non-destructive After Effects revision handling) is implemented on PR #15 with green automated regression evidence, but is **not yet authorized for merge or stable release**. Independent full-PR review and real After Effects desktop validation remain required S6 integration gates.
+The current `develop` baseline has completed and integrated **Sessions S1–S8**. S8 merged as `368b977582feadc26543825b4d31ffd5f6266a4f`; post-merge CI run `34380737455` passed both `static-validation` and `blender-52-rna-runtime` on that exact merge commit.
+
+S7 QC+ and S8 Japanese-first UX both completed their native After Effects / Blender validation gates before integration. Stable or RC publication remains blocked by repository-level release governance issue #18 and the deliberate fail-closed release authorization state.
 
 ### Blender
 
 - Project / Episode / Scene / Cut / Take / Version metadata.
 - FPS, resolution, frame-range, and active-camera capture.
 - Cut validation and deterministic package generation.
-- Transactional render-output mapping for CutBridge-owned BEAUTY / LINE / SHADOW / DEPTH outputs while preserving unrelated artist compositor nodes.
-- Same-version overwrite protection when a package already contains render/user payload.
-- Version coexistence for V001 / V002 / V003 package workflows.
+- Transactional BEAUTY / LINE / SHADOW / DEPTH render-output mapping while preserving unrelated artist compositor nodes.
+- Same-version overwrite protection when render/user payload exists.
+- V001 / V002 / V003 package coexistence.
 - UTF-8 `cutbridge.json` manifest.
-- Modern `blender_manifest.toml` extension metadata.
-- Environment diagnostics: CutBridge version, Blender version, Python, platform, online-access status.
-- LTS-first compatibility status.
-- Stable / Beta / Development update-channel preference.
-- Optional startup update **check**.
-- No forced or active-session self-update.
-- Transactional registration cleanup so failed enables do not leave stale RNA classes behind.
+- Environment diagnostics and LTS-first compatibility status.
+- Stable / Beta / Development update-channel preference and notification-only update checks.
+- Transactional registration cleanup for Blender 5.2.x RNA lifecycle safety.
+- S8 Japanese-first / English-fallback localized panel, validation messaging, and narrow-panel layout.
 
 ### After Effects
 
-- ExtendScript/ScriptUI importer.
-- Manifest schema/version validation.
-- Manifest-driven project folders and composition creation.
-- Complete required image-sequence import and FPS conform.
-- Required-pass errors and optional-pass warning/skip behavior.
-- Exact expected-frame coverage with missing, extra, and wrong-padding diagnostics.
-- Package-relative path validation and UTF-8 Japanese filenames.
-- Legacy JSON parsing without executing manifest data.
-- Deterministic CutBridge-managed comp, footage, and layer ownership tags.
-- Repeated-build/reload safety with conservative collision handling instead of adopting unrelated artist objects.
-- QC for managed comp metadata, sequence coverage, managed footage source/FPS, ownership drift, and deterministic managed-package structure.
-- S6 adds a revision-manager sidecar, newer-package selection, compatibility checks, explicit confirmation, staged replacement import, native `AVLayer.replaceSource(..., false)` source swaps, rollback, historical-footage provenance, and managed metadata migration.
-- Build, revision, and QC fail closed when the current deterministic package structure is missing or ambiguous instead of choosing or recreating folders implicitly.
-- Export frames must start at 0 or later; negative/preroll cuts must be rebased before export. No automatic animation renumbering.
+- ExtendScript/ScriptUI package importer.
+- Manifest schema/version and path validation.
+- Deterministic managed project folders, comp, footage, and layer ownership.
+- Exact sequence-frame coverage validation with required/optional pass semantics.
+- Repeated-build/reload safety and conservative collision handling.
+- S6 non-destructive revision workflow using verified source replacement with rollback and historical-footage provenance.
+- S7 QC+ deterministic PASS / WARNING / ERROR diagnostics with stable `CBQ-*` identifiers and safe remediation guidance.
+- S8 Japanese-first / English-fallback UI through adjacent `localization.js`, with deterministic English fallback if the localization sidecar is unavailable.
+- Build, Revision, and QC fail closed when ownership or package structure is missing or ambiguous.
+- Negative/preroll export ranges are unsupported; export must be rebased to frame 0 or later.
 
-The S6 revision workflow has automated host-shaped lifecycle coverage, including V001→V002→V003, Build/QC after revision, script reload, source replacement, and collision/drift cases. Those tests are regression evidence only; native After Effects GUI/undo/save-reopen/property-preservation behavior still requires real desktop execution.
+### Native validation evidence
 
-### Engineering
+S8 targeted native retesting passed on exact candidate `f477b745cc600b85708b63d059d6c4eaed9f0249` before merge:
 
-- Private source repository.
-- `main` / `develop` / short-lived feature/fix branch workflow.
-- CI on main, develop, feature, and fix branches.
-- Official `bpy 5.2.1` RNA lifecycle, render-mapping, package-generation, and producer/consumer contract integration tests.
-- Executable Node tests for AE contract helpers, S5 ownership/idempotency behavior, and S6 revision transactions/host-shaped lifecycle behavior.
-- Deterministic release builder.
-- Version/tag consistency validation, including AE product-version drift checks.
-- Blender + After Effects ZIP artifacts.
-- The After Effects release ZIP includes exact `CutBridge.jsx`, `revision_manager.js`, `INSTALL.md`, and `LICENSE` contents.
-- SHA-256 checksums and release metadata.
-- Separate release-index schema for future public distribution.
+- Blender 5.2.1 LTS at approximately 245 px N-panel width: JA/EN readability, localized validation, Validate Cut, and Build Package passed.
+- Adobe After Effects 2026 v26.3.0 Build 87: persisted Japanese locale, missing-`localization.js` English fallback, visible selector synchronization, zero unintended project mutation, restored JA behavior, and representative fail-closed guards passed.
+
+Automated post-merge evidence on `368b977...`:
+
+- static suite: **88 passed + 2 subtests**;
+- complete Blender/runtime suite: **179 passed + 2 subtests**;
+- deterministic release simulation and checksums: PASS;
+- S5/S6/S7/S8 regression suites: PASS;
+- ExtendScript/JS syntax: PASS.
+
+The Blender suite currently emits 61 `Scene.use_nodes` deprecation warnings associated with future Blender 6.0 compatibility work; they are tracked as technical debt rather than current test failures.
 
 ## Quick Start
 
-See [`docs/QUICK_START.md`](docs/QUICK_START.md) for the current implemented Blender → package → After Effects workflow, S6 revision procedure, and explicit manual-validation boundaries.
+- English: [`docs/QUICK_START.md`](docs/QUICK_START.md)
+- 日本語: [`docs/QUICK_START_JA.md`](docs/QUICK_START_JA.md)
 
 ## Repository layout
 
@@ -87,40 +84,42 @@ CutBridge/
 
 See [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md).
 
-Minimum Blender runtime is **4.2.0**. The current LTS-first targets are Blender **4.2 LTS**, **4.5 LTS**, and **5.2 LTS**. A version meeting the minimum is not automatically described as certified until runtime testing is recorded.
+Minimum declared Blender runtime is **4.2.0**. Current LTS-first targets are Blender **4.2 LTS**, **4.5 LTS**, and **5.2 LTS**. Meeting the minimum version alone is not a certification claim.
 
-After Effects compatibility must be established with real desktop-host validation before a stable release claim. Node/mock/host-shaped tests are regression evidence, not a substitute for native AE execution.
+Native After Effects behavior has been exercised for the S6–S8 validation gates on Adobe After Effects 2026 v26.3.0 Build 87, but stable-release compatibility claims still require the broader release checklist and end-to-end release validation.
 
 ## Update policy
 
 See [`docs/UPDATE_ARCHITECTURE.md`](docs/UPDATE_ARCHITECTURE.md).
 
-The private source repository is **not** the plugin update endpoint. CutBridge can check a separately configured release index and notify the user, but installation remains user-approved. Production distribution is intended to use Blender's Remote Extension Repository system.
+The private source repository is **not** the customer update endpoint. CutBridge can check a separately configured release index and notify the user, but installation remains user-approved.
 
 ## Development flow
 
-- `main` — stable/release-ready only after deliberate promotion and release validation.
-- `develop` — active integration and the current completed S1-S5 baseline.
-- `feature/*` / `fix/*` / bounded docs branches — focused work branched from current `develop`.
+- `main` — conservative unreleased/release-locked baseline; only deliberate promotion after validation.
+- `develop` — active integration branch; S1–S8 are integrated.
+- `feature/*`, `fix/*`, `docs/*` — bounded work branched from current `develop`.
 
-See [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) for complete test commands, [`docs/TEST_PLAN.md`](docs/TEST_PLAN.md) for the validation matrix, [`docs/COMPLETION_STATUS.md`](docs/COMPLETION_STATUS.md) for live completion gates, and [`docs/BASELINE_2026-09-06.md`](docs/BASELINE_2026-09-06.md) for the Session 1 repository audit.
+See [`docs/TEST_PLAN.md`](docs/TEST_PLAN.md), [`docs/COMPLETION_STATUS.md`](docs/COMPLETION_STATUS.md), [`docs/ROADMAP.md`](docs/ROADMAP.md), and [`docs/TECHNICAL_DEBT.md`](docs/TECHNICAL_DEBT.md).
 
 ## License
 
-CutBridge uses **GPL-3.0-or-later**, as declared by the Blender extension manifest. The full GPL v3 text is in [`LICENSE`](LICENSE); both release ZIPs include it.
+CutBridge uses **GPL-3.0-or-later**. The full GPL v3 text is in [`LICENSE`](LICENSE), and release packaging includes the license.
 
 ## Release status
 
-Version 0.2.3 is an unreleased development baseline. There is no stable GitHub Release yet. Automated package/release simulation does not certify the full Blender → After Effects workflow.
+Version 0.2.3 remains **unreleased**. There are no release tags or GitHub Releases, and `release-authorization.json` remains unapproved by design.
 
-Stable publication remains blocked until the release checklist is satisfied, including real Blender GUI validation, real After Effects import/build/QC, Blender → package → After Effects end-to-end testing, real V001→V002→V003 revision-preservation/save-reopen validation, release artifact/checksum verification, and appropriate Japanese-user validation for the intended primary market.
+Stable/RC publication is blocked until repository-level release governance in issue #18 is actually enforced and validated, a deliberate candidate is promoted to `main`, the exact tag/current-main tuple is explicitly authorized, published assets are independently checksum-verified, and the remaining release/end-to-end validation checklist is satisfied.
 
 ## Next product work
 
-1. Complete S6 integration gates — independent full-PR review, native After Effects V001→V002→V003/property-preservation/save-reopen validation, merge to `develop`, and green post-merge CI.
-2. S7 — QC+ diagnostics and revision-aware checks.
-3. S8 — English/Japanese UX architecture, Japanese quick-start localization, and terminology QA.
-4. S9 — configurable studio presets.
-5. S10 — camera/null handoff investigation.
-6. S11-S14 — release engineering, end-to-end validation, manual-finding repair, and target-user validation preparation.
-7. After repository-level release governance in issue #18 is available and validated, promote a verified candidate from `develop` to `main`, publish an authorized RC/pre-release, verify downloaded artifacts/checksums, and only then consider a stable release.
+1. **S8.5 — repository state reconciliation**: documentation/status cleanup only; no runtime redesign and no release authorization.
+2. **S9 — Studio Presets**: configurable naming, folders, passes, layer ordering, formats, and version-pattern presets with a safe data-only schema.
+3. **S10 — Camera / Null handoff investigation**.
+4. **S11 — QA / docs / release engineering**.
+5. **S12 — End-to-end validation harness**.
+6. **S13 — Manual-finding repair**, only when real manual failures exist.
+7. **S14 — Japanese target-user validation preparation**.
+
+Release-governance work remains independent of S9+ feature development. Do not interpret green CI or S8 integration as publication authorization.
