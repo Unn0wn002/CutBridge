@@ -8,6 +8,15 @@ from typing import Iterable
 
 import bpy
 
+from .presets import (
+    PresetError,
+    default_preset,
+    format_template,
+    load_preset_file,
+    manual_preset,
+    preset_metadata,
+    version_token_for,
+)
 from .version import __version__
 
 INVALID_FS_CHARS = re.compile(r'[<>:"/\\|?*]+')
@@ -49,37 +58,88 @@ def safe_token(value: str, fallback: str) -> str:
     return value or fallback
 
 
-def version_token(version: int) -> str:
-    return f"V{int(version):03d}"
+def _preset_mode(settings) -> str:
+    mode = str(getattr(settings, "studio_preset_mode", "MANUAL") or "MANUAL").upper()
+    return mode if mode in {"MANUAL", "DEFAULT", "CUSTOM"} else "MANUAL"
+
+
+def active_preset(settings) -> dict:
+    """Resolve the current effective studio preset without executing preset data."""
+    mode = _preset_mode(settings)
+    if mode == "MANUAL":
+        return manual_preset(settings)
+    if mode == "DEFAULT":
+        return default_preset()
+
+    raw_path = str(getattr(settings, "studio_preset_path", "") or "").strip()
+    if not raw_path:
+        raise PresetError("PRESET_PATH_MISSING", "Custom Studio Preset mode requires a JSON preset file.")
+    try:
+        resolved = Path(bpy.path.abspath(raw_path)).expanduser().resolve()
+    except (OSError, RuntimeError, ValueError) as exc:
+        raise PresetError("PRESET_FILE_UNAVAILABLE", f"Studio preset path cannot be resolved: {exc}") from exc
+    return load_preset_file(resolved)
+
+
+def studio_preset_issues(settings) -> list[dict]:
+    try:
+        active_preset(settings)
+        return []
+    except PresetError as exc:
+        return [
+            {
+                "level": "ERROR",
+                "code": exc.code,
+                "message": exc.message,
+                "fix": "Choose Manual/Default mode or select a valid CutBridge studio preset JSON file.",
+            }
+        ]
+
+
+def _template_values(settings, preset: dict, pass_name: str = "") -> dict[str, str]:
+    return {
+        "project": safe_token(getattr(settings, "project", ""), "PROJECT"),
+        "episode": safe_token(getattr(settings, "episode", ""), "EP00"),
+        "scene": safe_token(getattr(settings, "scene_id", ""), "SC000"),
+        "cut": safe_token(getattr(settings, "cut", ""), "C000"),
+        "take": safe_token(getattr(settings, "take", ""), "T01"),
+        "version": version_token_for(preset, int(getattr(settings, "version", 1))),
+        "pass": safe_token(pass_name, "PASS"),
+    }
+
+
+def version_token(version: int, preset: dict | None = None) -> str:
+    # Preserve the original public helper behavior when callers do not supply a preset.
+    return version_token_for(preset or default_preset(), version)
 
 
 def package_name(settings) -> str:
-    parts = [
-        safe_token(settings.project, "PROJECT"),
-        safe_token(settings.episode, "EP00"),
-        safe_token(settings.scene_id, "SC000"),
-        safe_token(settings.cut, "C000"),
-        safe_token(settings.take, "T01"),
-        version_token(settings.version),
-    ]
-    return "_".join(parts)
+    preset = active_preset(settings)
+    rendered = format_template(preset, "package", _template_values(settings, preset))
+    return safe_token(rendered, "CUTBRIDGE_PACKAGE")
 
 
 def extension_for(image_format: str) -> str:
     return {"PNG": ".png", "OPEN_EXR": ".exr", "TIFF": ".tif"}.get(image_format, ".png")
 
 
+def selected_pass_specs(settings) -> list[dict]:
+    try:
+        preset = active_preset(settings)
+    except PresetError:
+        return []
+    return [dict(item) for item in preset.get("passes", [])]
+
+
 def selected_passes(settings) -> list[str]:
-    result = []
-    if settings.pass_beauty:
-        result.append("BEAUTY")
-    if settings.pass_line:
-        result.append("LINE")
-    if settings.pass_shadow:
-        result.append("SHADOW")
-    if settings.pass_depth:
-        result.append("DEPTH")
-    return result
+    return [item["name"] for item in selected_pass_specs(settings)]
+
+
+def effective_image_format(settings) -> str:
+    try:
+        return str(active_preset(settings)["output"]["image_format"])
+    except (PresetError, KeyError, TypeError):
+        return str(getattr(settings, "image_format", "PNG"))
 
 
 def absolute_output_dir(settings) -> Path:
@@ -108,6 +168,9 @@ def render_mapping_issues(context) -> list[dict]:
     def warn(code, message, fix):
         issues.append({"level": "WARNING", "code": code, "message": message, "fix": fix})
 
+    if studio_preset_issues(settings):
+        return issues
+
     if layer is None:
         err("VIEW_LAYER_MISSING", "No active View Layer is available for render mapping.", "Create or enable a View Layer.")
         return issues
@@ -122,7 +185,7 @@ def render_mapping_issues(context) -> list[dict]:
                 "Disable this CutBridge pass or choose a render engine/View Layer that exposes the required pass.",
             )
 
-    if settings.pass_depth and settings.image_format != "OPEN_EXR":
+    if "DEPTH" in selected_passes(settings) and effective_image_format(settings) != "OPEN_EXR":
         warn(
             "DEPTH_FORMAT_LOSSY",
             "DEPTH is a floating-point data pass but the selected package format is not OpenEXR.",
@@ -142,6 +205,9 @@ def validate_scene(context) -> list[dict]:
 
     def warn(code, message, fix):
         issues.append({"level": "WARNING", "code": code, "message": message, "fix": fix})
+
+    preset_problems = studio_preset_issues(s)
+    issues.extend(preset_problems)
 
     for attr, label in (
         ("project", "Project"),
@@ -169,7 +235,7 @@ def validate_scene(context) -> list[dict]:
     if scene.render.resolution_x <= 0 or scene.render.resolution_y <= 0:
         err("RESOLUTION_INVALID", "Resolution must be positive.", "Set a valid resolution.")
 
-    if not selected_passes(s):
+    if not preset_problems and not selected_passes(s):
         err("PASS_MISSING", "No render pass is selected.", "Enable at least one package pass.")
 
     if not s.output_dir.strip():
@@ -182,7 +248,8 @@ def validate_scene(context) -> list[dict]:
             "Save the .blend file before using a // relative output path.",
         )
 
-    issues.extend(render_mapping_issues(context))
+    if not preset_problems:
+        issues.extend(render_mapping_issues(context))
     return issues
 
 
@@ -297,6 +364,7 @@ def configure_render_outputs(context, package_root: Path) -> dict[str, str]:
     """
     scene = context.scene
     settings = scene.cutbridge
+    preset = active_preset(settings)
     layer = _view_layer(context)
     mapping_errors = [issue for issue in render_mapping_issues(context) if issue["level"] == "ERROR"]
     if mapping_errors:
@@ -304,7 +372,9 @@ def configure_render_outputs(context, package_root: Path) -> dict[str, str]:
     if layer is None:
         raise RuntimeError("No active View Layer is available for render mapping.")
 
-    pass_names = selected_passes(settings)
+    pass_names = [item["name"] for item in preset["passes"]]
+    image_format = preset["output"]["image_format"]
+    render_folder = preset["folders"]["render"]
     state = _capture_render_mapping_state(scene, layer, pass_names)
     tree = None
     created_tree = None
@@ -341,16 +411,18 @@ def configure_render_outputs(context, package_root: Path) -> dict[str, str]:
             output_node.location = (80.0, -220.0 * index)
             created_names.append(output_node.name)
 
-            directory = package_root / "render" / pass_name.lower()
-            filename = f"{safe_token(settings.cut, 'C000')}_{pass_name}_####"
+            directory = package_root / render_folder / pass_name.lower()
+            filename = safe_token(
+                format_template(preset, "sequence", _template_values(settings, preset, pass_name)),
+                f"{safe_token(settings.cut, 'C000')}_{pass_name}_####",
+            )
 
             if hasattr(output_node, "file_output_items") and hasattr(output_node, "directory"):
                 # Blender 5.x File Output nodes can remain in Multi-Layer EXR media
                 # mode even when an individual item overrides its file format. In
                 # that mode the item name is treated as an EXR layer name, not as
                 # part of the disk filename, producing bare 0000.exr files while
-                # cutbridge.json promises C001_BEAUTY_####.exr. Force Image media
-                # mode so the per-item name is the actual sequence filename prefix.
+                # cutbridge.json promises a named sequence. Force Image media mode.
                 output_node.directory = str(directory)
                 output_node.file_name = ""
                 output_node.format.media_type = "IMAGE"
@@ -358,7 +430,7 @@ def configure_render_outputs(context, package_root: Path) -> dict[str, str]:
                 item = output_node.file_output_items.new(PASS_MAPPINGS[pass_name]["socket_type"], filename)
                 item.override_node_format = True
                 item.format.media_type = "IMAGE"
-                item.format.file_format = settings.image_format
+                item.format.file_format = image_format
                 target_socket = output_node.inputs.get(item.name) or output_node.inputs[0]
             else:
                 # Blender 4.2/4.5 compatibility path.
@@ -368,7 +440,7 @@ def configure_render_outputs(context, package_root: Path) -> dict[str, str]:
                 else:
                     target_socket = output_node.inputs[0]
                 output_node.file_slots[0].path = filename
-                output_node.format.file_format = settings.image_format
+                output_node.format.file_format = image_format
 
             tree.links.new(source_socket, target_socket)
             configured[pass_name] = source_socket.name
@@ -405,22 +477,32 @@ def build_manifest(context, package_root: Path) -> dict:
     if scene.frame_start < 0 or scene.frame_end < 0:
         raise ValueError("Negative export frames are unsupported. Rebase the cut and preroll to frame 0 or later.")
     s = scene.cutbridge
-    ext = extension_for(s.image_format)
+    preset = active_preset(s)
+    image_format = preset["output"]["image_format"]
+    ext = extension_for(image_format)
     passes = []
-    for pass_name in selected_passes(s):
+    render_folder = preset["folders"]["render"]
+    for pass_spec in preset["passes"]:
+        pass_name = pass_spec["name"]
         folder_name = pass_name.lower()
+        sequence_stem = safe_token(
+            format_template(preset, "sequence", _template_values(s, preset, pass_name)),
+            f"{safe_token(s.cut, 'C000')}_{pass_name}_####",
+        )
         # Sequence path is relative to the package root. AE resolves it from manifest location.
         passes.append(
             {
                 "name": pass_name,
-                "path": f"render/{folder_name}",
-                "sequence_pattern": f"{safe_token(s.cut, 'C000')}_{pass_name}_####{ext}",
-                "required": True,
+                "path": f"{render_folder}/{folder_name}",
+                "sequence_pattern": f"{sequence_stem}{ext}",
+                "required": bool(pass_spec["required"]),
             }
         )
 
     duration_frames = int(scene.frame_end - scene.frame_start + 1)
     fps = float(scene.render.fps) / float(scene.render.fps_base or 1.0)
+    comp_name = format_template(preset, "ae_comp", _template_values(s, preset)).strip() or f"{safe_token(s.cut, 'C000')}_COMP"
+    mode = _preset_mode(s)
     manifest = {
         "schema": "cutbridge-manifest",
         "schema_version": 1,
@@ -431,7 +513,7 @@ def build_manifest(context, package_root: Path) -> dict:
         "cut": s.cut,
         "take": s.take,
         "version": int(s.version),
-        "version_label": version_token(s.version),
+        "version_label": version_token_for(preset, s.version),
         "package_name": package_name(s),
         "fps": fps,
         "resolution": {
@@ -447,15 +529,12 @@ def build_manifest(context, package_root: Path) -> dict:
         "camera": scene.camera.name if scene.camera else None,
         "source_blend": bpy.path.basename(bpy.data.filepath) if bpy.data.filepath else None,
         "passes": passes,
-        "folders": {
-            "render": "render",
-            "preview": "preview",
-            "camera": "camera",
-        },
+        "folders": dict(preset["folders"]),
         "ae": {
-            "comp_name": f"{safe_token(s.cut, 'C000')}_COMP",
+            "comp_name": comp_name,
             "layer_order": [p["name"] for p in passes],
         },
+        "studio_preset": preset_metadata(mode, preset),
     }
     return manifest
 
@@ -466,9 +545,10 @@ def write_manifest(manifest: dict, package_root: Path) -> Path:
     return path
 
 
-def ensure_package_dirs(package_root: Path, passes: Iterable[str]) -> None:
+def ensure_package_dirs(package_root: Path, passes: Iterable[str], folders: dict | None = None) -> None:
+    folder_map = folders or {"render": "render", "preview": "preview", "camera": "camera"}
     package_root.mkdir(parents=True, exist_ok=True)
-    (package_root / "preview").mkdir(exist_ok=True)
-    (package_root / "camera").mkdir(exist_ok=True)
+    (package_root / folder_map["preview"]).mkdir(parents=True, exist_ok=True)
+    (package_root / folder_map["camera"]).mkdir(parents=True, exist_ok=True)
     for pass_name in passes:
-        (package_root / "render" / pass_name.lower()).mkdir(parents=True, exist_ok=True)
+        (package_root / folder_map["render"] / pass_name.lower()).mkdir(parents=True, exist_ok=True)
