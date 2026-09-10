@@ -4,6 +4,25 @@ All notable CutBridge changes are tracked here.
 
 ## [0.2.3] - Unreleased
 
+### S10 — Camera / Null Handoff Investigation
+
+#### Research added
+- Evidence-first camera/null handoff research harness; production manifest/importer behavior remains unchanged.
+- Pure candidate spatial basis/FOV/timing module for Blender `(X,Y,Z)` → AE `(X,-Z,Y)` investigation.
+- Deterministic 1920×1080, 50 mm, 36 mm horizontal-sensor perspective fixture with origin/+X/+Y/+Z/mixed points.
+- Isolated Blender 5.2 projection probe using `world_to_camera_view()` and guaranteed synthetic data-block cleanup.
+- Disposable native After Effects probe using CameraLayer, 3D nulls, `toComp()`, explicit Save dialog, and cleanup-failure FAIL behavior.
+- Research documentation and issue #47 native AE validation gate.
+- CI coverage for pure S10 math, Blender source-projection parity, AE probe safety contract, and AE probe JavaScript syntax.
+
+#### Research precision / safety
+- Candidate basis remains research-only; no production camera/null importer, ownership tag, or manifest transform schema has been added.
+- `100 px / Blender unit` is fixture scale only, not production policy.
+- Blender source-side finite-precision projection comparison is bounded at **0.00005 px** after measured exact-axis error of approximately `0.0000319 px`.
+- Native After Effects acceptance remains independently bounded at **0.05 px**; do not widen it to obtain PASS.
+- Arbitrary camera orientation, parenting/constraints, orthographic/panoramic cameras, lens shift, DOF equivalence, and production scale policy remain pending.
+- S10 may finish as investigation PASS / runtime deferred if evidence is insufficient for a safe production subset.
+
 ### S9 — Studio Presets
 
 #### Added
@@ -128,7 +147,7 @@ All notable CutBridge changes are tracked here.
 - v0.2.3 remains unreleased.
 - No release tag or GitHub Release exists.
 - `release-authorization.json` remains unapproved by design.
-- Repository-level release governance issue #18 remains a blocker independently of S1–S9 product integration.
+- Repository-level release governance issue #18 remains a blocker independently of S1–S9 integration and S10 research progress.
 
 ## [0.2.2] - Unreleased
 
