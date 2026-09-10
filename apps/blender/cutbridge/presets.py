@@ -160,6 +160,23 @@ def _validate_folder(value: object, location: str) -> str:
     return value
 
 
+def _validate_folder_separation(folders: dict[str, str]) -> None:
+    """Keep render/preview/camera trees disjoint so payload roles cannot alias."""
+    items = list(folders.items())
+    for index, (left_name, left_path) in enumerate(items):
+        for right_name, right_path in items[index + 1:]:
+            if left_path == right_path:
+                raise PresetError(
+                    "PRESET_PATH_UNSAFE",
+                    f"preset.folders.{left_name} and preset.folders.{right_name} must be distinct.",
+                )
+            if left_path.startswith(right_path + "/") or right_path.startswith(left_path + "/"):
+                raise PresetError(
+                    "PRESET_PATH_UNSAFE",
+                    f"preset.folders.{left_name} and preset.folders.{right_name} cannot overlap or contain one another.",
+                )
+
+
 def validate_preset(data: object) -> dict:
     """Validate and normalize untrusted JSON preset data without executing it."""
     if not isinstance(data, dict):
@@ -210,8 +227,7 @@ def validate_preset(data: object) -> dict:
         key: _validate_folder(folders.get(key), f"preset.folders.{key}")
         for key in ("render", "preview", "camera")
     }
-    if len(set(normalized_folders.values())) != len(normalized_folders):
-        raise PresetError("PRESET_FIELD_INVALID", "Render, preview, and camera folders must be distinct.")
+    _validate_folder_separation(normalized_folders)
 
     passes = data.get("passes")
     if not isinstance(passes, list) or not passes:
