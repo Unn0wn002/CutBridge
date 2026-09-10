@@ -8,8 +8,8 @@ from .core import (
     absolute_output_dir,
     build_manifest,
     configure_render_outputs,
+    effective_package_name,
     ensure_package_dirs,
-    package_name,
     selected_passes,
     validate_scene,
     write_manifest,
@@ -94,7 +94,7 @@ class CUTBRIDGE_OT_BuildPackage(bpy.types.Operator):
 
         settings = context.scene.cutbridge
         try:
-            root = absolute_output_dir(settings) / package_name(settings)
+            root = absolute_output_dir(settings) / effective_package_name(settings)
             passes = selected_passes(settings)
         except (OSError, RuntimeError, ValueError) as exc:
             self.report({"ERROR"}, tr(language, "package_build_failed", detail=str(exc)))
