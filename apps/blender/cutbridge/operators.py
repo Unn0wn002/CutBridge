@@ -44,7 +44,7 @@ def _language(context) -> str:
 class CUTBRIDGE_OT_Validate(bpy.types.Operator):
     bl_idname = "cutbridge.validate"
     bl_label = "Validate Cut"
-    bl_description = "Check cut metadata, scene settings, render mapping, and package target safety"
+    bl_description = "Check cut metadata, scene settings, render mapping, Studio Preset, and package target safety"
 
     def execute(self, context):
         language = _language(context)
@@ -93,21 +93,25 @@ class CUTBRIDGE_OT_BuildPackage(bpy.types.Operator):
             return {"CANCELLED"}
 
         settings = context.scene.cutbridge
-        root = absolute_output_dir(settings) / package_name(settings)
-        passes = selected_passes(settings)
+        try:
+            root = absolute_output_dir(settings) / package_name(settings)
+            passes = selected_passes(settings)
+        except (OSError, RuntimeError, ValueError) as exc:
+            self.report({"ERROR"}, tr(language, "package_build_failed", detail=str(exc)))
+            return {"CANCELLED"}
 
         # Configure the scene before touching the package directory. If the
         # selected engine cannot expose a requested logical pass, Build Package
         # fails without leaving a misleading empty handoff package on disk.
         try:
             configure_render_outputs(context, root)
-        except RuntimeError as exc:
+        except (RuntimeError, ValueError) as exc:
             self.report({"ERROR"}, tr(language, "package_build_failed", detail=str(exc)))
             return {"CANCELLED"}
 
         try:
-            ensure_package_dirs(root, passes)
             manifest = build_manifest(context, root)
+            ensure_package_dirs(root, passes, manifest.get("folders"))
             manifest_path = write_manifest(manifest, root)
             assert_package_integrity(root, manifest, passes)
         except (OSError, RuntimeError, ValueError) as exc:
