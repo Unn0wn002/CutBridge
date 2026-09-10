@@ -8,10 +8,10 @@ Green product CI is necessary but is **not** release authorization.
 
 ## Current repository boundary
 
-At S11 start:
+At S12 preparation start:
 
 - `main`: conservative release-locked baseline;
-- `develop`: active validated integration branch;
+- `develop`: S11-integrated validated baseline;
 - product version: `0.2.3`;
 - `release-authorization.json`: `approved: false`;
 - release tags: none;
@@ -27,6 +27,7 @@ Do not edit this checklist to imply publication is allowed while #18 is unresolv
 - [x] S10B optional/versioned Blender `handoff_3d` producer integrated.
 - [x] S10C managed After Effects camera/3D Null reconstruction integrated.
 - [x] S10C bounded native projection parity gate passed.
+- [x] S11 QA / Docs / Release Engineering integrated.
 - [x] Historical manifests without `handoff_3d` remain valid.
 - [x] Artist-owned object collision handling remains fail-closed.
 
@@ -44,6 +45,7 @@ Authoritative CI must keep both jobs green on the exact candidate:
 - [x] S7 QC+ regression suites exist.
 - [x] S8 localization regression suites exist.
 - [x] S10C reconstruction regression suite exists.
+- [x] S11 documentation/release-readiness regression suite exists.
 - [ ] final release-candidate CI PASS on the exact frozen `develop` SHA.
 - [ ] promoted `main` candidate CI PASS on the exact promoted SHA.
 
@@ -62,6 +64,8 @@ These are bounded evidence statements. They do not certify every target host/OS 
 
 ## 4. S12 release-target end-to-end evidence — REQUIRED
 
+Native S12 execution is governed by [S12_E2E_VALIDATION.md](S12_E2E_VALIDATION.md). The fail-closed evidence template/validator under `tools/s12/` can verify record completeness but cannot substitute for the desktop-host run.
+
 Do not check these from headless tests alone.
 
 - [ ] install the exact candidate Blender artifact in the release-target Blender GUI build;
@@ -77,6 +81,8 @@ Do not check these from headless tests alone.
 - [ ] exercise the release-claimed S10C camera/Null handoff using candidate artifacts;
 - [ ] record OS/path/Unicode behavior appropriate to the release claim;
 - [ ] record exact host versions, artifact checksums, fixture identity, screenshots/logs, and outcome.
+
+Current S12 native state: **NOT_EXECUTED** until the real Blender and After Effects campaign begins.
 
 ## 5. Japanese target-user evidence — REQUIRED FOR TARGET-USER CLAIMS
 
@@ -198,10 +204,11 @@ Use one of these states:
 - **STABLE ELIGIBLE** — every stable-release gate is complete and evidence is recorded.
 - **PUBLISHED / VERIFIED** — authorized publication completed and downloaded assets/update distribution were independently verified.
 
-Current v0.2.3 state during S11: **NOT RELEASE READY** because #18 governance, S12 end-to-end release-target validation, later target-user evidence where claimed, deliberate promotion, authorization, publication, and distribution verification remain incomplete.
+Current v0.2.3 state during S12 preparation: **NOT RELEASE READY** because S12 native end-to-end execution, #18 governance, target-user evidence where claimed, deliberate promotion, authorization, publication, and distribution verification remain incomplete.
 
 ## Related documents
 
+- [S12_E2E_VALIDATION.md](S12_E2E_VALIDATION.md)
 - [UPDATE_ARCHITECTURE.md](UPDATE_ARCHITECTURE.md)
 - [COMPATIBILITY.md](COMPATIBILITY.md)
 - [TEST_PLAN.md](TEST_PLAN.md)
