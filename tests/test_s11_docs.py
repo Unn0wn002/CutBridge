@@ -29,7 +29,8 @@ def test_japanese_quick_start_is_reconciled_through_s10c_and_points_to_s12():
 def test_3d_handoff_guide_no_longer_claims_ae_reconstruction_is_future_work():
     text = _read("docs/HANDOFF_3D.md")
     assert "S10C" in text
-    assert "managed AE camera and 3D Null" in text
+    assert "CutBridge-managed perspective camera" in text
+    assert "CutBridge-managed 3D Null layers" in text
     assert "0.00018066 px" in text
     assert "no After Effects reconstruction yet" not in text
     assert "A later S10C phase must validate" not in text
