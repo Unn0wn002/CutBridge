@@ -1,4 +1,4 @@
-/* S13 regression: S10C camera/null ownership must migrate across source-only revisions. */
+/* S13 regression: S10C camera/null ownership and baked samples must migrate across source-only revisions. */
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
@@ -30,13 +30,13 @@ function manifest(version) {
                 samples: [1, 2, 3].map((frame, index) => ({
                     frame, time: index / 24,
                     position: [960 + sampleOffset + index, 540, -1000],
-                    forward: [0, 0, 1], up: [0, -1, 0], horizontal_fov_radians: 0.691111, ae_zoom: 2666.666
+                    forward: [0, 0, 1], up: [0, -1, 0], horizontal_fov_radians: 0.691111, ae_zoom: 2666.666 + version
                 }))
             },
             nulls: [{
                 name: "S13_Null", source_type: "EMPTY",
                 samples: [1, 2, 3].map((frame, index) => ({
-                    frame, time: index / 24, position: [960 + sampleOffset, 540 + index, 0], scale: [1, 1, 1]
+                    frame, time: index / 24, position: [960 + sampleOffset, 540 + index, 0], scale: [1 + version / 10, 1, 1]
                 }))
             }]
         }
@@ -173,6 +173,9 @@ function makeHost() {
     };
     vm.createContext(runtime);
     vm.runInContext(source, runtime);
+    // The CommonJS revision core closes over the CommonJS contract. Native AE loads
+    // the manager after CutBridge.jsx exports getState(); bridge the same state here.
+    Contract.getState = () => runtime.CutBridgeContract.getState();
 
     function queue(m) { dialogQueue.push(manifestFile(m)); }
     function click(fragment) {
@@ -186,6 +189,9 @@ function makeHost() {
 
 const host = makeHost();
 const v1 = manifest(1), v2 = manifest(2), v3 = manifest(3);
+const topologyDrift = manifest(2);
+topologyDrift.handoff_3d.nulls[0].name = "Renamed_Null";
+assert.equal(Revision.assess(v1, topologyDrift).status, "incompatible", "3D topology drift must fail closed before source-only revision");
 
 host.queue(v1); host.click("Import Package"); host.click("Build Comp");
 const comp = host.comps()[0];
@@ -197,11 +203,16 @@ const nullLayer = host.layerByName(comp, "S13_Null");
 assert.ok(beauty && camera && nullLayer, "all managed layers must exist");
 assert.equal(camera.comment, Contract.managedTag("camera", v1, "S13_Camera"));
 assert.equal(nullLayer.comment, Contract.managedTag("null", v1, "S13_Null"));
+assert.deepEqual(Array.from(camera.position.keys.at(-1).value), [972, 540, -1000]);
+assert.deepEqual(Array.from(nullLayer.position.keys.at(-1).value), [970, 542, 0]);
 
 host.queue(v2); host.click("Update Revision");
 assert.equal(camera.comment, Contract.managedTag("camera", v2, "S13_Camera"), "camera ownership must migrate V001→V002");
 assert.equal(nullLayer.comment, Contract.managedTag("null", v2, "S13_Null"), "null ownership must migrate V001→V002");
 assert.equal(beauty.comment, Contract.managedTag("layer", v2, "BEAUTY"));
+assert.deepEqual(Array.from(camera.position.keys.at(-1).value), [982, 540, -1000], "camera baked data must refresh to V002");
+assert.deepEqual(Array.from(nullLayer.position.keys.at(-1).value), [980, 542, 0], "null baked data must refresh to V002");
+assert.deepEqual(Array.from(nullLayer.scale.keys.at(-1).value), [120, 100, 100], "null scale must refresh to V002");
 let state = host.runtime.CutBridgeContract.getState();
 assert.strictEqual(state.layers[Contract.managedTag("camera", v2, "S13_Camera")], camera);
 assert.strictEqual(state.layers[Contract.managedTag("null", v2, "S13_Null")], nullLayer);
@@ -214,6 +225,9 @@ host.queue(v3); host.click("Update Revision");
 assert.equal(camera.comment, Contract.managedTag("camera", v3, "S13_Camera"), "camera ownership must migrate V002→V003");
 assert.equal(nullLayer.comment, Contract.managedTag("null", v3, "S13_Null"), "null ownership must migrate V002→V003");
 assert.equal(beauty.comment, Contract.managedTag("layer", v3, "BEAUTY"));
+assert.deepEqual(Array.from(camera.position.keys.at(-1).value), [992, 540, -1000], "camera baked data must refresh to V003");
+assert.deepEqual(Array.from(nullLayer.position.keys.at(-1).value), [990, 542, 0], "null baked data must refresh to V003");
+assert.deepEqual(Array.from(nullLayer.scale.keys.at(-1).value), [130, 100, 100], "null scale must refresh to V003");
 state = host.runtime.CutBridgeContract.getState();
 assert.strictEqual(state.layers[Contract.managedTag("camera", v3, "S13_Camera")], camera);
 assert.strictEqual(state.layers[Contract.managedTag("null", v3, "S13_Null")], nullLayer);
@@ -222,4 +236,4 @@ host.click("Run QC");
 assert.match(host.alerts.at(-1), /CutBridge QC — PASS/, "V003 QC must have zero stale managed tags");
 assert.ok(!host.alerts.some(x => /stale or foreign CutBridge-managed tag/i.test(x)), "no stale-tag diagnostic may remain after migration");
 
-console.log("S13 AE 3D revision tag migration: PASS (V001→V002→V003, state.layers synchronized, QC clean; real AE retest still required)");
+console.log("S13 AE 3D revision migration: PASS (V001→V002→V003 tags + baked samples + state.layers + QC clean; real AE retest still required)");
