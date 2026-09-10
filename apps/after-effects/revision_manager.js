@@ -338,12 +338,21 @@
             for (var k = prop.numKeys; k >= 1; k--) prop.removeKey(k);
         }
     }
+    function safeProperty(group, name) {
+        if (!group || typeof group.property !== "function") return null;
+        try { return group.property(name); }
+        catch (e) { return null; }
+    }
+    function safeLayerPointOfInterest(layer) {
+        try { return layer ? layer.pointOfInterest : null; }
+        catch (e) { return null; }
+    }
     function applyCameraSamples(layer, camera) {
         var transform = layer.property ? layer.property("ADBE Transform Group") : null;
         var pos = transform ? transform.property("ADBE Position") : layer.position;
-        var poi = transform ? transform.property("ADBE Anchor Point") : null;
-        if (!poi && transform) poi = transform.property("Point of Interest");
-        if (!poi) poi = layer.pointOfInterest;
+        var poi = safeProperty(transform, "ADBE Point of Interest");
+        if (!poi) poi = safeProperty(transform, "Point of Interest");
+        if (!poi) poi = safeLayerPointOfInterest(layer);
         var options = layer.property ? layer.property("ADBE Camera Options Group") : null;
         var zoom = options ? options.property("ADBE Camera Zoom") : (layer.cameraOption ? layer.cameraOption.zoom : null);
         if (!pos || !poi || !zoom) throw new Error("Managed camera Position, Point of Interest, or Zoom property is unavailable during revision.");
