@@ -58,6 +58,30 @@ def safe_token(value: str, fallback: str) -> str:
     return value or fallback
 
 
+def version_token(version: int) -> str:
+    """Canonical legacy CutBridge version token used by AE identity checks."""
+    return f"V{int(version):03d}"
+
+
+def package_name(settings) -> str:
+    """Canonical legacy/manual package identity contract.
+
+    Keep this primitive self-contained: After Effects parity tests execute it
+    independently from Blender to guarantee the historical producer identity.
+    Studio Presets extend naming through effective_package_name() instead of
+    changing this contract.
+    """
+    parts = [
+        safe_token(settings.project, "PROJECT"),
+        safe_token(settings.episode, "EP00"),
+        safe_token(settings.scene_id, "SC000"),
+        safe_token(settings.cut, "C000"),
+        safe_token(settings.take, "T01"),
+        version_token(settings.version),
+    ]
+    return "_".join(parts)
+
+
 def _preset_mode(settings) -> str:
     mode = str(getattr(settings, "studio_preset_mode", "MANUAL") or "MANUAL").upper()
     return mode if mode in {"MANUAL", "DEFAULT", "CUSTOM"} else "MANUAL"
@@ -108,14 +132,13 @@ def _template_values(settings, preset: dict, pass_name: str = "") -> dict[str, s
     }
 
 
-def version_token(version: int, preset: dict | None = None) -> str:
-    # Preserve the original public helper behavior when callers do not supply a preset.
-    return version_token_for(preset or default_preset(), version)
-
-
-def package_name(settings) -> str:
-    preset = active_preset(settings)
-    rendered = format_template(preset, "package", _template_values(settings, preset))
+def effective_package_name(settings, preset: dict | None = None) -> str:
+    """Resolve package naming through S9 while preserving Manual identity."""
+    mode = _preset_mode(settings)
+    if mode == "MANUAL":
+        return package_name(settings)
+    resolved = preset or active_preset(settings)
+    rendered = format_template(resolved, "package", _template_values(settings, resolved))
     return safe_token(rendered, "CUTBRIDGE_PACKAGE")
 
 
@@ -514,7 +537,7 @@ def build_manifest(context, package_root: Path) -> dict:
         "take": s.take,
         "version": int(s.version),
         "version_label": version_token_for(preset, s.version),
-        "package_name": package_name(s),
+        "package_name": effective_package_name(s, preset),
         "fps": fps,
         "resolution": {
             "width": int(scene.render.resolution_x),
