@@ -1,6 +1,6 @@
 # CutBridge Roadmap
 
-Status reconciled through S9 Studio Presets. Version labels 0.2.0–0.2.3 remain unreleased development history; session numbers describe bounded product work and do not guarantee public release numbers.
+Status reconciled through **S10B — Optional 3D handoff data model + Blender evaluated-world producer**. Version labels 0.2.0–0.2.3 remain unreleased development history; session numbers describe bounded product work and do not guarantee public release numbers.
 
 ## Completed foundation — S1–S9
 
@@ -87,12 +87,73 @@ Safety boundaries preserved:
 
 Reference: [STUDIO_PRESETS.md](STUDIO_PRESETS.md).
 
-## S10 — Camera / Null Handoff Investigation
+## S10 — Camera / Null handoff
+
+### S10A — Contract investigation
+**Completed and integrated.**
+
+Established the bounded Blender ↔ After Effects coordinate/timing/camera/null contract before adding producer or consumer behavior.
+
+Delivered:
+
+- explicit Blender → AE-oriented axis map `(x, y, z) -> (x, -z, y)`;
+- composition-center origin convention for mapped positions;
+- explicit product-defined spatial scale;
+- frame-to-AE-time formula `(frame - frame_start) / fps`;
+- camera FOV/Zoom conversion primitives;
+- evaluated world-space/basis strategy instead of direct Euler conversion;
+- fail-closed camera MVP restrictions;
+- documentation and mathematical regression fixtures.
+
+S10A deliberately added no AE camera/null creation and no `handoff_3d` manifest field.
+
+Reference: [CAMERA_NULL_HANDOFF_CONTRACT.md](CAMERA_NULL_HANDOFF_CONTRACT.md).
+
+### S10B — Optional 3D handoff producer
+**Completed and integrated.**
+
+Added the producer-side data model without widening the current AE trust/mutation boundary.
+
+Delivered:
+
+- optional `cutbridge-handoff-3d` version 1 block in `cutbridge.json`;
+- feature default OFF for historical compatibility;
+- evaluated active perspective-camera sampling per exported frame;
+- explicit marked-Empty selection only;
+- baked position/basis/scale/time samples;
+- camera forward/up/FOV/derived AE Zoom samples;
+- frame/subframe restoration after sampling;
+- strict sample-count bounds;
+- fail-closed rejection of unsupported camera projection, sensor shift, non-square pixels, zero scale, shear, reflections, and invalid markers;
+- existing AE importer compatibility: optional block tolerated but not consumed;
+- Draft 2020-12 schema and official Blender 5.2.1 runtime/package tests.
+
+Integration evidence:
+
+- candidate `2a222520da9dde7128dc1b9ddc1ed29b1e7a23b2`;
+- candidate CI `34429145031`: PASS;
+- PR #51 CI `34429245773`: PASS;
+- merge `444a786e6f7a64143e50f933fa35ca84ea36138e`;
+- post-merge CI `34429324559`: PASS.
+
+Reference: [HANDOFF_3D.md](HANDOFF_3D.md).
+
+### S10C — Native After Effects reconstruction / parity
 **Next engineering session.**
 
-Research Blender ↔ After Effects coordinate systems, axes, units, camera/lens/FOV/sensor representation, parenting, empties/nulls, frame timing, and transform conventions.
+Consume the existing optional `handoff_3d` block and investigate the smallest safe AE reconstruction surface.
 
-Acceptance principle: ship only a minimal subset whose coordinate/timing behavior can be derived, represented in the manifest, and verified reliably. Do not add broad camera/scene-export scope merely because it is possible.
+Target scope:
+
+- managed AE camera creation/update using the bounded S10 data only;
+- managed AE 3D Null creation/update for serialized Empties only;
+- deterministic keyframe timing from baked samples;
+- orientation reconstruction from mapped basis/forward/up data, not copied Blender Euler values;
+- camera projection reconstruction from the validated FOV/Zoom data;
+- ownership/collision/rollback behavior consistent with S5–S7 safety principles;
+- native After Effects fixtures proving projection, orientation, null placement, timing, repeated build, and collision behavior.
+
+Acceptance principle: **no normal user-facing 3D handoff claim until real After Effects parity evidence exists.** Do not broaden S10C into lights, geometry, bones, arbitrary scene export, or hierarchy recreation unless separately derived and tested.
 
 ## S11 — QA / Docs / Release Engineering
 
@@ -138,4 +199,4 @@ Current priorities include Blender 6.0 migration away from deprecated `Scene.use
 
 ## Stable-release goal
 
-A production-oriented Japanese-first Blender → After Effects handoff tool with deterministic packaging, revision-safe source updates, actionable QC, safe Studio Presets, documented compatibility, controlled distribution/update architecture, green automated gates, and recorded real-host/target-user validation appropriate to the release claim.
+A production-oriented Japanese-first Blender → After Effects handoff tool with deterministic packaging, revision-safe source updates, actionable QC, safe Studio Presets, a validated bounded camera/null handoff, documented compatibility, controlled distribution/update architecture, green automated gates, and recorded real-host/target-user validation appropriate to the release claim.

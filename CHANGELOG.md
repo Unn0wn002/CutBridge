@@ -4,6 +4,59 @@ All notable CutBridge changes are tracked here.
 
 ## [0.2.3] - Unreleased
 
+### S10B — Optional evaluated-world 3D handoff producer
+
+#### Added
+- Optional, versioned `handoff_3d` manifest block using `cutbridge-handoff-3d` schema v1.
+- Producer-only Blender sampling for the active supported perspective camera and explicitly marked Empties.
+- Per-frame evaluated-world position, normalized basis, scale, source-frame, and AE-time samples.
+- Camera forward/up direction, horizontal FOV, and derived AE Zoom producer data.
+- Engineering-only opt-in settings for 3D handoff and explicit pixels-per-Blender-unit scale; feature remains disabled by default and is not exposed as a normal S10B user workflow.
+- Strict bounds for frames, marked Empties, and total serialized samples.
+- `docs/HANDOFF_3D.md` producer contract/engineering documentation.
+- Draft 2020-12 schema tests and Blender 5.2.1 evaluated-world/package integration tests.
+
+#### Compatibility / safety
+- Historical manifests remain valid because `handoff_3d` is optional.
+- Existing AE validation/build behavior accepts the optional block but does not consume it to create camera/null layers.
+- Direct Blender Euler → AE Euler conversion remains prohibited by the S10A contract.
+- Parent/constraint/driver effects may influence evaluated Blender world state, but hierarchy/rig logic is not recreated in AE.
+- Non-perspective cameras, non-square pixels, sensor shift, zero-scale, shear, reflected transforms, non-Empty handoff markers, and excessive sample counts fail closed.
+- Blender frame/subframe is restored after sampling, including failure paths.
+- No geometry, bones, lights, arbitrary scene export, AE reconstruction, `main`, release tag, GitHub Release, or release-authorization change is introduced by S10B.
+
+#### Validation
+- Exact candidate: `2a222520da9dde7128dc1b9ddc1ed29b1e7a23b2`.
+- Candidate push CI `34429145031`: PASS.
+- PR #51 event CI `34429245773`: PASS.
+- Merged to `develop` as `444a786e6f7a64143e50f933fa35ca84ea36138e`.
+- Post-merge CI `34429324559`: PASS — both `static-validation` and `blender-52-rna-runtime` succeeded on the exact merge SHA.
+
+### S10A — Camera / Null handoff contract investigation
+
+#### Added
+- Evidence-backed Blender ↔ After Effects coordinate/timing/camera/null contract.
+- Pure producer-side axis, position, timing, FOV/Zoom, and fail-closed camera primitives in `camera_handoff.py`.
+- Explicit axis map `(x, y, z) -> (x, -z, y)` and composition-center position origin.
+- Explicit deterministic spatial scale rather than hidden scene-dependent inference.
+- Frame-time mapping `(frame - frame_start) / fps`.
+- `docs/CAMERA_NULL_HANDOFF_CONTRACT.md` with host facts, risks, deferred cases, and native-validation requirements.
+- Mathematical regression fixtures for axis mapping, handedness, origin, timing, Zoom, and unsupported camera cases.
+
+#### Compatibility / safety
+- No direct Blender Euler → AE Euler mapping is approved.
+- Evaluated world-space/basis data is the chosen first implementation strategy.
+- Initial camera contract is restricted to perspective cameras, square pixels, and zero sensor shift.
+- Initial Empty/Null strategy is baked/unparented world-space reconstruction rather than hierarchy replication.
+- No AE importer behavior or manifest-schema change shipped in S10A.
+
+#### Validation
+- Exact candidate: `8a87044f8b7c830f342a1cd26568f6a3e05cf503`.
+- Candidate push CI `34427616559`: PASS.
+- PR #49 event CI `34427691064`: PASS.
+- Merged to `develop` as `7b506d357faea08ea936daa90ccd0c94ea565f21`.
+- Post-merge CI `34427809612`: PASS.
+
 ### S9 — Studio Presets
 
 #### Added
@@ -122,13 +175,14 @@ All notable CutBridge changes are tracked here.
 - Current Blender 5.2.1 suite passes but emits `Scene.use_nodes` deprecation warnings expected to matter for Blender 6.0.
 - Some pinned GitHub Actions revisions still target deprecated Node 20 runtimes and are currently forced by GitHub onto Node 24. CI passes, but pins should be refreshed deliberately.
 - `main` / `develop` promotion must be reconciled deliberately before an RC.
+- S10 camera/null handoff remains producer-only until native AE reconstruction/parity validation passes.
 
 ### Release status
 
 - v0.2.3 remains unreleased.
 - No release tag or GitHub Release exists.
 - `release-authorization.json` remains unapproved by design.
-- Repository-level release governance issue #18 remains a blocker independently of S1–S9 product integration.
+- Repository-level release governance issue #18 remains a blocker independently of S1–S10B product integration.
 
 ## [0.2.2] - Unreleased
 
