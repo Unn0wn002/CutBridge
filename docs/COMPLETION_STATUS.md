@@ -2,199 +2,179 @@
 
 ## Current state
 
-- **Integrated product sessions on `develop`:** S1–S9 plus S10A–S10C.
-- **Completed maintenance session:** S8.5 — repository/documentation state reconciliation.
-- **S11 status:** implementation/QA complete on `feature/session-11-qa-docs-release-engineering`; PR integration gate is the remaining S11 step.
-- **S11 base:** `e63dcb7a97831fee43c94a3f351a2a196eaf981c`.
-- **Release branch baseline:** `main` remains conservative and release-locked; S11 does not modify it.
+- **Latest integrated `develop`:** `0a86d9a0605e1dd9714ef35a547693de76f714f4`.
 - **Product version:** `0.2.3` unreleased.
-- **Release authorization:** fail-closed; `release-authorization.json` remains `approved: false`.
-- **Git tags / GitHub Releases:** none.
-- **Next product phase after S11 integration:** S12 — End-to-End Blender → package → After Effects validation harness.
+- **Integrated product/validation sessions:** S1–S13.
+- **S12:** PASS after the completed S13F native repair chain.
+- **S13:** PASS / closed after exact native-tested commit `9c99ae23ccd8c47fdc0fffbd05b99e1326f2ea95` was pushed, CI-gated, merged intact through PR #68, and passed post-merge CI.
+- **Release authorization:** `approved: false` by design.
+- **GitHub Releases:** none.
+- **Repository governance issue #18:** OPEN and still blocks RC/stable publication.
+- **Next bounded phase:** S14 — Japanese target-user validation and release-preparation evidence.
 
-S11 does not authorize an RC or stable release. Release governance issue #18 remains independently blocking publication. The canonical publication gate is [RELEASE_READINESS.md](RELEASE_READINESS.md).
+CutBridge is currently **engineering-green on `develop` but NOT RELEASE READY**.
 
-## Integrated foundation summary
+## Integrated foundation
 
-### S1 — Baseline / release packaging
+### S1 — Baseline / deterministic packaging
 PASS / integrated.
 
-Deterministic Blender + After Effects packaging, GPL inclusion, checksums, output safety, and release-hygiene foundation.
+Established deterministic Blender and After Effects packaging, GPL inclusion, checksums, output safety, and release-hygiene foundations.
 
 ### S2 — Blender render mapping
 PASS / integrated.
 
-Transactional BEAUTY / LINE / SHADOW / DEPTH mapping, deterministic paths, renderer/View Layer checks, and artist-node preservation.
+Transactional BEAUTY / LINE / SHADOW / DEPTH mapping with deterministic output paths, renderer/View Layer validation, and unrelated compositor-node preservation.
 
 ### S3 — Blender production hardening
 PASS / integrated.
 
-Same-version payload protection, package integrity, V001/V002/V003 coexistence, Japanese/UTF-8 handling, and actionable validation.
+Added same-version payload protection, package integrity checks, version coexistence, UTF-8/Japanese-safe metadata, and production-oriented validation.
 
 ### S4 — After Effects handoff contract hardening
 PASS / integrated.
 
-Schema/version gates, strict frame semantics, safe package paths, pass rules, exact sequence coverage, safe legacy JSON parsing, and version consistency.
+Added strict manifest/schema/path/frame/pass validation and safe package-consumption behavior.
 
 ### S5 — AE import / composition reliability
 PASS / integrated.
 
-Managed ownership, repeated-build/reload safety, ambiguity/collision rejection, rollback, package-structure checks, and QC ownership validation.
+Managed ownership, repeated-build/reload safety, ambiguity/collision rejection, rollback, package-structure checks, and ownership-aware QC.
 
 ### S6 — Non-destructive revision manager
-PASS / integrated.
+PASS / integrated / native-host validated.
 
-- candidate `f996d64182c292c32361b9af145d85d0128f63dc`;
-- merge `5d309f51d75b357974d17c94090792d27dea6163`;
-- native AE gate #19 PASS;
-- solo-maintainer adversarial gate #20 PASS;
-- post-merge CI `34260351796` PASS.
+Compatible source revisions preserve artist state and use fail-closed ownership/rollback semantics.
 
 ### S7 — QC+
-PASS / integrated.
+PASS / integrated / native-host validated.
 
-Deterministic `CBQ-*` PASS/WARNING/ERROR diagnostics, safe remediation, revision-aware checks, and diagnostic-only behavior. Native defects found during validation were repaired before integration.
+Deterministic `CBQ-*` PASS/WARNING/ERROR diagnostics with stable support identifiers and remediation guidance.
 
 ### S8 — Japanese-first UX
+PASS / integrated / native-host validated.
+
+Japanese is the first-class/default display language and English is the deterministic fallback. Safety logic and machine identifiers remain locale-independent.
+
+### S8.5 — Repository-state reconciliation
 PASS / integrated.
 
-- repaired candidate `f477b745cc600b85708b63d059d6c4eaed9f0249`;
-- merge `368b977582feadc26543825b4d31ffd5f6266a4f`;
-- AE native gate #38 PASS;
-- Blender native gate #41 PASS;
-- post-merge CI `34380737455` PASS.
-
-Japanese is first-class/default display; English is deterministic fallback; machine-facing identifiers and safety decisions remain locale-independent.
-
-### S8.5 — Repository state reconciliation
-PASS / integrated.
-
-Repository documentation/status maintenance only; runtime and release authorization remained untouched.
+Documentation/status maintenance only; runtime and release authorization were unchanged.
 
 ### S9 — Studio Presets
 PASS / integrated.
 
-Delivered Manual / CutBridge Default / Custom JSON data-only presets, strict schema/security/path/template validation, deterministic naming/folders/passes/formats/version/AE comp behavior, one-build snapshot consistency, normalized manifest provenance, and no AE preset-parser trust boundary.
+Delivered Manual / CutBridge Default / Custom JSON presets with strict declarative validation, deterministic naming/folders/passes/formats, and a Blender-side trust boundary.
 
-Reference: [STUDIO_PRESETS.md](STUDIO_PRESETS.md).
-
-## S10 — Camera / Null handoff
-
-### S10A — Contract investigation
+### S10A — Camera/Null handoff contract
 PASS / integrated.
 
-Evidence:
+Established the explicit spatial/timing/camera contract, including the axis mapping:
 
-- candidate `8a87044f8b7c830f342a1cd26568f6a3e05cf503`;
-- candidate CI `34427616559` PASS;
-- PR #49 CI `34427691064` PASS;
-- merge `7b506d357faea08ea936daa90ccd0c94ea565f21`;
-- post-merge CI `34427809612` PASS.
+```text
+Blender (x, y, z) -> AE-oriented (x, -z, y)
+```
 
-Established axis `(x,y,z) -> (x,-z,y)`, composition-center mapping, explicit scale, `(frame-frame_start)/fps` timing, FOV/Zoom primitives, evaluated-world orientation strategy, and fail-closed camera MVP boundaries.
+and time mapping:
+
+```text
+(frame - frame_start) / fps
+```
 
 ### S10B — Optional 3D handoff producer
 PASS / integrated.
 
-Evidence:
+Added versioned optional `handoff_3d` data with evaluated-world camera and explicitly marked Empty sampling, bounded samples, state restoration, and fail-closed unsupported cases.
 
-- candidate `2a222520da9dde7128dc1b9ddc1ed29b1e7a23b2`;
-- candidate CI `34429145031` PASS;
-- PR #51 CI `34429245773` PASS;
-- runtime merge `444a786e6f7a64143e50f933fa35ca84ea36138e`;
-- runtime post-merge CI `34429324559` PASS;
-- repository-state reconciliation finalized at `26a4eb753f190e4ab9bcd7a844f28e86f8252920`.
-
-Delivered optional/versioned default-off `handoff_3d`, evaluated-world camera/marked-Empty baking, bounded samples, frame restoration, and fail-closed unsupported cases.
-
-### S10C — Native After Effects camera/null reconstruction
+### S10C — Native AE Camera/3D Null reconstruction
 PASS / integrated / native-host validated.
 
-Engineering evidence:
+Native Adobe After Effects 2026 Build 87 / Windows 11 evidence using Blender 5.2.1-produced handoff data showed:
 
-- candidate `3108058f03d11ccba62fb1771079e1b7fd15aa0c`;
-- candidate CI `34439794396` PASS;
-- PR #54 CI `34439880617` PASS;
-- runtime merge `493625ac5e83a0fcec8a858346ec96e0b4b0f2de`;
-- runtime post-merge CI `34439972955` PASS;
-- final repository-state reconciliation `e63dcb7a97831fee43c94a3f351a2a196eaf981c`;
-- final post-reconciliation CI `34440714199` PASS.
-
-Native Adobe After Effects 2026 Build 87 / Windows 11 evidence using Blender 5.2.1-produced handoff data:
-
-- managed camera/3D Null reconstruction PASS;
-- maximum 2D projection error `0.00018066 px` against `<= 0.05 px` gate;
+- managed Camera/3D Null reconstruction PASS;
+- maximum 2D projection error `0.00018066 px` against a `<= 0.05 px` gate;
 - QC+ 10/10 PASS;
-- repeated Build: zero duplicate managed layers;
-- unmanaged camera/null collisions rejected fail-closed;
-- project persistence PASS.
+- zero duplicate managed layers on repeated Build;
+- unmanaged collision rejection;
+- save/reopen persistence PASS.
 
-Reference: [HANDOFF_3D.md](HANDOFF_3D.md), [CAMERA_NULL_HANDOFF_CONTRACT.md](CAMERA_NULL_HANDOFF_CONTRACT.md).
+### S11 — QA / Docs / Release Engineering
+PASS / integrated.
 
-## S11 — QA / Docs / Release Engineering
+Established the EN/JA user documentation, compatibility scoping, release-readiness checklist, release authorization regression coverage, deterministic release simulation, and technical-debt tracking.
 
-**Implementation complete / integration eligible after corrected candidate CI.**
+### S12 — Release-target end-to-end validation
+PASS / closed after repair chain.
 
-Tracking issue: #56.
+The initial release-target campaign on Windows 11 + Blender 5.2.1 LTS + Adobe After Effects 2026 `26.3x87` exposed real revision defects instead of weakening the acceptance gate. The campaign remained fail-closed while repairs were developed.
 
-Delivered on the S11 candidate:
+After S13F, the previously failing real-AE revision path completed V001→V002→V003 with clean QC, correct 3D ownership/data refresh, artist-state preservation, zero duplicate managed 3D layers, and save/close/reopen persistence. Issue #58 was then reconciled to PASS and closed.
 
-- [x] English Quick Start reconciled through S10C and current release boundaries;
-- [x] Japanese Quick Start reconciled through S10C with equivalent safety semantics;
-- [x] AE installation guide reconciled through S10C;
-- [x] `HANDOFF_3D.md` updated from obsolete producer-only language to the S10B producer + S10C bounded consumer workflow;
-- [x] compatibility documentation now scopes real AE 2026 evidence without blanket certification;
-- [x] canonical [RELEASE_READINESS.md](RELEASE_READINESS.md) added;
-- [x] release-readiness checklist separates automated gates, already-recorded native evidence, S12 release-target E2E, Japanese target-user evidence, repository governance, deliberate promotion, exact authorization, publication, downloaded-asset verification, and production update/distribution verification;
-- [x] S11 static regression coverage prevents core user/release docs from drifting back to pre-S10C claims;
-- [x] current release builder/workflow audited and retained because no reproducible release-runtime defect was found.
+The repository currently does not contain a final committed structured `s12-evidence.json` PASS record. The issue/PR/native evidence is real and retained, but this missing structured artifact must be treated as an evidence-traceability gap rather than fabricated retroactively. See `S12_S13_EVIDENCE_SUMMARY.md`.
 
-Candidate QA chronology:
+### S13 — AE Camera/Null revision repair
+PASS / integrated / native-host validated.
 
-1. head `13899401e8afc857b6c1ec0527c142f778f56a8e`, CI `34449966185`:
-   - static-validation PASS;
-   - Blender RNA registration PASS;
-   - complete pytest: 235 PASS / 1 FAIL / 62 warnings / 2 subtests PASS;
-   - sole failure was a new S11 doc regression asserting one exact phrase instead of the two semantic camera/Null claims.
-2. assertion repaired without weakening the requirement.
-3. corrected head `818d9b8275319194c8c42329b8a139b35239e1aa`, CI `34450066759`: **PASS** for both `static-validation` and `blender-52-rna-runtime`.
+The S13 sequence repaired multiple real-host findings while preserving fail-closed behavior:
 
-State-bearing docs are now being reconciled on the same S11 branch; therefore the final PR candidate SHA will be later than `818d9b827...` and must receive its own authoritative CI before merge.
+1. Camera/Null ownership and baked-data migration across revisions.
+2. Camera Point-of-Interest access failure in real AE CameraLayer context.
+3. Missing canonical-CI execution of the S13 native-host-shaped regression.
+4. Native keyframe mutation failure caused by repeated key removal/per-key writes.
+
+Final native-tested source commit:
+
+`9c99ae23ccd8c47fdc0fffbd05b99e1326f2ea95`
+
+Final integration chain:
+
+- exact-head push CI: PASS;
+- PR #68 exact-head CI: PASS;
+- merge to `develop`: `0a86d9a0605e1dd9714ef35a547693de76f714f4`;
+- post-merge CI run `34504009878`: PASS.
+
+The tested commit was merged intact without amend, rebase, squash, or cherry-pick, so the SHA-bound native result remains attributable to the integrated source.
+
+## Latest authoritative automated evidence
+
+Post-merge CI on `develop` `0a86d9a...`:
+
+- static suite: **132 passed + 2 subtests**;
+- deterministic v0.2.3 package simulation/checksum verification: PASS;
+- S6/S7/S8/S10C/S13 regression checks: PASS;
+- ExtendScript syntax: PASS;
+- Blender 5.2.1 RNA registration lifecycle: PASS;
+- complete Blender/runtime pytest suite: **245 passed + 2 subtests**;
+- known warnings: Blender `Scene.use_nodes` deprecation relevant to Blender 6.0 migration.
 
 ## Release boundary
 
-Release governance issue #18 remains **OPEN** and independent of product-session completion.
+Current status remains **NOT RELEASE READY**.
 
-Still required before any RC/stable publication:
+The following still block RC/stable publication:
 
-- repository-level protection for `main` and `develop`;
-- controlled `v*` tag mutation policy/equivalent;
-- protection against historical-workflow publication;
-- S12 release-target Blender → package → AE end-to-end evidence;
-- target-user evidence appropriate to the claim;
-- freeze an exact validated candidate;
-- deliberate, explainable promotion of the materially diverged `develop` candidate to `main` rather than a blind merge;
-- authoritative CI on exact promoted `main`;
-- explicit authorization for exact current-main/tag/channel/prerelease tuple;
-- real authorized publication;
-- independent downloaded-asset checksum/content verification;
-- production update-endpoint/index verification.
-
-Current release state remains **NOT RELEASE READY**.
+1. **Repository governance #18** — `main` and `develop` are not protected and required private-repository ruleset controls are unavailable under the current GitHub plan/configuration.
+2. **Material `main`/`develop` divergence** — `develop` is hundreds of commits ahead while `main` contains release-lock changes that must be preserved deliberately. Do not blind-merge.
+3. **Exact promoted-main CI** — no release candidate has yet been deliberately promoted and validated on `main`.
+4. **Japanese target-user evidence** — required before broad target-user production-usability claims.
+5. **Explicit exact release authorization** — must remain false until all prerequisites are complete.
+6. **Publication and independent artifact verification** — no GitHub Release exists yet.
+7. **Production update/distribution path** — must be deployed and verified separately from the private source repository.
 
 ## Known technical debt
 
-See [TECHNICAL_DEBT.md](TECHNICAL_DEBT.md).
+Priority debt remains:
 
-Priority items remain:
+1. migrate away from deprecated Blender `Scene.use_nodes` behavior before Blender 6.0;
+2. refresh pinned GitHub Actions revisions whose underlying action runtimes still emit Node 20 deprecation warnings;
+3. deliberately reconcile `main` and `develop` before release promotion;
+4. prevent status documents/tests from freezing historical session state as current state;
+5. recover or explicitly document the missing final structured S12 evidence record without fabricating data.
 
-1. Blender 6.0 migration away from deprecated `Scene.use_nodes` behavior.
-2. Refresh pinned GitHub Actions revisions that still target deprecated Node 20 runtimes.
-3. Reconcile `main`/`develop` deliberately before a release candidate.
-4. Record Japanese target-user evidence before production usability claims.
+See `TECHNICAL_DEBT.md`.
 
-## Next engineering session
+## Next bounded phase
 
-**S12 — End-to-End Blender → package → After Effects validation harness**
+**S14 — Japanese target-user validation and release-preparation evidence.**
 
-Use exact candidate artifacts and real hosts. Do not infer GUI/end-to-end success from headless CI.
+Do not begin broad new feature expansion until the repository status/evidence trail is reconciled and the release-governance boundary remains explicit.
