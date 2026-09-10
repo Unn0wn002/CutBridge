@@ -2,9 +2,9 @@
 
 This file records known engineering/release debt that does not invalidate the current S1–S13 green `develop` baseline but should be resolved deliberately before it becomes a release or compatibility risk.
 
-Current repository baseline after the S12/S13 state reconciliation:
+S12/S13 closeout reference points:
 
-- `develop`: `fbfe83324808c9051e88e845d7ffe225bd56530f`;
+- PR #69 state-reconciliation merge: `fbfe83324808c9051e88e845d7ffe225bd56530f`;
 - S13F runtime integration baseline: `0a86d9a0605e1dd9714ef35a547693de76f714f4`;
 - product version: `0.2.3` unreleased;
 - release authorization: `approved: false`;
