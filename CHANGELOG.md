@@ -4,6 +4,30 @@ All notable CutBridge changes are tracked here.
 
 ## [0.2.3] - Unreleased
 
+### S9 — Studio Presets
+
+#### Added
+- Versioned, declarative `cutbridge-studio-preset` schema v1.
+- Blender Studio Preset modes: Manual, CutBridge Default, and Custom JSON.
+- Safe built-in default preset plus `docs/examples/studio-preset.default.json`.
+- Strict preset validation for schema/version, known fields, naming templates, folder roles, pass definitions/order, sequence format, and version-token conventions.
+- Bounded 64 KiB UTF-8-only custom JSON loader.
+- Configurable package naming, render/preview/camera folder roles, pass order and required/optional policy, PNG/OpenEXR/TIFF sequence format, version-token prefix/padding, and After Effects comp naming.
+- Optional normalized `studio_preset` provenance in `cutbridge.json` without storing the source preset path.
+- Japanese/English Studio Preset UI text and stable `PRESET_*` diagnostic codes.
+- Dedicated Studio Preset authoring/security documentation and English/Japanese Quick Start integration.
+- Regression coverage for default/manual/custom behavior, malicious or invalid JSON, path traversal, overlapping folders, unsupported fields/placeholders/formats, bounded loading, metadata privacy, and one-build snapshot consistency.
+
+#### Compatibility / safety
+- Manual remains the default and preserves the historical CutBridge pass/format controls.
+- Canonical `safe_token`, `version_token`, and `package_name` producer primitives remain unchanged so existing Blender↔AE package-identity parity tests continue to pass.
+- Custom preset folders must be safe relative, disjoint role trees; absolute/traversal/overlapping paths fail closed.
+- Presets cannot execute code or expressions, expand commands/environment variables, trigger network behavior, or adopt existing AE objects.
+- Build Package freezes one validated custom preset snapshot for the complete build transaction so a mid-build file edit cannot create divergent Blender mapping and manifest contracts.
+- After Effects does not parse Studio Preset JSON; it continues to consume the resolved manifest contract only.
+- Existing manifests remain valid because `studio_preset` provenance is optional.
+- `main` and release authorization are not changed by S9.
+
 ### S8 — Japanese-first UX
 
 #### Added
@@ -93,17 +117,18 @@ All notable CutBridge changes are tracked here.
 - Added reproducible release packaging, source/output safety, checksum verification, release metadata, and baseline documentation.
 - Generated `cutbridge.json` reads the canonical CutBridge version rather than a stale literal.
 
-### Technical debt recorded after S8
+### Technical debt
 
-- Current Blender 5.2.1 suite passes but emits 61 `Scene.use_nodes` deprecation warnings expected to matter for Blender 6.0.
+- Current Blender 5.2.1 suite passes but emits `Scene.use_nodes` deprecation warnings expected to matter for Blender 6.0.
 - Some pinned GitHub Actions revisions still target deprecated Node 20 runtimes and are currently forced by GitHub onto Node 24. CI passes, but pins should be refreshed deliberately.
+- `main` / `develop` promotion must be reconciled deliberately before an RC.
 
 ### Release status
 
 - v0.2.3 remains unreleased.
 - No release tag or GitHub Release exists.
 - `release-authorization.json` remains unapproved by design.
-- Repository-level release governance issue #18 remains a blocker independently of S1–S8 product integration.
+- Repository-level release governance issue #18 remains a blocker independently of S1–S9 product integration.
 
 ## [0.2.2] - Unreleased
 
