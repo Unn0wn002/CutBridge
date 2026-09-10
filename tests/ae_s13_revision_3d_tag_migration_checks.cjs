@@ -89,7 +89,7 @@ function makeHost() {
     }
     FootageItem.prototype.remove = function() { const i = projectItems.indexOf(this); if (i >= 0) projectItems.splice(i, 1); };
 
-    function Property(name) { this.name = name; this.value = null; this.keys = []; }
+    function Property(name, matchName) { this.name = name; this.matchName = matchName || name; this.value = null; this.keys = []; }
     Object.defineProperty(Property.prototype, "numKeys", {get() { return this.keys.length; }});
     Property.prototype.setValue = function(value) { this.value = value; };
     Property.prototype.setValueAtTime = function(time, value) { this.keys.push({time, value}); this.value = value; };
@@ -119,20 +119,29 @@ function makeHost() {
 
     function CameraLayer(comp, name) {
         AVLayer.call(this, comp, null); this.name = name; this._cameraOptions = new PropertyGroup();
-        this.pointOfInterest = new Property("Point of Interest");
-        this._rejectAnchorPointLookup = false;
+        this._pointOfInterest = new Property("Point of Interest", "ADBE Anchor Point");
+        this._rejectUnsafePOIAccess = false;
         const genericProperty = this._transform.property.bind(this._transform);
         const camera = this;
         this._transform.property = function(propName) {
-            if (propName === "ADBE Anchor Point") {
-                if (camera._rejectAnchorPointLookup) {
+            if (propName === 1) return camera._pointOfInterest;
+            if (propName === "ADBE Anchor Point" || propName === "ADBE Point of Interest" || propName === "Point of Interest") {
+                if (camera._rejectUnsafePOIAccess) {
                     throw new Error("After Effects error: internal verification failure, sorry! {no current context}");
                 }
-                return camera.pointOfInterest;
+                return camera._pointOfInterest;
             }
-            if (propName === "ADBE Point of Interest" || propName === "Point of Interest") return camera.pointOfInterest;
             return genericProperty(propName);
         };
+        Object.defineProperty(this, "pointOfInterest", {
+            enumerable: true,
+            get() {
+                if (camera._rejectUnsafePOIAccess) {
+                    throw new Error("After Effects error: internal verification failure, sorry! {no current context}");
+                }
+                return camera._pointOfInterest;
+            }
+        });
         this.cameraOption = {zoom: this._cameraOptions.property("ADBE Camera Zoom")};
     }
     CameraLayer.prototype = Object.create(AVLayer.prototype);
@@ -218,20 +227,21 @@ assert.ok(beauty && camera && nullLayer, "all managed layers must exist");
 assert.equal(camera.comment, Contract.managedTag("camera", v1, "S13_Camera"));
 assert.equal(nullLayer.comment, Contract.managedTag("null", v1, "S13_Null"));
 assert.deepEqual(Array.from(camera.position.keys.at(-1).value), [972, 540, -1000]);
-assert.deepEqual(Array.from(camera.pointOfInterest.keys.at(-1).value), [972, 540, 0]);
+assert.deepEqual(Array.from(camera._pointOfInterest.keys.at(-1).value), [972, 540, 0]);
 assert.deepEqual(Array.from(nullLayer.position.keys.at(-1).value), [970, 542, 0]);
 
-// Native AE 26.3x87 exposed that this specific lookup can throw an internal host
-// verification failure in the separately evaluated revision manager. Initial Build
-// remains allowed so the mock matches the real V001 PASS → revision FAIL sequence.
-camera._rejectAnchorPointLookup = true;
+// Native AE 26.3x87 diagnostics proved that all named/direct Point-of-Interest
+// access paths can trigger an internal C++ assertion in revision context. Keep
+// the healthy V001 Build path, then reject every unsafe access form so only
+// Transform property index 1 can succeed during revision and rollback.
+camera._rejectUnsafePOIAccess = true;
 
 host.queue(v2); host.click("Update Revision");
 assert.equal(camera.comment, Contract.managedTag("camera", v2, "S13_Camera"), "camera ownership must migrate V001→V002");
 assert.equal(nullLayer.comment, Contract.managedTag("null", v2, "S13_Null"), "null ownership must migrate V001→V002");
 assert.equal(beauty.comment, Contract.managedTag("layer", v2, "BEAUTY"));
 assert.deepEqual(Array.from(camera.position.keys.at(-1).value), [982, 540, -1000], "camera baked data must refresh to V002");
-assert.deepEqual(Array.from(camera.pointOfInterest.keys.at(-1).value), [982, 540, 0], "camera POI must refresh to V002 without Anchor Point lookup");
+assert.deepEqual(Array.from(camera._pointOfInterest.keys.at(-1).value), [982, 540, 0], "camera POI must refresh to V002 through verified index access");
 assert.deepEqual(Array.from(nullLayer.position.keys.at(-1).value), [980, 542, 0], "null baked data must refresh to V002");
 assert.deepEqual(Array.from(nullLayer.scale.keys.at(-1).value), [120, 100, 100], "null scale must refresh to V002");
 let state = host.runtime.CutBridgeContract.getState();
@@ -247,7 +257,7 @@ assert.equal(camera.comment, Contract.managedTag("camera", v3, "S13_Camera"), "c
 assert.equal(nullLayer.comment, Contract.managedTag("null", v3, "S13_Null"), "null ownership must migrate V002→V003");
 assert.equal(beauty.comment, Contract.managedTag("layer", v3, "BEAUTY"));
 assert.deepEqual(Array.from(camera.position.keys.at(-1).value), [992, 540, -1000], "camera baked data must refresh to V003");
-assert.deepEqual(Array.from(camera.pointOfInterest.keys.at(-1).value), [992, 540, 0], "camera POI must refresh to V003 without Anchor Point lookup");
+assert.deepEqual(Array.from(camera._pointOfInterest.keys.at(-1).value), [992, 540, 0], "camera POI must refresh to V003 through verified index access");
 assert.deepEqual(Array.from(nullLayer.position.keys.at(-1).value), [990, 542, 0], "null baked data must refresh to V003");
 assert.deepEqual(Array.from(nullLayer.scale.keys.at(-1).value), [130, 100, 100], "null scale must refresh to V003");
 state = host.runtime.CutBridgeContract.getState();
@@ -258,5 +268,9 @@ host.click("Run QC");
 assert.match(host.alerts.at(-1), /CutBridge QC — PASS/, "V003 QC must have zero stale managed tags");
 assert.ok(!host.alerts.some(x => /stale or foreign CutBridge-managed tag/i.test(x)), "no stale-tag diagnostic may remain after migration");
 
-assert.doesNotMatch(revisionSource, /transform\.property\("ADBE Anchor Point"\)/, "revision manager must never query Camera Anchor Point in native revision context");
-console.log("S13 AE 3D revision migration: PASS (native camera POI guard + V001→V002→V003 tags + baked samples + QC clean; real AE retest still required)");
+assert.match(revisionSource, /transform\.property\(1\)/, "revision manager must resolve Camera POI by numeric Transform property index");
+assert.doesNotMatch(revisionSource, /transform\.property\("ADBE Anchor Point"\)/, "revision manager must never query Camera Anchor Point by name in native revision context");
+assert.doesNotMatch(revisionSource, /safeProperty\(transform,\s*"ADBE Point of Interest"\)/, "revision manager must never query synthetic Camera POI matchName");
+assert.doesNotMatch(revisionSource, /safeProperty\(transform,\s*"Point of Interest"\)/, "revision manager must never query Camera POI by display name");
+assert.doesNotMatch(revisionSource, /layer\.pointOfInterest/, "revision manager must never use the direct Camera POI getter in native revision context");
+console.log("S13 AE 3D revision migration: PASS (verified indexed camera POI + V001→V002→V003 tags + baked samples + QC clean; real AE retest still required)");
