@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from typing import Iterable, Iterator
 
-from .core import absolute_output_dir, package_name, studio_preset_issues
+from .core import absolute_output_dir, effective_package_name, studio_preset_issues
 
 
 def issue(level: str, code: str, message: str, fix: str) -> dict:
@@ -19,7 +19,7 @@ def format_issue(item: dict) -> str:
 
 
 def package_target(settings) -> Path:
-    return absolute_output_dir(settings) / package_name(settings)
+    return absolute_output_dir(settings) / effective_package_name(settings)
 
 
 def _iter_package_paths(root: Path) -> Iterator[Path]:
