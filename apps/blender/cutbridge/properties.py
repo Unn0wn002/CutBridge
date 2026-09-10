@@ -22,6 +22,24 @@ class CUTBRIDGE_PG_Settings(bpy.types.PropertyGroup):
         default=_default_output_dir(),
     )
 
+    studio_preset_mode: EnumProperty(
+        name="Studio Preset Mode",
+        description="Manual keeps legacy controls; Default uses CutBridge's safe built-in preset; Custom loads one validated JSON preset",
+        items=(
+            ("MANUAL", "Manual", "Use the existing CutBridge pass/format controls"),
+            ("DEFAULT", "CutBridge Default", "Use the built-in safe CutBridge studio preset"),
+            ("CUSTOM", "Custom JSON", "Load one validated data-only studio preset JSON file"),
+        ),
+        default="MANUAL",
+    )
+
+    studio_preset_path: StringProperty(
+        name="Studio Preset JSON",
+        description="Optional custom CutBridge studio preset JSON file. Presets are declarative data only and are validated before use",
+        subtype="FILE_PATH",
+        default="",
+    )
+
     image_format: EnumProperty(
         name="Sequence Format",
         items=(
@@ -35,6 +53,7 @@ class CUTBRIDGE_PG_Settings(bpy.types.PropertyGroup):
     # BEAUTY has a renderer-independent Combined/Image source. Other logical
     # passes are opt-in because their availability depends on the active engine
     # and View Layer; CutBridge validates them instead of silently guessing.
+    # These properties remain authoritative in MANUAL preset mode.
     pass_beauty: BoolProperty(name="Beauty", default=True)
     pass_line: BoolProperty(name="Line", default=False)
     pass_shadow: BoolProperty(name="Shadow", default=False)

@@ -64,6 +64,36 @@
           "required": {"type": "boolean"}
         }
       }
+    },
+    "folders": {
+      "type": "object",
+      "properties": {
+        "render": {"type": "string"},
+        "preview": {"type": "string"},
+        "camera": {"type": "string"}
+      }
+    },
+    "ae": {
+      "type": "object",
+      "properties": {
+        "comp_name": {"type": "string"},
+        "layer_order": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    },
+    "studio_preset": {
+      "type": "object",
+      "required": ["mode", "schema", "schema_version", "id", "name"],
+      "properties": {
+        "mode": {"enum": ["manual", "default", "custom"]},
+        "schema": {"const": "cutbridge-studio-preset"},
+        "schema_version": {"const": 1},
+        "id": {"type": "string"},
+        "name": {"type": "string"}
+      },
+      "additionalProperties": false
     }
   },
   "additionalProperties": true

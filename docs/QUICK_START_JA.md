@@ -1,93 +1,121 @@
 # CutBridge クイックスタート（日本語）
 
-このガイドは、**S8 まで統合済みの v0.2.3 未リリース版 `develop`** を対象にしています。
+このガイドは、**S9 までの v0.2.3 未リリース開発版**を対象にしています。
 
-CutBridge は Blender のアニメーションカットを After Effects へ受け渡すための制作パイプラインツールです。カット情報、レンダーパス、バージョン、`cutbridge.json`、AE 側の管理対象コンポ／フッテージ／レイヤー、QC、互換性のある差し替えを一貫したルールで扱います。
+CutBridge は Blender のアニメーションカットを After Effects へ受け渡すための制作パイプラインツールです。カット情報、レンダーパス、バージョン、`cutbridge.json`、AE 側の管理対象コンポ／フッテージ／レイヤー、QC、互換性のある差し替え、日本語優先 UI、そして S9 のデータ専用 Studio Preset を一貫したルールで扱います。
 
 基本フロー：
 
-`Blender で情報入力 → Validate Cut → レンダー出力設定／パッケージ作成 → 連番レンダー → AE で読み込み／Build → QC+ → 互換性のある差し替え`
+`Blender 情報 + 任意の Studio Preset → Validate Cut → レンダー出力設定／パッケージ作成 → 連番レンダー → AE 読み込み／Build → QC+ → 互換 Revision`
 
 英語版: [QUICK_START.md](QUICK_START.md)
 
-## 現在の開発状態
+Studio Preset 詳細: [STUDIO_PRESETS.md](STUDIO_PRESETS.md)
 
-S1〜S8 は `develop` に統合済みです。S8 のマージコミットは `368b977582feadc26543825b4d31ffd5f6266a4f`、マージ後 CI `34380737455` は PASS しています。
+## 開発状態
 
-S8 の実機確認もマージ前に PASS しています。
+S1〜S8 で Blender→AE の決定的な受け渡し、Ownership / Revision / QC、安全な日本語 UI を構築しました。S9 は既存の Manual 動作と Blender↔AE Package Identity 契約を保持したまま Studio Preset を追加します。
 
-- Blender 5.2.1 LTS
-- Adobe After Effects 2026 v26.3.0 Build 87
-
-ただし、これは開発検証の証拠であり、安定版リリースの許可ではありません。現在 GitHub Release / リリースタグは存在せず、`release-authorization.json` は意図的に未承認のままです。
+これは開発検証であり Stable / RC 公開許可ではありません。リリースタグ／GitHub Release は存在せず、`release-authorization.json` は未承認のままです。
 
 ## 1. Blender 版 CutBridge をインストール
 
-開発テストでは、検証対象の正確なソースから作成した CutBridge Blender ZIP を使用してください。
+1. 検証対象ソースから作成した CutBridge Blender ZIP を用意します。
+2. Blender Preferences から **Install from Disk** など該当バージョンの拡張機能インストール操作を使用します。
+3. CutBridge を有効化します。
+4. 3D View の `N` サイドバーで **CutBridge** を開きます。
+5. 日本語が基本表示です。必要に応じて English へ切り替えられます。
 
-1. 対応 Blender を起動します。宣言上の最小バージョンは 4.2.0、現在の主要な自動実行テストは Blender 5.2.1 LTS です。
-2. Preferences から **Install from Disk** など、その Blender バージョンに対応した拡張機能インストール操作を使用します。
-3. CutBridge ZIP を選択して有効化します。
-4. 3D View の `N` サイドバーを開き、**CutBridge** タブを選択します。
-5. 日本語が基本表示です。必要に応じて UI Language から English に切り替えられます。
-
-最小バージョンを満たすだけでは「正式対応済み／認証済み」という意味にはなりません。詳細は [COMPATIBILITY.md](COMPATIBILITY.md) を参照してください。
+宣言上の最小 Blender は 4.2.0、主要な自動 Runtime 検証は Blender 5.2.1 LTS です。詳細は [COMPATIBILITY.md](COMPATIBILITY.md) を参照してください。
 
 ## 2. Blender でカット情報を準備
 
 Validate Cut の前に次を確認します。
 
-1. `.blend` ファイルを保存する。
-2. Scene Camera を設定する。
-3. FPS と解像度を設定する。
-4. 書き出しフレーム範囲を設定する。
+1. `.blend` を保存する。
+2. Active Camera を設定する。
+3. FPS / Resolution を設定する。
+4. 書き出し Frame Range を設定する。
 5. Project / Episode / Scene / Cut / Take / Version を入力する。
 6. Package Output を選択する。
-7. 必要な BEAUTY / LINE / SHADOW / DEPTH パスを選択する。
+7. **Studio Preset Mode** を選択する。
 
-### フレーム範囲のルール
+### Studio Preset Mode
 
-CutBridge の書き出し開始フレームは `0` 以上です。負のフレーム／プリロールは Blender、スキーマ、AE の各境界で拒否されます。
+**Manual** は後方互換のデフォルトです。S9 前と同じように BEAUTY / LINE / SHADOW / DEPTH と Sequence Format を直接設定します。標準 Package Identity も維持されます。
 
-CutBridge はアニメーションを勝手に番号変更しません。必要な場合は、パッケージ作成前に書き出し範囲を 0 以降へリベースしてください。
+例：`PROJECT_EP01_SC010_C012_T01_V001`
+
+**CutBridge Default** は組み込みの安全な宣言型 Preset を使用します。既定 CutBridge 規約を Preset Pipeline 経由で再現します。
+
+**Custom JSON** はユーザーが選択した UTF-8 JSON を厳格に検証して使用します。ファイルを選んだ後、必ず Validate Cut を実行してください。
+
+Preset で変更できる内容：
+
+- Package Naming Template
+- Render / Preview / Camera Folder
+- Pass の順序と Required / Optional
+- Sequence Filename Template
+- PNG / OpenEXR / TIFF
+- Version Prefix / Padding
+- After Effects Comp Name
+
+Preset は**データのみ**です。任意コード、コマンド、ネットワーク処理、環境変数展開は実行できません。
+
+完全な Schema / Example / 制限は [STUDIO_PRESETS.md](STUDIO_PRESETS.md) を参照してください。
+
+### Frame Range
+
+書き出し開始フレームは `0` 以上です。負のフレーム／プリロールは Blender、Schema、AE の各境界で拒否されます。CutBridge はアニメーションを自動リナンバーしません。
 
 ## 3. Validate Cut
 
 **Validate Cut** を実行します。
 
-主な確認項目：
+主な検証：
 
 - 必須 ID
 - Active Camera
-- FPS
-- Resolution
-- Frame Range
-- Render Pass
+- FPS / Resolution / Frame Range
+- Studio Preset Schema / Field / Path Safety
+- 解決済み Render Pass
 - Package Output
-- Renderer / View Layer の対応状態
-- 既存パッケージへの安全性
+- Renderer / View Layer Capability
+- 既存 Package の上書き安全性
 
-`ERROR` は処理停止条件です。Warning は内容を確認してから進んでください。
+`ERROR` は停止条件です。Warning は内容確認が必要です。
 
-JA / EN を切り替えても、検証ロジックや機械用識別子は変化しません。
+Preset 用の安定コードには次があります。
+
+- `PRESET_PATH_MISSING`
+- `PRESET_FILE_UNAVAILABLE`
+- `PRESET_FILE_TOO_LARGE`
+- `PRESET_JSON_INVALID`
+- `PRESET_SCHEMA_INVALID`
+- `PRESET_SCHEMA_UNSUPPORTED`
+- `PRESET_FIELD_INVALID`
+- `PRESET_PATH_UNSAFE`
+
+JA / EN を切り替えてもコードと判定ロジックは変わりません。
 
 ## 4. レンダー出力マッピング
 
-CutBridge は選択された論理パス用に決定的な Blender compositor 出力を設定します。
+CutBridge は解決済みの論理 Pass に対して決定的な Blender Compositor Output を設定します。
 
 安全ルール：
 
 - CutBridge 管理ノードは `CUTBRIDGE_` 名前空間を使用します。
-- ユーザー／アーティストが作成した無関係なノードは保持します。
-- 設定の置換はトランザクションとして扱います。
-- Renderer / View Layer で利用できないパスを架空の出力として作りません。
-- 新しい設定に失敗した場合、以前の正常な CutBridge マッピングを壊さないことが前提です。
+- 無関係な Artist Node は保持します。
+- Mapping 置換は Transactional です。
+- Renderer / View Layer で利用できない Pass を架空に生成しません。
+- Mapping 失敗で以前の正常な CutBridge Mapping を壊しません。
+- Preset から任意 Blender Operation を実行しません。
 
 ## 5. Build Package
 
-Validate が成功したら **Build Package** を実行します。
+Validate 成功後に **Build Package** を実行します。
 
-例：
+Manual / Default の代表例：
 
 ```text
 PROJECT_EP01_SC010_C012_T01_V001/
@@ -101,118 +129,93 @@ PROJECT_EP01_SC010_C012_T01_V001/
     └── depth/
 ```
 
-選択したパスだけがパッケージ対象になります。実際の連番ファイル名ルールは `cutbridge.json` に記録されます。
+実際の Folder / Sequence / Required Policy / Comp Name / Layer Order は `cutbridge.json` に記録されます。
 
-### 同一 Version の上書きについて
+Custom JSON の場合、Build 開始時点の検証済み Preset を 1 回の Build Transaction 用に Memory Snapshot として固定します。Build 中に元 JSON を編集しても Blender Mapping と生成 Manifest が別々の Preset を使うことはありません。
 
-既存の同一 Version パッケージにレンダー結果やユーザーデータが存在する場合、CutBridge は安全のため上書きを拒否します。
+Manifest には正規化済み Preset 情報として `mode`, Schema/Version, Preset `id`, `name` だけを記録します。元 Preset の File Path は記録しません。
 
-V002 / V003 など新しい Version を作成するか、古いパッケージを明示的に手動管理してください。
+### 同一 Version の上書き
+
+既存の同一 Version Package に Render / User Payload がある場合は上書きを拒否します。新しい Version を作成するか、既存 Package を明示的に管理してください。
 
 ## 6. Blender で連番をレンダー
 
-CutBridge が設定した出力先へ必要なパスをレンダーします。
-
-AE に渡す前に、必須パスの連番が期待フレーム範囲を満たしていることを確認してください。
+CutBridge Output へ必要な Pass をレンダーします。AE へ渡す前に Required Pass が期待 Frame Range を満たしていることを確認します。
 
 ## 7. After Effects 版 CutBridge を準備
 
-S8 の開発パッケージでは、次の **4 ファイルを同じフォルダに置きます**。
+次の 4 Runtime File を同じ Folder に置きます。
 
 - `CutBridge.jsx`
 - `revision_manager.js`
 - `qc_plus.js`
 - `localization.js`
 
-最初の確認方法：
+最初は **File > Scripts > Run Script File...** から `CutBridge.jsx` を実行できます。
 
-1. After Effects の **File > Scripts > Run Script File...** を開く。
-2. `CutBridge.jsx` を選択する。
-3. CutBridge パネルが開くことを確認する。
-4. 日本語表示と English 切り替えを確認する。
+Dockable Panel として使用する場合は 4 ファイルすべてを `Scripts/ScriptUI Panels` に配置して AE を再起動します。
 
-Dockable Panel として使う場合は、4 ファイルすべてを該当バージョンの `Scripts/ScriptUI Panels` へ配置して AE を再起動します。
+`localization.js` が欠けている場合は安全に English Fallback へ移行しますが、Build / QC / Revision Safety は弱くなりません。
 
-`localization.js` が欠けている／壊れている場合、UI は安全に English fallback へ移行する必要があります。ただし Build / QC / Revision の安全判定は弱くなりません。
+## 8. AE で Import / Build
 
-## 8. AE でパッケージを読み込み、Build
-
-1. CutBridge から `cutbridge.json` を読み込みます。
+1. `cutbridge.json` を読み込みます。
 2. Package Identity / FPS / Frame Count / Validation を確認します。
-3. Build を実行して CutBridge 管理コンポ／フォルダ／フッテージ／レイヤーを作成します。
-4. 必須連番が不足している場合は Build を成功扱いにしません。
-5. Optional Pass が利用できない場合は、契約上の Warning / Skip ルールに従います。
+3. Build を実行します。
+4. Required Sequence が不足している場合は失敗します。
+5. Optional Pass は Manifest 契約に従い Warning / Skip されます。
 
-CutBridge は「名前が似ている」「Source が似ている」だけのアーティストオブジェクトを自動的に管理対象へ取り込みません。
+S9 でも After Effects は Studio Preset JSON を直接読みません。Blender が解決した Manifest のみを使用します。つまり Preset File を AE 側の新しい Trust Boundary にしません。
 
 ## 9. QC+
 
-Build 後、またはプロジェクト状態を変更した後に **QC** を実行します。
+Build 後や Project 変更後に **QC** を実行します。
 
-S7 QC+ は安定した `CBQ-*` コードと PASS / WARNING / ERROR を使用します。
+QC+ は安定した `CBQ-*` Code を使い、Package / Sequence / Comp / Ownership / Revision State を診断します。
 
-主なチェック：
+QC は診断専用です。Object の自動採用、Import、Move、Retag、Source Replace、自動修復は行いません。
 
-- Package / Manifest
-- 必須／Optional 連番
-- Missing / Unexpected Frame
-- Comp Resolution / Pixel Aspect / FPS / Duration
-- Managed Footage / Layer Ownership
-- Stale / Foreign / Ambiguous Managed State
-- Revision Compatibility
+## 10. V002 / V003 などへ Revision
 
-QC は診断専用です。QC 自体がオブジェクトの採用、読み込み、移動、再タグ付け、Source 差し替え、自動修復を行う設計にはしません。
+1. 現在の Managed Project を保持する。
+2. 新しい Package を Revision Flow から選択する。
+3. Compatibility を確認する。
+4. Warning Class は明示確認する。
+5. 非互換状態は Source Replacement 前に Fail Closed する。
+6. Compatible の場合のみ Verified Managed Source を置換する。
+7. Historical Footage は旧 Version Provenance を保持する。
+8. 完了後に Build / QC を再実行する。
 
-## 10. V002 / V003 へ差し替え
+Preset の Version 表示が `R0012` のように変わっても、Revision Compatibility の基本となる Manifest `version` は数値のままです。
 
-新しい互換パッケージへ更新する場合：
+## 11. 日本語／English Safety Boundary
 
-1. 現在の管理対象プロジェクトを保持します。
-2. Revision フローから新しいパッケージを選択します。
-3. Compatibility 診断を確認します。
-4. Warning クラスの変更は明示確認が必要です。
-5. Geometry / Pass Set / Ownership / Package Structure が非互換の場合は Source 差し替え前に停止します。
-6. 互換性がある場合のみ、検証済みの CutBridge 管理 Source を置換します。
-7. 旧 Version の管理フッテージは履歴由来情報を保持します。
-8. 完了後に Build / QC を再実行します。
+言語変更で変わるのは表示だけです。
 
-CutBridge は互換性を作るために既存コンポを勝手にリサイズ／リタイムしません。
+次は変わりません。
 
-## 11. 日本語／English の安全境界
-
-言語変更で変わってよいものはユーザー表示だけです。
-
-次は変えてはいけません。
-
-- Manifest 値
+- Manifest Value
 - Package Identity
-- Managed Tag / Ownership
-- `CBQ-*` コード
-- Build / QC / Revision の判定
-- 無関係な Blender Scene / AE Project オブジェクト
+- Studio Preset Resolution
+- Managed Ownership Tag
+- `CBQ-*` / `PRESET_*` Code
+- Build / QC / Revision Decision
+- 無関係な Blender / AE Object
 
-## 12. リリース境界
+## 12. Release Boundary
 
-現在の v0.2.3 は未リリースです。
+v0.2.3 は未リリースです。CI PASS だけを理由に Stable / RC を公開しません。
 
-CI PASS や S8 実機 PASS だけを理由に Stable / RC を公開しないでください。
-
-RC / Stable の前には少なくとも以下が必要です。
-
-- issue #18 の repository-level release governance
-- 検証済み候補を `main` へ意図的に promotion
-- exact main/tag/channel/prerelease の明示 authorization
-- 実際の tag-triggered release
-- 公開 ZIP / checksum / metadata の再検証
-- production update index の確認
-- リリース主張に必要な End-to-End / Target User validation
+公開前には issue #18 の Repository-Level Release Governance、検証済み Candidate の `main` への意図的 Promotion、Exact Authorization、実 Tag Release、Downloaded Asset Verification、Production Update Index、残りの E2E / Target User Validation が必要です。
 
 ## 次の開発フェーズ
 
-S8.5 ドキュメント整合が `develop` に統合され、マージ後 CI が PASS した後の次フェーズは **S9 — Studio Presets** です。
+S9 Studio Presets 統合後の次フェーズは **S10 — Camera / Null Handoff Investigation** です。
 
 関連資料：
 
+- [STUDIO_PRESETS.md](STUDIO_PRESETS.md)
 - [COMPLETION_STATUS.md](COMPLETION_STATUS.md)
 - [ROADMAP.md](ROADMAP.md)
 - [TEST_PLAN.md](TEST_PLAN.md)

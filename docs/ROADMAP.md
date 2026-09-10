@@ -1,130 +1,98 @@
 # CutBridge Roadmap
 
-Status reconciled through the completed S8.5 documentation-maintenance session. Version labels 0.2.0–0.2.3 remain unreleased development history; session numbers describe bounded product work and do not guarantee public release numbers.
+Status reconciled through S9 Studio Presets. Version labels 0.2.0–0.2.3 remain unreleased development history; session numbers describe bounded product work and do not guarantee public release numbers.
 
-## Completed foundation — S1–S8
+## Completed foundation — S1–S9
 
 ### S1 — Baseline and release packaging
 Completed.
 
-- deterministic Blender + After Effects packaging;
-- version consistency and checksums;
-- GPL license inclusion;
-- release-output safety and baseline documentation.
+Deterministic Blender + After Effects packaging, version consistency/checksums, GPL inclusion, release-output safety, and baseline documentation.
 
 ### S2 — Blender Render Mapping
 Completed.
 
-- BEAUTY / LINE / SHADOW / DEPTH logical pass mapping;
-- renderer/View Layer capability validation;
-- deterministic output paths;
-- transactional replacement with unrelated artist nodes preserved.
+BEAUTY / LINE / SHADOW / DEPTH mapping, renderer/View Layer validation, deterministic output paths, and transactional artist-node preservation.
 
 ### S3 — Blender Production Hardening
 Completed.
 
-- package-target safety;
-- same-version payload overwrite prevention;
-- V001/V002/V003 coexistence;
-- package integrity and Japanese/UTF-8 filesystem handling.
+Package-target safety, same-version payload protection, V001/V002/V003 coexistence, package integrity, and Japanese/UTF-8 filesystem handling.
 
 ### S4 — AE Handoff Contract Hardening
 Completed.
 
-- schema/version gates;
-- finite integer/non-negative frame contract;
-- safe package-relative paths;
-- required/optional pass semantics;
-- exact sequence coverage;
-- data-only legacy JSON parsing;
-- canonical product-version enforcement.
+Schema/version gates, non-negative frame contract, safe package-relative paths, required/optional pass semantics, exact sequence coverage, safe legacy JSON parsing, and product-version enforcement.
 
 ### S5 — AE Import & Composition Reliability
 Completed.
 
-- deterministic managed ownership;
-- repeated-build/reload safety;
-- collision/ambiguity blocking;
-- rollback and managed-package structure validation;
-- stricter QC ownership behavior.
+Deterministic managed ownership, repeated-build/reload safety, collision/ambiguity blocking, rollback, package-structure validation, and stricter QC ownership behavior.
 
 ### S6 — Non-Destructive Revision Manager
 Completed and integrated.
-
-- merge: `5d309f51d75b357974d17c94090792d27dea6163`;
-- native AE gate #19 PASS;
-- solo-maintainer adversarial gate #20 PASS;
-- post-merge CI PASS.
 
 Compatible revisions replace only verified managed sources, preserve unrelated artist work, migrate current managed metadata, retain historical-footage provenance, and fail closed on incompatible/ambiguous state.
 
 ### S7 — QC+
 Completed and integrated.
 
-- repaired candidate: `b17b9d3cd5b67d7bfd3741a58df403d5946e2327`;
-- merge: `ef88d68f0178ed33ed4ba096416fcfe595c1eb6d`;
-- real AE validation found and repaired ExtendScript/revision-state defects before merge.
-
-QC+ supplies deterministic `CBQ-*` diagnostics with severity, remediation, sequence/comp/ownership/revision checks, and no automatic mutation or repair.
+Deterministic `CBQ-*` diagnostics with severity/remediation, sequence/comp/ownership/revision checks, and diagnostic-only behavior.
 
 ### S8 — Japanese-First UX
 Completed and integrated.
 
-- repaired candidate: `f477b745cc600b85708b63d059d6c4eaed9f0249`;
-- merge: `368b977582feadc26543825b4d31ffd5f6266a4f`;
-- AE gate #38 PASS in After Effects 2026 v26.3.0 Build 87;
-- Blender gate #41 PASS in Blender 5.2.1 LTS at approximately 245 px N-panel width;
-- post-merge CI `34380737455` PASS.
+Japanese-first UI with deterministic English fallback in Blender and After Effects while stable machine identifiers and safety decisions remain locale-independent. Native S8 validation passed in Blender 5.2.1 LTS and After Effects 2026 v26.3.0 Build 87 before integration.
 
-S8 delivers Japanese-first UI with deterministic English fallback in Blender and After Effects while stable machine identifiers and safety decisions remain locale-independent.
-
-## S8.5 — Repository State Reconciliation
+### S8.5 — Repository State Reconciliation
 Completed and integrated.
 
-Scope completed:
+Repository documentation/status was reconciled after S8; Japanese onboarding and technical-debt tracking were added; `main`, runtime behavior, and release authorization remained untouched.
 
-- reconciled README/completion/roadmap/Quick Start/Test Plan/changelog/AE installation status after S8;
-- added Japanese onboarding documentation;
-- recorded technical debt and current release-governance blockers;
-- kept `main`, runtime implementation, workflow behavior, and release authorization untouched;
-- established S9 as the next engineering feature.
+### S9 — Studio Presets
+Completed and integrated.
 
-Evidence:
+Goal achieved: make CutBridge adaptable to different animation/content-production teams without hard-coding a studio workflow or introducing executable configuration.
 
-- PR #42 final head: `e61a1fc7c14e49c062c2d29b95e829636ef16bb7`;
-- PR CI `34383043982`: PASS;
-- merge: `00b6e8fd62826d9cecfda542f6cb85f7174a7dd2`;
-- post-merge `develop` CI `34383182746`: PASS.
+Delivered:
 
-## S9 — Studio Presets
-**Next engineering session.**
+- versioned `cutbridge-studio-preset` JSON schema;
+- data-only Manual / CutBridge Default / Custom JSON modes;
+- Manual as backward-compatible default;
+- safe built-in default preset and published example;
+- strict unknown-field/schema/path/template/pass/format/version validation;
+- bounded 64 KiB UTF-8 custom preset loader;
+- disjoint render / preview / camera folder roles;
+- configurable deterministic package and sequence naming;
+- configurable pass order and required/optional policy;
+- PNG / OpenEXR / TIFF selection;
+- configurable version display token;
+- configurable After Effects comp name and layer order through the normalized manifest;
+- one validated custom-preset snapshot per Build Package transaction;
+- optional `studio_preset` manifest provenance without recording the source file path;
+- AE remains a manifest consumer and does not parse preset JSON;
+- Japanese/English UI and stable `PRESET_*` diagnostics;
+- regressions for manual compatibility, valid/custom/default presets, malicious input, unsafe/overlapping folders, loader bounds, and snapshot consistency.
 
-Goal: make CutBridge adaptable to different animation/content-production teams without hard-coding a studio workflow.
+Safety boundaries preserved:
 
-Candidate scope:
-
-- external data-only preset format;
-- naming conventions;
-- deterministic folder structure;
-- default pass sets and required/optional policy defaults;
-- AE layer ordering;
-- output formats;
-- version-pattern/display conventions;
-- built-in safe default preset;
-- explicit preset validation and fallback behavior;
-- migration/versioning policy for preset schema.
-
-Safety boundaries:
-
-- no arbitrary code execution from preset files;
-- no hidden filesystem/network actions;
+- no arbitrary code or expression execution;
+- no environment-variable or command expansion;
+- no hidden network action;
 - no automatic ownership adoption;
-- no confidential real-studio preset bundled without explicit permission;
-- existing S5/S6/S7 fail-closed ownership/revision/QC behavior remains authoritative.
+- no confidential real-studio preset bundled;
+- S5/S6/S7 ownership/revision/QC behavior remains authoritative;
+- canonical Blender↔AE package-identity primitives remain unchanged;
+- `main` and release authorization are not modified by S9.
+
+Reference: [STUDIO_PRESETS.md](STUDIO_PRESETS.md).
 
 ## S10 — Camera / Null Handoff Investigation
+**Next engineering session.**
 
-Research Blender ↔ AE coordinate systems, axes, units, camera/lens/FOV/sensor representation, parenting, empties/nulls, and frame timing. Ship only a minimal subset whose behavior can be established and tested reliably.
+Research Blender ↔ After Effects coordinate systems, axes, units, camera/lens/FOV/sensor representation, parenting, empties/nulls, frame timing, and transform conventions.
+
+Acceptance principle: ship only a minimal subset whose coordinate/timing behavior can be derived, represented in the manifest, and verified reliably. Do not add broad camera/scene-export scope merely because it is possible.
 
 ## S11 — QA / Docs / Release Engineering
 
@@ -164,10 +132,10 @@ Before any RC/stable publication:
 
 ## Technical-debt track
 
-See `TECHNICAL_DEBT.md`.
+See [TECHNICAL_DEBT.md](TECHNICAL_DEBT.md).
 
-Current priorities include Blender 6.0 migration away from deprecated `Scene.use_nodes` behavior and updating pinned GitHub Actions revisions that still target deprecated Node 20 runtimes.
+Current priorities include Blender 6.0 migration away from deprecated `Scene.use_nodes` behavior, refreshing pinned GitHub Actions revisions that still target deprecated Node 20 runtimes, deliberate `main`/`develop` promotion reconciliation, and recorded Japanese target-user evidence.
 
 ## Stable-release goal
 
-A production-oriented Japanese-first Blender → After Effects handoff tool with deterministic packaging, revision-safe source updates, actionable QC, safe studio presets, documented compatibility, controlled distribution/update architecture, green automated gates, and recorded real-host/target-user validation appropriate to the release claim.
+A production-oriented Japanese-first Blender → After Effects handoff tool with deterministic packaging, revision-safe source updates, actionable QC, safe Studio Presets, documented compatibility, controlled distribution/update architecture, green automated gates, and recorded real-host/target-user validation appropriate to the release claim.
