@@ -48,13 +48,27 @@ class CUTBRIDGE_PT_MainPanel(bpy.types.Panel):
         camera_name = scene.camera.name if scene.camera else tr(language, "camera_not_set")
         box.label(text=tr(language, "camera", value=camera_name))
 
+        preset_box = layout.box()
+        preset_box.label(text=tr(language, "studio_preset"))
+        labeled_prop(preset_box, s, "studio_preset_mode", tr(language, "preset_mode"))
+        if s.studio_preset_mode == "CUSTOM":
+            labeled_prop(preset_box, s, "studio_preset_path", tr(language, "preset_json"))
+        if s.studio_preset_mode == "MANUAL":
+            preset_box.label(text=tr(language, "preset_manual_hint"), icon="INFO")
+        else:
+            preset_box.label(text=tr(language, "preset_managed_hint"), icon="LOCKED")
+
         box = layout.box()
         box.label(text=tr(language, "pass_package"))
-        box.prop(s, "pass_beauty", text=tr(language, "beauty"))
-        box.prop(s, "pass_line", text=tr(language, "line"))
-        box.prop(s, "pass_shadow", text=tr(language, "shadow"))
-        box.prop(s, "pass_depth", text=tr(language, "depth"))
-        labeled_prop(box, s, "image_format", tr(language, "sequence_format"))
+        pass_controls = box.column()
+        pass_controls.enabled = s.studio_preset_mode == "MANUAL"
+        pass_controls.prop(s, "pass_beauty", text=tr(language, "beauty"))
+        pass_controls.prop(s, "pass_line", text=tr(language, "line"))
+        pass_controls.prop(s, "pass_shadow", text=tr(language, "shadow"))
+        pass_controls.prop(s, "pass_depth", text=tr(language, "depth"))
+        labeled_prop(pass_controls, s, "image_format", tr(language, "sequence_format"))
+        if s.studio_preset_mode != "MANUAL":
+            box.label(text=tr(language, "preset_controls_passes"))
 
         box = layout.box()
         box.label(text=tr(language, "export"))
