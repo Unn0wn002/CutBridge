@@ -98,6 +98,7 @@ def test_valid_custom_preset_can_change_order_format_folders_and_versioning():
         (lambda p: p.update({"schema_version": 99}), "PRESET_SCHEMA_UNSUPPORTED"),
         (lambda p: p["folders"].update({"render": "../escape"}), "PRESET_PATH_UNSAFE"),
         (lambda p: p["folders"].update({"preview": "/absolute"}), "PRESET_PATH_UNSAFE"),
+        (lambda p: p["folders"].update({"render": "media", "preview": "media/review"}), "PRESET_PATH_UNSAFE"),
         (lambda p: p["naming"].update({"package": "{project}/{cut}"}), "PRESET_FIELD_INVALID"),
         (lambda p: p["naming"].update({"package": "{__class__}"}), "PRESET_FIELD_INVALID"),
         (lambda p: p["naming"].update({"sequence": "{cut}_{pass}"}), "PRESET_FIELD_INVALID"),
