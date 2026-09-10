@@ -1,23 +1,25 @@
-# S10B — Producer-only 3D handoff data
+# CutBridge 3D Handoff — S10B Producer + S10C After Effects Reconstruction
 
-Status: **experimental producer contract; no After Effects reconstruction yet**
+Status: **bounded cross-host workflow validated for the documented S10C subset**
 
-S10B adds an optional `handoff_3d` block to `cutbridge.json`. The block is disabled by default and is intended for engineering validation before CutBridge creates AE cameras or nulls.
+CutBridge can optionally add a versioned `handoff_3d` block to `cutbridge.json`. S10B produces evaluated Blender world-space camera/Empty samples; S10C consumes the supported subset in After Effects to create or update CutBridge-managed camera and 3D Null layers.
+
+This is deliberately **not** general Blender ↔ After Effects scene synchronization.
 
 ## Compatibility rule
 
-Historical CutBridge behavior remains the default:
+Historical CutBridge package behavior remains the default:
 
 - `handoff_3d_enabled = false` by default;
 - manifests without `handoff_3d` remain valid;
-- the existing After Effects importer ignores the optional field;
-- no existing pass/package/revision/QC/Studio Preset contract is changed.
+- normal render-pass / package / revision / QC / Studio Preset contracts remain unchanged;
+- enabling 3D handoff is explicit and independent from Studio Presets.
 
-## Engineering opt-in
+The producer is still not exposed as a normal N-panel control. Until product UX explicitly promotes it, enable it only for the bounded workflow described here.
 
-Until native AE reconstruction is validated, S10B intentionally does not expose this feature as a normal N-panel workflow.
+## Blender engineering opt-in
 
-From Blender Python, enable producer data with:
+From Blender Python:
 
 ```python
 bpy.context.scene.cutbridge.handoff_3d_enabled = True
@@ -30,7 +32,7 @@ Mark only explicit Blender Empties for export:
 empty["cutbridge_handoff_3d"] = True
 ```
 
-Objects carrying that marker but not of type `EMPTY` fail validation rather than being silently ignored.
+A marked object that is not an `EMPTY` fails validation rather than being silently ignored.
 
 ## Data model
 
@@ -72,24 +74,17 @@ Each transform sample contains:
 - normalized mapped local basis vectors `x`, `y`, `z`;
 - evaluated world basis lengths as `scale`.
 
-Camera samples additionally contain:
-
-- mapped forward direction;
-- mapped up direction;
-- evaluated horizontal FOV in radians;
-- derived AE Zoom in pixels.
-
-No Blender Euler angles are serialized.
+Camera samples additionally contain mapped forward/up direction, evaluated horizontal FOV, and derived AE Zoom. Blender Euler channels are not serialized.
 
 ## Coordinate and timing contract
 
-S10B uses the S10A mapping unchanged:
+The S10A axis mapping remains authoritative:
 
 ```text
 Blender (x, y, z) -> AE-oriented (x, -z, y)
 ```
 
-Blender world origin maps to the AE composition center for positions.
+Position origin is the AE composition center.
 
 Timing is:
 
@@ -97,48 +92,74 @@ Timing is:
 AE_time_seconds = (frame - frame_start) / fps
 ```
 
-The first exported frame is therefore AE time `0.0`.
+The first exported Blender frame therefore maps to AE time `0.0`.
 
 ## Evaluated-world baking
 
-For every exported frame CutBridge:
+For each exported frame CutBridge:
 
-1. sets Blender to that exact integer frame;
+1. sets Blender to the exact integer frame;
 2. obtains the evaluated dependency graph;
-3. reads the evaluated world matrix of the active camera and each marked Empty;
-4. maps position and basis through the S10A axis contract;
-5. records a baked sample;
-6. restores the user's original Blender frame and subframe when sampling finishes or fails.
+3. reads the evaluated world matrix for the active camera and each marked Empty;
+4. maps position and basis using the S10A contract;
+5. records one baked sample;
+6. restores the user's original frame/subframe on success or failure.
 
-Parenting, constraints, and drivers may influence the evaluated world result, but their hierarchy is **not** recreated in AE. This is deliberate: the first safe handoff is baked world-space data.
+Parenting, constraints, and drivers may influence the evaluated world result, but their hierarchy is not recreated in AE. S10 uses baked world-space handoff instead.
 
-## Fail-closed boundaries
+## Producer fail-closed boundaries
 
-S10B rejects cases that do not yet have a proven reconstruction contract:
+Blender rejects unsupported or unsafe producer cases, including:
 
 - non-perspective cameras;
 - non-square pixels;
-- camera sensor shift;
+- non-zero camera sensor shift;
 - zero-scale transforms;
-- shear in evaluated world transforms;
-- reflected transforms with negative handedness;
+- shear;
+- reflected/negative-handed transforms;
 - more than 64 marked Empties;
 - more than 10,000 baked frames;
 - more than 100,000 total camera/null samples;
 - CutBridge handoff markers on non-Empty objects.
 
-These limits are safety/contract boundaries, not claims about what Blender or After Effects can theoretically support.
+These are CutBridge contract boundaries, not limitations of Blender or After Effects themselves.
 
-## After Effects boundary
+## After Effects reconstruction boundary
 
-S10B **does not create, modify, or parent AE cameras/nulls**. The current AE importer continues to consume the existing manifest fields only.
+S10C validates the `handoff_3d` contract before project mutation. For the supported subset it can create/update:
 
-A later S10C phase must validate real AE camera/null reconstruction using native host fixtures before this producer data becomes a user-facing cross-host workflow.
+- one CutBridge-managed perspective camera;
+- CutBridge-managed 3D Null layers for serialized Blender Empties;
+- baked position/orientation/projection timing from the manifest.
 
-## Validation
+Ownership remains identity-based rather than name-only. Repeated Build is idempotent, and same-name unmanaged artist camera/null collisions fail closed instead of being adopted or overwritten.
 
-S10B requires:
+S10C does not add geometry, lights, bones, arbitrary hierarchy recreation, or general scene synchronization.
 
-- Draft 2020-12 manifest-schema coverage for old manifests and the new optional block;
-- proof that the existing AE validator accepts manifests containing `handoff_3d` without consuming it;
-- Blender 5.2.1 runtime tests for evaluated camera/null sampling, animation, parenting/world baking, frame restoration, marker filtering, fail-closed transforms, and full Build Package integration.
+## Native S10C evidence
+
+Native validation was executed in **Adobe After Effects 2026 Build 87 (`26.3x87`) on Windows 11** with Blender 5.2.1 LTS-produced handoff data.
+
+Recorded results:
+
+- camera + 3D Null reconstruction: PASS;
+- deterministic managed layer ordering: PASS;
+- maximum measured 2D projection error: **`0.00018066 px`**;
+- acceptance gate: **`<= 0.05 px`**;
+- QC+: **10/10 PASS**;
+- repeated Build: **0 duplicate managed layers**;
+- unmanaged camera/null collision rejection: PASS;
+- project persistence: PASS.
+
+This evidence validates the tested S10C subset in the named host. It does not certify every After Effects version, operating system, Blender renderer, or arbitrary camera setup.
+
+## Release boundary
+
+S10C validation does not authorize publication. v0.2.3 remains unreleased; release governance issue #18 remains open; `release-authorization.json` must remain fail-closed until a deliberate release-candidate process reaches the authorization stage.
+
+See also:
+
+- [CAMERA_NULL_HANDOFF_CONTRACT.md](CAMERA_NULL_HANDOFF_CONTRACT.md)
+- [TEST_PLAN.md](TEST_PLAN.md)
+- [COMPATIBILITY.md](COMPATIBILITY.md)
+- [RELEASE_READINESS.md](RELEASE_READINESS.md)
