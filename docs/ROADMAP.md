@@ -1,6 +1,6 @@
 # CutBridge Roadmap
 
-Status reconciled through S9 Studio Presets. Version labels 0.2.0–0.2.3 remain unreleased development history; session numbers describe bounded product work and do not guarantee public release numbers.
+Status reconciled through S9 Studio Presets with **S10 Camera / Null Handoff Investigation in progress**. Version labels 0.2.0–0.2.3 remain unreleased development history; session numbers describe bounded product work and do not guarantee public release numbers.
 
 ## Completed foundation — S1–S9
 
@@ -52,49 +52,50 @@ Repository documentation/status was reconciled after S8; Japanese onboarding and
 ### S9 — Studio Presets
 Completed and integrated.
 
-Goal achieved: make CutBridge adaptable to different animation/content-production teams without hard-coding a studio workflow or introducing executable configuration.
+S9 provides a versioned data-only preset contract, Manual / CutBridge Default / Custom JSON modes, safe naming/folder/pass/output/version customization, one-build snapshot consistency, Japanese/English UI, and preserved Blender↔AE identity/ownership boundaries.
 
-Delivered:
+Evidence:
 
-- versioned `cutbridge-studio-preset` JSON schema;
-- data-only Manual / CutBridge Default / Custom JSON modes;
-- Manual as backward-compatible default;
-- safe built-in default preset and published example;
-- strict unknown-field/schema/path/template/pass/format/version validation;
-- bounded 64 KiB UTF-8 custom preset loader;
-- disjoint render / preview / camera folder roles;
-- configurable deterministic package and sequence naming;
-- configurable pass order and required/optional policy;
-- PNG / OpenEXR / TIFF selection;
-- configurable version display token;
-- configurable After Effects comp name and layer order through the normalized manifest;
-- one validated custom-preset snapshot per Build Package transaction;
-- optional `studio_preset` manifest provenance without recording the source file path;
-- AE remains a manifest consumer and does not parse preset JSON;
-- Japanese/English UI and stable `PRESET_*` diagnostics;
-- regressions for manual compatibility, valid/custom/default presets, malicious input, unsafe/overlapping folders, loader bounds, and snapshot consistency.
-
-Safety boundaries preserved:
-
-- no arbitrary code or expression execution;
-- no environment-variable or command expansion;
-- no hidden network action;
-- no automatic ownership adoption;
-- no confidential real-studio preset bundled;
-- S5/S6/S7 ownership/revision/QC behavior remains authoritative;
-- canonical Blender↔AE package-identity primitives remain unchanged;
-- `main` and release authorization are not modified by S9.
+- candidate `ea305d19ab2ff0667a8fa9e94c1e1ebca5e51b22`;
+- candidate CI `34424041843` PASS;
+- PR #45 CI `34424216448` PASS;
+- merge `19d09722678b4e6389d2b3f852a8c4c3a5dbf52f`;
+- post-merge CI `34424286137` PASS.
 
 Reference: [STUDIO_PRESETS.md](STUDIO_PRESETS.md).
 
 ## S10 — Camera / Null Handoff Investigation
-**Next engineering session.**
+**IN PROGRESS — investigation first; production runtime unchanged.**
 
-Research Blender ↔ After Effects coordinate systems, axes, units, camera/lens/FOV/sensor representation, parenting, empties/nulls, frame timing, and transform conventions.
+Goal: establish Blender ↔ After Effects spatial, camera-optics, timing, and parenting behavior from reproducible evidence before adding any production camera/null importer.
 
-Acceptance principle: ship only a minimal subset whose coordinate/timing behavior can be derived, represented in the manifest, and verified reliably. Do not add broad camera/scene-export scope merely because it is possible.
+Current research increment:
+
+- pure research math for candidate basis Blender `(X,Y,Z)` → AE `(X,-Z,Y)`;
+- deterministic 1920×1080 / 50 mm / 36 mm synthetic perspective fixture;
+- Blender 5.2 source-side projection probe using `world_to_camera_view()`;
+- disposable After Effects native projection probe using CameraLayer, 3D Nulls, and `toComp()`;
+- source-side projection precision budget **≤ 0.00005 px**;
+- native AE acceptance **≤ 0.05 px** without widening to mask a conversion defect;
+- timing candidate `(frame - frameStart) / fps`;
+- explicit documentation that `100 px / Blender unit` is fixture scale only, not production policy.
+
+Pending gates:
+
+1. freeze a green automated research-harness candidate;
+2. run native AE gate #47 and record exact projection/cleanup evidence;
+3. investigate arbitrary camera orientation;
+4. investigate parented Empty/camera chains and constraints;
+5. define explicit production scale policy;
+6. decide whether S10 stops at validated research or safely ships a minimal runtime subset.
+
+Acceptance principle: ship only behavior whose coordinate/timing contract is derived, represented explicitly, and tested reliably. If evidence is insufficient, **runtime deferred** is an acceptable S10 result.
+
+Reference: [CAMERA_NULL_HANDOFF.md](CAMERA_NULL_HANDOFF.md).
 
 ## S11 — QA / Docs / Release Engineering
+
+S11 starts only after S10 reaches an explicit completion decision.
 
 - reconcile final CI/test matrix;
 - update installation/usage/revision/QC/troubleshooting documentation;
@@ -138,4 +139,4 @@ Current priorities include Blender 6.0 migration away from deprecated `Scene.use
 
 ## Stable-release goal
 
-A production-oriented Japanese-first Blender → After Effects handoff tool with deterministic packaging, revision-safe source updates, actionable QC, safe Studio Presets, documented compatibility, controlled distribution/update architecture, green automated gates, and recorded real-host/target-user validation appropriate to the release claim.
+A production-oriented Japanese-first Blender → After Effects handoff tool with deterministic packaging, revision-safe source updates, actionable QC, safe Studio Presets, evidence-backed camera/null handoff behavior if S10 authorizes it, documented compatibility, controlled distribution/update architecture, green automated gates, and recorded real-host/target-user validation appropriate to the release claim.
