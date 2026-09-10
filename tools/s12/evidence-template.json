@@ -1,0 +1,54 @@
+{
+  "schema": "cutbridge-s12-e2e-evidence",
+  "schema_version": 1,
+  "overall_state": "NOT_EXECUTED",
+  "candidate": {
+    "develop_sha": "6a0180e6141e0eac09c80b4767825978b115d07e",
+    "blender_artifact": {
+      "filename": null,
+      "sha256": null
+    },
+    "after_effects_artifact": {
+      "filename": null,
+      "sha256": null
+    }
+  },
+  "environment": {
+    "blender": {
+      "executed": false,
+      "version": null,
+      "os": null
+    },
+    "after_effects": {
+      "executed": false,
+      "version": null,
+      "os": null
+    }
+  },
+  "fixture": {
+    "id": "cutbridge-s12-synthetic-v1",
+    "source_type": "synthetic-original",
+    "provenance": "Created specifically for CutBridge S12; no third-party production assets.",
+    "sha256": null
+  },
+  "gates": [
+    {"id": "B_INSTALL", "status": "NOT_EXECUTED", "evidence": []},
+    {"id": "B_VALIDATE_MANUAL", "status": "NOT_EXECUTED", "evidence": []},
+    {"id": "B_STUDIO_PRESET", "status": "NOT_EXECUTED", "evidence": []},
+    {"id": "B_HANDOFF_3D", "status": "NOT_EXECUTED", "evidence": []},
+    {"id": "B_BUILD_V001", "status": "NOT_EXECUTED", "evidence": []},
+    {"id": "B_RENDER_REAL", "status": "NOT_EXECUTED", "evidence": []},
+    {"id": "B_BUILD_V002_V003", "status": "NOT_EXECUTED", "evidence": []},
+    {"id": "AE_LOAD_RUNTIME", "status": "NOT_EXECUTED", "evidence": []},
+    {"id": "AE_BUILD_V001", "status": "NOT_EXECUTED", "evidence": []},
+    {"id": "AE_QC_V001", "status": "NOT_EXECUTED", "evidence": []},
+    {"id": "AE_S10C_CAMERA_NULL", "status": "NOT_EXECUTED", "evidence": []},
+    {"id": "AE_REVISION_V002", "status": "NOT_EXECUTED", "evidence": []},
+    {"id": "AE_REVISION_V003", "status": "NOT_EXECUTED", "evidence": []},
+    {"id": "AE_ARTIST_STATE_PRESERVATION", "status": "NOT_EXECUTED", "evidence": []},
+    {"id": "AE_SAVE_CLOSE_REOPEN", "status": "NOT_EXECUTED", "evidence": []},
+    {"id": "PATH_UNICODE", "status": "NOT_EXECUTED", "evidence": []},
+    {"id": "EVIDENCE_ARCHIVE", "status": "NOT_EXECUTED", "evidence": []}
+  ],
+  "notes": []
+}
