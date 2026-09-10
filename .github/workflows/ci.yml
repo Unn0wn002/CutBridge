@@ -58,6 +58,9 @@ jobs:
       - name: Run S10C reconstruction checks
         run: |
           node tests/ae_s10c_reconstruction_checks.cjs
+      - name: Run S13 3D revision native-host regression
+        run: |
+          node tests/ae_s13_revision_3d_tag_migration_checks.cjs
       - name: Check ExtendScript syntax with Node parser
         run: |
           cp apps/after-effects/CutBridge.jsx /tmp/CutBridge.js
