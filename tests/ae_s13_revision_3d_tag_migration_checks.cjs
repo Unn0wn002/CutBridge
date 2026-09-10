@@ -6,6 +6,7 @@ const vm = require("node:vm");
 
 const root = path.resolve(__dirname, "..");
 const source = fs.readFileSync(path.join(root, "apps/after-effects/CutBridge.jsx"), "utf8");
+const revisionSource = fs.readFileSync(path.join(root, "apps/after-effects/revision_manager.js"), "utf8");
 const Revision = require(path.join(root, "apps/after-effects/revision_manager.js"));
 const QCPlus = require(path.join(root, "apps/after-effects/qc_plus.js"));
 const Contract = require(path.join(root, "apps/after-effects/CutBridge.jsx"));
@@ -118,7 +119,20 @@ function makeHost() {
 
     function CameraLayer(comp, name) {
         AVLayer.call(this, comp, null); this.name = name; this._cameraOptions = new PropertyGroup();
-        this.pointOfInterest = this._transform.property("ADBE Anchor Point");
+        this.pointOfInterest = new Property("Point of Interest");
+        this._rejectAnchorPointLookup = false;
+        const genericProperty = this._transform.property.bind(this._transform);
+        const camera = this;
+        this._transform.property = function(propName) {
+            if (propName === "ADBE Anchor Point") {
+                if (camera._rejectAnchorPointLookup) {
+                    throw new Error("After Effects error: internal verification failure, sorry! {no current context}");
+                }
+                return camera.pointOfInterest;
+            }
+            if (propName === "ADBE Point of Interest" || propName === "Point of Interest") return camera.pointOfInterest;
+            return genericProperty(propName);
+        };
         this.cameraOption = {zoom: this._cameraOptions.property("ADBE Camera Zoom")};
     }
     CameraLayer.prototype = Object.create(AVLayer.prototype);
@@ -204,13 +218,20 @@ assert.ok(beauty && camera && nullLayer, "all managed layers must exist");
 assert.equal(camera.comment, Contract.managedTag("camera", v1, "S13_Camera"));
 assert.equal(nullLayer.comment, Contract.managedTag("null", v1, "S13_Null"));
 assert.deepEqual(Array.from(camera.position.keys.at(-1).value), [972, 540, -1000]);
+assert.deepEqual(Array.from(camera.pointOfInterest.keys.at(-1).value), [972, 540, 0]);
 assert.deepEqual(Array.from(nullLayer.position.keys.at(-1).value), [970, 542, 0]);
+
+// Native AE 26.3x87 exposed that this specific lookup can throw an internal host
+// verification failure in the separately evaluated revision manager. Initial Build
+// remains allowed so the mock matches the real V001 PASS → revision FAIL sequence.
+camera._rejectAnchorPointLookup = true;
 
 host.queue(v2); host.click("Update Revision");
 assert.equal(camera.comment, Contract.managedTag("camera", v2, "S13_Camera"), "camera ownership must migrate V001→V002");
 assert.equal(nullLayer.comment, Contract.managedTag("null", v2, "S13_Null"), "null ownership must migrate V001→V002");
 assert.equal(beauty.comment, Contract.managedTag("layer", v2, "BEAUTY"));
 assert.deepEqual(Array.from(camera.position.keys.at(-1).value), [982, 540, -1000], "camera baked data must refresh to V002");
+assert.deepEqual(Array.from(camera.pointOfInterest.keys.at(-1).value), [982, 540, 0], "camera POI must refresh to V002 without Anchor Point lookup");
 assert.deepEqual(Array.from(nullLayer.position.keys.at(-1).value), [980, 542, 0], "null baked data must refresh to V002");
 assert.deepEqual(Array.from(nullLayer.scale.keys.at(-1).value), [120, 100, 100], "null scale must refresh to V002");
 let state = host.runtime.CutBridgeContract.getState();
@@ -226,6 +247,7 @@ assert.equal(camera.comment, Contract.managedTag("camera", v3, "S13_Camera"), "c
 assert.equal(nullLayer.comment, Contract.managedTag("null", v3, "S13_Null"), "null ownership must migrate V002→V003");
 assert.equal(beauty.comment, Contract.managedTag("layer", v3, "BEAUTY"));
 assert.deepEqual(Array.from(camera.position.keys.at(-1).value), [992, 540, -1000], "camera baked data must refresh to V003");
+assert.deepEqual(Array.from(camera.pointOfInterest.keys.at(-1).value), [992, 540, 0], "camera POI must refresh to V003 without Anchor Point lookup");
 assert.deepEqual(Array.from(nullLayer.position.keys.at(-1).value), [990, 542, 0], "null baked data must refresh to V003");
 assert.deepEqual(Array.from(nullLayer.scale.keys.at(-1).value), [130, 100, 100], "null scale must refresh to V003");
 state = host.runtime.CutBridgeContract.getState();
@@ -236,4 +258,5 @@ host.click("Run QC");
 assert.match(host.alerts.at(-1), /CutBridge QC — PASS/, "V003 QC must have zero stale managed tags");
 assert.ok(!host.alerts.some(x => /stale or foreign CutBridge-managed tag/i.test(x)), "no stale-tag diagnostic may remain after migration");
 
-console.log("S13 AE 3D revision migration: PASS (V001→V002→V003 tags + baked samples + state.layers + QC clean; real AE retest still required)");
+assert.doesNotMatch(revisionSource, /transform\.property\("ADBE Anchor Point"\)/, "revision manager must never query Camera Anchor Point in native revision context");
+console.log("S13 AE 3D revision migration: PASS (native camera POI guard + V001→V002→V003 tags + baked samples + QC clean; real AE retest still required)");
