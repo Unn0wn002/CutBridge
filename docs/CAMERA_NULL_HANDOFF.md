@@ -92,7 +92,7 @@ The first fixture deliberately limits scope to one perspective camera with horiz
 
 - render/comp: `1920 × 1080`, square pixels;
 - Blender camera location: `(0, -10, 0)`;
-- Blender camera Euler XYZ: `(90°, 0°, 0°)`;
+- exact axis-aligned camera basis: local `+X → world +X`, local `+Y → world +Z`, local `-Z → world +Y`;
 - lens: `50 mm`;
 - sensor width: `36 mm`;
 - spatial scale: `100`.
@@ -104,7 +104,7 @@ fovX = 2 * atan(sensorWidth / (2 * lens))
 AE Zoom = compWidth / (2 * tan(fovX / 2))
 ```
 
-For the fixture this yields:
+For the ideal mathematical fixture this yields:
 
 ```text
 fovX ≈ 39.597752709°
@@ -119,13 +119,15 @@ Point of Interest [960, 540,     0]
 Zoom               2666.6666666667
 ```
 
+Blender stores/evaluates camera values at finite precision. The probe therefore records both the ideal Zoom and a Blender-derived Zoom from the actual `camera_data.angle_x`; that finite-precision difference is measured separately instead of being confused with a coordinate-system error.
+
 This first gate does **not** authorize:
 
 - orthographic or panoramic Blender cameras;
 - vertical/auto sensor-fit edge cases;
 - lens shift;
 - depth of field equivalence;
-- arbitrary camera Euler decomposition;
+- arbitrary camera rotation decomposition;
 - camera constraints or unsupported parenting.
 
 ## Synthetic projection fixture
@@ -141,6 +143,14 @@ XYZ_PLUS (1, 1, 1)
 ```
 
 The Blender probe uses Blender's own `world_to_camera_view()` result as the source-side reference. The AE native probe maps the same fixture through the candidate basis, uses a real AE CameraLayer and 3D nulls, then evaluates `toComp()` to obtain native projected coordinates.
+
+### Blender source-side numeric precision
+
+After eliminating dependency-graph and Euler/quaternion construction artifacts, Blender 5.2 still produced an approximately **0.0000319 px** projection difference for the exact-axis fixture. That is treated as finite-precision host math, not as evidence to modify the basis.
+
+The automated source-side acceptance is therefore **≤ 0.00005 px**. This is deliberately separate from and 1000× tighter than the native AE gate.
+
+### Native After Effects acceptance
 
 Native PASS requires maximum 2D projection error **≤ 0.05 px** for all five points. Do not widen the tolerance to hide a mapping error.
 
@@ -175,7 +185,7 @@ This preserves frame 0 and fractional frame-rate representations without silentl
 
 ## What must happen before runtime implementation
 
-1. Blender 5.2 probe CI must pass on the exact S10 candidate.
+1. Blender 5.2 probe CI must pass on the exact S10 research candidate.
 2. Native AE probe issue #47 must PASS with the exact JSON measurements and cleanup confirmed.
 3. If the candidate basis fails, revise the mapping from evidence; do not weaken validation.
 4. Expand fixtures for arbitrary camera orientation before writing general camera-rotation conversion.
