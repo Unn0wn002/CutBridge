@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cutbridge.local/schema/cutbridge-studio-preset.schema.json",
+  "title": "CutBridge Studio Preset",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "schema_version",
+    "id",
+    "name",
+    "naming",
+    "folders",
+    "passes",
+    "output",
+    "versioning"
+  ],
+  "properties": {
+    "schema": {"const": "cutbridge-studio-preset"},
+    "schema_version": {"const": 1},
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+    },
+    "name": {"type": "string", "minLength": 1, "maxLength": 96},
+    "naming": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["package", "sequence", "ae_comp"],
+      "properties": {
+        "package": {"type": "string", "minLength": 1, "maxLength": 160},
+        "sequence": {"type": "string", "minLength": 1, "maxLength": 160},
+        "ae_comp": {"type": "string", "minLength": 1, "maxLength": 160}
+      }
+    },
+    "folders": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["render", "preview", "camera"],
+      "properties": {
+        "render": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 192,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}(?:/[A-Za-z0-9][A-Za-z0-9._-]{0,63})*$"
+        },
+        "preview": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 192,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}(?:/[A-Za-z0-9][A-Za-z0-9._-]{0,63})*$"
+        },
+        "camera": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 192,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}(?:/[A-Za-z0-9][A-Za-z0-9._-]{0,63})*$"
+        }
+      }
+    },
+    "passes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "required"],
+        "properties": {
+          "name": {"enum": ["BEAUTY", "LINE", "SHADOW", "DEPTH"]},
+          "required": {"type": "boolean"}
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["image_format"],
+      "properties": {
+        "image_format": {"enum": ["PNG", "OPEN_EXR", "TIFF"]}
+      }
+    },
+    "versioning": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prefix", "padding"],
+      "properties": {
+        "prefix": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8,
+          "pattern": "^[A-Za-z0-9_-]{1,8}$"
+        },
+        "padding": {"type": "integer", "minimum": 1, "maximum": 6}
+      }
+    }
+  }
+}
