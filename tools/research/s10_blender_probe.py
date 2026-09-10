@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 import json
-import math
 
 import bpy
 from bpy_extras.object_utils import world_to_camera_view
-from mathutils import Euler, Matrix, Vector
+from mathutils import Matrix, Vector
 
 from tools.research import s10_spatial_math as spatial
 
@@ -48,22 +47,24 @@ def build_probe_report() -> dict:
         camera_data.sensor_fit = "HORIZONTAL"
         camera_data.sensor_width = float(fixture["camera"]["sensor_width_mm"])
 
-        # This probe scene is intentionally not made active. Assign matrix_world
-        # directly so the synthetic transform is deterministic without depending
-        # on the user's current context/dependency graph evaluation.
-        rotation = Euler(
-            tuple(math.radians(value) for value in fixture["camera"]["rotation_euler_xyz_degrees"]),
-            "XYZ",
-        )
-        camera.matrix_world = (
-            Matrix.Translation(Vector(fixture["camera"]["location"]))
-            @ rotation.to_matrix().to_4x4()
+        # Exact axis-aligned synthetic camera basis for the first S10 fixture:
+        # local +X -> world +X, local +Y -> world +Z, local -Z -> world +Y.
+        # Assigning this matrix directly avoids Euler/quaternion construction
+        # noise and does not depend on the user's active context/depsgraph.
+        camera.matrix_world = Matrix(
+            (
+                (1.0, 0.0, 0.0, 0.0),
+                (0.0, 0.0, -1.0, -10.0),
+                (0.0, 1.0, 0.0, 0.0),
+                (0.0, 0.0, 0.0, 1.0),
+            )
         )
         scene.camera = camera
 
-        forward = camera.matrix_world.to_quaternion() @ Vector((0.0, 0.0, -1.0))
-        up = camera.matrix_world.to_quaternion() @ Vector((0.0, 1.0, 0.0))
-        right = camera.matrix_world.to_quaternion() @ Vector((1.0, 0.0, 0.0))
+        basis = camera.matrix_world.to_3x3()
+        right = basis @ Vector((1.0, 0.0, 0.0))
+        up = basis @ Vector((0.0, 1.0, 0.0))
+        forward = basis @ Vector((0.0, 0.0, -1.0))
 
         ideal = spatial.fixture_expected_report()
         blender_angle_x = float(camera_data.angle_x)
