@@ -64,6 +64,35 @@ def test_evidence_summary_preserves_sha_bound_native_evidence_and_limitations():
     assert "NOT RELEASE READY" in text
 
 
+def test_quick_starts_track_s13_and_point_to_s14():
+    en = _read("docs/QUICK_START.md")
+    ja = _read("docs/QUICK_START_JA.md")
+
+    assert "development workflow through S13" in en
+    assert "S13F" in en
+    assert "S14 — Japanese Target-User Validation & Release Preparation" in en
+    assert "S12 — End-to-End Blender → package → After Effects validation harness" not in en
+    assert "S12_S13_EVIDENCE_SUMMARY.md" in en
+
+    assert "S13 までの v0.2.3 未リリース開発版" in ja
+    assert "S13F" in ja
+    assert "S14 — Japanese Target-User Validation & Release Preparation" in ja
+    assert "S12 — Blender → package → After Effects End-to-End Validation Harness" not in ja
+    assert "S12_S13_EVIDENCE_SUMMARY.md" in ja
+
+
+def test_technical_debt_uses_current_post_s13_baseline_and_evidence_limits():
+    text = _read("docs/TECHNICAL_DEBT.md")
+    assert "S1–S13 green `develop` baseline" in text
+    assert "245 tests + 2 subtests" in text
+    assert "62 deprecation warnings" in text
+    assert "S12 structured evidence traceability" in text
+    assert "Do **not** make the source repository public" in text
+    assert "S14 is the next bounded" in text
+    assert "green S8-integrated product baseline" not in text
+    assert "develop` contains S1–S8" not in text
+
+
 def test_3d_handoff_guide_still_records_native_s10c_boundary():
     text = _read("docs/HANDOFF_3D.md")
     assert "S10C" in text

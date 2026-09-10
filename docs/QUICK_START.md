@@ -1,12 +1,12 @@
 # CutBridge Quick Start
 
-This guide describes the **v0.2.3 unreleased development workflow through S10C**.
+This guide describes the **v0.2.3 unreleased development workflow through S13**.
 
-CutBridge connects one Blender animation cut to After Effects through deterministic render-output mapping, a versioned package, `cutbridge.json`, managed AE project state, QC+, compatible source-only revision updates, Japanese-first UX, data-only Studio Presets, and the bounded optional 3D camera/Null handoff validated in S10C.
+CutBridge connects one Blender animation cut to After Effects through deterministic render-output mapping, a versioned package, `cutbridge.json`, managed AE project state, QC+, compatible source-only revision updates, Japanese-first UX, data-only Studio Presets, and the bounded optional 3D Camera/Null handoff validated through the S10–S13 real-host campaign.
 
 Intended flow:
 
-`Blender metadata + optional Studio Preset + optional 3D handoff → Validate Cut → deterministic render mapping/package → render sequences → AE Import/Build → managed camera/Null reconstruction when handoff_3d is present → QC+ → compatible revision update`
+`Blender metadata + optional Studio Preset + optional 3D handoff → Validate Cut → deterministic render mapping/package → render sequences → AE Import/Build → managed Camera/Null reconstruction when handoff_3d is present → QC+ → compatible revision update`
 
 Japanese guide: [QUICK_START_JA.md](QUICK_START_JA.md).
 
@@ -16,9 +16,9 @@ Studio Preset authoring reference: [STUDIO_PRESETS.md](STUDIO_PRESETS.md).
 
 ## Development status
 
-S1–S8 established the deterministic handoff, ownership/revision/QC contracts, and Japanese-first UI. S9 added validated declarative Studio Presets. S10A defined the camera/Null coordinate, timing, and projection contract; S10B added the optional evaluated-world Blender producer; S10C added bounded managed After Effects camera/3D Null reconstruction and passed native AE projection-parity validation.
+S1–S8 established the deterministic handoff, ownership/revision/QC contracts, and Japanese-first UI. S9 added validated declarative Studio Presets. S10A defined the Camera/Null coordinate, timing, and projection contract; S10B added the optional evaluated-world Blender producer; S10C added bounded managed After Effects Camera/3D Null reconstruction and passed native AE projection-parity validation. S11 completed QA/docs/release-readiness work. S12 executed the broader release-target real-host campaign, and S13 repaired the native revision defects found by that campaign. The final S13F native-tested source passed V001→V002→V003 and was integrated intact through PR #68.
 
-This is development evidence, not stable-release authorization. There is no release tag or GitHub Release, and `release-authorization.json` remains fail-closed. See [RELEASE_READINESS.md](RELEASE_READINESS.md).
+This is development/native evidence, not stable-release authorization. There is no GitHub Release and `release-authorization.json` remains fail-closed. Repository governance issue #18 still blocks publication. See [RELEASE_READINESS.md](RELEASE_READINESS.md) and [S12_S13_EVIDENCE_SUMMARY.md](S12_S13_EVIDENCE_SUMMARY.md).
 
 ## 1. Install the Blender extension
 
@@ -72,7 +72,7 @@ See [STUDIO_PRESETS.md](STUDIO_PRESETS.md) for the schema, allowed placeholders,
 
 CutBridge supports export ranges beginning at frame `0` or later. Negative/preroll export ranges are rejected at Blender/schema/AE boundaries. CutBridge does not silently renumber animation; rebase the export range before package creation.
 
-## 3. Optional 3D camera / Empty handoff
+## 3. Optional 3D Camera / Empty handoff
 
 The S10 3D handoff is **optional and disabled by default**. It is still an engineering opt-in rather than a normal N-panel workflow.
 
@@ -97,7 +97,7 @@ Supported producer subset:
 - explicitly marked Empties;
 - baked evaluated-world samples.
 
-Unsupported camera/transform cases fail closed. Parenting, constraints, and drivers may influence the evaluated Blender world transform, but CutBridge does not recreate the Blender hierarchy in AE.
+Unsupported Camera/transform cases fail closed. Parenting, constraints, and drivers may influence the evaluated Blender world transform, but CutBridge does not recreate the Blender hierarchy in AE.
 
 See [HANDOFF_3D.md](HANDOFF_3D.md) before enabling this workflow.
 
@@ -147,7 +147,7 @@ PROJECT_EP01_SC010_C012_T01_V001/
 
 Only resolved passes are represented. The exact path, sequence filename, required/optional policy, comp name, and layer order are recorded in `cutbridge.json`.
 
-When the 3D handoff opt-in is enabled and valid, the manifest additionally includes a versioned `handoff_3d` block with baked camera/Empty transform and projection samples.
+When the 3D handoff opt-in is enabled and valid, the manifest additionally includes a versioned `handoff_3d` block with baked Camera/Empty transform and projection samples.
 
 For Custom JSON mode, Build Package freezes the already validated preset to one in-memory snapshot for the entire build. A mid-build edit to the source JSON cannot produce one naming/folder contract in Blender and a different contract in the generated manifest.
 
@@ -195,7 +195,7 @@ In CutBridge for After Effects:
 3. Build the CutBridge-managed project structure/comp.
 4. Required sequences must be complete before successful build.
 5. Optional unavailable passes follow warning/skip policy.
-6. If a valid `handoff_3d` block is present, CutBridge reconstructs the supported managed camera and 3D Null layers from the baked data.
+6. If a valid `handoff_3d` block is present, CutBridge reconstructs the supported managed Camera and 3D Null layers from the baked data.
 
 CutBridge reuses only verified managed objects. Same-name or source-similar artist objects are not automatically adopted.
 
@@ -215,7 +215,7 @@ QC checks include, where inspectable:
 - required/optional sequence availability and unexpected matching files;
 - comp resolution, pixel aspect, FPS, and duration;
 - managed footage/layer ownership and sources;
-- managed S10C camera/Null state where present;
+- managed S10C Camera/Null state where present;
 - stale/foreign/ambiguous managed state;
 - revision compatibility boundaries.
 
@@ -236,6 +236,8 @@ For a newer package such as V002/V003:
 
 The revision workflow is deliberately source-oriented; it does not resize/re-time a comp to force compatibility. Custom display prefixes such as `R0012` do not replace the numeric manifest `version` used by revision compatibility.
 
+The final S13F real-host repair specifically validated chained V001→V002→V003 Camera/Null revision updates on Adobe After Effects 2026 `26.3x87` / Build 87. That evidence remains bounded to the tested host/scope and does not remove fail-closed compatibility checks.
+
 ## 12. Japanese / English behavior
 
 Japanese is the intended first-class/default display language. English is a deterministic fallback and support language.
@@ -253,20 +255,21 @@ Locale switching must not alter:
 
 ## 13. Development and release boundary
 
-Do not publish or label v0.2.3 as stable merely because CI and product-session gates pass.
+Do not publish or label v0.2.3 as stable merely because CI, S12, or S13 gates pass.
 
-Before an RC/stable release, CutBridge still requires repository-level release governance in issue #18, a fully validated release candidate, deliberate promotion to `main`, exact release authorization, real tag-triggered publication, downloaded-asset checksum verification, production update-index verification, and remaining release/end-to-end/target-user validation appropriate to the claim.
+Before an RC/stable release, CutBridge still requires repository-level release governance in issue #18, Japanese target-user evidence appropriate to broad usability claims, an explicitly frozen release candidate, deliberate promotion to `main`, authoritative CI on the exact promoted tree, exact release authorization, real tag-triggered publication, downloaded-asset checksum verification, and production update/distribution verification.
 
 Use [RELEASE_READINESS.md](RELEASE_READINESS.md) as the canonical release checklist.
 
 ## Next product phase
 
-After S11 QA / Docs / Release Engineering, the next bounded phase is **S12 — End-to-End Blender → package → After Effects validation harness**.
+With S12 and S13 completed for the tested scope, the next bounded phase is **S14 — Japanese Target-User Validation & Release Preparation**.
 
 See:
 
 - [HANDOFF_3D.md](HANDOFF_3D.md)
 - [STUDIO_PRESETS.md](STUDIO_PRESETS.md)
+- [S12_S13_EVIDENCE_SUMMARY.md](S12_S13_EVIDENCE_SUMMARY.md)
 - [RELEASE_READINESS.md](RELEASE_READINESS.md)
 - [COMPATIBILITY.md](COMPATIBILITY.md)
 - [COMPLETION_STATUS.md](COMPLETION_STATUS.md)

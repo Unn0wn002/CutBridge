@@ -4,6 +4,50 @@ All notable CutBridge changes are tracked here.
 
 ## [0.2.3] - Unreleased
 
+### S12/S13 — Release-target validation and native revision repair
+
+#### Completed
+- Executed the S12 release-target real-host Blender → package → After Effects campaign rather than inferring desktop success from headless CI.
+- Preserved the fail-closed S12 verdict when the initial native campaign found material Camera/3D Null revision defects.
+- Repaired version-scoped Camera/Null ownership migration, baked transform refresh, and rollback participation.
+- Repaired native Camera Point-of-Interest access after real AE exposed an internal host verification failure.
+- Added the S13 3D revision native-host-shaped regression to canonical CI after the investigation found it was not being executed by the authoritative workflow.
+- Repaired the final native keyframe-update failure by validating existing sample/key topology and using bulk `setValuesAtTimes()` updates instead of repeated key removal/per-key writes.
+
+#### Final native evidence
+- Final native-tested source: `9c99ae23ccd8c47fdc0fffbd05b99e1326f2ea95`.
+- Real host: Adobe After Effects 2026 `26.3x87` / Build 87 on Windows 11.
+- V001→V002→V003: PASS.
+- Camera Position / Point of Interest / Zoom refresh: PASS.
+- 3D Null Position / Scale refresh: PASS.
+- Version-scoped Camera/Null ownership migration: PASS.
+- QC+: PASS for the repaired tested path.
+- Artist-state preservation: PASS for the tested scope.
+- Duplicate managed Camera/Null layers: zero.
+- Save / fully close / reopen / reload persistence: PASS.
+
+#### Integration evidence
+- Exact-head push CI `34503571091`: PASS.
+- PR #68 exact-head CI `34503805612`: PASS.
+- Exact native-tested commit merged intact to `develop` as `0a86d9a0605e1dd9714ef35a547693de76f714f4`.
+- Post-merge CI `34504009878`: PASS.
+- S12 issue #58 reconciled to PASS / closed.
+- S13 issue #60 closed as completed.
+- PR #69 reconciled README, completion status, release readiness, roadmap, S12 campaign record, test plan, and evidence summary; post-merge `develop` CI `34507502143` passed on `fbfe83324808c9051e88e845d7ffe225bd56530f`.
+
+#### Evidence limitation
+- The current repository does not contain a final committed structured `s12-evidence.json` PASS record.
+- This is tracked as an evidence-traceability gap; no retroactive checksums/evidence paths should be fabricated.
+- If the authentic original structured record exists externally, recover and validate that exact record with `tools/s12/validate_evidence.py`.
+
+#### Current release boundary
+- v0.2.3 remains **UNRELEASED / NOT RELEASE READY**.
+- `release-authorization.json` remains `approved: false`.
+- No GitHub Release exists.
+- Repository governance issue #18 remains an independent publication blocker.
+- S14 Japanese target-user validation/release-preparation evidence is the next bounded product phase.
+- `develop` and `main` must be reconciled deliberately before any release promotion; do not blind-merge.
+
 ### S11 — QA / Docs / Release Engineering
 
 #### Added / changed
@@ -29,7 +73,7 @@ All notable CutBridge changes are tracked here.
 - `release-authorization.json` remains fail-closed.
 - No release tags or GitHub Releases are created by S11.
 - Issue #18 remains the independent repository-governance blocker.
-- v0.2.3 remains **NOT RELEASE READY** until S12 release-target end-to-end evidence, applicable target-user evidence, repository governance, deliberate promotion, exact authorization, publication verification, and production distribution verification are complete.
+- At the S11 milestone, v0.2.3 remained **NOT RELEASE READY** pending the then-future S12/S13 native work plus applicable target-user evidence, repository governance, deliberate promotion, exact authorization, publication verification, and production distribution verification.
 
 ### S10C — Native After Effects camera / 3D Null reconstruction
 
@@ -213,18 +257,19 @@ All notable CutBridge changes are tracked here.
 
 ### Technical debt
 
-- Current Blender 5.2.1 suite passes but emits `Scene.use_nodes` deprecation warnings expected to matter for Blender 6.0.
+- Current Blender 5.2.1 suite passes **245 tests + 2 subtests** and reports **62 deprecation warnings**, principally around `Scene.use_nodes` behavior expected to matter for Blender 6.0.
 - Some pinned GitHub Actions revisions still target deprecated Node 20 runtimes and are currently forced by GitHub onto Node 24; pins should be refreshed deliberately.
-- `main` / `develop` promotion must be reconciled deliberately before an RC.
-- S10C native reconstruction has passed its bounded AE parity gate, but broader release-target end-to-end host/OS coverage and Japanese target-user evidence remain separate requirements.
+- `main` / `develop` promotion must be reconciled deliberately before an RC, preserving the hardened `develop` release workflow and required release-lock intent.
+- The final committed structured S12 PASS JSON is absent from the repository; this remains an explicit evidence-traceability gap.
+- S10C/S12/S13 native evidence remains bounded to the hosts/scenarios actually tested; Japanese target-user evidence remains a separate S14 requirement.
 
 ### Release status
 
 - v0.2.3 remains unreleased / NOT RELEASE READY.
-- No release tag or GitHub Release exists.
+- No GitHub Release exists.
 - `release-authorization.json` remains unapproved by design.
 - Repository-level release governance issue #18 remains independently blocking publication.
-- S12 release-target end-to-end validation is the next product gate after S11 integration.
+- S12/S13 are complete for the documented tested scope; **S14 Japanese target-user validation and release preparation is next**.
 
 ## [0.2.2] - Unreleased
 

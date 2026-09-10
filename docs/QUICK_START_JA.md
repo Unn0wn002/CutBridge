@@ -1,8 +1,8 @@
 # CutBridge クイックスタート（日本語）
 
-このガイドは、**S10C までの v0.2.3 未リリース開発版**を対象にしています。
+このガイドは、**S13 までの v0.2.3 未リリース開発版**を対象にしています。
 
-CutBridge は Blender のアニメーションカットを After Effects へ受け渡すための制作パイプラインツールです。カット情報、レンダーパス、バージョン、`cutbridge.json`、AE 側の管理対象コンポ／フッテージ／レイヤー、QC、互換 Revision、日本語優先 UI、データ専用 Studio Preset、そして S10 の限定的な Camera / 3D Null Handoff を一貫したルールで扱います。
+CutBridge は Blender のアニメーションカットを After Effects へ受け渡すための制作パイプラインツールです。カット情報、レンダーパス、バージョン、`cutbridge.json`、AE 側の管理対象コンポ／フッテージ／レイヤー、QC、互換 Revision、日本語優先 UI、データ専用 Studio Preset、そして S10〜S13 で実ホスト検証された限定的な Camera / 3D Null Handoff を一貫したルールで扱います。
 
 基本フロー：
 
@@ -16,9 +16,9 @@ Studio Preset 詳細: [STUDIO_PRESETS.md](STUDIO_PRESETS.md)
 
 ## 開発状態
 
-S1〜S8 で決定的な Blender→AE Handoff、Ownership / Revision / QC、日本語優先 UI を構築しました。S9 で宣言型 Studio Preset を追加し、S10A で Camera / Null の座標・Timing・Projection 契約を確定、S10B で Blender Evaluated-World Producer を追加、S10C で After Effects の Managed Camera / 3D Null 再構築を実装し Native Projection Parity Gate を通過しました。
+S1〜S8 で決定的な Blender→AE Handoff、Ownership / Revision / QC、日本語優先 UI を構築しました。S9 で宣言型 Studio Preset を追加し、S10A で Camera / Null の座標・Timing・Projection 契約を確定、S10B で Blender Evaluated-World Producer を追加、S10C で After Effects の Managed Camera / 3D Null 再構築を実装し Native Projection Parity Gate を通過しました。S11 で QA / Documentation / Release Readiness を整備し、S12 で Release-Target の実ホスト End-to-End Campaign を実行しました。S12 で見つかった Native Revision Defect は S13 で修正され、最終 S13F Candidate は V001→V002→V003 を実 AE で通過し、PR #68 で同一 SHA のまま統合されました。
 
-これは開発検証であり Stable / RC 公開許可ではありません。Release Tag / GitHub Release は存在せず、`release-authorization.json` は Fail-Closed のままです。公開条件は [RELEASE_READINESS.md](RELEASE_READINESS.md) を参照してください。
+これは開発／Native 検証であり Stable / RC 公開許可ではありません。GitHub Release は存在せず、`release-authorization.json` は Fail-Closed のままです。Repository Governance issue #18 も公開を Block しています。詳細は [RELEASE_READINESS.md](RELEASE_READINESS.md) と [S12_S13_EVIDENCE_SUMMARY.md](S12_S13_EVIDENCE_SUMMARY.md) を参照してください。
 
 ## 1. Blender 版 CutBridge をインストール
 
@@ -215,6 +215,8 @@ QC は診断専用です。Object の自動採用、Import、Move、Retag、Sour
 
 Preset の Version 表示が `R0012` のように変わっても、Revision Compatibility の基本となる Manifest `version` は数値のままです。
 
+最終 S13F Native Repair では、Adobe After Effects 2026 `26.3x87` / Build 87 上で V001→V002→V003 の Camera / Null Revision Chain が検証されました。この Evidence はテスト済み Host / Scope に限定され、Fail-Closed Compatibility Check を解除するものではありません。
+
 ## 12. 日本語／English Safety Boundary
 
 言語変更で変わるのは表示だけです。
@@ -232,20 +234,21 @@ Preset の Version 表示が `R0012` のように変わっても、Revision Comp
 
 ## 13. Release Boundary
 
-v0.2.3 は未リリースです。CI PASS だけを理由に Stable / RC を公開しません。
+v0.2.3 は未リリースです。CI / S12 / S13 PASS だけを理由に Stable / RC を公開しません。
 
-公開前には issue #18 の Repository-Level Release Governance、完全に検証された Release Candidate、`main` への意図的 Promotion、Exact Authorization、実 Tag Release、Downloaded Asset Verification、Production Update Index、残りの E2E / Target User Validation が必要です。
+公開前には issue #18 の Repository-Level Release Governance、日本の Target User に対する Claim に適した S14 Evidence、明示的に Freeze した Release Candidate、`main` への意図的 Promotion、Promoted Tree の Authoritative CI、Exact Authorization、実 Tag Release、Downloaded Asset Verification、Production Update / Distribution Verification が必要です。
 
 Canonical Checklist: [RELEASE_READINESS.md](RELEASE_READINESS.md)
 
 ## 次の開発フェーズ
 
-S11 QA / Docs / Release Engineering の次は **S12 — Blender → package → After Effects End-to-End Validation Harness** です。
+S12 / S13 がテスト済み Scope で完了したため、次の限定フェーズは **S14 — Japanese Target-User Validation & Release Preparation** です。
 
 関連資料：
 
 - [HANDOFF_3D.md](HANDOFF_3D.md)
 - [STUDIO_PRESETS.md](STUDIO_PRESETS.md)
+- [S12_S13_EVIDENCE_SUMMARY.md](S12_S13_EVIDENCE_SUMMARY.md)
 - [RELEASE_READINESS.md](RELEASE_READINESS.md)
 - [COMPATIBILITY.md](COMPATIBILITY.md)
 - [COMPLETION_STATUS.md](COMPLETION_STATUS.md)
