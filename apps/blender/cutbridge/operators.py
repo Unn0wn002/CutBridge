@@ -17,6 +17,7 @@ from .core import (
     validate_scene,
     write_manifest,
 )
+from .handoff_3d import build_handoff_3d, handoff_3d_enabled, handoff_3d_issues
 from .localization import format_localized_issue, tr
 from .package_safety import (
     assert_package_integrity,
@@ -37,6 +38,7 @@ def _open_folder(path: str):
 
 def _all_validation_issues(context) -> list[dict]:
     issues = validate_scene(context)
+    issues.extend(handoff_3d_issues(context))
     issues.extend(package_target_issues(context.scene.cutbridge))
     return issues
 
@@ -48,7 +50,7 @@ def _language(context) -> str:
 class CUTBRIDGE_OT_Validate(bpy.types.Operator):
     bl_idname = "cutbridge.validate"
     bl_label = "Validate Cut"
-    bl_description = "Check cut metadata, scene settings, render mapping, Studio Preset, and package target safety"
+    bl_description = "Check cut metadata, scene settings, render mapping, Studio Preset, optional 3D handoff, and package target safety"
 
     def execute(self, context):
         language = _language(context)
@@ -115,12 +117,21 @@ class CUTBRIDGE_OT_BuildPackage(bpy.types.Operator):
                 root = absolute_output_dir(settings) / effective_package_name(settings)
                 passes = selected_passes(settings)
 
+                # S10B evaluates the opt-in 3D payload before changing compositor
+                # state or touching the package directory. Any unsupported animated
+                # transform therefore fails closed without leaving a partial package.
+                handoff_payload = None
+                if handoff_3d_enabled(settings):
+                    handoff_payload = build_handoff_3d(context)
+
                 # Configure the scene before touching the package directory. If
                 # the selected engine cannot expose a requested logical pass,
                 # Build Package fails without a misleading empty handoff package.
                 configure_render_outputs(context, root)
 
                 manifest = build_manifest(context, root)
+                if handoff_payload is not None:
+                    manifest["handoff_3d"] = handoff_payload
                 ensure_package_dirs(root, passes, manifest.get("folders"))
                 manifest_path = write_manifest(manifest, root)
                 assert_package_integrity(root, manifest, passes)
