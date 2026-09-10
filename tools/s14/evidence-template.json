@@ -1,0 +1,53 @@
+{
+  "schema": "cutbridge-s14-target-user-evidence",
+  "schema_version": 1,
+  "protocol_version": 1,
+  "overall_state": "NOT_EXECUTED",
+  "minimum_participants": 3,
+  "candidate": {
+    "source_sha": null,
+    "product_version": "0.2.3",
+    "blender_artifact": {
+      "filename": null,
+      "sha256": null
+    },
+    "after_effects_artifact": {
+      "filename": null,
+      "sha256": null
+    },
+    "fixture": {
+      "id": null,
+      "provenance": null,
+      "sha256": null
+    },
+    "blender_host": {
+      "version": null,
+      "os": null
+    },
+    "after_effects_host": {
+      "version": null,
+      "os": null
+    }
+  },
+  "task_catalog": [
+    {"id": "JP01", "required": true, "name": "Install and open Blender integration"},
+    {"id": "JP02", "required": true, "name": "Understand Japanese-first core UI"},
+    {"id": "JP03", "required": true, "name": "Configure a representative cut"},
+    {"id": "JP04", "required": true, "name": "Recover from an intentional validation error"},
+    {"id": "JP05", "required": true, "name": "Build deterministic package safely"},
+    {"id": "JP06", "required": true, "name": "Transfer/open package in After Effects"},
+    {"id": "JP07", "required": true, "name": "Build managed AE state"},
+    {"id": "JP08", "required": true, "name": "Interpret QC+"},
+    {"id": "JP09", "required": true, "name": "Apply V001 to V002 compatible revision"},
+    {"id": "JP10", "required": true, "name": "Continue V002 to V003 and inspect preservation"},
+    {"id": "JP11", "required": true, "name": "Save, close, reopen, reload"},
+    {"id": "JP12", "required": false, "name": "Optional Camera/3D Null handoff"}
+  ],
+  "participants": [],
+  "findings": [],
+  "summary": {
+    "claim_scope": null,
+    "statement": null,
+    "limitations": []
+  }
+}
