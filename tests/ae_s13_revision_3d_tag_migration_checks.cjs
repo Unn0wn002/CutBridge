@@ -89,11 +89,39 @@ function makeHost() {
     }
     FootageItem.prototype.remove = function() { const i = projectItems.indexOf(this); if (i >= 0) projectItems.splice(i, 1); };
 
-    function Property(name, matchName) { this.name = name; this.matchName = matchName || name; this.value = null; this.keys = []; }
+    function Property(name, matchName) {
+        this.name = name; this.matchName = matchName || name; this.value = null; this.keys = [];
+        this.rejectKeyRemoval = false;
+        this.rejectSingleKeyWrite = false;
+    }
     Object.defineProperty(Property.prototype, "numKeys", {get() { return this.keys.length; }});
     Property.prototype.setValue = function(value) { this.value = value; };
-    Property.prototype.setValueAtTime = function(time, value) { this.keys.push({time, value}); this.value = value; };
-    Property.prototype.removeKey = function(index) { this.keys.splice(index - 1, 1); };
+    Property.prototype.setValueAtTime = function(time, value) {
+        if (this.rejectSingleKeyWrite) {
+            throw new Error("After Effects error: internal verification failure, sorry! {no current context}");
+        }
+        const existing = this.keys.find(key => Math.abs(key.time - time) < 1e-9);
+        if (existing) existing.value = value;
+        else this.keys.push({time, value});
+        this.keys.sort((left, right) => left.time - right.time);
+        this.value = value;
+    };
+    Property.prototype.setValuesAtTimes = function(times, values) {
+        for (let i = 0; i < times.length; i++) {
+            const existing = this.keys.find(key => Math.abs(key.time - times[i]) < 1e-9);
+            if (existing) existing.value = values[i];
+            else this.keys.push({time: times[i], value: values[i]});
+        }
+        this.keys.sort((left, right) => left.time - right.time);
+        if (values.length) this.value = values[values.length - 1];
+    };
+    Property.prototype.keyTime = function(index) { return this.keys[index - 1].time; };
+    Property.prototype.removeKey = function(index) {
+        if (this.rejectKeyRemoval) {
+            throw new Error("After Effects error: internal verification failure, sorry! {no current context}");
+        }
+        this.keys.splice(index - 1, 1);
+    };
 
     function PropertyGroup() { this._props = {}; }
     PropertyGroup.prototype.property = function(name) {
@@ -215,6 +243,9 @@ const v1 = manifest(1), v2 = manifest(2), v3 = manifest(3);
 const topologyDrift = manifest(2);
 topologyDrift.handoff_3d.nulls[0].name = "Renamed_Null";
 assert.equal(Revision.assess(v1, topologyDrift).status, "incompatible", "3D topology drift must fail closed before source-only revision");
+const sampleTopologyDrift = manifest(2);
+sampleTopologyDrift.handoff_3d.camera.samples[1].time += 0.001;
+assert.equal(Revision.assess(v1, sampleTopologyDrift).status, "incompatible", "3D sample topology drift must fail closed before source-only revision");
 
 host.queue(v1); host.click("Import Package"); host.click("Build Comp");
 const comp = host.comps()[0];
@@ -235,6 +266,19 @@ assert.deepEqual(Array.from(nullLayer.position.keys.at(-1).value), [970, 542, 0]
 // the healthy V001 Build path, then reject every unsafe access form so only
 // Transform property index 1 can succeed during revision and rollback.
 camera._rejectUnsafePOIAccess = true;
+
+// AE 26.3x87 can assert while removing existing managed 3D keys. A compatible
+// revision must overwrite the already-baked key topology without deleting it.
+camera.position.rejectKeyRemoval = true;
+camera._pointOfInterest.rejectKeyRemoval = true;
+camera.cameraOption.zoom.rejectKeyRemoval = true;
+nullLayer.position.rejectKeyRemoval = true;
+nullLayer.scale.rejectKeyRemoval = true;
+camera.position.rejectSingleKeyWrite = true;
+camera._pointOfInterest.rejectSingleKeyWrite = true;
+camera.cameraOption.zoom.rejectSingleKeyWrite = true;
+nullLayer.position.rejectSingleKeyWrite = true;
+nullLayer.scale.rejectSingleKeyWrite = true;
 
 host.queue(v2); host.click("Update Revision");
 assert.equal(camera.comment, Contract.managedTag("camera", v2, "S13_Camera"), "camera ownership must migrate V001→V002");
