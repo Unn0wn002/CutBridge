@@ -1,0 +1,29 @@
+{
+  "schema": "cutbridge-studio-preset",
+  "schema_version": 1,
+  "id": "cutbridge-default",
+  "name": "CutBridge Default",
+  "naming": {
+    "package": "{project}_{episode}_{scene}_{cut}_{take}_{version}",
+    "sequence": "{cut}_{pass}_####",
+    "ae_comp": "{cut}_COMP"
+  },
+  "folders": {
+    "render": "render",
+    "preview": "preview",
+    "camera": "camera"
+  },
+  "passes": [
+    {
+      "name": "BEAUTY",
+      "required": true
+    }
+  ],
+  "output": {
+    "image_format": "PNG"
+  },
+  "versioning": {
+    "prefix": "V",
+    "padding": 3
+  }
+}
