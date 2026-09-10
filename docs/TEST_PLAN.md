@@ -1,6 +1,6 @@
 # CutBridge v0.2.3 — Test Plan
 
-This plan describes the **S1–S9 development baseline**. Automated tests are regression evidence; native GUI/end-to-end claims require real-host evidence.
+This plan describes the **S1–S9 integrated development baseline with S10 research in progress**. Automated tests are regression evidence; native GUI/end-to-end claims require real-host evidence.
 
 The authoritative CI gate remains two jobs:
 
@@ -13,7 +13,7 @@ The Blender suite currently emits `Scene.use_nodes` deprecation warnings expecte
 
 ### Static / release / AE contract
 
-CI must run the maintained pytest and Node suites covering:
+CI must cover:
 
 - canonical product-version synchronization;
 - JSON schema/example validation;
@@ -21,6 +21,8 @@ CI must run the maintained pytest and Node suites covering:
 - release authorization fail-closed behavior;
 - AE manifest, path, sequence, pass, package-identity, ownership, revision, QC+, and localization contracts;
 - Studio Preset schema/example/loader/security contracts;
+- S10 pure spatial/FOV/timing research math;
+- S10 native AE probe safety/tolerance contract and JavaScript syntax;
 - JS/ExtendScript syntax for all shipped AE runtime files;
 - Japanese/English localization fallback and stable machine identifiers.
 
@@ -37,7 +39,9 @@ Authoritative CI installs official `bpy==5.2.1` and verifies:
 - producer/consumer filename and manifest contracts;
 - Japanese/UTF-8 handling;
 - S8 Blender localization behavior;
-- S9 Studio Preset integration through the complete pytest suite.
+- S9 Studio Preset integration;
+- S10 isolated synthetic camera/source projection probe;
+- the complete pytest suite.
 
 ## 2. Blender behavioral matrix
 
@@ -65,6 +69,9 @@ Authoritative CI installs official `bpy==5.2.1` and verifies:
 | B20 | Valid Custom JSON preset | Resolved naming/folders/passes/format/version/AE comp are deterministic |
 | B21 | Invalid Custom JSON preset | Stable `PRESET_*` error; Build Package blocked before unsafe output |
 | B22 | Custom preset file changes during Build Package | One validated in-memory snapshot remains authoritative for the whole build |
+| B23 | S10 isolated front-camera fixture | Probe creates no user-scene dependency and removes every allocated probe data-block |
+| B24 | S10 axis points through Blender `world_to_camera_view()` | Candidate AE projection agrees within **0.00005 px** source-side numeric precision |
+| B25 | S10 50 mm / 36 mm perspective fixture | Blender horizontal FOV and derived AE Zoom remain dimensionally consistent; finite RNA quantization is recorded separately |
 
 ## 3. After Effects contract / Build matrix
 
@@ -86,192 +93,159 @@ Authoritative CI installs official `bpy==5.2.1` and verifies:
 | A14 | S9 manifest includes optional `studio_preset` provenance | Existing AE behavior remains compatible; metadata does not create a new trust boundary |
 | A15 | Preset-managed pass order/comp name is already resolved in manifest | AE consumes manifest contract; it never opens Studio Preset JSON |
 
+S10 adds **no production AE camera/null behavior yet**. Native S10 measurements are performed only by the research probe described in section 8.
+
 ## 4. S6 revision-manager gate
 
-Required regression coverage includes:
-
-- producer-style V001/V002/V003 identity;
-- strict revision token parsing and duplicate candidate rejection;
-- package/tuple drift and delimiter-collision safety;
-- required/optional pass-set compatibility policy;
-- live ownership/source/container/FPS revalidation;
-- staged import before source replacement;
-- native-adapter use of `AVLayer.replaceSource(..., false)` rather than direct source assignment;
-- validation/import/swap/commit failure rollback;
-- historical-footage provenance;
-- package-root/folder ambiguity blocking;
-- Build/QC/reload consistency after successful revision.
+Required regression coverage includes producer-style V001/V002/V003 identity, strict revision parsing, tuple drift/collision safety, pass-set compatibility, live ownership revalidation, staged import, native source replacement, rollback, provenance, package-root ambiguity blocking, and Build/QC/reload consistency.
 
 Real native AE validation for S6 is recorded in issue #19. Green host-shaped tests are not a substitute for that evidence.
 
 ## 5. S7 QC+ gate
 
-QC+ must remain deterministic and diagnostic-only.
+QC+ must remain deterministic and diagnostic-only. Coverage verifies stable `CBQ-*` identifiers, PASS/WARNING/ERROR severity, remediation, sequence/comp/ownership/revision diagnostics, and no adoption/import/deletion/retagging/source replacement/automatic repair.
 
-Automated coverage must verify:
-
-- stable `CBQ-*` identifiers;
-- PASS / WARNING / ERROR severity;
-- remediation text for every warning/error;
-- required/optional sequence diagnostics;
-- unexpected matching files;
-- resolution, pixel aspect, FPS, and duration drift;
-- managed footage/layer ownership state;
-- stale/foreign/ambiguous managed tags;
-- revision compatibility diagnostics;
-- no adoption/import/deletion/retagging/source replacement/automatic repair from QC.
-
-S7 real Adobe After Effects validation found and repaired native ExtendScript/revision-state defects before integration. Treat that evidence as the native gate, not the Node harness alone.
+S7 real Adobe After Effects validation found and repaired native ExtendScript/revision-state defects before integration.
 
 ## 6. S8 localization / UX gate
 
-### Blender
-
-Automated and native validation established:
-
-- Japanese first-class/default UI;
-- deterministic English switch/fallback;
-- no slash-combined pseudo-localization for primary controls;
-- stable machine identifiers and canonical support detail;
-- locale changes do not alter unrelated scene/package state;
-- practical narrow-panel readability.
-
-Final repaired S8 Blender native test passed on candidate `f477b745...` in Blender 5.2.1 LTS at approximately 245 px N-panel width.
-
-### After Effects
-
-Automated and native validation established:
-
-- Japanese first-class/default UI;
-- explicit English selection and persistence;
-- `CBQ-*` codes and safety decisions remain locale-independent;
-- missing/invalid `localization.js` yields deterministic English fallback;
-- visible selector reflects the effective fallback locale;
-- fallback/localization changes cause zero unintended project mutation;
-- Build/QC/Revision remain fail-closed under fallback.
-
-Final repaired S8 AE native test passed on candidate `f477b745...` in Adobe After Effects 2026 v26.3.0 Build 87.
+S8 native validation established Japanese-first/default UI, deterministic English fallback, stable machine identifiers, non-mutating locale changes, and practical narrow-panel behavior. Final repaired gates passed in Blender 5.2.1 LTS and Adobe After Effects 2026 v26.3.0 Build 87.
 
 ## 7. S9 Studio Preset gate
 
-### Schema and loader
+S9 coverage establishes:
 
-The S9 regression suite must establish:
+- built-in default equals published example and schema;
+- strict schema/unknown-field/loader validation;
+- UTF-8 JSON only and 64 KiB cap;
+- source path never enters manifest provenance;
+- unsafe/overlapping paths and unsafe templates rejected;
+- only allowed passes/formats/version bounds accepted;
+- Manual identity remains unchanged;
+- one custom-preset snapshot is authoritative for one Build Package transaction;
+- AE stays a resolved-manifest consumer.
 
-- built-in default exactly matches the published safe example;
-- published example validates under the Draft 2020-12 Studio Preset schema;
-- root/schema/schema-version/required-field validation;
-- unknown fields rejected;
-- UTF-8 JSON only;
-- custom file size capped at 64 KiB;
-- preset source path never appears in normalized manifest provenance.
+S9 exact candidate/PR/post-merge CI is recorded in issue #44 and `COMPLETION_STATUS.md`.
 
-### Naming and path safety
+## 8. S10 Camera / Null research gate
 
-Required rejection coverage:
+### 8.1 Research-only boundary
 
-- absolute paths;
-- `..` parent traversal;
-- backslash/non-normalized folder paths;
-- overlapping/nested render/preview/camera folder trees;
-- path separators or control characters in naming templates;
-- unsupported placeholders such as object/introspection syntax;
-- template format conversions/specifiers;
-- sequence template missing `{pass}`;
-- sequence template missing literal `####`.
+Until the native evidence is complete:
 
-Allowed placeholders are limited to:
+- production `cutbridge.json` continues to expose only the legacy camera-name string;
+- `CutBridge.jsx` does not create a managed 3D camera/null from S10 data;
+- no production manifest schema is changed for camera/null transforms;
+- no S5/S6/S7 ownership/revision/QC behavior is weakened;
+- no release authorization or `main` change is part of S10.
 
-`{project}`, `{episode}`, `{scene}`, `{cut}`, `{take}`, `{version}`, `{pass}`.
+### 8.2 Candidate coordinate basis
 
-### Pass / output / version behavior
+Research candidate only:
 
-Required coverage:
+```text
+Blender (X, Y, Z) → AE (X, -Z, Y)
+```
 
-- only BEAUTY / LINE / SHADOW / DEPTH;
-- no duplicate pass definitions;
-- explicit boolean `required` value;
-- array order preserved into manifest pass order / `ae.layer_order`;
-- only PNG / OPEN_EXR / TIFF;
-- version prefix/padding bounded;
-- numeric manifest `version` remains separate from display `version_label`.
+The basis matrix must remain orthonormal with determinant `+1` and axis tests must prove:
 
-### Manual compatibility
+- Blender +X → AE +X;
+- Blender +Y → AE +Z;
+- Blender +Z → AE -Y.
 
-S9 must not rewrite the historical package identity contract.
+### 8.3 Pure math / timing gate
 
-The existing self-contained producer primitives remain authoritative:
+Automated tests must verify:
 
-- `safe_token`;
-- `version_token` → `V###`;
-- `package_name` → `{project}_{episode}_{scene}_{cut}_{take}_{version}`.
+- finite vector/point conversion;
+- composition-center translation;
+- horizontal FOV from lens/sensor width;
+- AE Zoom equation;
+- depth-aware projection for the synthetic centered camera;
+- frame-to-time mapping `(frame - frameStart) / fps`, including frame 0 and fractional FPS;
+- invalid dimensions/FPS/FOV/scale fail closed.
 
-Existing AE parity tests must continue extracting/executing those functions independently and passing unchanged.
+### 8.4 Blender source-side probe
 
-### Build snapshot consistency
+The exact first fixture is:
 
-For Custom JSON mode:
+- 1920×1080 square-pixel composition/render;
+- perspective camera at `(0,-10,0)`;
+- exact evaluated basis: local +X→world +X, local +Y→world +Z, local -Z→world +Y;
+- 50 mm lens;
+- 36 mm horizontal sensor width;
+- five world points: origin, +X, +Y, +Z, mixed +XYZ;
+- research spatial scale 100 px/Blender-unit.
 
-1. validate and normalize the selected file;
-2. freeze the normalized data for one Build Package transaction;
-3. use that same snapshot for package naming, compositor mapping, directory creation, and manifest generation;
-4. clear the snapshot after the transaction;
-5. later builds may load a newly edited valid preset.
+The probe must use Blender's own `world_to_camera_view()` and remove its synthetic scene/camera data in `finally`.
 
-Automated regression must edit the source JSON during an active snapshot and prove the current build still reads the original snapshot, while a later load reads the updated file.
+Blender 5.2 source-side projection comparison is bounded at **≤ 0.00005 px**. This tolerance is intentionally separate from and 1000× tighter than the native AE threshold. It accommodates measured finite-precision projection/RNA behavior; it is not permission to adjust the coordinate mapping to fit a test.
 
-### AE boundary
+### 8.5 Native After Effects gate — issue #47
 
-No S9 preset parser is added to After Effects.
+Run `tools/research/s10_ae_probe.jsx` in the real AE validation host.
 
-Existing S4–S8 AE tests must stay green, proving that AE continues to consume resolved manifest data. Optional `studio_preset` provenance must not be required for old manifests.
+The probe must:
 
-## 8. Release-simulation gate
+- require an existing project and explicit user confirmation;
+- create one uniquely named disposable comp;
+- create only probe camera/null layers in that comp;
+- set the candidate camera Position / Point of Interest / Zoom;
+- evaluate fixture null projection through native `toComp()`;
+- compare all five points against expected coordinates;
+- require **maximum error ≤ 0.05 px**;
+- remove the disposable comp on success and failure;
+- force FAIL if cleanup fails;
+- write JSON only after explicit Save dialog;
+- record AE version/build and OS.
 
-Every relevant branch/PR should simulate packaging using the canonical product version and verify:
+Do not widen the 0.05 px threshold merely to obtain PASS. If the candidate fails, revise the model from the measurements and rerun.
 
-- expected Blender ZIP;
-- expected After Effects ZIP;
-- `SHA256SUMS.txt`;
-- `release-metadata.json`;
-- archive contents and license inclusion;
-- deterministic checksums for identical sources/toolchain;
-- version/tag/channel/prerelease consistency;
-- release authorization remains separate from build success.
+### 8.6 S10 runtime decision gate
+
+A green research harness alone does not authorize production camera/null creation.
+
+Before runtime implementation, also investigate:
+
+- arbitrary camera orientation and a stable rotation representation;
+- Empty/camera parenting chains;
+- constraint/evaluated-transform policy;
+- perspective sensor-fit variants;
+- production spatial-scale policy;
+- managed AE camera/null ownership, reload, collision, rollback, revision, and QC behavior.
+
+S10 may conclude as **investigation PASS / runtime deferred** if this evidence is not sufficient for a safe minimal production subset.
+
+Reference: [CAMERA_NULL_HANDOFF.md](CAMERA_NULL_HANDOFF.md).
+
+## 9. Release-simulation gate
+
+Every relevant branch/PR should simulate packaging using the canonical product version and verify expected Blender/AE ZIPs, `SHA256SUMS.txt`, release metadata, archive/license contents, deterministic checksums, version/channel consistency, and separation between build success and release authorization.
 
 A successful simulation does **not** authorize publication.
 
-## 9. Manual / real-host release gates still required
+## 10. Manual / real-host release gates still required
 
-Before a stable release claim, execute and record the appropriate real application/end-to-end checks, including:
+Before a stable release claim, execute and record appropriate real application/end-to-end checks: supported Blender GUI use, real render sequences, Blender→package→AE handoff, Build/QC/revision/save-reopen, filesystem/OS behavior, Studio Preset usability where claimed, release-asset verification, production update-index verification, and Japanese target-user validation.
 
-- installation and normal use in supported Blender GUI builds;
-- real render sequence production for release-target renderer/View Layer configurations;
-- Blender → package → After Effects handoff using release-candidate artifacts;
-- representative Build/QC/revision/save-reopen workflow;
-- real filesystem/path behavior for the supported OS matrix;
-- Studio Preset UI/file-selection usability where that behavior is part of the release claim;
-- published release-asset checksum/content verification;
-- production update-index/update-discovery verification;
-- Japanese target-user validation appropriate to the claim.
+Already-passed S6/S7/S8 native gates should not be relabeled as unexecuted, but they do not automatically certify every release-target host/OS/workflow combination.
 
-Already-passed S6/S7/S8 native gates should not be relabeled as unexecuted, but they also do not automatically certify every release-target host/OS/workflow combination.
+## 11. Repository/session merge gate
 
-S9 does not require a new native After Effects gate because AE receives no new preset-file parser or preset UI. Do not fabricate native Blender GUI evidence merely from `bpy` automation.
+For an S10 **research-harness integration increment**:
 
-## 10. Repository/session merge gate
-
-For S9 integration:
-
-- implementation and documentation are on a feature branch from the exact green `develop` baseline;
-- `main` remains untouched;
-- `release-authorization.json` remains unchanged and unapproved;
-- issue #18 remains open;
-- static validation passes on the exact candidate;
-- release simulation passes;
-- S6/S7/S8 regression suites and JS syntax pass;
-- full Blender 5.2.1 RNA/runtime suite passes;
+- branch from exact green post-S9 `develop` baseline;
+- production runtime/manifest behavior remains unchanged;
+- `main` untouched;
+- `release-authorization.json` unchanged and unapproved;
+- issues #46 and #47 remain open while native S10 evidence is pending;
+- exact candidate static validation passes;
+- deterministic release simulation passes;
+- S6/S7/S8/S9 regressions remain green;
+- S10 pure math/probe contract tests pass;
+- full Blender 5.2.1 suite including source projection probe passes;
 - PR targets `develop`;
-- after merge, `develop` CI passes on the exact merge commit.
+- PR-event CI passes on the exact head;
+- post-merge `develop` CI passes.
 
-Only after those gates pass is S9 considered integrated and S10 eligible to begin.
+Merging a research harness does **not** mark S10 complete. S11 is not eligible to start until S10 reaches an explicit evidence-backed completion decision.
