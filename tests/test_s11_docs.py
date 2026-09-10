@@ -87,7 +87,7 @@ def test_technical_debt_uses_current_post_s13_baseline_and_evidence_limits():
     assert "245 tests + 2 subtests" in text
     assert "62 deprecation warnings" in text
     assert "S12 structured evidence traceability" in text
-    assert "do **not** make the source repository public" in text
+    assert "Do **not** make the source repository public" in text
     assert "S14 is the next bounded" in text
     assert "green S8-integrated product baseline" not in text
     assert "develop` contains S1–S8" not in text
