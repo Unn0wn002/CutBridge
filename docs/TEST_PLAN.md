@@ -1,34 +1,47 @@
 # CutBridge v0.2.3 — Test Plan
 
-This plan describes the **S1–S11 unreleased development baseline**. Automated tests are regression evidence; native GUI/end-to-end claims require real-host evidence.
+This plan describes the **S1–S13 unreleased development baseline**. Automated tests are regression evidence; native GUI/end-to-end claims require real-host evidence.
 
 The authoritative CI gate remains two jobs:
 
 - `static-validation`;
 - `blender-52-rna-runtime` using official `bpy==5.2.1`.
 
-The Blender suite still emits `Scene.use_nodes` deprecation warnings expected to matter for Blender 6.0. Pinned GitHub Actions revisions that target deprecated Node 20 runtimes are also tracked as technical debt; see [TECHNICAL_DEBT.md](TECHNICAL_DEBT.md).
+Latest integrated `develop` after S13F is:
+
+`0a86d9a0605e1dd9714ef35a547693de76f714f4`
+
+Latest post-merge evidence on that SHA:
+
+- static suite: **132 passed + 2 subtests**;
+- Blender/runtime suite: **245 passed + 2 subtests**;
+- Blender 5.2.1 RNA lifecycle: PASS;
+- deterministic release simulation/checksum verification: PASS;
+- S13 native-host-shaped revision regression: PASS.
+
+The Blender suite still emits `Scene.use_nodes` deprecation warnings relevant to Blender 6.0. Pinned Actions also emit Node-runtime deprecation warnings; see `TECHNICAL_DEBT.md`.
 
 ## 1. Core automated gates
 
 ### Static / release / AE contract
 
-CI must run maintained pytest and Node suites covering:
+CI must cover:
 
 - canonical product-version synchronization;
 - JSON schema/example validation;
 - deterministic release packaging and SHA-256 checks;
 - release authorization fail-closed behavior;
-- AE manifest, path, sequence, pass, package-identity, ownership, revision, QC+, localization, and S10C reconstruction contracts;
-- Studio Preset schema/example/loader/security contracts;
+- AE manifest/path/sequence/pass/package identity/ownership/revision/QC+/localization contracts;
+- Studio Preset schema/loader/security contracts;
 - S10A camera/null coordinate, timing, FOV/Zoom, and fail-closed primitives;
 - S10B optional `handoff_3d` schema/backward compatibility;
-- S10C managed camera/3D Null validation, ownership, collision, and projection-parity regressions;
-- S11 documentation/release-readiness guards;
+- S10C Camera/3D Null validation, ownership, collision, and reconstruction regressions;
+- S13 3D revision native-host-shaped regression;
+- status/release-readiness documentation guards;
 - JS/ExtendScript syntax for shipped AE runtime files;
 - Japanese/English localization fallback and stable machine identifiers.
 
-Any missing mandatory dependency must fail the gate rather than silently skipping coverage.
+Missing mandatory dependencies must fail rather than silently skip coverage.
 
 ### Blender 5.2.1 runtime
 
@@ -38,141 +51,167 @@ Authoritative CI installs official `bpy==5.2.1` and verifies:
 - scene metadata and validation behavior;
 - render mapping and rollback;
 - package generation/integrity;
-- producer/consumer filename and manifest contracts;
+- filename/manifest contracts;
 - Japanese/UTF-8 handling;
-- S8 Blender localization behavior;
-- S9 Studio Preset integration;
-- S10B evaluated-world camera and marked-Empty sampling;
+- localization behavior;
+- Studio Preset integration;
+- evaluated-world Camera/marked-Empty sampling;
 - animated/parented Empty world-space baking;
-- frame restoration and fail-closed S10 transform/camera cases;
-- full package generation with schema-valid optional `handoff_3d`;
-- all static documentation/readiness regressions that are part of the complete pytest suite.
+- frame restoration and fail-closed handoff cases;
+- full package generation with schema-valid optional `handoff_3d`.
 
 ## 2. Blender behavioral matrix
 
 | ID | Scenario | Expected |
 |---|---|---|
-| B01 | Required metadata missing | Actionable validation error; package creation blocked |
-| B02 | No active camera | Validation error |
+| B01 | Required metadata missing | Actionable validation error; Build blocked |
+| B02 | No active Camera | Validation error |
 | B03 | Valid non-negative frame range | Manifest frame count/FPS agree with scene |
-| B04 | Negative export range | Rejected with rebase-to-frame-0 guidance |
-| B05 | Japanese metadata/path content | UTF-8 manifest/package handling remains correct |
-| B06 | BEAUTY / selected pass combinations | Folder tree and manifest match selected passes |
-| B07 | Unsupported renderer/pass source | Fail explicitly; do not fabricate output |
+| B04 | Negative export range | Rejected with rebase guidance |
+| B05 | Japanese metadata/path | UTF-8 handling remains correct |
+| B06 | BEAUTY / selected pass combinations | Folder tree and manifest match selection |
+| B07 | Unsupported renderer/pass source | Fail explicitly |
 | B08 | Existing unrelated compositor nodes | Preserved |
-| B09 | Replacement mapping fails | Pending changes roll back; prior valid mapping preserved |
-| B10 | Same-version package already has render/user payload | Build blocked; payload preserved |
-| B11 | Empty same-version CutBridge scaffold | Supported safe refresh only |
+| B09 | Mapping failure | Pending changes roll back |
+| B10 | Same-version package with payload | Build blocked; payload preserved |
+| B11 | Empty same-version CutBridge scaffold | Safe refresh only |
 | B12 | V001/V002/V003 package workflow | Versions coexist deterministically |
 | B13 | Extension enable/disable/re-enable | No stale RNA registration error |
 | B14 | Partial registration failure then retry | Transactional cleanup permits retry |
-| B15 | JA → EN locale switch | Only locale/UI state changes; workflow data unchanged |
-| B16 | Narrow ~245 px N-panel | Core JA/EN labels/values/actions materially readable |
-| B17 | Validate Cut / Build Package in JA and EN | Same safety decision; localized user-facing text |
-| B18 | Existing scene with no S9-specific values | Defaults to Manual; historical package identity unchanged |
-| B19 | Default Studio Preset | Resolves built-in data-only preset |
-| B20 | Valid Custom JSON preset | Resolved naming/folders/passes/format/version/AE comp deterministic |
-| B21 | Invalid Custom JSON preset | Stable `PRESET_*` error; Build blocked |
-| B22 | Custom preset file changes during Build | One validated in-memory snapshot remains authoritative |
-| B23 | S10 3D handoff disabled | No `handoff_3d`; historical behavior preserved |
-| B24 | Supported active perspective camera | Evaluated world samples use S10A axis/timing contract |
-| B25 | Explicitly marked animated Empty | Only marked Empty serialized; per-frame evaluated position baked |
-| B26 | Parented/constraint-influenced marked Empty | Evaluated world result baked; hierarchy not recreated |
-| B27 | Shift/non-square/unsupported camera type | Fail-closed `HANDOFF_*`; package blocked |
-| B28 | Marked non-Empty / zero-scale / shear / reflection | Fail closed; no approximate handoff |
-| B29 | Sampling changes frame | Original frame/subframe restored on success/failure |
-| B30 | Valid handoff Build Package | Full manifest schema-valid with bounded optional handoff data |
-| B31 | Excessive Empty/frame/sample counts | Safety limit error; no unbounded manifest |
+| B15 | JA → EN locale switch | UI state only; workflow data unchanged |
+| B16 | Narrow N-panel | Core JA/EN labels/actions remain usable |
+| B17 | Validate / Build in JA and EN | Same safety decision; localized text |
+| B18 | Existing pre-S9 scene | Defaults to Manual; identity unchanged |
+| B19 | Default Studio Preset | Built-in declarative preset resolves |
+| B20 | Valid Custom JSON | Deterministic resolved behavior |
+| B21 | Invalid Custom JSON | Stable `PRESET_*` failure; Build blocked |
+| B22 | Preset file changes mid-Build | One validated snapshot remains authoritative |
+| B23 | 3D handoff disabled | No `handoff_3d`; historical behavior preserved |
+| B24 | Supported perspective Camera | Evaluated-world samples follow S10 contract |
+| B25 | Marked animated Empty | Only marked Empty serialized |
+| B26 | Parented/constrained marked Empty | World result baked; hierarchy not recreated |
+| B27 | Shift/non-square/unsupported Camera | Fail closed |
+| B28 | Invalid marked object/transform | Fail closed; no approximation |
+| B29 | Sampling changes scene frame | Original frame/subframe restored |
+| B30 | Valid handoff Build | Full schema-valid bounded manifest |
+| B31 | Excessive frame/object/sample counts | Safety limit error |
 
-## 3. After Effects contract / Build matrix
+## 3. After Effects Build / contract matrix
 
 | ID | Scenario | Expected |
 |---|---|---|
-| A01 | Valid `cutbridge.json` | Package identity/FPS/frame information loads |
-| A02 | Unsupported schema/version | Reject before project mutation |
-| A03 | Unsafe absolute/traversal/escaped path | Reject before footage import |
+| A01 | Valid `cutbridge.json` | Package identity/FPS/frame data loads |
+| A02 | Unsupported schema/version | Reject before mutation |
+| A03 | Unsafe path | Reject before footage import |
 | A04 | Required sequence missing frame | Build/import blocked |
-| A05 | Optional sequence unavailable | Warning/skip within policy |
-| A06 | Extra or mis-padded matching file | Diagnosed; not treated as expected frame |
-| A07 | Valid Japanese package/sequence path | Resolves without encoding failure |
-| A08 | Existing artist same-name/source object | Not automatically adopted |
-| A09 | Duplicate/moved/ambiguous managed object | Fail closed before unsafe mutation |
-| A10 | Late Build failure | Newly created managed state rolls back |
+| A05 | Optional sequence missing | Warning/skip within policy |
+| A06 | Extra/mis-padded file | Diagnosed; not accepted as expected frame |
+| A07 | Valid Japanese path | Resolves correctly |
+| A08 | Artist same-name/source object | Not automatically adopted |
+| A09 | Ambiguous managed object | Fail closed |
+| A10 | Late Build failure | Newly created state rolls back |
 | A11 | Script/project reload | Managed state rediscovered without duplication |
-| A12 | Required managed layer deleted/de-tagged | QC ownership/source error; never clean PASS |
-| A13 | Valid absent optional layer | Warning-only when otherwise unambiguous |
-| A14 | Optional `studio_preset` provenance | Compatible; no new AE trust boundary |
-| A15 | Preset-managed order/comp in manifest | AE consumes manifest; never opens preset JSON |
-| A16 | Valid optional `handoff_3d` | Manifest validation accepts supported schema |
-| A17 | Valid S10C handoff | Managed perspective camera + 3D Null subset reconstructed |
-| A18 | Repeated S10C Build | Existing verified managed camera/null reused; no duplicates |
-| A19 | Same-name unmanaged camera/null | Fail closed; artist object preserved |
-| A20 | Unsupported/malformed `handoff_3d` | Reject before unsafe reconstruction |
+| A12 | Required managed layer missing/de-tagged | QC error |
+| A13 | Valid absent optional layer | Warning-only when unambiguous |
+| A14 | Optional Studio Preset provenance | Manifest-compatible; no new trust boundary |
+| A15 | Preset-managed order/comp | AE consumes manifest only |
+| A16 | Valid optional `handoff_3d` | Supported schema accepted |
+| A17 | Valid S10C handoff | Managed Camera + 3D Nulls reconstructed |
+| A18 | Repeated Build | Verified managed 3D layers reused |
+| A19 | Unmanaged Camera/Null name collision | Fail closed; artist object preserved |
+| A20 | Malformed/unsupported `handoff_3d` | Reject before unsafe reconstruction |
 
-## 4. S6 revision-manager gate
+## 4. S6 revision-manager regression gate
 
-Regression coverage includes producer-style V001/V002/V003 identity, revision parsing, duplicate-candidate rejection, package/tuple drift, required/optional pass-set policy, live ownership/source/container/FPS revalidation, staged import, native `AVLayer.replaceSource(..., false)`, rollback, provenance, package-root ambiguity blocking, and Build/QC/reload consistency.
-
-Native S6 evidence is recorded separately; host-shaped tests are not a substitute.
+Coverage must retain V001/V002/V003 identity, duplicate-candidate rejection, package/tuple drift detection, required/optional pass policy, live ownership/source/container/FPS revalidation, staging, source replacement, rollback, provenance, package-root ambiguity blocking, and Build/QC/reload consistency.
 
 ## 5. S7 QC+ gate
 
-QC+ must remain deterministic and diagnostic-only. Coverage verifies stable `CBQ-*`, severity, remediation, sequence/comp/ownership/revision checks, stale/foreign/ambiguous state, and absence of automatic adoption/import/deletion/retag/source replacement/repair.
+QC+ remains deterministic and diagnostic-only. Tests verify stable `CBQ-*`, severity, remediation, sequence/comp/ownership/revision checks, stale/foreign/ambiguous state, and absence of automatic repair/adoption.
 
 ## 6. S8 localization / UX gate
 
-Automated and native gates establish Japanese-first display, deterministic English fallback, locale-independent machine identifiers/safety decisions, narrow-panel readability, and zero unintended project mutation from localization fallback.
+Automated and native evidence establishes Japanese-first display, deterministic English fallback, locale-independent machine identifiers/safety decisions, narrow-panel readability, and no project mutation from localization fallback.
 
 ## 7. S9 Studio Preset gate
 
-Coverage establishes strict schema/version/field/path/template/pass/format rules, 64 KiB UTF-8 custom-loader bound, safe published example, Manual backward compatibility, one-build custom-preset snapshot consistency, no preset-source-path disclosure, and AE manifest-only consumption.
+Coverage retains strict schema/version/field/path/template/pass/format behavior, size/encoding limits, Manual backward compatibility, one-build snapshot consistency, no preset-source-path disclosure, and AE manifest-only consumption.
 
-## 8. S10A camera/null contract gate
+## 8. S10A/B/C handoff gates
 
-Coverage establishes axis `(x,y,z)->(x,-z,y)`, handedness, composition-center mapping, explicit positive scale, frame→AE-time mapping, FOV→Zoom math, supported perspective/square-pixel/zero-shift boundaries, and stable failure codes. Direct Blender Euler→AE Euler mapping is not an approved contract.
+S10A coverage retains:
 
-## 9. S10B producer gate
+- `(x,y,z) -> (x,-z,y)` axis mapping;
+- composition-center origin;
+- explicit scale;
+- `(frame-frame_start)/fps` time mapping;
+- FOV→Zoom math;
+- fail-closed perspective/square-pixel/zero-shift boundary.
 
-Coverage establishes backward-compatible optional schema v1, strict fields, `EMPTY`-only null sources, bounded samples, default-off producer behavior, evaluated dependency-graph sampling, deterministic marked-Empty selection, world-space baking, frame restoration, unsupported-case rejection, and full Build Package integration.
+S10B coverage retains:
 
-## 10. S10C native reconstruction gate
+- backward-compatible optional schema;
+- `EMPTY`-only Null sources;
+- bounded samples;
+- evaluated world-space sampling;
+- deterministic marked-Empty selection;
+- frame restoration;
+- unsupported-case rejection.
 
-S10C is not considered proven from Node tests alone. Recorded native evidence comes from **Adobe After Effects 2026 Build 87 (`26.3x87`) on Windows 11** using Blender 5.2.1 LTS-produced handoff data.
+S10C native evidence remains bounded to Adobe After Effects 2026 Build 87 (`26.3x87`) on Windows 11 using Blender 5.2.1-produced handoff data. Recorded results include maximum projection error `0.00018066 px`, QC+ 10/10, zero duplicates on repeated Build, collision rejection, and persistence.
 
-Recorded native results:
+## 9. S12 release-target end-to-end gate
 
-- managed camera + 3D Null reconstruction PASS;
-- deterministic ordering PASS;
-- maximum 2D projection error `0.00018066 px`;
-- acceptance gate `<= 0.05 px`;
-- QC+ 10/10 PASS;
-- repeated Build 0 duplicate managed layers;
-- unmanaged camera/null collisions rejected fail-closed;
-- project persistence PASS.
+Status: **PASS after S13F repair chain**.
 
-This is bounded native evidence for the tested S10C scope, not blanket certification of the AE 2024–2026 target range.
+The initial native campaign produced real failures and remained fail-closed. S12 was reconciled to PASS only after the repaired path succeeded on exact native-tested commit:
 
-## 11. S11 QA / Docs / Release Engineering gate
+`9c99ae23ccd8c47fdc0fffbd05b99e1326f2ea95`
 
-S11 is a documentation, QA, compatibility-claim, and release-readiness reconciliation session. It must not use documentation work as a reason to broaden release authorization or mutate `main`.
+Required behavior that passed for the repaired tested scope:
 
-Required S11 assertions:
+- V001 Build/QC baseline;
+- V001→V002 compatible revision;
+- V002→V003 compatible revision;
+- Camera Position/POI/Zoom refresh;
+- Null Position/Scale refresh;
+- version-scoped 3D ownership migration;
+- QC clean;
+- artist-state preservation;
+- zero duplicate managed Camera/Null layers;
+- save/close/reopen/reload persistence.
 
-- EN Quick Start describes the workflow through S10C and points to S12 next;
-- JA Quick Start describes the same contract/safety boundary;
-- `HANDOFF_3D.md` no longer claims AE reconstruction is future work;
-- AE `INSTALL.md` records S10C without blanket AE certification;
-- `COMPATIBILITY.md` identifies the exact tested native AE host and distinguishes bounded evidence from broad certification;
-- `RELEASE_READINESS.md` states `UNRELEASED / PUBLICATION BLOCKED`, #18 remains external, S12 is required, promotion is not a blind merge, and production update verification is separate from GitHub Release publication;
-- existing release-hygiene and authorization tests remain green;
-- current release builder/workflow is not redesigned without a reproducible defect.
+The current repository lacks a final committed structured `s12-evidence.json` PASS artifact. This is tracked as an evidence-traceability limitation; do not fabricate retroactive hashes/evidence paths. See `S12_S13_EVIDENCE_SUMMARY.md`.
 
-S11 CI chronology:
+## 10. S13 native revision-repair gate
 
-- intermediate head `13899401e8afc857b6c1ec0527c142f778f56a8e`, run `34449966185`: static PASS; Blender RNA PASS; complete pytest 235 PASS / 1 FAIL / 62 warnings / 2 subtests PASS. Sole failure was a new phrase-specific S11 documentation assertion.
-- corrected head `818d9b8275319194c8c42329b8a139b35239e1aa`, run `34450066759`: both authoritative jobs PASS after the assertion was changed to test the semantic managed-camera and managed-3D-Null requirements separately.
+S13 regression coverage must retain the actual repaired failure modes:
 
-Any later S11 state-document change creates a new final candidate SHA and requires another complete candidate CI before PR/merge.
+- stale version-scoped Camera/Null ownership/data;
+- unsafe Camera Point-of-Interest access forms;
+- mandatory canonical-CI execution of the host-shaped 3D revision test;
+- rejection of sample-topology drift;
+- rejection of destructive key removal/single-key mutation in the host-shaped regression;
+- bulk animated-property writes through `setValuesAtTimes()` after key topology/time preflight;
+- V001→V002→V003 ownership/data/QC consistency;
+- zero duplicate managed Camera/Null layers.
+
+Native-tested final source `9c99ae23...` passed the full repaired path before intact integration through PR #68.
+
+## 11. Documentation / state regression gate
+
+Status tests must validate **semantic live-state invariants**, not freeze a historical session as “next.”
+
+Current required assertions include:
+
+- README identifies latest integrated `develop` and S12/S13 completion;
+- completion status identifies S1–S13 integrated/completed and S14 next;
+- release readiness remains `UNRELEASED / PUBLICATION BLOCKED`;
+- issue #18 remains an external governance blocker;
+- release authorization remains false;
+- S12 structured-evidence limitation is stated truthfully;
+- deliberate promotion is not a blind `develop`→`main` merge;
+- no documentation claims v0.2.3 is published or broadly certified.
 
 ## 12. Release-simulation gate
 
@@ -185,36 +224,41 @@ Every relevant candidate/PR must simulate packaging and verify:
 - archive contents and license inclusion;
 - deterministic checksums for identical inputs;
 - version/tag/channel/prerelease consistency;
-- release authorization remains separate from build success.
+- separation between build success and release authorization.
 
 A successful simulation does **not** authorize publication.
 
-## 13. Real-host release gates still required
+## 13. S14 target-user validation gate
 
-Already-passed S6/S7/S8/S10C native gates should not be relabeled as unexecuted, but they do not certify every release-target host/OS/workflow combination.
+Before broad Japanese production-usability claims:
 
-S12 must execute the broader release-target Blender → package → AE campaign using exact candidate artifacts, including installation, representative real render sequences, Build/QC, V001→V002→V003 compatible revisions, save-close-reopen/reload, artist-state preservation where claimed, path/Unicode behavior appropriate to the target, and S10C handoff from candidate artifacts.
+- define real user tasks and acceptance criteria;
+- use actual target users when making corresponding usability claims;
+- record task completion, friction, rework, terminology feedback, and material blockers;
+- repair material findings and rerun affected tasks;
+- never fabricate participants or measurements.
 
-Published-asset checksum/content verification and production update-index verification can occur only after a real authorized publication and remain separate gates.
+## 14. Repository / promotion gate
 
-Japanese target-user evidence must be recorded before making corresponding production-usability claims.
-
-The canonical checklist is [RELEASE_READINESS.md](RELEASE_READINESS.md).
-
-## 14. Repository/session merge gate
-
-For S11 and later bounded integration:
+For bounded integration on `develop`:
 
 - branch from exact green `develop`;
-- keep `main` untouched;
+- keep `main` untouched unless executing a deliberate promotion session;
 - keep `release-authorization.json` unapproved;
-- keep #18 open;
-- exact final candidate gets both authoritative CI jobs PASS;
-- release simulation and historical regression suites remain green;
-- PR targets `develop` with unchanged exact head;
-- PR-event CI passes;
-- merge uses exact validated head;
-- post-merge `develop` CI passes;
-- status/issues are reconciled to the exact final merge.
+- keep #18 open until governance exists and is tested;
+- require final candidate CI;
+- require PR-event CI;
+- merge exact validated head;
+- require post-merge `develop` CI;
+- reconcile status/issues after merge.
 
-Only after these gates pass is S11 fully integrated and S12 eligible to begin.
+For release promotion:
+
+- compare `main...candidate` file-by-file;
+- preserve required main-side release-lock intent;
+- preserve the hardened `develop` release workflow;
+- produce an explicit promotion tree/commit;
+- run authoritative CI on exact promoted `main`;
+- keep release authorization false until every release prerequisite is complete.
+
+The canonical publication checklist is `RELEASE_READINESS.md`.
