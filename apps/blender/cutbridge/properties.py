@@ -1,5 +1,5 @@
 import bpy
-from bpy.props import BoolProperty, EnumProperty, IntProperty, StringProperty
+from bpy.props import BoolProperty, EnumProperty, FloatProperty, IntProperty, StringProperty
 
 
 def _default_output_dir():
@@ -58,6 +58,21 @@ class CUTBRIDGE_PG_Settings(bpy.types.PropertyGroup):
     pass_line: BoolProperty(name="Line", default=False)
     pass_shadow: BoolProperty(name="Shadow", default=False)
     pass_depth: BoolProperty(name="Depth", default=False)
+
+    # S10B producer setting. It intentionally remains off and is not exposed as
+    # a normal user-facing workflow until native AE reconstruction is validated.
+    handoff_3d_enabled: BoolProperty(
+        name="3D Handoff Data",
+        description="Write experimental producer-only camera/null samples into cutbridge.json. Current AE import does not create camera/null layers",
+        default=False,
+    )
+    handoff_3d_pixels_per_blender_unit: FloatProperty(
+        name="3D Handoff Pixels Per Blender Unit",
+        description="Explicit spatial scale for mapping Blender world units into AE composition pixels",
+        default=100.0,
+        min=0.001,
+        max=1_000_000.0,
+    )
 
     language: EnumProperty(
         name="UI Language",
