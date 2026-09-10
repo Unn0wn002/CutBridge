@@ -1,11 +1,14 @@
 import os
 import subprocess
 import sys
+from contextlib import nullcontext
+from pathlib import Path
 
 import bpy
 
 from .core import (
     absolute_output_dir,
+    active_preset,
     build_manifest,
     configure_render_outputs,
     effective_package_name,
@@ -20,6 +23,7 @@ from .package_safety import (
     format_issue,
     package_target_issues,
 )
+from .presets import use_preset_file_snapshot
 
 
 def _open_folder(path: str):
@@ -94,26 +98,32 @@ class CUTBRIDGE_OT_BuildPackage(bpy.types.Operator):
 
         settings = context.scene.cutbridge
         try:
-            root = absolute_output_dir(settings) / effective_package_name(settings)
-            passes = selected_passes(settings)
+            preset = active_preset(settings)
+            snapshot_context = nullcontext(preset)
+            if str(getattr(settings, "studio_preset_mode", "MANUAL")).upper() == "CUSTOM":
+                raw_path = str(getattr(settings, "studio_preset_path", "") or "").strip()
+                resolved_path = Path(bpy.path.abspath(raw_path)).expanduser().resolve()
+                snapshot_context = use_preset_file_snapshot(resolved_path, preset)
         except (OSError, RuntimeError, ValueError) as exc:
             self.report({"ERROR"}, tr(language, "package_build_failed", detail=str(exc)))
             return {"CANCELLED"}
 
-        # Configure the scene before touching the package directory. If the
-        # selected engine cannot expose a requested logical pass, Build Package
-        # fails without leaving a misleading empty handoff package on disk.
         try:
-            configure_render_outputs(context, root)
-        except (RuntimeError, ValueError) as exc:
-            self.report({"ERROR"}, tr(language, "package_build_failed", detail=str(exc)))
-            return {"CANCELLED"}
+            with snapshot_context:
+                # The custom preset snapshot stays fixed for package naming,
+                # compositor mapping, manifest generation, and directory setup.
+                root = absolute_output_dir(settings) / effective_package_name(settings)
+                passes = selected_passes(settings)
 
-        try:
-            manifest = build_manifest(context, root)
-            ensure_package_dirs(root, passes, manifest.get("folders"))
-            manifest_path = write_manifest(manifest, root)
-            assert_package_integrity(root, manifest, passes)
+                # Configure the scene before touching the package directory. If
+                # the selected engine cannot expose a requested logical pass,
+                # Build Package fails without a misleading empty handoff package.
+                configure_render_outputs(context, root)
+
+                manifest = build_manifest(context, root)
+                ensure_package_dirs(root, passes, manifest.get("folders"))
+                manifest_path = write_manifest(manifest, root)
+                assert_package_integrity(root, manifest, passes)
         except (OSError, RuntimeError, ValueError) as exc:
             self.report({"ERROR"}, tr(language, "package_build_failed", detail=str(exc)))
             return {"CANCELLED"}
