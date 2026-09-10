@@ -1,6 +1,6 @@
 # CutBridge Roadmap
 
-Status reconciled through **S10B — Optional 3D handoff data model + Blender evaluated-world producer**. Version labels 0.2.0–0.2.3 remain unreleased development history; session numbers describe bounded product work and do not guarantee public release numbers.
+Status reconciled through **S11 — QA / Docs / Release Engineering**. Version labels 0.2.0–0.2.3 remain unreleased development history; session numbers describe bounded product work and do not guarantee public release numbers.
 
 ## Completed foundation — S1–S9
 
@@ -42,48 +42,17 @@ Deterministic `CBQ-*` diagnostics with severity/remediation, sequence/comp/owner
 ### S8 — Japanese-First UX
 Completed and integrated.
 
-Japanese-first UI with deterministic English fallback in Blender and After Effects while stable machine identifiers and safety decisions remain locale-independent. Native S8 validation passed in Blender 5.2.1 LTS and After Effects 2026 v26.3.0 Build 87 before integration.
+Japanese-first UI with deterministic English fallback in Blender and After Effects while stable machine identifiers and safety decisions remain locale-independent. Native S8 validation passed in Blender 5.2.1 LTS and After Effects 2026 Build 87 before integration.
 
 ### S8.5 — Repository State Reconciliation
 Completed and integrated.
 
-Repository documentation/status was reconciled after S8; Japanese onboarding and technical-debt tracking were added; `main`, runtime behavior, and release authorization remained untouched.
+Repository documentation/status was reconciled after S8; Japanese onboarding and technical-debt tracking were added; runtime and release authorization remained untouched.
 
 ### S9 — Studio Presets
 Completed and integrated.
 
-Goal achieved: make CutBridge adaptable to different animation/content-production teams without hard-coding a studio workflow or introducing executable configuration.
-
-Delivered:
-
-- versioned `cutbridge-studio-preset` JSON schema;
-- data-only Manual / CutBridge Default / Custom JSON modes;
-- Manual as backward-compatible default;
-- safe built-in default preset and published example;
-- strict unknown-field/schema/path/template/pass/format/version validation;
-- bounded 64 KiB UTF-8 custom preset loader;
-- disjoint render / preview / camera folder roles;
-- configurable deterministic package and sequence naming;
-- configurable pass order and required/optional policy;
-- PNG / OpenEXR / TIFF selection;
-- configurable version display token;
-- configurable After Effects comp name and layer order through the normalized manifest;
-- one validated custom-preset snapshot per Build Package transaction;
-- optional `studio_preset` manifest provenance without recording the source file path;
-- AE remains a manifest consumer and does not parse preset JSON;
-- Japanese/English UI and stable `PRESET_*` diagnostics;
-- regressions for manual compatibility, valid/custom/default presets, malicious input, unsafe/overlapping folders, loader bounds, and snapshot consistency.
-
-Safety boundaries preserved:
-
-- no arbitrary code or expression execution;
-- no environment-variable or command expansion;
-- no hidden network action;
-- no automatic ownership adoption;
-- no confidential real-studio preset bundled;
-- S5/S6/S7 ownership/revision/QC behavior remains authoritative;
-- canonical Blender↔AE package-identity primitives remain unchanged;
-- `main` and release authorization are not modified by S9.
+Delivered safe declarative Manual / CutBridge Default / Custom JSON modes, deterministic package/sequence/folder/pass/version/comp conventions, strict validation, one-build snapshot consistency, Japanese/English UI, and no executable preset trust boundary in AE.
 
 Reference: [STUDIO_PRESETS.md](STUDIO_PRESETS.md).
 
@@ -92,43 +61,16 @@ Reference: [STUDIO_PRESETS.md](STUDIO_PRESETS.md).
 ### S10A — Contract investigation
 **Completed and integrated.**
 
-Established the bounded Blender ↔ After Effects coordinate/timing/camera/null contract before adding producer or consumer behavior.
-
-Delivered:
-
-- explicit Blender → AE-oriented axis map `(x, y, z) -> (x, -z, y)`;
-- composition-center origin convention for mapped positions;
-- explicit product-defined spatial scale;
-- frame-to-AE-time formula `(frame - frame_start) / fps`;
-- camera FOV/Zoom conversion primitives;
-- evaluated world-space/basis strategy instead of direct Euler conversion;
-- fail-closed camera MVP restrictions;
-- documentation and mathematical regression fixtures.
-
-S10A deliberately added no AE camera/null creation and no `handoff_3d` manifest field.
+Established the bounded Blender ↔ After Effects coordinate/timing/camera/null contract, including the axis map `(x, y, z) -> (x, -z, y)`, composition-center positions, explicit spatial scale, frame-time mapping, FOV/Zoom primitives, and evaluated-world orientation strategy rather than direct Euler copying.
 
 Reference: [CAMERA_NULL_HANDOFF_CONTRACT.md](CAMERA_NULL_HANDOFF_CONTRACT.md).
 
 ### S10B — Optional 3D handoff producer
 **Completed and integrated.**
 
-Added the producer-side data model without widening the current AE trust/mutation boundary.
+Added the optional/versioned `handoff_3d` producer, evaluated-world active camera and explicitly marked Empty baking, bounded sample counts, frame restoration, and fail-closed unsupported camera/transform behavior. Historical manifests remain valid and the feature remains default-off.
 
-Delivered:
-
-- optional `cutbridge-handoff-3d` version 1 block in `cutbridge.json`;
-- feature default OFF for historical compatibility;
-- evaluated active perspective-camera sampling per exported frame;
-- explicit marked-Empty selection only;
-- baked position/basis/scale/time samples;
-- camera forward/up/FOV/derived AE Zoom samples;
-- frame/subframe restoration after sampling;
-- strict sample-count bounds;
-- fail-closed rejection of unsupported camera projection, sensor shift, non-square pixels, zero scale, shear, reflections, and invalid markers;
-- existing AE importer compatibility: optional block tolerated but not consumed;
-- Draft 2020-12 schema and official Blender 5.2.1 runtime/package tests.
-
-Integration evidence:
+Key evidence:
 
 - candidate `2a222520da9dde7128dc1b9ddc1ed29b1e7a23b2`;
 - candidate CI `34429145031`: PASS;
@@ -136,36 +78,69 @@ Integration evidence:
 - merge `444a786e6f7a64143e50f933fa35ca84ea36138e`;
 - post-merge CI `34429324559`: PASS.
 
-Reference: [HANDOFF_3D.md](HANDOFF_3D.md).
-
 ### S10C — Native After Effects reconstruction / parity
-**PASS / native-host validated.**
+**Completed and integrated; native-host validated.**
 
-Consumed the optional `handoff_3d` block in `CutBridge.jsx` and validated reconstruction in real Adobe After Effects 2026 Build 87:
+Delivered managed AE camera/3D Null reconstruction from the S10B handoff contract, idempotent rebuild, ownership/collision safety, and bounded real-host parity evidence.
 
-- managed AE camera creation and update with baked position, point-of-interest, and zoom keyframes;
-- managed AE 3D Null creation and update for serialized Empties (`ORIGIN`, `X_PLUS`, `Y_PLUS`, `Z_PLUS`, `XYZ_PLUS`);
-- deterministic keyframe timing ($t = (\text{frame} - \text{start}) / \text{fps}$);
-- orientation and projection verified with native `toComp()` evaluation: max error across all 5 spatial fixtures is **0.00018 px** (tolerance $\le 0.05\text{ px}$);
-- idempotent rebuild verified (0 duplicate layers);
-- fail-closed collision safety gate verified (unmanaged camera or null collisions rejected);
-- project saved and reopened cleanly in real AE host (`s10c_reconstruction_validated.aep`).
+Native evidence in Adobe After Effects 2026 Build 87 on Windows 11:
+
+- maximum projection error: `0.00018066 px`;
+- gate: `<= 0.05 px`;
+- QC+: 10/10 PASS;
+- repeated Build: 0 duplicate managed camera/null layers;
+- unmanaged collisions: fail-closed PASS;
+- project persistence: PASS.
+
+Final S10C repository reconciliation on `develop`: `e63dcb7a97831fee43c94a3f351a2a196eaf981c` with post-reconciliation CI `34440714199` PASS.
+
+Reference: [HANDOFF_3D.md](HANDOFF_3D.md).
 
 ## S11 — QA / Docs / Release Engineering
 
-- reconcile final CI/test matrix;
-- update installation/usage/revision/QC/troubleshooting documentation;
-- verify packaging and compatibility metadata;
-- prepare controlled distribution/update infrastructure;
-- address release-governance issue #18 before publication.
+**Implementation complete on the S11 integration candidate; integration gate in progress.**
 
-## S12 — End-to-End Validation Harness
+Delivered:
 
-Maintain legal/original/synthetic fixtures and an evidence-grade Blender → package → AE checklist, including V001→V002→V003 revision preservation and save/reopen behavior. Never infer GUI success from headless tests.
+- English Quick Start reconciled through S10C;
+- Japanese Quick Start reconciled through S10C with the same safety semantics;
+- After Effects installation guide reconciled through S10C;
+- `HANDOFF_3D.md` updated from producer-only language to the validated S10B producer + S10C consumer boundary;
+- compatibility policy now distinguishes bounded native evidence from blanket certification;
+- canonical [RELEASE_READINESS.md](RELEASE_READINESS.md) added;
+- release readiness explicitly separates automated QA, native evidence, S12 end-to-end work, Japanese target-user evidence, repository governance, deliberate promotion, exact authorization, publication, published-asset verification, and production update/distribution verification;
+- S11 documentation/readiness regression tests added;
+- existing release builder/workflow retained because audit found no reproducible release-runtime defect.
+
+Candidate validation:
+
+- intermediate CI `34449966185`: static PASS, Blender job failed only because a new S11 documentation assertion depended on one exact phrase; runtime/RNA tests themselves passed and pytest reported 235 PASS / 1 new-doc-test failure;
+- assertion repaired semantically without weakening the gate;
+- corrected head `818d9b8275319194c8c42329b8a139b35239e1aa`;
+- corrected CI `34450066759`: PASS for both authoritative jobs.
+
+S11 changes publication readiness from scattered documentation to an explicit fail-closed checklist. It does **not** make v0.2.3 release-ready.
+
+## S12 — End-to-End Validation Harness — NEXT
+
+Build and execute an evidence-grade Blender → package → After Effects release-target campaign using exact candidate artifacts.
+
+Required focus:
+
+- install exact candidate Blender artifact in the release-target GUI host;
+- build a representative cut/package and real render sequences;
+- load exact candidate AE runtime files;
+- Build + QC the real package;
+- exercise V001→V002→V003 compatible revisions;
+- verify artist-state preservation where claimed;
+- save, close, reopen, reload, and re-check;
+- exercise the S10C camera/Null path from release-candidate artifacts;
+- record exact hosts, fixtures, checksums, screenshots/logs, and outcomes;
+- never infer GUI success from headless tests.
 
 ## S13 — Manual-Finding Repair
 
-Run only when actual real-host/manual testing produces a reproducible defect. Do not invent defects merely to continue a session.
+Run only when actual S12/real-host testing produces a reproducible defect. Do not invent defects merely to continue a session.
 
 ## S14 — Japanese Target-User Validation Preparation
 
@@ -180,18 +155,22 @@ Before any RC/stable publication:
 - protect `main` and `develop` through repository-level governance;
 - restrict `v*` tag mutation to the intended release path or equivalent;
 - protect against publication from historical workflow commits;
+- complete release-target validation;
+- freeze an exact candidate;
+- deliberately reconcile/promote the materially diverged `develop` candidate to `main` rather than blind-merging;
 - explicitly authorize the exact current-main/tag/channel/prerelease tuple;
-- deliberately promote a validated candidate to `main`;
-- publish through the authorized tag workflow;
-- download and independently verify release artifact checksums/contents;
+- publish only through the authorized release workflow;
+- independently verify downloaded release artifact checksums/contents;
 - validate the production update endpoint/index;
-- satisfy the remaining release/end-to-end and target-user gates.
+- satisfy target-user evidence appropriate to the release claim.
+
+The canonical gate is [RELEASE_READINESS.md](RELEASE_READINESS.md).
 
 ## Technical-debt track
 
 See [TECHNICAL_DEBT.md](TECHNICAL_DEBT.md).
 
-Current priorities include Blender 6.0 migration away from deprecated `Scene.use_nodes` behavior, refreshing pinned GitHub Actions revisions that still target deprecated Node 20 runtimes, deliberate `main`/`develop` promotion reconciliation, and recorded Japanese target-user evidence.
+Current priorities include Blender 6.0 migration away from deprecated `Scene.use_nodes`, refreshing pinned GitHub Actions revisions that still target deprecated Node 20 runtimes, deliberate `main`/`develop` promotion reconciliation, and recorded Japanese target-user evidence.
 
 ## Stable-release goal
 
