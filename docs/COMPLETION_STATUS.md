@@ -2,15 +2,16 @@
 
 ## Current state
 
-- **Completed product sessions:** S1–S9.
+- **Completed product sessions:** S1–S9 plus S10A–S10B.
 - **Completed maintenance session:** S8.5 — repository/documentation state reconciliation.
-- **Release branch baseline:** `main` remains the conservative unreleased/release-locked branch and is not changed by S9.
+- **Release branch baseline:** `main` remains the conservative unreleased/release-locked branch and is not changed by S10A/S10B.
+- **Active integration branch:** `develop` contains the S10B producer integration.
 - **Product version:** `0.2.3` unreleased.
 - **Release authorization:** fail-closed; `release-authorization.json` remains `approved: false`.
 - **Git tags / GitHub Releases:** none.
-- **Next engineering session:** S10 — Camera / Null Handoff Investigation.
+- **Next engineering session:** S10C — native After Effects camera/null reconstruction and parity validation.
 
-S9 completion does not authorize an RC or stable release. Exact S9 candidate/CI/merge evidence is recorded in issue #44 and the GitHub Actions history.
+S10B completion does not authorize an RC or stable release. Release governance issue #18 remains independently blocking publication.
 
 ## Integrated sessions
 
@@ -98,20 +99,73 @@ Implemented behavior:
 - [x] AE continues to consume resolved manifest fields and never opens the Studio Preset JSON;
 - [x] Japanese/English UI and stable `PRESET_*` validation codes;
 - [x] existing canonical `safe_token`, `version_token`, and `package_name` producer primitives remain unchanged for Blender↔AE identity compatibility;
-- [x] regression coverage includes valid/default/manual/custom, malicious/invalid input, overlapping folders, bounded loader behavior, one-build snapshot consistency, and no preset-path disclosure;
-- [x] existing S6/S7/S8 and Blender 5.2.1 suites remain part of the authoritative CI gate.
+- [x] regression coverage includes valid/default/manual/custom, malicious/invalid input, overlapping folders, bounded loader behavior, one-build snapshot consistency, and no preset-path disclosure.
 
-Documentation:
+Reference: [STUDIO_PRESETS.md](STUDIO_PRESETS.md).
 
-- [STUDIO_PRESETS.md](STUDIO_PRESETS.md)
-- [QUICK_START.md](QUICK_START.md)
-- [QUICK_START_JA.md](QUICK_START_JA.md)
+### S10A — Camera / Null Handoff Contract Investigation
+PASS / integrated.
 
-### S9 validation boundary
+S10A established the coordinate/timing/camera/null contract before any cross-host 3D reconstruction was allowed to ship.
 
-Automated coverage establishes the data contract, Blender RNA/runtime compatibility, packaging/regression behavior, and existing AE contract preservation.
+Integration evidence:
 
-S9 does **not** claim a new native After Effects feature because AE does not load presets directly. It also does not fabricate a native Blender GUI usability result; broader real-user/target-user validation remains a later release-validation concern.
+- base: `19d09722678b4e6389d2b3f852a8c4c3a5dbf52f`;
+- candidate: `8a87044f8b7c830f342a1cd26568f6a3e05cf503`;
+- candidate push CI `34427616559`: PASS;
+- PR #49 event CI `34427691064`: PASS;
+- merge: `7b506d357faea08ea936daa90ccd0c94ea565f21`;
+- post-merge `develop` CI `34427809612`: PASS.
+
+Established contract:
+
+- Blender → AE-oriented axis map: `(x, y, z) -> (x, -z, y)`;
+- Blender world origin maps to AE composition center for positions;
+- spatial scale is explicit, never inferred heuristically;
+- frame-time mapping is `(frame - frame_start) / fps`;
+- direct Blender Euler → AE Euler conversion is not approved;
+- evaluated world-space baking is the first safe transform strategy;
+- the initial camera subset is perspective, square-pixel, zero sensor shift only;
+- arbitrary parent/constraint/driver reconstruction is deferred.
+
+Reference: [CAMERA_NULL_HANDOFF_CONTRACT.md](CAMERA_NULL_HANDOFF_CONTRACT.md).
+
+### S10B — Optional 3D handoff data model + Blender evaluated-world producer
+PASS / integrated.
+
+S10B adds the producer-side data model while deliberately keeping AE reconstruction disabled.
+
+Integration evidence:
+
+- base: `7b506d357faea08ea936daa90ccd0c94ea565f21`;
+- candidate: `2a222520da9dde7128dc1b9ddc1ed29b1e7a23b2`;
+- candidate push CI `34429145031`: PASS;
+- PR #51 event CI `34429245773`: PASS;
+- merge: `444a786e6f7a64143e50f933fa35ca84ea36138e`;
+- post-merge `develop` CI `34429324559`: PASS.
+
+Implemented behavior:
+
+- [x] optional/versioned `handoff_3d` manifest block using schema `cutbridge-handoff-3d` version 1;
+- [x] feature default OFF so historical package behavior remains unchanged;
+- [x] old manifests without `handoff_3d` remain schema-valid;
+- [x] active supported perspective camera sampled in evaluated Blender world space per exported frame;
+- [x] only explicitly marked Blender Empties are serialized;
+- [x] parent/constraint/driver effects may influence evaluated world state, but hierarchy is not recreated in AE;
+- [x] samples contain position, normalized basis, scale, source frame, and AE composition time;
+- [x] camera samples additionally contain forward/up direction, horizontal FOV, and derived AE Zoom;
+- [x] Blender frame/subframe is restored after sampling, including failure paths;
+- [x] camera shift, non-square pixels, non-perspective cameras, zero-scale, shear, reflections, invalid markers, and excessive sample counts fail closed;
+- [x] current AE validator accepts/ignores the optional block; it does not create camera/null layers;
+- [x] Draft 2020-12 schema tests and Blender 5.2.1 evaluated-world/package integration tests are part of CI.
+
+Reference: [HANDOFF_3D.md](HANDOFF_3D.md).
+
+### S10 validation boundary
+
+S10A/S10B prove the producer-side contract and deterministic Blender data generation. They do **not** prove that Adobe After Effects reconstructs identical camera projection/orientation from those samples.
+
+No native AE camera/null reconstruction claim is made. That is the explicit S10C gate.
 
 ## Release boundary
 
@@ -150,6 +204,6 @@ Priority items remain:
 
 ## Next engineering session
 
-**S10 — Camera / Null Handoff Investigation**
+**S10C — Native After Effects camera/null reconstruction and parity validation**
 
-Research Blender ↔ After Effects coordinate systems, axes, units, camera/lens/FOV/sensor representation, parenting, empties/nulls, and frame timing. Ship only behavior whose coordinate/timing contract can be established and tested reliably.
+Consume only the bounded optional `handoff_3d` contract, reconstruct managed AE camera/null layers conservatively, and prove projection/orientation/timing parity in real After Effects before exposing the feature as a normal cross-host workflow. Do not broaden S10C into arbitrary Blender scene export.
