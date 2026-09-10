@@ -2,16 +2,16 @@
 
 ## Current state
 
-- **Completed product sessions:** S1–S9 plus S10A–S10B.
+- **Completed product sessions:** S1–S9 plus S10A–S10C.
 - **Completed maintenance session:** S8.5 — repository/documentation state reconciliation.
-- **Release branch baseline:** `main` remains the conservative unreleased/release-locked branch and is not changed by S10A/S10B.
-- **Active integration branch:** `develop` contains the S10B producer integration.
+- **Release branch baseline:** `main` remains the conservative unreleased/release-locked branch and is not changed by S10.
+- **Active integration branch:** `feature/session-10c-camera-null-reconstruction` targeted for `develop`.
 - **Product version:** `0.2.3` unreleased.
 - **Release authorization:** fail-closed; `release-authorization.json` remains `approved: false`.
 - **Git tags / GitHub Releases:** none.
-- **Next engineering session:** S10C — native After Effects camera/null reconstruction and parity validation.
+- **Next engineering session:** S11 — QA / Docs / Release Engineering.
 
-S10B completion does not authorize an RC or stable release. Release governance issue #18 remains independently blocking publication.
+S10C completion does not authorize an RC or stable release. Release governance issue #18 remains independently blocking publication.
 
 ## Integrated sessions
 
@@ -161,11 +161,19 @@ Implemented behavior:
 
 Reference: [HANDOFF_3D.md](HANDOFF_3D.md).
 
-### S10 validation boundary
+### S10C — Native After Effects camera/null reconstruction and parity validation
+PASS / native-host validated.
 
-S10A/S10B prove the producer-side contract and deterministic Blender data generation. They do **not** prove that Adobe After Effects reconstructs identical camera projection/orientation from those samples.
+- Consumes the optional `handoff_3d` contract deterministically.
+- Constructs managed AE camera (`S10C_Camera`) and 3D Null layers (`ORIGIN`, `X_PLUS`, `Y_PLUS`, `Z_PLUS`, `XYZ_PLUS`) with baked per-frame position and zoom keyframes.
+- Validated in Adobe After Effects 2026 Build 87 (`26.3x87`) on Windows 64-bit with 0 unhandled errors.
+- Native projection parity measured against ground truth fixtures: maximum error across all fixtures is **0.00018 px**, well inside the 0.05 px tolerance gate.
+- QC+ diagnostic engine passed (10/10 checks PASS, 0 errors).
+- Idempotent rebuild verified (0 duplicate camera or null layers created on repeated build).
+- Collision safety gate verified (unmanaged camera and null collisions rejected with fail-closed ambiguous ownership errors).
+- Native project file saved and verified (`s10c_reconstruction_validated.aep`, 147,993 bytes).
 
-No native AE camera/null reconstruction claim is made. That is the explicit S10C gate.
+Reference: [HANDOFF_3D.md](HANDOFF_3D.md), [CAMERA_NULL_HANDOFF_CONTRACT.md](CAMERA_NULL_HANDOFF_CONTRACT.md).
 
 ## Release boundary
 
@@ -204,6 +212,6 @@ Priority items remain:
 
 ## Next engineering session
 
-**S10C — Native After Effects camera/null reconstruction and parity validation**
+**S11 — QA / Docs / Release Engineering**
 
-Consume only the bounded optional `handoff_3d` contract, reconstruct managed AE camera/null layers conservatively, and prove projection/orientation/timing parity in real After Effects before exposing the feature as a normal cross-host workflow. Do not broaden S10C into arbitrary Blender scene export.
+Reconcile final CI/test matrix, update end-to-end documentation across Blender and After Effects, verify release packaging, and prepare release readiness under governance issue #18.

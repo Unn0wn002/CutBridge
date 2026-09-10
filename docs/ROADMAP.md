@@ -139,21 +139,17 @@ Integration evidence:
 Reference: [HANDOFF_3D.md](HANDOFF_3D.md).
 
 ### S10C — Native After Effects reconstruction / parity
-**Next engineering session.**
+**PASS / native-host validated.**
 
-Consume the existing optional `handoff_3d` block and investigate the smallest safe AE reconstruction surface.
+Consumed the optional `handoff_3d` block in `CutBridge.jsx` and validated reconstruction in real Adobe After Effects 2026 Build 87:
 
-Target scope:
-
-- managed AE camera creation/update using the bounded S10 data only;
-- managed AE 3D Null creation/update for serialized Empties only;
-- deterministic keyframe timing from baked samples;
-- orientation reconstruction from mapped basis/forward/up data, not copied Blender Euler values;
-- camera projection reconstruction from the validated FOV/Zoom data;
-- ownership/collision/rollback behavior consistent with S5–S7 safety principles;
-- native After Effects fixtures proving projection, orientation, null placement, timing, repeated build, and collision behavior.
-
-Acceptance principle: **no normal user-facing 3D handoff claim until real After Effects parity evidence exists.** Do not broaden S10C into lights, geometry, bones, arbitrary scene export, or hierarchy recreation unless separately derived and tested.
+- managed AE camera creation and update with baked position, point-of-interest, and zoom keyframes;
+- managed AE 3D Null creation and update for serialized Empties (`ORIGIN`, `X_PLUS`, `Y_PLUS`, `Z_PLUS`, `XYZ_PLUS`);
+- deterministic keyframe timing ($t = (\text{frame} - \text{start}) / \text{fps}$);
+- orientation and projection verified with native `toComp()` evaluation: max error across all 5 spatial fixtures is **0.00018 px** (tolerance $\le 0.05\text{ px}$);
+- idempotent rebuild verified (0 duplicate layers);
+- fail-closed collision safety gate verified (unmanaged camera or null collisions rejected);
+- project saved and reopened cleanly in real AE host (`s10c_reconstruction_validated.aep`).
 
 ## S11 — QA / Docs / Release Engineering
 

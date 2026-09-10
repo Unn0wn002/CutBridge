@@ -274,6 +274,114 @@ var CutBridgeContract = (function () {
                 }
             }
         }
+        if (manifest.handoff_3d !== undefined) {
+            var handoffErrors = validateHandoff3D(manifest.handoff_3d, manifest.frames);
+            for (var he = 0; he < handoffErrors.length; he++) errors.push(handoffErrors[he]);
+        }
+        return errors;
+    }
+
+    function validateHandoff3D(handoff, frames) {
+        var errors = [];
+        if (!handoff || typeof handoff !== "object" || isArray(handoff)) return ["Manifest handoff_3d must be an object."];
+        if (handoff.schema !== "cutbridge-handoff-3d") errors.push("Unsupported handoff_3d schema: " + String(handoff.schema));
+        if (handoff.schema_version !== 1) errors.push("Unsupported handoff_3d schema_version " + String(handoff.schema_version) + "; CutBridge AE supports 1.");
+
+        var s = handoff.space;
+        if (!s || typeof s !== "object" || isArray(s)) {
+            errors.push("handoff_3d space specification missing.");
+        } else {
+            if (s.coordinate_system !== "after-effects-composition") errors.push("Unsupported handoff_3d coordinate_system: " + String(s.coordinate_system));
+            if (s.axis_map !== "blender_xyz_to_ae_x_negz_y") errors.push("Unsupported handoff_3d axis_map: " + String(s.axis_map));
+            if (s.origin !== "composition-center") errors.push("Unsupported handoff_3d origin: " + String(s.origin));
+            if (s.position_units !== "pixels") errors.push("Unsupported handoff_3d position_units: " + String(s.position_units));
+            if (s.pixels_per_blender_unit !== undefined && (!isFiniteNumber(s.pixels_per_blender_unit) || s.pixels_per_blender_unit <= 0)) {
+                errors.push("handoff_3d pixels_per_blender_unit must be a positive finite number.");
+            }
+        }
+
+        var sm = handoff.sampling;
+        if (!sm || typeof sm !== "object" || isArray(sm)) {
+            errors.push("handoff_3d sampling specification missing.");
+        } else {
+            if (sm.mode !== "baked-per-frame") errors.push("Unsupported handoff_3d sampling mode: " + String(sm.mode));
+            if (!isInteger(sm.frame_start) || !isInteger(sm.frame_end) || !isInteger(sm.frame_step)) {
+                errors.push("handoff_3d sampling frame_start/end/step must be integers.");
+            } else if (sm.frame_end < sm.frame_start || sm.frame_step <= 0) {
+                errors.push("handoff_3d sampling frame range/step is invalid.");
+            }
+        }
+
+        if (handoff.camera !== undefined) {
+            var c = handoff.camera;
+            if (!c || typeof c !== "object" || isArray(c)) {
+                errors.push("handoff_3d camera must be an object.");
+            } else {
+                if (typeof c.name !== "string" || !c.name.length) errors.push("handoff_3d camera must have a non-empty name.");
+                if (c.type !== "PERSP") errors.push("Unsupported handoff_3d camera type: " + String(c.type));
+                if (!isArray(c.samples) || c.samples.length === 0) {
+                    errors.push("handoff_3d camera samples must be a non-empty array.");
+                } else {
+                    for (var cs = 0; cs < c.samples.length; cs++) {
+                        var samp = c.samples[cs];
+                        if (!samp || typeof samp !== "object" || isArray(samp)) {
+                            errors.push("handoff_3d camera sample at index " + cs + " is invalid.");
+                            break;
+                        }
+                        if (!isInteger(samp.frame)) { errors.push("handoff_3d camera sample " + cs + " frame must be an integer."); break; }
+                        if (!isFiniteNumber(samp.time)) { errors.push("handoff_3d camera sample " + cs + " time must be a finite number."); break; }
+                        if (!isArray(samp.position) || samp.position.length !== 3 || !isFiniteNumber(samp.position[0]) || !isFiniteNumber(samp.position[1]) || !isFiniteNumber(samp.position[2])) {
+                            errors.push("handoff_3d camera sample " + cs + " position must be an array of 3 finite numbers.");
+                            break;
+                        }
+                        if (!isFiniteNumber(samp.ae_zoom) || samp.ae_zoom <= 0) {
+                            errors.push("handoff_3d camera sample " + cs + " ae_zoom must be a positive finite number.");
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (handoff.nulls !== undefined) {
+            if (!isArray(handoff.nulls)) {
+                errors.push("handoff_3d nulls must be an array.");
+            } else {
+                var seenNull = {};
+                for (var ni = 0; ni < handoff.nulls.length; ni++) {
+                    var n = handoff.nulls[ni];
+                    if (!n || typeof n !== "object" || isArray(n)) {
+                        errors.push("handoff_3d null at index " + ni + " is invalid.");
+                        continue;
+                    }
+                    if (typeof n.name !== "string" || !n.name.length) {
+                        errors.push("handoff_3d null at index " + ni + " must have a non-empty name.");
+                        continue;
+                    }
+                    var nullKey = "$" + n.name;
+                    if (seenNull[nullKey]) errors.push("handoff_3d contains duplicate null name: " + n.name + ".");
+                    seenNull[nullKey] = true;
+                    if (n.source_type !== "EMPTY") errors.push("handoff_3d null " + n.name + " source_type must be EMPTY; got " + String(n.source_type));
+                    if (!isArray(n.samples) || n.samples.length === 0) {
+                        errors.push("handoff_3d null " + n.name + " samples must be a non-empty array.");
+                    } else {
+                        for (var ns = 0; ns < n.samples.length; ns++) {
+                            var nsamp = n.samples[ns];
+                            if (!nsamp || typeof nsamp !== "object" || isArray(nsamp)) {
+                                errors.push("handoff_3d null " + n.name + " sample at index " + ns + " is invalid.");
+                                break;
+                            }
+                            if (!isInteger(nsamp.frame)) { errors.push("handoff_3d null " + n.name + " sample " + ns + " frame must be an integer."); break; }
+                            if (!isFiniteNumber(nsamp.time)) { errors.push("handoff_3d null " + n.name + " sample " + ns + " time must be a finite number."); break; }
+                            if (!isArray(nsamp.position) || nsamp.position.length !== 3 || !isFiniteNumber(nsamp.position[0]) || !isFiniteNumber(nsamp.position[1]) || !isFiniteNumber(nsamp.position[2])) {
+                                errors.push("handoff_3d null " + n.name + " sample " + ns + " position must be an array of 3 finite numbers.");
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
         return errors;
     }
 
@@ -297,10 +405,10 @@ var CutBridgeContract = (function () {
     }
 
     return {parseJSON: parseJSON, zeroPad: zeroPad, trimPythonWhitespace: trimPythonWhitespace, PRODUCT_VERSION: PRODUCT_VERSION, relativePassPath: relativePassPath, pathIsInside: pathIsInside,
-        SCHEMA: SCHEMA, SCHEMA_VERSION: SCHEMA_VERSION, validateManifest: validateManifest, patternToRegex: patternToRegex,
+        SCHEMA: SCHEMA, SCHEMA_VERSION: SCHEMA_VERSION, validateManifest: validateManifest, validateHandoff3D: validateHandoff3D, patternToRegex: patternToRegex,
         expectedFrameName: expectedFrameName, sequenceCoverage: sequenceCoverage, managedIdentity: managedIdentity, managedTag: managedTag,
         expectedCompSpec: expectedCompSpec, compSpecErrors: compSpecErrors, passNames: passNames, sameFilesystemPath: sameFilesystemPath,
-        footageReuseErrors: footageReuseErrors};
+        footageReuseErrors: footageReuseErrors, isArray: isArray};
 })();
 
 if (typeof module !== "undefined" && module.exports) {
@@ -312,6 +420,7 @@ if (typeof module !== "undefined" && module.exports) {
     var qcPlus = null;
     var localization = null;
     var currentLocale = "EN";
+    function isArray(value) { return Object.prototype.toString.call(value) === "[object Array]"; }
     function log(msg) { $.writeln("[CutBridge] " + msg); }
     function fallbackLocalization() {
         var locale = "EN", strings = {
@@ -387,14 +496,19 @@ if (typeof module !== "undefined" && module.exports) {
     function alertError(msg) { alert(getLocalization().formatError(currentLocale, msg)); }
     function readTextFile(file) { file.encoding = "UTF-8"; if (!file.open("r")) throw new Error("Could not open: " + file.fsName); var text = file.read(); file.close(); return text; }
 
-    function chooseManifest() {
-        var f = File.openDialog(tr("choose_manifest"), "JSON:*.json");
-        if (!f) return null;
+    function loadManifest(fileOrPath) {
+        var f = (fileOrPath && typeof fileOrPath === "object" && typeof fileOrPath.read === "function") ? fileOrPath : new File(fileOrPath);
+        if (typeof f.exists !== "undefined" && !f.exists && typeof fileOrPath === "string") throw new Error("Manifest file does not exist: " + (f.fsName || f.name));
         var obj = CutBridgeContract.parseJSON(readTextFile(f));
         var contractErrors = CutBridgeContract.validateManifest(obj);
         if (contractErrors.length) throw new Error("Manifest contract rejected:\n- " + contractErrors.join("\n- "));
         state.manifestFile = f; state.manifest = obj; state.packageFolder = f.parent; state.imported = {}; state.layers = {}; state.comp = null;
         return obj;
+    }
+    function chooseManifest() {
+        var f = File.openDialog(tr("choose_manifest"), "JSON:*.json");
+        if (!f) return null;
+        return loadManifest(f);
     }
     function ensureManifestLoaded() { if (state.manifest) return true; try { return !!chooseManifest(); } catch (e) { alertError(e.toString()); return false; } }
 
@@ -743,8 +857,199 @@ if (typeof module !== "undefined" && module.exports) {
 
     function isManagedLayerTagForManifest(comment, manifest) {
         for (var i = 0; i < manifest.passes.length; i++) if (comment === CutBridgeContract.managedTag("layer", manifest, manifest.passes[i].name)) return true;
+        if (manifest.handoff_3d) {
+            if (manifest.handoff_3d.camera && manifest.handoff_3d.camera.name && comment === CutBridgeContract.managedTag("camera", manifest, manifest.handoff_3d.camera.name)) return true;
+            if (manifest.handoff_3d.nulls && isArray(manifest.handoff_3d.nulls)) {
+                for (var n = 0; n < manifest.handoff_3d.nulls.length; n++) {
+                    if (manifest.handoff_3d.nulls[n] && manifest.handoff_3d.nulls[n].name && comment === CutBridgeContract.managedTag("null", manifest, manifest.handoff_3d.nulls[n].name)) return true;
+                }
+            }
+        }
         return false;
     }
+
+    function findManagedCamera(comp, manifest, camData) {
+        var tag = CutBridgeContract.managedTag("camera", manifest, camData.name), cached = state.layers[tag], found = null;
+        delete state.layers[tag];
+        for (var p = 1; p <= app.project.numItems; p++) {
+            var owner = app.project.item(p);
+            if (!(owner instanceof CompItem)) continue;
+            for (var i = 1; i <= owner.numLayers; i++) {
+                var layer = owner.layer(i), comment = itemComment(layer);
+                if (comment === tag) {
+                    if (found) throw new Error(camData.name + ": duplicate managed camera ownership; resolve duplicate tags before retrying.");
+                    if (owner !== comp || (typeof CameraLayer !== "undefined" && !(layer instanceof CameraLayer)) || layer.containingComp !== comp) {
+                        throw new Error(camData.name + ": managed camera ownership no longer belongs to a valid camera layer in the expected comp. Preserve artist work and restore the intended tag/container before retrying.");
+                    }
+                    found = layer;
+                } else if (owner === comp && layer.name === camData.name && !isAnyManagedTag(comment)) {
+                    throw new Error(camData.name + ": ambiguous managed camera ownership: an unverified layer uses the expected camera name. Preserve artist work; restore its original tag only if intended, or move/remove the conflicting layer before retrying. CutBridge will not adopt it or add a duplicate.");
+                }
+            }
+        }
+        if (cached && liveProjectLayer(cached) && cached !== found) {
+            throw new Error(camData.name + ": cached managed camera no longer proves ownership; preserve the existing project and restore the intended tag before retrying.");
+        }
+        if (found) state.layers[tag] = found;
+        return found;
+    }
+
+    function ensureManagedCamera(comp, manifest, camData) {
+        var tag = CutBridgeContract.managedTag("camera", manifest, camData.name);
+        var layer = findManagedCamera(comp, manifest, camData);
+        if (layer) return {layer: layer, created: false};
+        layer = comp.layers.addCamera(camData.name, [comp.width / 2, comp.height / 2]);
+        try {
+            layer.name = camData.name;
+            layer.startTime = 0;
+            layer.comment = tag;
+        } catch (creationError) {
+            try {
+                if (!layer || typeof layer.remove !== "function") throw new Error("newly created managed camera cannot be removed by this AE host");
+                layer.remove();
+            } catch (rollbackError) {
+                throw new Error(camData.name + ": managed camera initialization failed and CutBridge could not roll back the newly created camera (" + rollbackError.toString() + "). Original error: " + creationError.toString());
+            }
+            throw new Error(camData.name + ": managed camera initialization failed and the newly created camera was rolled back (" + creationError.toString() + ").");
+        }
+        state.layers[tag] = layer;
+        return {layer: layer, created: true};
+    }
+
+    function findManagedNull(comp, manifest, nullData) {
+        var tag = CutBridgeContract.managedTag("null", manifest, nullData.name), cached = state.layers[tag], found = null;
+        delete state.layers[tag];
+        for (var p = 1; p <= app.project.numItems; p++) {
+            var owner = app.project.item(p);
+            if (!(owner instanceof CompItem)) continue;
+            for (var i = 1; i <= owner.numLayers; i++) {
+                var layer = owner.layer(i), comment = itemComment(layer);
+                if (comment === tag) {
+                    if (found) throw new Error(nullData.name + ": duplicate managed null ownership; resolve duplicate tags before retrying.");
+                    if (owner !== comp || layer.containingComp !== comp || !layer.threeDLayer) {
+                        throw new Error(nullData.name + ": managed null ownership no longer belongs to a valid 3D layer in the expected comp. Preserve artist work and restore the intended tag/container before retrying.");
+                    }
+                    found = layer;
+                } else if (owner === comp && layer.name === nullData.name && !isAnyManagedTag(comment)) {
+                    throw new Error(nullData.name + ": ambiguous managed null ownership: an unverified layer uses the expected null name. Preserve artist work; restore its original tag only if intended, or move/remove the conflicting layer before retrying. CutBridge will not adopt it or add a duplicate.");
+                }
+            }
+        }
+        if (cached && liveProjectLayer(cached) && cached !== found) {
+            throw new Error(nullData.name + ": cached managed null no longer proves ownership; preserve the existing project and restore the intended tag before retrying.");
+        }
+        if (found) state.layers[tag] = found;
+        return found;
+    }
+
+    function ensureManagedNull(comp, manifest, nullData) {
+        var tag = CutBridgeContract.managedTag("null", manifest, nullData.name);
+        var layer = findManagedNull(comp, manifest, nullData);
+        if (layer) return {layer: layer, created: false};
+        layer = comp.layers.addNull(comp.duration);
+        try {
+            layer.name = nullData.name;
+            layer.threeDLayer = true;
+            layer.startTime = 0;
+            layer.comment = tag;
+        } catch (creationError) {
+            try {
+                if (!layer || typeof layer.remove !== "function") throw new Error("newly created managed null cannot be removed by this AE host");
+                layer.remove();
+            } catch (rollbackError) {
+                throw new Error(nullData.name + ": managed null initialization failed and CutBridge could not roll back the newly created null (" + rollbackError.toString() + "). Original error: " + creationError.toString());
+            }
+            throw new Error(nullData.name + ": managed null initialization failed and the newly created null was rolled back (" + creationError.toString() + ").");
+        }
+        state.layers[tag] = layer;
+        return {layer: layer, created: true};
+    }
+
+    function clearPropertyKeyframes(prop) {
+        if (!prop) return;
+        try {
+            if (prop.numKeys && prop.numKeys > 0) {
+                for (var k = prop.numKeys; k >= 1; k--) {
+                    prop.removeKey(k);
+                }
+            }
+        } catch (_e) {}
+    }
+
+    function applyCameraSamples(camera, camData, manifest) {
+        var transform = camera.property ? camera.property("ADBE Transform Group") : null;
+        var posProp = transform ? transform.property("ADBE Position") : camera.position;
+        var poiProp = transform ? transform.property("ADBE Anchor Point") : null;
+        if (!poiProp && transform) poiProp = transform.property("Point of Interest");
+        if (!poiProp) poiProp = camera.pointOfInterest;
+        var cameraOptions = camera.property ? camera.property("ADBE Camera Options Group") : null;
+        var zoomProp = cameraOptions ? cameraOptions.property("ADBE Camera Zoom") : (camera.cameraOption ? camera.cameraOption.zoom : null);
+
+        if (!posProp || !poiProp || !zoomProp) {
+            throw new Error("Camera Position, Point of Interest, or Zoom property unavailable.");
+        }
+
+        clearPropertyKeyframes(posProp);
+        clearPropertyKeyframes(poiProp);
+        clearPropertyKeyframes(zoomProp);
+
+        var samples = camData.samples;
+        for (var i = 0; i < samples.length; i++) {
+            var s = samples[i];
+            var t = s.time;
+            var fwd = s.forward || [0, 0, 1];
+            var poi = [
+                s.position[0] + fwd[0] * 1000.0,
+                s.position[1] + fwd[1] * 1000.0,
+                s.position[2] + fwd[2] * 1000.0
+            ];
+            if (samples.length === 1) {
+                if (posProp.setValue) posProp.setValue(s.position);
+                if (poiProp.setValue) poiProp.setValue(poi);
+                if (zoomProp.setValue) zoomProp.setValue(s.ae_zoom);
+            } else {
+                if (posProp.setValueAtTime) posProp.setValueAtTime(t, s.position);
+                else if (posProp.setValue) posProp.setValue(s.position);
+                if (poiProp.setValueAtTime) poiProp.setValueAtTime(t, poi);
+                else if (poiProp.setValue) poiProp.setValue(poi);
+                if (zoomProp.setValueAtTime) zoomProp.setValueAtTime(t, s.ae_zoom);
+                else if (zoomProp.setValue) zoomProp.setValue(s.ae_zoom);
+            }
+        }
+    }
+
+    function applyNullSamples(nullLayer, nullData, manifest) {
+        var transform = nullLayer.property ? nullLayer.property("ADBE Transform Group") : null;
+        var posProp = transform ? transform.property("ADBE Position") : nullLayer.position;
+        var scaleProp = transform ? transform.property("ADBE Scale") : nullLayer.scale;
+
+        if (!posProp) {
+            throw new Error("Null Position property unavailable.");
+        }
+
+        clearPropertyKeyframes(posProp);
+        if (scaleProp) clearPropertyKeyframes(scaleProp);
+
+        var samples = nullData.samples;
+        for (var i = 0; i < samples.length; i++) {
+            var s = samples[i];
+            var t = s.time;
+            if (samples.length === 1) {
+                if (posProp.setValue) posProp.setValue(s.position);
+                if (scaleProp && s.scale && isArray(s.scale) && s.scale.length === 3) {
+                    if (scaleProp.setValue) scaleProp.setValue([s.scale[0] * 100, s.scale[1] * 100, s.scale[2] * 100]);
+                }
+            } else {
+                if (posProp.setValueAtTime) posProp.setValueAtTime(t, s.position);
+                else if (posProp.setValue) posProp.setValue(s.position);
+                if (scaleProp && s.scale && isArray(s.scale) && s.scale.length === 3) {
+                    if (scaleProp.setValueAtTime) scaleProp.setValueAtTime(t, [s.scale[0] * 100, s.scale[1] * 100, s.scale[2] * 100]);
+                    else if (scaleProp.setValue) scaleProp.setValue([s.scale[0] * 100, s.scale[1] * 100, s.scale[2] * 100]);
+                }
+            }
+        }
+    }
+
     function preflightExistingManagedLayers(comp, manifest, entries, renderFolder) {
         if (!comp || !comp.numLayers) return;
         var hasUnverifiedLayer = false;
@@ -765,6 +1070,24 @@ if (typeof module !== "undefined" && module.exports) {
                 validateReusableFootage(source, expectedFirstFile(passInfo, entry.coverage), passInfo, manifest, renderFolder);
             } else if (hasUnverifiedLayer) {
                 throw new Error(passInfo.name + ": managed layer ownership is ambiguous because the existing comp contains an unverified layer. Preserve artist work and restore the intended managed layer tag before retrying; CutBridge will not add a replacement over it.");
+            }
+        }
+        if (manifest.handoff_3d) {
+            if (manifest.handoff_3d.camera) {
+                var camData = manifest.handoff_3d.camera;
+                var camLayer = findManagedCamera(comp, manifest, camData);
+                if (!camLayer && hasUnverifiedLayer) {
+                    throw new Error(camData.name + ": managed camera ownership is ambiguous because the existing comp contains an unverified layer. Preserve artist work and restore the intended managed camera tag before retrying; CutBridge will not add a replacement over it.");
+                }
+            }
+            if (manifest.handoff_3d.nulls && isArray(manifest.handoff_3d.nulls)) {
+                for (var ni = 0; ni < manifest.handoff_3d.nulls.length; ni++) {
+                    var nData = manifest.handoff_3d.nulls[ni];
+                    var nullLayer = findManagedNull(comp, manifest, nData);
+                    if (!nullLayer && hasUnverifiedLayer) {
+                        throw new Error(nData.name + ": managed null ownership is ambiguous because the existing comp contains an unverified layer. Preserve artist work and restore the intended managed null tag before retrying; CutBridge will not add a replacement over it.");
+                    }
+                }
             }
         }
     }
@@ -1035,9 +1358,9 @@ if (typeof module !== "undefined" && module.exports) {
     }
 
     function buildComp() {
-        if (!ensureManifestLoaded()) return;
+        if (!ensureManifestLoaded()) return {success: false, error: "Manifest not loaded"};
         var m = state.manifest, preflight;
-        try { preflight = preflightSequences(m); } catch (preflightError) { alertError(preflightError.toString()); return; }
+        try { preflight = preflightSequences(m); } catch (preflightError) { alertError(preflightError.toString()); return {success: false, error: preflightError.toString()}; }
         if (!app.project) app.newProject();
         var warnings = preflight.warnings.slice(0), compName = (m.ae && m.ae.comp_name) ? m.ae.comp_name : (m.cut + "_COMP");
         app.beginUndoGroup("CutBridge Build Comp");
@@ -1052,15 +1375,44 @@ if (typeof module !== "undefined" && module.exports) {
                 verifiedPasses.push({name: entry.passInfo.name, footage: footage});
             }
             orderManagedLayers(comp, m, verifiedPasses);
+
+            var managedNullLayers = [];
+            if (m.handoff_3d && m.handoff_3d.nulls && isArray(m.handoff_3d.nulls)) {
+                for (var ni = 0; ni < m.handoff_3d.nulls.length; ni++) {
+                    var nData = m.handoff_3d.nulls[ni];
+                    var nullRes = ensureManagedNull(comp, m, nData);
+                    if (nullRes.created) createdLayers.push({layer: nullRes.layer, tag: CutBridgeContract.managedTag("null", m, nData.name)});
+                    applyNullSamples(nullRes.layer, nData, m);
+                    managedNullLayers.push(nullRes.layer);
+                }
+            }
+
+            var managedCameraLayer = null;
+            if (m.handoff_3d && m.handoff_3d.camera) {
+                var camRes = ensureManagedCamera(comp, m, m.handoff_3d.camera);
+                if (camRes.created) createdLayers.push({layer: camRes.layer, tag: CutBridgeContract.managedTag("camera", m, m.handoff_3d.camera.name)});
+                applyCameraSamples(camRes.layer, m.handoff_3d.camera, m);
+                managedCameraLayer = camRes.layer;
+            }
+
+            for (var nIdx = managedNullLayers.length - 1; nIdx >= 0; nIdx--) {
+                if (managedNullLayers[nIdx].moveToBeginning) managedNullLayers[nIdx].moveToBeginning();
+            }
+            if (managedCameraLayer && managedCameraLayer.moveToBeginning) {
+                managedCameraLayer.moveToBeginning();
+            }
+
             comp.openInViewer();
             var message = tr(compResult.created ? "comp_built" : "comp_reused") + "\n" + comp.name + "\n" + m.resolution.width + "x" + m.resolution.height + " @ " + m.fps + " fps";
             if (warnings.length) message += "\n\n" + tr("warnings") + "\n- " + warnings.join("\n- ");
             alert(message);
+            return {success: true, comp: comp, compResult: compResult, warnings: warnings};
         } catch (e) {
             var rollbackFailures = rollbackNewBuildObjects(createdLayers, createdFootage), errorMessage = e.toString();
             if (createdLayers.length || createdFootage.length) errorMessage += "\n" + tr("rollback_created");
             if (rollbackFailures.length) errorMessage += "\n" + rollbackFailures.join("\n");
             alertError(errorMessage);
+            return {success: false, error: errorMessage, originalError: e};
         }
         finally { app.endUndoGroup(); }
     }
@@ -1102,10 +1454,11 @@ if (typeof module !== "undefined" && module.exports) {
             records = l10n.localizeRecords(currentLocale, records);
             var report = qc.render(records);
             alert("CutBridge QC — " + l10n.qcHeadline(currentLocale, report.headline) + "\n\n" + l10n.localizeRenderedQC(currentLocale, report.text));
+            return {records: records, report: report};
         }
 
         try { qc = getQCPlus(); }
-        catch (qcLoadError) { alertError(qcLoadError.toString()); return; }
+        catch (qcLoadError) { alertError(qcLoadError.toString()); return {records: [], report: null, error: qcLoadError.toString()}; }
 
         var contractErrors = CutBridgeContract.validateManifest(m);
         if (contractErrors.length) {
@@ -1113,7 +1466,7 @@ if (typeof module !== "undefined" && module.exports) {
                 add({severity: "ERROR", code: "CBQ-MANIFEST-CONTRACT-ERROR", scope: "manifest",
                     message: contractErrors[ce], remediation: "Repair or regenerate cutbridge.json from the trusted Blender package, then load it again before Build, Revision, or QC."});
             }
-            finish(); return;
+            return finish();
         }
 
         add({severity: "PASS", code: "CBQ-PACKAGE-IDENTITY-OK", scope: "package", subject: m.package_name || m.cut,
@@ -1125,7 +1478,7 @@ if (typeof module !== "undefined" && module.exports) {
         add({severity: "PASS", code: "CBQ-MANIFEST-RESOLUTION-OK", scope: "manifest", message: "Resolution " + m.resolution.width + "x" + m.resolution.height + " is valid."});
 
         if (!app.project) {
-            append(qc.hostRecords({inspectable: false})); state.comp = null; finish(); return;
+            append(qc.hostRecords({inspectable: false})); state.comp = null; return finish();
         }
 
         var projectFolders = null, folderLookupError = null;
@@ -1236,7 +1589,7 @@ if (typeof module !== "undefined" && module.exports) {
             }
             state.comp = null;
         }
-        finish();
+        return finish();
     }
 
     function packageStatusText(manifest) {
@@ -1272,6 +1625,10 @@ if (typeof module !== "undefined" && module.exports) {
         };
         pal.onResizing = pal.onResize = function() { this.layout.resize(); }; return pal;
     }
+    CutBridgeContract.loadManifest = loadManifest;
+    CutBridgeContract.buildComp = buildComp;
+    CutBridgeContract.runQC = runQC;
+    CutBridgeContract.getState = function() { return state; };
     var panel = buildUI(thisObj); if (panel instanceof Window) { panel.center(); panel.show(); } else { panel.layout.layout(true); }
 })(this);
 }
