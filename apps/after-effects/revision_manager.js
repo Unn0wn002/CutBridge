@@ -356,6 +356,7 @@
         }
         if (!keyed) return;
         if (typeof prop.keyTime !== "function") throw new Error(label + " key times cannot be verified during revision.");
+        if (typeof prop.setValuesAtTimes !== "function") throw new Error(label + " cannot be updated safely in one native operation.");
         for (var i = 0; i < samples.length; i++) {
             if (Math.abs(Number(prop.keyTime(i + 1)) - Number(samples[i].time)) > 0.000001) {
                 throw new Error(label + " key topology drift at key " + (i + 1) + ".");
@@ -413,38 +414,43 @@
             assertPropertySampleTopology(props.scale, scale, keyed, "Managed 3D Null Scale");
         }
     }
+    function setSampleValues(prop, samples, values, keyed) {
+        if (!keyed) {
+            if (values.length) prop.setValue(values[0]);
+            return;
+        }
+        var times = [];
+        for (var i = 0; i < samples.length; i++) times.push(samples[i].time);
+        prop.setValuesAtTimes(times, values);
+    }
     function applyCameraSamples(layer, camera) {
         var props = cameraProperties(layer), pos = props.position, poi = props.pointOfInterest, zoom = props.zoom;
         if (!pos || !poi || !zoom) throw new Error("Managed camera Position, verified Point of Interest, or Zoom property is unavailable during revision.");
+        var positions = [], points = [], zooms = [], keyed = camera.samples.length > 1;
         for (var i = 0; i < camera.samples.length; i++) {
             var sample = camera.samples[i], forward = sample.forward || [0, 0, 1], point = [
                 sample.position[0] + forward[0] * 1000.0,
                 sample.position[1] + forward[1] * 1000.0,
                 sample.position[2] + forward[2] * 1000.0
             ];
-            if (camera.samples.length === 1) {
-                pos.setValue(sample.position); poi.setValue(point); zoom.setValue(sample.ae_zoom);
-            } else {
-                pos.setValueAtTime(sample.time, sample.position);
-                poi.setValueAtTime(sample.time, point);
-                zoom.setValueAtTime(sample.time, sample.ae_zoom);
-            }
+            positions.push(sample.position); points.push(point); zooms.push(sample.ae_zoom);
         }
+        setSampleValues(pos, camera.samples, positions, keyed);
+        setSampleValues(poi, camera.samples, points, keyed);
+        setSampleValues(zoom, camera.samples, zooms, keyed);
     }
     function applyNullSamples(layer, nullData) {
         var props = nullProperties(layer), pos = props.position, scale = props.scale;
         if (!pos) throw new Error("Managed 3D Null Position property is unavailable during revision.");
+        var positions = [], scaleInput = [], scaleValues = [], keyed = nullData.samples.length > 1;
         for (var i = 0; i < nullData.samples.length; i++) {
             var sample = nullData.samples[i], scaleValue = sample.scale && array(sample.scale) && sample.scale.length === 3 ?
                 [sample.scale[0] * 100, sample.scale[1] * 100, sample.scale[2] * 100] : null;
-            if (nullData.samples.length === 1) {
-                pos.setValue(sample.position);
-                if (scale && scaleValue) scale.setValue(scaleValue);
-            } else {
-                pos.setValueAtTime(sample.time, sample.position);
-                if (scale && scaleValue) scale.setValueAtTime(sample.time, scaleValue);
-            }
+            positions.push(sample.position);
+            if (scaleValue) { scaleInput.push(sample); scaleValues.push(scaleValue); }
         }
+        setSampleValues(pos, nullData.samples, positions, keyed);
+        if (scale && scaleValues.length) setSampleValues(scale, scaleInput, scaleValues, keyed);
     }
     function findExactLayerByTag(comp, tag) {
         var found = null;

@@ -92,15 +92,28 @@ function makeHost() {
     function Property(name, matchName) {
         this.name = name; this.matchName = matchName || name; this.value = null; this.keys = [];
         this.rejectKeyRemoval = false;
+        this.rejectSingleKeyWrite = false;
     }
     Object.defineProperty(Property.prototype, "numKeys", {get() { return this.keys.length; }});
     Property.prototype.setValue = function(value) { this.value = value; };
     Property.prototype.setValueAtTime = function(time, value) {
+        if (this.rejectSingleKeyWrite) {
+            throw new Error("After Effects error: internal verification failure, sorry! {no current context}");
+        }
         const existing = this.keys.find(key => Math.abs(key.time - time) < 1e-9);
         if (existing) existing.value = value;
         else this.keys.push({time, value});
         this.keys.sort((left, right) => left.time - right.time);
         this.value = value;
+    };
+    Property.prototype.setValuesAtTimes = function(times, values) {
+        for (let i = 0; i < times.length; i++) {
+            const existing = this.keys.find(key => Math.abs(key.time - times[i]) < 1e-9);
+            if (existing) existing.value = values[i];
+            else this.keys.push({time: times[i], value: values[i]});
+        }
+        this.keys.sort((left, right) => left.time - right.time);
+        if (values.length) this.value = values[values.length - 1];
     };
     Property.prototype.keyTime = function(index) { return this.keys[index - 1].time; };
     Property.prototype.removeKey = function(index) {
@@ -261,6 +274,11 @@ camera._pointOfInterest.rejectKeyRemoval = true;
 camera.cameraOption.zoom.rejectKeyRemoval = true;
 nullLayer.position.rejectKeyRemoval = true;
 nullLayer.scale.rejectKeyRemoval = true;
+camera.position.rejectSingleKeyWrite = true;
+camera._pointOfInterest.rejectSingleKeyWrite = true;
+camera.cameraOption.zoom.rejectSingleKeyWrite = true;
+nullLayer.position.rejectSingleKeyWrite = true;
+nullLayer.scale.rejectSingleKeyWrite = true;
 
 host.queue(v2); host.click("Update Revision");
 assert.equal(camera.comment, Contract.managedTag("camera", v2, "S13_Camera"), "camera ownership must migrate V001→V002");
