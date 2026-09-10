@@ -133,6 +133,27 @@ def test_loader_reads_bounded_utf8_json_only(tmp_path):
     assert caught.value.code == "PRESET_FILE_TOO_LARGE"
 
 
+def test_custom_preset_snapshot_is_stable_during_one_build(tmp_path):
+    path = tmp_path / "studio.json"
+    original = presets.default_preset()
+    original["id"] = "snapshot-a"
+    original["name"] = "Snapshot A"
+    path.write_text(json.dumps(original), encoding="utf-8")
+
+    loaded = presets.load_preset_file(path)
+    replacement = presets.default_preset()
+    replacement["id"] = "snapshot-b"
+    replacement["name"] = "Snapshot B"
+
+    with presets.use_preset_file_snapshot(path, loaded):
+        path.write_text(json.dumps(replacement), encoding="utf-8")
+        assert presets.load_preset_file(path)["id"] == "snapshot-a"
+        assert presets.load_preset_file(path)["name"] == "Snapshot A"
+
+    assert presets.load_preset_file(path)["id"] == "snapshot-b"
+    assert presets.load_preset_file(path)["name"] == "Snapshot B"
+
+
 def test_preset_metadata_does_not_expose_custom_file_path():
     metadata = presets.preset_metadata("CUSTOM", presets.default_preset())
     assert metadata == {
