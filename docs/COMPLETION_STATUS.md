@@ -4,13 +4,14 @@
 
 - **Completed product sessions:** S1–S9.
 - **Completed maintenance session:** S8.5 — repository/documentation state reconciliation.
-- **Release branch baseline:** `main` remains the conservative unreleased/release-locked branch and is not changed by S9.
+- **Current engineering session:** S10 — Camera / Null Handoff Investigation.
+- **Integrated `develop` baseline entering S10:** `19d09722678b4e6389d2b3f852a8c4c3a5dbf52f`; post-S9 CI `34424286137` PASS.
+- **Release branch baseline:** `main` remains `cc6dc4dacce55b730b37eeb1d65afdf6ea98c50c` and is not changed by S10.
 - **Product version:** `0.2.3` unreleased.
 - **Release authorization:** fail-closed; `release-authorization.json` remains `approved: false`.
 - **Git tags / GitHub Releases:** none.
-- **Next engineering session:** S10 — Camera / Null Handoff Investigation.
 
-S9 completion does not authorize an RC or stable release. Exact S9 candidate/CI/merge evidence is recorded in issue #44 and the GitHub Actions history.
+S10 is currently a **research/validation session**, not a production camera/null feature. The shipped manifest/importer behavior remains unchanged until the cross-DCC spatial contract is supported by reproducible evidence.
 
 ## Integrated sessions
 
@@ -48,17 +49,13 @@ PASS / integrated.
 - Solo-maintainer adversarial gate #20: PASS / closed.
 - Post-merge CI `34260351796`: PASS.
 
-Compatible revision updates use verified managed-source replacement, rollback, package/tag migration, and historical-footage provenance while preserving unrelated artist work.
-
 ### S7 — QC+
 PASS / integrated.
 
 - Candidate: `b17b9d3cd5b67d7bfd3741a58df403d5946e2327`.
 - Merge commit: `ef88d68f0178ed33ed4ba096416fcfe595c1eb6d`.
 - PR #35: merged.
-- Native AE validation: PASS after repairing real ExtendScript and revision-state defects.
-
-QC+ provides deterministic `CBQ-*` PASS / WARNING / ERROR diagnostics, actionable remediation, sequence/comp/ownership/revision checks, and remains diagnostic-only/non-mutating.
+- Native AE validation: PASS after repairing real ExtendScript/revision-state defects.
 
 ### S8 — Japanese-first UX
 PASS / integrated.
@@ -70,52 +67,66 @@ PASS / integrated.
 - Blender native gate #41: PASS / closed.
 - Post-merge CI `34380737455`: PASS.
 
-S8 established Japanese-first / English-fallback UI while preserving locale-independent manifest values, ownership tags, diagnostic codes, and safety decisions.
-
 ### S8.5 — Repository state reconciliation
 PASS / integrated.
 
-Documentation/status maintenance only. S8.5 reconciled README/status/roadmap/Quick Start/Test Plan/changelog/AE install state, added Japanese onboarding and technical-debt tracking, and preserved release authorization as fail-closed.
+Documentation/status maintenance only. S8.5 reconciled repository state, added Japanese onboarding and technical-debt tracking, and preserved release authorization as fail-closed.
 
 ### S9 — Studio Presets
 PASS / integrated.
 
-S9 adds a bounded, versioned, declarative Studio Preset contract without adding executable configuration or a second preset trust boundary in After Effects.
+- Exact candidate: `ea305d19ab2ff0667a8fa9e94c1e1ebca5e51b22`.
+- Candidate push CI `34424041843`: PASS.
+- PR #45 event CI `34424216448`: PASS.
+- Merge: `19d09722678b4e6389d2b3f852a8c4c3a5dbf52f`.
+- Post-merge `develop` CI `34424286137`: PASS.
+- Issue #44: PASS / closed.
 
-Implemented behavior:
+S9 adds a bounded, versioned, declarative Studio Preset contract while preserving the legacy Manual identity contract and keeping After Effects as a resolved-manifest consumer rather than a preset-file trust boundary.
 
-- [x] three Blender modes: Manual, CutBridge Default, Custom JSON;
-- [x] Manual remains default and preserves the pre-S9 package identity/pass/format controls;
-- [x] strict `cutbridge-studio-preset` schema version 1;
-- [x] safe built-in default and published example JSON;
-- [x] custom preset files limited to 64 KiB, UTF-8 JSON only;
-- [x] unknown fields, unsupported schema versions, invalid placeholders, duplicate passes, unsafe paths, and unsupported formats fail closed;
-- [x] render / preview / camera role folders must be relative, disjoint, and non-overlapping;
-- [x] configurable package naming, sequence naming, folder roles, pass order, required/optional flags, PNG/OpenEXR/TIFF format, version token, and AE comp naming;
-- [x] custom preset is frozen to one validated in-memory snapshot for the full Build Package transaction;
-- [x] Blender records normalized `studio_preset` provenance in `cutbridge.json` without storing the source preset path;
-- [x] old manifests remain valid because Studio Preset metadata is optional in the manifest schema;
-- [x] AE continues to consume resolved manifest fields and never opens the Studio Preset JSON;
-- [x] Japanese/English UI and stable `PRESET_*` validation codes;
-- [x] existing canonical `safe_token`, `version_token`, and `package_name` producer primitives remain unchanged for Blender↔AE identity compatibility;
-- [x] regression coverage includes valid/default/manual/custom, malicious/invalid input, overlapping folders, bounded loader behavior, one-build snapshot consistency, and no preset-path disclosure;
-- [x] existing S6/S7/S8 and Blender 5.2.1 suites remain part of the authoritative CI gate.
+Reference: [STUDIO_PRESETS.md](STUDIO_PRESETS.md).
 
-Documentation:
+## S10 — Camera / Null Handoff Investigation
 
-- [STUDIO_PRESETS.md](STUDIO_PRESETS.md)
-- [QUICK_START.md](QUICK_START.md)
-- [QUICK_START_JA.md](QUICK_START_JA.md)
+**IN PROGRESS — research harness only; production runtime unchanged.**
 
-### S9 validation boundary
+Tracking:
 
-Automated coverage establishes the data contract, Blender RNA/runtime compatibility, packaging/regression behavior, and existing AE contract preservation.
+- issue #46 — S10 investigation;
+- issue #47 — native After Effects spatial-probe gate;
+- branch `feature/session-10-camera-null-handoff` from exact green S9 merge `19d0972...`.
 
-S9 does **not** claim a new native After Effects feature because AE does not load presets directly. It also does not fabricate a native Blender GUI usability result; broader real-user/target-user validation remains a later release-validation concern.
+Current research scope:
+
+- [x] confirm production manifest currently contains only the legacy camera-name string and AE does not create a 3D camera/null from it;
+- [x] document Blender and AE coordinate-space assumptions from current platform documentation;
+- [x] establish research-only basis candidate Blender `(X,Y,Z)` → AE `(X,-Z,Y)`;
+- [x] add pure spatial/FOV/frame-time math fixture and fail-closed tests;
+- [x] add isolated Blender 5.2 projection probe using `world_to_camera_view()`;
+- [x] add disposable native AE projection probe using `addCamera`, 3D nulls, and `toComp()`;
+- [x] enforce explicit Save dialog and disposable-comp cleanup in the AE probe;
+- [x] keep native AE projection acceptance at **≤ 0.05 px**;
+- [x] quantify Blender source-side projection precision separately at **≤ 0.00005 px** after observing approximately `0.0000319 px` finite-precision error;
+- [ ] obtain a fully green exact-head automated S10 research run after source-probe hardening;
+- [ ] execute native AE issue #47 and record exact host/report evidence;
+- [ ] investigate arbitrary camera orientation before any general camera rotation conversion;
+- [ ] investigate Empty/camera parent chains before choosing sampled-world-transform versus reproduced-parent hierarchy behavior;
+- [ ] define a production spatial-scale policy;
+- [ ] decide whether S10 stops at validated research or ships a minimal runtime subset.
+
+Important non-claims:
+
+- the current `100 px / Blender unit` value is a synthetic fixture scale, not production policy;
+- the candidate basis is not production-authorized until the native AE gate passes;
+- orthographic/panoramic cameras, lens shift, DOF equivalence, arbitrary constraints, and general parenting are not certified;
+- automated `bpy` evidence is not relabeled as Blender GUI/user validation;
+- Node syntax checks are not relabeled as native After Effects validation.
+
+Reference: [CAMERA_NULL_HANDOFF.md](CAMERA_NULL_HANDOFF.md).
 
 ## Release boundary
 
-Release governance issue #18 remains **OPEN** and independent of product-session completion.
+Release governance issue #18 remains **OPEN** and independent of product-session progress.
 
 Current safeguards:
 
@@ -126,7 +137,7 @@ Current safeguards:
 
 Still required before any RC/stable publication:
 
-- actual repository-level protection for `main` and `develop`;
+- repository-level protection for `main` and `develop`;
 - controlled `v*` tag creation/update/deletion policy or equivalent;
 - repository-level protection against historical-workflow publication;
 - explicit auditable authorization for the exact current-main/tag/channel/prerelease tuple;
@@ -135,7 +146,7 @@ Still required before any RC/stable publication:
 - production update-endpoint/index verification;
 - remaining release/end-to-end and target-user validation appropriate to the release claim.
 
-Green CI alone is never release authorization.
+Green CI or a successful S10 research probe is never release authorization.
 
 ## Known technical debt
 
@@ -148,8 +159,6 @@ Priority items remain:
 3. Reconcile `main`/`develop` deliberately before a release candidate; do not treat the diverged histories as a trivial promotion merge.
 4. Record Japanese target-user evidence before making production usability claims.
 
-## Next engineering session
+## Next decision
 
-**S10 — Camera / Null Handoff Investigation**
-
-Research Blender ↔ After Effects coordinate systems, axes, units, camera/lens/FOV/sensor representation, parenting, empties/nulls, and frame timing. Ship only behavior whose coordinate/timing contract can be established and tested reliably.
+Complete the **S10 native AE spatial-probe gate (#47)** and use the measurements to decide whether the candidate coordinate/optics model is strong enough to expand toward arbitrary orientation/parenting or whether the runtime feature should remain deferred.
