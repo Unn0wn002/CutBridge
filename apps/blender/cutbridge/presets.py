@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 import json
 import re
+from contextlib import contextmanager
 from pathlib import Path
 from string import Formatter
 
@@ -25,6 +26,7 @@ _ALLOWED_TEMPLATE_FIELDS = {
 _ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
 _FOLDER_SEGMENT_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
 _VERSION_PREFIX_RE = re.compile(r"^[A-Za-z0-9_-]{1,8}$")
+_ACTIVE_FILE_SNAPSHOTS: dict[str, dict] = {}
 
 
 class PresetError(ValueError):
@@ -284,9 +286,7 @@ def validate_preset(data: object) -> dict:
     }
 
 
-def load_preset_file(path: str | Path) -> dict:
-    """Load one bounded UTF-8 JSON file and validate it as declarative data."""
-    preset_path = Path(path)
+def _load_preset_file_uncached(preset_path: Path) -> dict:
     try:
         if not preset_path.is_file():
             raise PresetError("PRESET_FILE_UNAVAILABLE", f"Studio preset file does not exist: {preset_path}")
@@ -309,6 +309,37 @@ def load_preset_file(path: str | Path) -> dict:
     except json.JSONDecodeError as exc:
         raise PresetError("PRESET_JSON_INVALID", f"Studio preset is not valid JSON: {exc.msg} at line {exc.lineno}.") from exc
     return validate_preset(data)
+
+
+def load_preset_file(path: str | Path) -> dict:
+    """Load one bounded UTF-8 JSON file, honoring an explicit build snapshot."""
+    preset_path = Path(path)
+    key = str(preset_path)
+    snapshot = _ACTIVE_FILE_SNAPSHOTS.get(key)
+    if snapshot is not None:
+        return copy.deepcopy(snapshot)
+    return _load_preset_file_uncached(preset_path)
+
+
+@contextmanager
+def use_preset_file_snapshot(path: str | Path, preset: dict):
+    """Freeze one validated custom preset for the duration of a package build.
+
+    Validation can happen before this context. Once Build Package starts, every
+    subsequent load of that same resolved file path receives the same normalized
+    data, preventing a mid-build file edit from changing output mapping versus
+    the generated manifest.
+    """
+    key = str(Path(path))
+    previous = _ACTIVE_FILE_SNAPSHOTS.get(key)
+    _ACTIVE_FILE_SNAPSHOTS[key] = copy.deepcopy(validate_preset(preset))
+    try:
+        yield copy.deepcopy(_ACTIVE_FILE_SNAPSHOTS[key])
+    finally:
+        if previous is None:
+            _ACTIVE_FILE_SNAPSHOTS.pop(key, None)
+        else:
+            _ACTIVE_FILE_SNAPSHOTS[key] = previous
 
 
 def version_token_for(preset: dict, version: int) -> str:
