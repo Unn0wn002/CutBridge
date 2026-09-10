@@ -338,24 +338,23 @@
             for (var k = prop.numKeys; k >= 1; k--) prop.removeKey(k);
         }
     }
-    function safeProperty(group, name) {
-        if (!group || typeof group.property !== "function") return null;
-        try { return group.property(name); }
+    function cameraPointOfInterestProperty(transform) {
+        if (!transform || typeof transform.property !== "function") return null;
+        var prop = null, matchName = "";
+        try { prop = transform.property(1); }
         catch (e) { return null; }
-    }
-    function safeLayerPointOfInterest(layer) {
-        try { return layer ? layer.pointOfInterest : null; }
-        catch (e) { return null; }
+        if (!prop) return null;
+        try { matchName = String(prop.matchName || ""); }
+        catch (matchNameError) { return null; }
+        return matchName === "ADBE Anchor Point" ? prop : null;
     }
     function applyCameraSamples(layer, camera) {
         var transform = layer.property ? layer.property("ADBE Transform Group") : null;
         var pos = transform ? transform.property("ADBE Position") : layer.position;
-        var poi = safeProperty(transform, "ADBE Point of Interest");
-        if (!poi) poi = safeProperty(transform, "Point of Interest");
-        if (!poi) poi = safeLayerPointOfInterest(layer);
+        var poi = cameraPointOfInterestProperty(transform);
         var options = layer.property ? layer.property("ADBE Camera Options Group") : null;
         var zoom = options ? options.property("ADBE Camera Zoom") : (layer.cameraOption ? layer.cameraOption.zoom : null);
-        if (!pos || !poi || !zoom) throw new Error("Managed camera Position, Point of Interest, or Zoom property is unavailable during revision.");
+        if (!pos || !poi || !zoom) throw new Error("Managed camera Position, verified Point of Interest, or Zoom property is unavailable during revision.");
         clearKeys(pos); clearKeys(poi); clearKeys(zoom);
         for (var i = 0; i < camera.samples.length; i++) {
             var sample = camera.samples[i], forward = sample.forward || [0, 0, 1], point = [
