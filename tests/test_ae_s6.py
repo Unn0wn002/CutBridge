@@ -20,6 +20,11 @@ def test_native_revision_host_lifecycle():
     _run_node_test("ae_s6_native_host_checks.cjs")
 
 
+def test_s13_revision_migrates_camera_and_null_tags_across_versions():
+    """S12 native finding: 3D managed ownership must migrate V001→V002→V003."""
+    _run_node_test("ae_s13_revision_3d_tag_migration_checks.cjs")
+
+
 def test_revision_rejects_existing_ownership_and_comp_drift():
     _run_node_test("ae_s6_revision_ownership_checks.cjs")
 

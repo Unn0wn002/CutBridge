@@ -202,6 +202,38 @@
         return out;
     }
     function aspect(m) { return m.resolution.pixel_aspect === undefined ? 1 : m.resolution.pixel_aspect; }
+    function handoffTopologyErrors(current, candidate) {
+        var errors = [], left = current.handoff_3d, right = candidate.handoff_3d, i, names = {}, key;
+        if (!!left !== !!right) {
+            errors.push("Adding or removing handoff_3d is unsupported by source-only revision; rebuild or migrate the comp deliberately.");
+            return errors;
+        }
+        if (!left) return errors;
+        if (!!left.camera !== !!right.camera) {
+            errors.push("Adding or removing the managed 3D camera is unsupported by source-only revision; rebuild or migrate the comp deliberately.");
+        } else if (left.camera && (left.camera.name !== right.camera.name || left.camera.type !== right.camera.type)) {
+            errors.push("Changing managed 3D camera identity/type is unsupported by source-only revision; rebuild or migrate the comp deliberately.");
+        }
+        var leftNulls = array(left.nulls) ? left.nulls : [], rightNulls = array(right.nulls) ? right.nulls : [];
+        if (leftNulls.length !== rightNulls.length) {
+            errors.push("Adding or removing managed 3D Nulls is unsupported by source-only revision; rebuild or migrate the comp deliberately.");
+            return errors;
+        }
+        for (i = 0; i < leftNulls.length; i++) names["$" + leftNulls[i].name] = true;
+        for (i = 0; i < rightNulls.length; i++) {
+            key = "$" + rightNulls[i].name;
+            if (!names[key]) {
+                errors.push("Changing managed 3D Null identity is unsupported by source-only revision; rebuild or migrate the comp deliberately.");
+                break;
+            }
+            delete names[key];
+        }
+        for (key in names) if (own(names, key)) {
+            errors.push("Changing managed 3D Null identity is unsupported by source-only revision; rebuild or migrate the comp deliberately.");
+            break;
+        }
+        return errors;
+    }
     function assess(current, candidate) {
         var errors = [], warnings = [], left = manifestErrors(current), right = manifestErrors(candidate), i;
         for (i = 0; i < left.length; i++) errors.push("Current: " + left[i]);
@@ -219,6 +251,8 @@
         if (current.resolution.width !== candidate.resolution.width || current.resolution.height !== candidate.resolution.height) {
             errors.push("Resolution changes are unsupported by source-only revision; rebuild or migrate the comp deliberately.");
         }
+        var handoffErrors = handoffTopologyErrors(current, candidate);
+        for (i = 0; i < handoffErrors.length; i++) errors.push(handoffErrors[i]);
         var old = passMap(current), next = passMap(candidate), p;
         for (i = 0; i < current.passes.length; i++) {
             p = current.passes[i];
@@ -281,12 +315,151 @@
             version: m.version, fps: m.fps, frames: {start: m.frames.start, end: m.frames.end, count: m.frames.count},
             resolution: {width: m.resolution.width, height: m.resolution.height, pixel_aspect: aspect(m)}, passes: []};
         if (m.package_name !== undefined) out.package_name = m.package_name;
+        if (m.handoff_3d !== undefined) out.handoff_3d = m.handoff_3d;
         for (var i = 0; i < IDS.length; i++) out[IDS[i]] = m[IDS[i]];
         for (i = 0; i < m.passes.length; i++) {
             var p = m.passes[i];
             out.passes.push({name: p.name, path: p.path, sequence_pattern: p.sequence_pattern, required: p.required !== false});
         }
         return out;
+    }
+    function layerComment(layer) {
+        try { return layer && layer.comment ? String(layer.comment) : ""; }
+        catch (e) { return ""; }
+    }
+    function setLayerComment(layer, value) {
+        if (!layer) throw new Error("Managed 3D layer is unavailable during revision migration.");
+        try { layer.comment = value; }
+        catch (e) { throw new Error("After Effects layer comments are required for safe 3D revision ownership migration."); }
+    }
+    function clearKeys(prop) {
+        if (!prop) throw new Error("Required managed 3D transform property is unavailable.");
+        if (prop.numKeys && prop.numKeys > 0) {
+            for (var k = prop.numKeys; k >= 1; k--) prop.removeKey(k);
+        }
+    }
+    function applyCameraSamples(layer, camera) {
+        var transform = layer.property ? layer.property("ADBE Transform Group") : null;
+        var pos = transform ? transform.property("ADBE Position") : layer.position;
+        var poi = transform ? transform.property("ADBE Anchor Point") : null;
+        if (!poi && transform) poi = transform.property("Point of Interest");
+        if (!poi) poi = layer.pointOfInterest;
+        var options = layer.property ? layer.property("ADBE Camera Options Group") : null;
+        var zoom = options ? options.property("ADBE Camera Zoom") : (layer.cameraOption ? layer.cameraOption.zoom : null);
+        if (!pos || !poi || !zoom) throw new Error("Managed camera Position, Point of Interest, or Zoom property is unavailable during revision.");
+        clearKeys(pos); clearKeys(poi); clearKeys(zoom);
+        for (var i = 0; i < camera.samples.length; i++) {
+            var sample = camera.samples[i], forward = sample.forward || [0, 0, 1], point = [
+                sample.position[0] + forward[0] * 1000.0,
+                sample.position[1] + forward[1] * 1000.0,
+                sample.position[2] + forward[2] * 1000.0
+            ];
+            if (camera.samples.length === 1) {
+                pos.setValue(sample.position); poi.setValue(point); zoom.setValue(sample.ae_zoom);
+            } else {
+                pos.setValueAtTime(sample.time, sample.position);
+                poi.setValueAtTime(sample.time, point);
+                zoom.setValueAtTime(sample.time, sample.ae_zoom);
+            }
+        }
+    }
+    function applyNullSamples(layer, nullData) {
+        var transform = layer.property ? layer.property("ADBE Transform Group") : null;
+        var pos = transform ? transform.property("ADBE Position") : layer.position;
+        var scale = transform ? transform.property("ADBE Scale") : layer.scale;
+        if (!pos) throw new Error("Managed 3D Null Position property is unavailable during revision.");
+        clearKeys(pos); if (scale) clearKeys(scale);
+        for (var i = 0; i < nullData.samples.length; i++) {
+            var sample = nullData.samples[i], scaleValue = sample.scale && array(sample.scale) && sample.scale.length === 3 ?
+                [sample.scale[0] * 100, sample.scale[1] * 100, sample.scale[2] * 100] : null;
+            if (nullData.samples.length === 1) {
+                pos.setValue(sample.position);
+                if (scale && scaleValue) scale.setValue(scaleValue);
+            } else {
+                pos.setValueAtTime(sample.time, sample.position);
+                if (scale && scaleValue) scale.setValueAtTime(sample.time, scaleValue);
+            }
+        }
+    }
+    function findExactLayerByTag(comp, tag) {
+        var found = null;
+        if (!comp || typeof comp.layer !== "function") throw new Error("Managed comp cannot be inspected for 3D revision migration.");
+        for (var i = 1; i <= comp.numLayers; i++) {
+            var layer = comp.layer(i);
+            if (layerComment(layer) !== tag) continue;
+            if (found) throw new Error("Duplicate managed 3D ownership tag blocks revision: " + tag);
+            found = layer;
+        }
+        return found;
+    }
+    function nullByName(handoff, name) {
+        var nulls = handoff && array(handoff.nulls) ? handoff.nulls : [];
+        for (var i = 0; i < nulls.length; i++) if (nulls[i].name === name) return nulls[i];
+        return null;
+    }
+    function applyRecord(record, data) {
+        if (record.kind === "camera") applyCameraSamples(record.layer, data);
+        else applyNullSamples(record.layer, data);
+    }
+    function migrateHandoff3D(current, candidate) {
+        if (!current.handoff_3d && !candidate.handoff_3d) return;
+        var topologyErrors = handoffTopologyErrors(current, candidate);
+        if (topologyErrors.length) throw new Error(topologyErrors.join("; "));
+        if (typeof Contract.getState !== "function" || typeof Contract.managedTag !== "function") {
+            throw new Error("CutBridge managed-state access is unavailable for 3D revision migration.");
+        }
+        var state = Contract.getState(), comp = state && state.comp, records = [], i;
+        if (!state || !comp || !state.layers) throw new Error("CutBridge managed comp state is unavailable for 3D revision migration.");
+        if (current.handoff_3d.camera) {
+            var currentCamera = current.handoff_3d.camera, candidateCamera = candidate.handoff_3d.camera;
+            var oldCameraTag = Contract.managedTag("camera", current, currentCamera.name), newCameraTag = Contract.managedTag("camera", candidate, candidateCamera.name);
+            var cameraLayer = findExactLayerByTag(comp, oldCameraTag);
+            if (!cameraLayer) throw new Error(currentCamera.name + ": verified managed camera was not found for revision migration.");
+            var cameraCollision = findExactLayerByTag(comp, newCameraTag);
+            if (cameraCollision && cameraCollision !== cameraLayer) throw new Error(candidateCamera.name + ": candidate managed camera tag already belongs to another layer.");
+            records.push({kind: "camera", layer: cameraLayer, oldTag: oldCameraTag, newTag: newCameraTag, oldData: currentCamera, newData: candidateCamera});
+        }
+        var currentNulls = array(current.handoff_3d.nulls) ? current.handoff_3d.nulls : [];
+        for (i = 0; i < currentNulls.length; i++) {
+            var currentNull = currentNulls[i], candidateNull = nullByName(candidate.handoff_3d, currentNull.name);
+            if (!candidateNull) throw new Error(currentNull.name + ": candidate managed 3D Null identity is missing.");
+            var oldNullTag = Contract.managedTag("null", current, currentNull.name), newNullTag = Contract.managedTag("null", candidate, candidateNull.name);
+            var nullLayer = findExactLayerByTag(comp, oldNullTag);
+            if (!nullLayer || !nullLayer.threeDLayer) throw new Error(currentNull.name + ": verified managed 3D Null was not found for revision migration.");
+            var nullCollision = findExactLayerByTag(comp, newNullTag);
+            if (nullCollision && nullCollision !== nullLayer) throw new Error(candidateNull.name + ": candidate managed 3D Null tag already belongs to another layer.");
+            records.push({kind: "null", layer: nullLayer, oldTag: oldNullTag, newTag: newNullTag, oldData: currentNull, newData: candidateNull});
+        }
+        var touched = [];
+        try {
+            for (i = 0; i < records.length; i++) {
+                var record = records[i];
+                touched.push(record);
+                applyRecord(record, record.newData);
+                setLayerComment(record.layer, record.newTag);
+                delete state.layers[record.oldTag];
+                state.layers[record.newTag] = record.layer;
+            }
+        } catch (migrationError) {
+            var rollbackFailures = [];
+            for (i = touched.length - 1; i >= 0; i--) {
+                try {
+                    var rollbackRecord = touched[i];
+                    applyRecord(rollbackRecord, rollbackRecord.oldData);
+                    setLayerComment(rollbackRecord.layer, rollbackRecord.oldTag);
+                    delete state.layers[rollbackRecord.newTag];
+                    state.layers[rollbackRecord.oldTag] = rollbackRecord.layer;
+                } catch (rollbackError) {
+                    rollbackFailures.push(errorText(rollbackError));
+                }
+            }
+            if (rollbackFailures.length) {
+                var rollbackReport = new Error("3D revision migration failed: " + errorText(migrationError) + "; 3D ROLLBACK INCOMPLETE: " + rollbackFailures.join("; "));
+                rollbackReport.handoffRollbackFailures = rollbackFailures;
+                throw rollbackReport;
+            }
+            throw migrationError;
+        }
     }
     function createExecutor(adapter) {
         var methods = ["listManagedLayers", "validateManagedLayer", "readSource", "importReplacement",
@@ -371,8 +544,13 @@
                     if (host.readSource(action.layer) !== replacements[j]) throw new Error("Source swap verification failed.");
                 }
                 host.commitRevision(snapshot(plan.current), snapshot(plan.candidate), replacements);
+                migrateHandoff3D(plan.current, plan.candidate);
                 return {status: "applied", replaced: attempted.length};
             } catch (error) {
+                if (error && error.handoffRollbackFailures && error.handoffRollbackFailures.length) {
+                    poisoned = true;
+                    for (j = 0; j < error.handoffRollbackFailures.length; j++) failures.push("3D restore: " + error.handoffRollbackFailures[j]);
+                }
                 for (j = attempted.length - 1; j >= 0; j--) {
                     try {
                         host.restoreManagedSource(attempted[j].layer, attempted[j].oldSource, attempted[j].passName);
