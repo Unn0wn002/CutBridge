@@ -2,14 +2,15 @@
 
 ## Current state
 
-- **Completed product sessions:** S1–S8.
+- **Completed product sessions:** S1–S9.
 - **Completed maintenance session:** S8.5 — repository/documentation state reconciliation.
-- **S8.5 integration evidence:** PR #42 merged as `00b6e8fd62826d9cecfda542f6cb85f7174a7dd2`; post-merge `develop` CI `34383182746` passed both jobs.
-- **Current release branch baseline:** `main` = `cc6dc4dacce55b730b37eeb1d65afdf6ea98c50c` — conservative unreleased/release-locked baseline.
+- **Release branch baseline:** `main` remains the conservative unreleased/release-locked branch and is not changed by S9.
 - **Product version:** `0.2.3` unreleased.
 - **Release authorization:** fail-closed; `release-authorization.json` remains `approved: false`.
 - **Git tags / GitHub Releases:** none.
-- **Next engineering session:** S9 — Studio Presets.
+- **Next engineering session:** S10 — Camera / Null Handoff Investigation.
+
+S9 completion does not authorize an RC or stable release. Exact S9 candidate/CI/merge evidence is recorded in issue #44 and the GitHub Actions history.
 
 ## Integrated sessions
 
@@ -69,35 +70,48 @@ PASS / integrated.
 - Blender native gate #41: PASS / closed.
 - Post-merge CI `34380737455`: PASS.
 
-Real native S8 repair evidence:
-
-- Blender 5.2.1 LTS, approximately 245 px N-panel: Japanese/English core UI materially readable; localized validation, Validate Cut, and Build Package passed.
-- Adobe After Effects 2026 v26.3.0 Build 87: persisted JA + missing `localization.js` fell back coherently to English with selector synchronization and zero project mutation; restoring the sidecar returned the UI to Japanese.
-
-Post-S8 automated evidence on `368b977...`:
-
-- `static-validation`: **88 passed + 2 subtests**;
-- full Blender/runtime suite: **179 passed + 2 subtests**;
-- S5/S6/S7/S8 regression suites: PASS;
-- release simulation/checksums: PASS;
-- ExtendScript/JS syntax: PASS.
+S8 established Japanese-first / English-fallback UI while preserving locale-independent manifest values, ownership tags, diagnostic codes, and safety decisions.
 
 ### S8.5 — Repository state reconciliation
 PASS / integrated.
 
-Documentation/status maintenance only; no runtime redesign, release authorization, or `main` promotion.
+Documentation/status maintenance only. S8.5 reconciled README/status/roadmap/Quick Start/Test Plan/changelog/AE install state, added Japanese onboarding and technical-debt tracking, and preserved release authorization as fail-closed.
 
-Completed work:
+### S9 — Studio Presets
+PASS / integrated.
 
-- [x] reconciled README/completion/roadmap/Quick Start/Test Plan/changelog/AE install status through S8;
-- [x] established S9 as the next engineering feature;
-- [x] added Japanese Quick Start documentation;
-- [x] recorded the current release lock and governance boundary;
-- [x] added `TECHNICAL_DEBT.md` for Blender 6.0, GitHub Actions runtime, promotion, governance, target-user, and documentation-drift debt;
-- [x] preserved `release-authorization.json` as unapproved;
-- [x] PR #42 exact final head `e61a1fc7c14e49c062c2d29b95e829636ef16bb7` passed CI run `34383043982`;
-- [x] PR #42 merged to `develop` as `00b6e8fd62826d9cecfda542f6cb85f7174a7dd2`;
-- [x] post-merge `develop` CI `34383182746` passed.
+S9 adds a bounded, versioned, declarative Studio Preset contract without adding executable configuration or a second preset trust boundary in After Effects.
+
+Implemented behavior:
+
+- [x] three Blender modes: Manual, CutBridge Default, Custom JSON;
+- [x] Manual remains default and preserves the pre-S9 package identity/pass/format controls;
+- [x] strict `cutbridge-studio-preset` schema version 1;
+- [x] safe built-in default and published example JSON;
+- [x] custom preset files limited to 64 KiB, UTF-8 JSON only;
+- [x] unknown fields, unsupported schema versions, invalid placeholders, duplicate passes, unsafe paths, and unsupported formats fail closed;
+- [x] render / preview / camera role folders must be relative, disjoint, and non-overlapping;
+- [x] configurable package naming, sequence naming, folder roles, pass order, required/optional flags, PNG/OpenEXR/TIFF format, version token, and AE comp naming;
+- [x] custom preset is frozen to one validated in-memory snapshot for the full Build Package transaction;
+- [x] Blender records normalized `studio_preset` provenance in `cutbridge.json` without storing the source preset path;
+- [x] old manifests remain valid because Studio Preset metadata is optional in the manifest schema;
+- [x] AE continues to consume resolved manifest fields and never opens the Studio Preset JSON;
+- [x] Japanese/English UI and stable `PRESET_*` validation codes;
+- [x] existing canonical `safe_token`, `version_token`, and `package_name` producer primitives remain unchanged for Blender↔AE identity compatibility;
+- [x] regression coverage includes valid/default/manual/custom, malicious/invalid input, overlapping folders, bounded loader behavior, one-build snapshot consistency, and no preset-path disclosure;
+- [x] existing S6/S7/S8 and Blender 5.2.1 suites remain part of the authoritative CI gate.
+
+Documentation:
+
+- [STUDIO_PRESETS.md](STUDIO_PRESETS.md)
+- [QUICK_START.md](QUICK_START.md)
+- [QUICK_START_JA.md](QUICK_START_JA.md)
+
+### S9 validation boundary
+
+Automated coverage establishes the data contract, Blender RNA/runtime compatibility, packaging/regression behavior, and existing AE contract preservation.
+
+S9 does **not** claim a new native After Effects feature because AE does not load presets directly. It also does not fabricate a native Blender GUI usability result; broader real-user/target-user validation remains a later release-validation concern.
 
 ## Release boundary
 
@@ -125,16 +139,17 @@ Green CI alone is never release authorization.
 
 ## Known technical debt
 
-See `TECHNICAL_DEBT.md`.
+See [TECHNICAL_DEBT.md](TECHNICAL_DEBT.md).
 
-Priority items:
+Priority items remain:
 
-1. Blender 6.0 migration away from deprecated `Scene.use_nodes` behavior. Current Blender 5.2.1 suite passes with 61 deprecation warnings.
-2. Refresh pinned GitHub Actions revisions that still target deprecated Node 20 runtimes. GitHub currently forces them onto Node 24 and CI passes, but the compatibility override should not be permanent.
+1. Blender 6.0 migration away from deprecated `Scene.use_nodes` behavior.
+2. Refresh pinned GitHub Actions revisions that still target deprecated Node 20 runtimes.
 3. Reconcile `main`/`develop` deliberately before a release candidate; do not treat the diverged histories as a trivial promotion merge.
+4. Record Japanese target-user evidence before making production usability claims.
 
 ## Next engineering session
 
-**S9 — Studio Presets**
+**S10 — Camera / Null Handoff Investigation**
 
-The preset system should remain data-driven and safe: naming, folders, pass defaults, layer order, output formats, and version patterns may be configurable, but presets must not execute arbitrary code or embed confidential studio workflows in public/customer distributions.
+Research Blender ↔ After Effects coordinate systems, axes, units, camera/lens/FOV/sensor representation, parenting, empties/nulls, and frame timing. Ship only behavior whose coordinate/timing contract can be established and tested reliably.
