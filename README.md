@@ -1,18 +1,18 @@
 # CutBridge
 
-**CutBridge is a Blender-to-After Effects production pipeline tool for animation cuts.** It standardizes cut metadata, render-pass packaging, versioning, JSON handoff, compositing setup, QC, controlled revision handling, and Japanese-first workflow UX so artists can move work from Blender into After Effects with less repetitive setup and fewer handoff errors.
+**CutBridge is a Blender-to-After Effects production pipeline tool for animation cuts.** It standardizes cut metadata, render-pass packaging, versioning, JSON handoff, compositing setup, QC, controlled revision handling, Japanese-first workflow UX, and safe Studio Presets so artists can move work from Blender into After Effects with less repetitive setup and fewer handoff errors.
 
-The primary audience is Japanese animation and content-production artists and studios. English remains a deterministic supported fallback, and CutBridge intentionally avoids hard-coding a single studio workflow.
+The primary audience is Japanese animation and content-production artists and studios. English remains a deterministic supported fallback. Studio Presets let teams adapt naming, folders, pass policy, and presentation conventions without hard-coding one studio workflow into CutBridge.
 
-CutBridge is not a renderer, toon shader, animation generator, or asset manager. Its role is the handoff layer between 3D cut production and compositing: validate the cut in Blender, configure deterministic render outputs, build a deterministic package, transfer the manifest and render sequences, reconstruct the expected AE context, run QC, and apply compatible revisions without silently replacing unrelated artist work.
+CutBridge is not a renderer, toon shader, animation generator, or asset manager. Its role is the handoff layer between 3D cut production and compositing: validate the cut in Blender, resolve an optional declarative Studio Preset, configure deterministic render outputs, build a deterministic package, transfer the manifest and render sequences, reconstruct the expected AE context, run QC, and apply compatible revisions without silently replacing unrelated artist work.
 
 ## Current development version
 
 **v0.2.3 — unreleased development baseline**
 
-Sessions **S1–S8 are integrated**, and the bounded **S8.5 repository-state reconciliation is complete**. S8 merged as `368b977582feadc26543825b4d31ffd5f6266a4f`; post-S8 CI run `34380737455` passed both `static-validation` and `blender-52-rna-runtime`. S8.5 documentation reconciliation merged through PR #42 as `00b6e8fd62826d9cecfda542f6cb85f7174a7dd2`; post-merge CI run `34383182746` also passed both jobs.
+Sessions **S1–S9 are integrated**. S9 adds the data-only Studio Preset contract while preserving the pre-S9 Manual workflow, canonical Blender↔AE package identity, S5/S6/S7 ownership/revision/QC safety, S8 localization behavior, and the fail-closed release boundary.
 
-S7 QC+ and S8 Japanese-first UX completed their native After Effects / Blender validation gates before integration. Stable or RC publication remains blocked by repository-level release governance issue #18 and the deliberate fail-closed release authorization state.
+Stable or RC publication remains blocked by repository-level release governance issue #18 and the deliberate unapproved release authorization state.
 
 ### Blender
 
@@ -26,7 +26,25 @@ S7 QC+ and S8 Japanese-first UX completed their native After Effects / Blender v
 - Environment diagnostics and LTS-first compatibility status.
 - Stable / Beta / Development update-channel preference and notification-only update checks.
 - Transactional registration cleanup for Blender 5.2.x RNA lifecycle safety.
-- S8 Japanese-first / English-fallback localized panel, validation messaging, and narrow-panel layout.
+- Japanese-first / English-fallback localized panel, validation messaging, and narrow-panel layout.
+- S9 Studio Preset modes: **Manual**, **CutBridge Default**, and **Custom JSON**.
+- Strict data-only preset validation with stable `PRESET_*` diagnostics.
+- Preset-managed package/sequence naming, folder roles, pass order/required flags, PNG/OpenEXR/TIFF format, version token, and AE comp naming.
+- One validated custom-preset snapshot per Build Package transaction.
+
+### Studio Preset safety
+
+Studio Presets are declarative JSON only.
+
+- custom files are UTF-8 JSON and capped at 64 KiB;
+- schema/version/known fields are strict;
+- absolute paths, traversal, overlapping folder roles, unsupported placeholders, duplicate passes, and unsupported formats are rejected;
+- arbitrary code, command execution, environment expansion, and hidden network behavior are not supported;
+- source preset paths are not written to `cutbridge.json`;
+- Manual remains the default and preserves historical package identity behavior;
+- After Effects never opens the Studio Preset file.
+
+See [`docs/STUDIO_PRESETS.md`](docs/STUDIO_PRESETS.md).
 
 ### After Effects
 
@@ -38,32 +56,32 @@ S7 QC+ and S8 Japanese-first UX completed their native After Effects / Blender v
 - S6 non-destructive revision workflow using verified source replacement with rollback and historical-footage provenance.
 - S7 QC+ deterministic PASS / WARNING / ERROR diagnostics with stable `CBQ-*` identifiers and safe remediation guidance.
 - S8 Japanese-first / English-fallback UI through adjacent `localization.js`, with deterministic English fallback if the localization sidecar is unavailable.
+- S9 continues using the existing manifest boundary: preset-managed path/order/comp values are resolved in Blender and consumed by AE from `cutbridge.json`; AE does not parse preset JSON.
 - Build, Revision, and QC fail closed when ownership or package structure is missing or ambiguous.
 - Negative/preroll export ranges are unsupported; export must be rebased to frame 0 or later.
 
-### Native validation evidence
+## Validation model
 
-S8 targeted native retesting passed on exact candidate `f477b745cc600b85708b63d059d6c4eaed9f0249` before merge:
+Authoritative automated integration requires both GitHub Actions jobs:
 
-- Blender 5.2.1 LTS at approximately 245 px N-panel width: JA/EN readability, localized validation, Validate Cut, and Build Package passed.
-- Adobe After Effects 2026 v26.3.0 Build 87: persisted Japanese locale, missing-`localization.js` English fallback, visible selector synchronization, zero unintended project mutation, restored JA behavior, and representative fail-closed guards passed.
+- `static-validation` — Python/AE contract tests, Studio Preset tests, deterministic release simulation, S6/S7/S8 regressions, and ExtendScript syntax;
+- `blender-52-rna-runtime` — official `bpy==5.2.1` registration lifecycle and complete Blender/runtime pytest suite.
 
-Automated post-S8 evidence on `368b977...`:
+Historical real-host evidence remains valid for the scopes it actually tested:
 
-- static suite: **88 passed + 2 subtests**;
-- complete Blender/runtime suite: **179 passed + 2 subtests**;
-- deterministic release simulation and checksums: PASS;
-- S5/S6/S7/S8 regression suites: PASS;
-- ExtendScript/JS syntax: PASS.
+- Blender 5.2.1 LTS S8 narrow-panel/localization/Validate/Build gate: PASS;
+- Adobe After Effects 2026 v26.3.0 Build 87 S8 localization/fallback gate: PASS;
+- S6/S7 real AE revision/QC campaigns: PASS after repaired native findings.
 
-S8.5 subsequently changed documentation/status only. Its exact merge `00b6e8fd...` also passed authoritative post-merge CI `34383182746`.
+S9 does not invent a new native AE gate because AE receives no preset parser or preset UI. Automated Blender evidence does not substitute for later release-target GUI/user validation.
 
-The Blender suite currently emits 61 `Scene.use_nodes` deprecation warnings associated with future Blender 6.0 compatibility work; they are tracked as technical debt rather than current test failures.
+The Blender suite still reports `Scene.use_nodes` deprecation warnings relevant to future Blender 6.0 work; see [`docs/TECHNICAL_DEBT.md`](docs/TECHNICAL_DEBT.md).
 
 ## Quick Start
 
 - English: [`docs/QUICK_START.md`](docs/QUICK_START.md)
 - 日本語: [`docs/QUICK_START_JA.md`](docs/QUICK_START_JA.md)
+- Studio Presets: [`docs/STUDIO_PRESETS.md`](docs/STUDIO_PRESETS.md)
 
 ## Repository layout
 
@@ -88,7 +106,7 @@ See [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md).
 
 Minimum declared Blender runtime is **4.2.0**. Current LTS-first targets are Blender **4.2 LTS**, **4.5 LTS**, and **5.2 LTS**. Meeting the minimum version alone is not a certification claim.
 
-Native After Effects behavior has been exercised for the S6–S8 validation gates on Adobe After Effects 2026 v26.3.0 Build 87, but stable-release compatibility claims still require the broader release checklist and end-to-end release validation.
+Native After Effects behavior has been exercised for the S6–S8 validation scopes on Adobe After Effects 2026 v26.3.0 Build 87, but stable-release compatibility claims still require the broader release checklist and end-to-end release validation.
 
 ## Update policy
 
@@ -99,7 +117,7 @@ The private source repository is **not** the customer update endpoint. CutBridge
 ## Development flow
 
 - `main` — conservative unreleased/release-locked baseline; only deliberate promotion after validation.
-- `develop` — active integration branch; S1–S8 plus the completed S8.5 documentation reconciliation are integrated.
+- `develop` — active integration branch; S1–S9 are integrated.
 - `feature/*`, `fix/*`, `docs/*` — bounded work branched from current `develop`.
 
 See [`docs/TEST_PLAN.md`](docs/TEST_PLAN.md), [`docs/COMPLETION_STATUS.md`](docs/COMPLETION_STATUS.md), [`docs/ROADMAP.md`](docs/ROADMAP.md), and [`docs/TECHNICAL_DEBT.md`](docs/TECHNICAL_DEBT.md).
@@ -112,15 +130,14 @@ CutBridge uses **GPL-3.0-or-later**. The full GPL v3 text is in [`LICENSE`](LICE
 
 Version 0.2.3 remains **unreleased**. There are no release tags or GitHub Releases, and `release-authorization.json` remains unapproved by design.
 
-Stable/RC publication is blocked until repository-level release governance in issue #18 is actually enforced and validated, a deliberate candidate is promoted to `main`, the exact tag/current-main tuple is explicitly authorized, published assets are independently checksum-verified, and the remaining release/end-to-end validation checklist is satisfied.
+Stable/RC publication is blocked until repository-level release governance in issue #18 is actually enforced and validated, a deliberate candidate is promoted to `main`, the exact tag/current-main tuple is explicitly authorized, published assets are independently checksum-verified, and the remaining release/end-to-end/target-user validation checklist is satisfied.
 
 ## Next product work
 
-1. **S9 — Studio Presets**: configurable naming, folders, passes, layer ordering, formats, and version-pattern presets with a safe data-only schema.
-2. **S10 — Camera / Null handoff investigation**.
-3. **S11 — QA / docs / release engineering**.
-4. **S12 — End-to-end validation harness**.
-5. **S13 — Manual-finding repair**, only when real manual failures exist.
-6. **S14 — Japanese target-user validation preparation**.
+1. **S10 — Camera / Null Handoff Investigation**.
+2. **S11 — QA / docs / release engineering**.
+3. **S12 — End-to-end validation harness**.
+4. **S13 — Manual-finding repair**, only when real manual failures exist.
+5. **S14 — Japanese target-user validation preparation**.
 
-Release-governance work remains independent of S9+ feature development. Do not interpret green CI, S8 integration, or S8.5 completion as publication authorization.
+Release-governance work remains independent of S10+ feature development. Do not interpret green CI or S9 integration as publication authorization.
