@@ -202,6 +202,13 @@
         return out;
     }
     function aspect(m) { return m.resolution.pixel_aspect === undefined ? 1 : m.resolution.pixel_aspect; }
+    function sameSampleTopology(left, right) {
+        if (!array(left) || !array(right) || left.length !== right.length) return false;
+        for (var i = 0; i < left.length; i++) {
+            if (!left[i] || !right[i] || left[i].frame !== right[i].frame || left[i].time !== right[i].time) return false;
+        }
+        return true;
+    }
     function handoffTopologyErrors(current, candidate) {
         var errors = [], left = current.handoff_3d, right = candidate.handoff_3d, i, names = {}, key;
         if (!!left !== !!right) {
@@ -213,6 +220,8 @@
             errors.push("Adding or removing the managed 3D camera is unsupported by source-only revision; rebuild or migrate the comp deliberately.");
         } else if (left.camera && (left.camera.name !== right.camera.name || left.camera.type !== right.camera.type)) {
             errors.push("Changing managed 3D camera identity/type is unsupported by source-only revision; rebuild or migrate the comp deliberately.");
+        } else if (left.camera && !sameSampleTopology(left.camera.samples, right.camera.samples)) {
+            errors.push("Changing managed Camera sample topology is unsupported by source-only revision; rebuild or migrate the comp deliberately.");
         }
         var leftNulls = array(left.nulls) ? left.nulls : [], rightNulls = array(right.nulls) ? right.nulls : [];
         if (leftNulls.length !== rightNulls.length) {
@@ -225,6 +234,13 @@
             if (!names[key]) {
                 errors.push("Changing managed 3D Null identity is unsupported by source-only revision; rebuild or migrate the comp deliberately.");
                 break;
+            }
+            for (var j = 0; j < leftNulls.length; j++) {
+                if (leftNulls[j].name === rightNulls[i].name &&
+                    !sameSampleTopology(leftNulls[j].samples, rightNulls[i].samples)) {
+                    errors.push("Changing managed 3D Null sample topology is unsupported by source-only revision; rebuild or migrate the comp deliberately.");
+                    break;
+                }
             }
             delete names[key];
         }
@@ -332,10 +348,18 @@
         try { layer.comment = value; }
         catch (e) { throw new Error("After Effects layer comments are required for safe 3D revision ownership migration."); }
     }
-    function clearKeys(prop) {
-        if (!prop) throw new Error("Required managed 3D transform property is unavailable.");
-        if (prop.numKeys && prop.numKeys > 0) {
-            for (var k = prop.numKeys; k >= 1; k--) prop.removeKey(k);
+    function assertPropertySampleTopology(prop, samples, keyed, label) {
+        if (!prop) throw new Error(label + " property is unavailable during revision.");
+        var expected = keyed ? samples.length : 0;
+        if (prop.numKeys !== expected) {
+            throw new Error(label + " key topology drift: expected " + expected + " keys, found " + prop.numKeys + ".");
+        }
+        if (!keyed) return;
+        if (typeof prop.keyTime !== "function") throw new Error(label + " key times cannot be verified during revision.");
+        for (var i = 0; i < samples.length; i++) {
+            if (Math.abs(Number(prop.keyTime(i + 1)) - Number(samples[i].time)) > 0.000001) {
+                throw new Error(label + " key topology drift at key " + (i + 1) + ".");
+            }
         }
     }
     function cameraPointOfInterestProperty(transform) {
@@ -348,14 +372,50 @@
         catch (matchNameError) { return null; }
         return matchName === "ADBE Anchor Point" ? prop : null;
     }
-    function applyCameraSamples(layer, camera) {
+    function cameraProperties(layer) {
         var transform = layer.property ? layer.property("ADBE Transform Group") : null;
-        var pos = transform ? transform.property("ADBE Position") : layer.position;
-        var poi = cameraPointOfInterestProperty(transform);
         var options = layer.property ? layer.property("ADBE Camera Options Group") : null;
-        var zoom = options ? options.property("ADBE Camera Zoom") : (layer.cameraOption ? layer.cameraOption.zoom : null);
+        return {
+            position: transform ? transform.property("ADBE Position") : layer.position,
+            pointOfInterest: cameraPointOfInterestProperty(transform),
+            zoom: options ? options.property("ADBE Camera Zoom") : (layer.cameraOption ? layer.cameraOption.zoom : null)
+        };
+    }
+    function nullProperties(layer) {
+        var transform = layer.property ? layer.property("ADBE Transform Group") : null;
+        return {
+            position: transform ? transform.property("ADBE Position") : layer.position,
+            scale: transform ? transform.property("ADBE Scale") : layer.scale
+        };
+    }
+    function scaledSamples(samples) {
+        var out = [];
+        for (var i = 0; i < samples.length; i++) {
+            if (samples[i].scale && array(samples[i].scale) && samples[i].scale.length === 3) out.push(samples[i]);
+        }
+        return out;
+    }
+    function validateCameraSampleTopology(layer, camera) {
+        var props = cameraProperties(layer), keyed = camera.samples.length > 1;
+        if (!props.position || !props.pointOfInterest || !props.zoom) {
+            throw new Error("Managed camera Position, verified Point of Interest, or Zoom property is unavailable during revision.");
+        }
+        assertPropertySampleTopology(props.position, camera.samples, keyed, "Managed Camera Position");
+        assertPropertySampleTopology(props.pointOfInterest, camera.samples, keyed, "Managed Camera Point of Interest");
+        assertPropertySampleTopology(props.zoom, camera.samples, keyed, "Managed Camera Zoom");
+    }
+    function validateNullSampleTopology(layer, nullData) {
+        var props = nullProperties(layer), keyed = nullData.samples.length > 1, scale = scaledSamples(nullData.samples);
+        if (!props.position) throw new Error("Managed 3D Null Position property is unavailable during revision.");
+        assertPropertySampleTopology(props.position, nullData.samples, keyed, "Managed 3D Null Position");
+        if (scale.length) {
+            if (!props.scale) throw new Error("Managed 3D Null Scale property is unavailable during revision.");
+            assertPropertySampleTopology(props.scale, scale, keyed, "Managed 3D Null Scale");
+        }
+    }
+    function applyCameraSamples(layer, camera) {
+        var props = cameraProperties(layer), pos = props.position, poi = props.pointOfInterest, zoom = props.zoom;
         if (!pos || !poi || !zoom) throw new Error("Managed camera Position, verified Point of Interest, or Zoom property is unavailable during revision.");
-        clearKeys(pos); clearKeys(poi); clearKeys(zoom);
         for (var i = 0; i < camera.samples.length; i++) {
             var sample = camera.samples[i], forward = sample.forward || [0, 0, 1], point = [
                 sample.position[0] + forward[0] * 1000.0,
@@ -372,11 +432,8 @@
         }
     }
     function applyNullSamples(layer, nullData) {
-        var transform = layer.property ? layer.property("ADBE Transform Group") : null;
-        var pos = transform ? transform.property("ADBE Position") : layer.position;
-        var scale = transform ? transform.property("ADBE Scale") : layer.scale;
+        var props = nullProperties(layer), pos = props.position, scale = props.scale;
         if (!pos) throw new Error("Managed 3D Null Position property is unavailable during revision.");
-        clearKeys(pos); if (scale) clearKeys(scale);
         for (var i = 0; i < nullData.samples.length; i++) {
             var sample = nullData.samples[i], scaleValue = sample.scale && array(sample.scale) && sample.scale.length === 3 ?
                 [sample.scale[0] * 100, sample.scale[1] * 100, sample.scale[2] * 100] : null;
@@ -440,6 +497,10 @@
         }
         var touched = [];
         try {
+            for (i = 0; i < records.length; i++) {
+                if (records[i].kind === "camera") validateCameraSampleTopology(records[i].layer, records[i].oldData);
+                else validateNullSampleTopology(records[i].layer, records[i].oldData);
+            }
             for (i = 0; i < records.length; i++) {
                 var record = records[i];
                 touched.push(record);
