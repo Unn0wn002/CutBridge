@@ -10,7 +10,9 @@ CutBridge is not a renderer, toon shader, animation generator, or asset manager.
 
 **v0.2.3 — unreleased development baseline**
 
-Sessions **S1–S9 are integrated**. S9 adds the data-only Studio Preset contract while preserving the pre-S9 Manual workflow, canonical Blender↔AE package identity, S5/S6/S7 ownership/revision/QC safety, S8 localization behavior, and the fail-closed release boundary.
+Sessions **S1–S9 are integrated**. S10 — Camera / Null Handoff Investigation — is currently an **evidence-first research session**. It has not changed the production manifest or enabled managed AE camera/null creation.
+
+S9 adds the data-only Studio Preset contract while preserving the pre-S9 Manual workflow, canonical Blender↔AE package identity, S5/S6/S7 ownership/revision/QC safety, S8 localization behavior, and the fail-closed release boundary.
 
 Stable or RC publication remains blocked by repository-level release governance issue #18 and the deliberate unapproved release authorization state.
 
@@ -60,12 +62,27 @@ See [`docs/STUDIO_PRESETS.md`](docs/STUDIO_PRESETS.md).
 - Build, Revision, and QC fail closed when ownership or package structure is missing or ambiguous.
 - Negative/preroll export ranges are unsupported; export must be rebased to frame 0 or later.
 
+### S10 camera/null research — not production runtime
+
+S10 currently provides a research harness only.
+
+- production `cutbridge.json` still carries only the legacy active-camera name string;
+- the production AE importer does not create a managed 3D camera or null from S10 data;
+- candidate basis under test: Blender `(X,Y,Z)` → AE `(X,-Z,Y)`;
+- the first synthetic fixture uses a centered 1920×1080 perspective camera, 50 mm lens, 36 mm horizontal sensor, and five axis/mixed points;
+- Blender 5.2 source projection is checked with `world_to_camera_view()` using a separate **0.00005 px** numeric precision bound;
+- native AE issue #47 uses a disposable comp, CameraLayer, 3D nulls, `toComp()`, and an unchanged **0.05 px** acceptance threshold;
+- `100 px / Blender unit` is fixture scale only, not a production spatial-scale policy;
+- arbitrary orientation, parenting/constraints, orthographic/panoramic cameras, lens shift, and DOF equivalence remain unapproved.
+
+See [`docs/CAMERA_NULL_HANDOFF.md`](docs/CAMERA_NULL_HANDOFF.md).
+
 ## Validation model
 
 Authoritative automated integration requires both GitHub Actions jobs:
 
-- `static-validation` — Python/AE contract tests, Studio Preset tests, deterministic release simulation, S6/S7/S8 regressions, and ExtendScript syntax;
-- `blender-52-rna-runtime` — official `bpy==5.2.1` registration lifecycle and complete Blender/runtime pytest suite.
+- `static-validation` — Python/AE contract tests, Studio Preset tests, S10 research math/probe-contract tests, deterministic release simulation, S6/S7/S8 regressions, and ExtendScript/probe syntax;
+- `blender-52-rna-runtime` — official `bpy==5.2.1` registration lifecycle and complete Blender/runtime pytest suite, including the isolated S10 source projection probe.
 
 Historical real-host evidence remains valid for the scopes it actually tested:
 
@@ -73,7 +90,7 @@ Historical real-host evidence remains valid for the scopes it actually tested:
 - Adobe After Effects 2026 v26.3.0 Build 87 S8 localization/fallback gate: PASS;
 - S6/S7 real AE revision/QC campaigns: PASS after repaired native findings.
 
-S9 does not invent a new native AE gate because AE receives no preset parser or preset UI. Automated Blender evidence does not substitute for later release-target GUI/user validation.
+S9 does not invent a new native AE gate because AE receives no preset parser or preset UI. S10 native AE spatial evidence is tracked separately in issue #47. Automated Blender evidence does not substitute for native AE or later release-target GUI/user validation.
 
 The Blender suite still reports `Scene.use_nodes` deprecation warnings relevant to future Blender 6.0 work; see [`docs/TECHNICAL_DEBT.md`](docs/TECHNICAL_DEBT.md).
 
@@ -82,6 +99,7 @@ The Blender suite still reports `Scene.use_nodes` deprecation warnings relevant 
 - English: [`docs/QUICK_START.md`](docs/QUICK_START.md)
 - 日本語: [`docs/QUICK_START_JA.md`](docs/QUICK_START_JA.md)
 - Studio Presets: [`docs/STUDIO_PRESETS.md`](docs/STUDIO_PRESETS.md)
+- S10 camera/null research: [`docs/CAMERA_NULL_HANDOFF.md`](docs/CAMERA_NULL_HANDOFF.md)
 
 ## Repository layout
 
@@ -94,7 +112,8 @@ CutBridge/
 │   ├── shared/
 │   └── update/
 ├── tools/
-│   └── build_release.py
+│   ├── build_release.py
+│   └── research/
 ├── docs/
 ├── tests/
 └── .github/workflows/
@@ -106,7 +125,7 @@ See [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md).
 
 Minimum declared Blender runtime is **4.2.0**. Current LTS-first targets are Blender **4.2 LTS**, **4.5 LTS**, and **5.2 LTS**. Meeting the minimum version alone is not a certification claim.
 
-Native After Effects behavior has been exercised for the S6–S8 validation scopes on Adobe After Effects 2026 v26.3.0 Build 87, but stable-release compatibility claims still require the broader release checklist and end-to-end release validation.
+Native After Effects behavior has been exercised for the S6–S8 validation scopes on Adobe After Effects 2026 v26.3.0 Build 87. S10 native spatial-probe evidence is still pending and stable-release compatibility claims still require the broader release checklist and end-to-end release validation.
 
 ## Update policy
 
@@ -118,7 +137,8 @@ The private source repository is **not** the customer update endpoint. CutBridge
 
 - `main` — conservative unreleased/release-locked baseline; only deliberate promotion after validation.
 - `develop` — active integration branch; S1–S9 are integrated.
-- `feature/*`, `fix/*`, `docs/*` — bounded work branched from current `develop`.
+- `feature/session-10-camera-null-handoff` — current bounded S10 research branch from the exact green S9 merge.
+- other `feature/*`, `fix/*`, `docs/*` branches — bounded work from current `develop`.
 
 See [`docs/TEST_PLAN.md`](docs/TEST_PLAN.md), [`docs/COMPLETION_STATUS.md`](docs/COMPLETION_STATUS.md), [`docs/ROADMAP.md`](docs/ROADMAP.md), and [`docs/TECHNICAL_DEBT.md`](docs/TECHNICAL_DEBT.md).
 
@@ -132,12 +152,12 @@ Version 0.2.3 remains **unreleased**. There are no release tags or GitHub Releas
 
 Stable/RC publication is blocked until repository-level release governance in issue #18 is actually enforced and validated, a deliberate candidate is promoted to `main`, the exact tag/current-main tuple is explicitly authorized, published assets are independently checksum-verified, and the remaining release/end-to-end/target-user validation checklist is satisfied.
 
-## Next product work
+## Current / next product work
 
-1. **S10 — Camera / Null Handoff Investigation**.
-2. **S11 — QA / docs / release engineering**.
+1. **S10 — Camera / Null Handoff Investigation** — active; native AE gate #47 pending.
+2. **S11 — QA / docs / release engineering** — not eligible until S10 reaches an explicit completion decision.
 3. **S12 — End-to-end validation harness**.
 4. **S13 — Manual-finding repair**, only when real manual failures exist.
 5. **S14 — Japanese target-user validation preparation**.
 
-Release-governance work remains independent of S10+ feature development. Do not interpret green CI or S9 integration as publication authorization.
+Release-governance work remains independent of S10+ feature development. Do not interpret green research CI, S9 integration, or any S10 probe result as publication authorization.
