@@ -10,11 +10,12 @@ CutBridge is not a renderer, toon shader, animation generator, general scene exp
 
 **v0.2.3 — unreleased development baseline**
 
-Sessions **S1–S9 plus S10A–S10C are integrated** on `develop`.
+Product work is complete through **S11 QA / Docs / Release Engineering** on the S11 integration candidate. S1–S9 and S10A–S10C are already integrated on `develop`; S11 reconciles user documentation, compatibility claims, release-readiness gates, and regression coverage without changing runtime behavior or publication authorization.
 
 - S10A established the Blender ↔ After Effects coordinate, timing, camera, and Empty/Null contract.
 - S10B added an optional/versioned `handoff_3d` producer with evaluated-world Blender sampling for the supported perspective camera and explicitly marked Empties.
-- S10C now consumes that contract in After Effects to reconstruct CutBridge-managed camera and 3D Null layers, with native projection parity validated in Adobe After Effects 2026 Build 87.
+- S10C consumes that contract in After Effects to reconstruct CutBridge-managed camera and 3D Null layers, with native projection parity validated in Adobe After Effects 2026 Build 87.
+- S11 makes the current workflow and release boundary explicit in EN/JA Quick Starts, AE installation guidance, compatibility policy, `HANDOFF_3D.md`, and the canonical `docs/RELEASE_READINESS.md` checklist.
 
 Stable or RC publication remains blocked by repository-level release governance issue #18 and the deliberately unapproved release authorization state.
 
@@ -54,12 +55,7 @@ See [`docs/STUDIO_PRESETS.md`](docs/STUDIO_PRESETS.md).
 
 ### 3D handoff boundary
 
-S10B produces a versioned optional `handoff_3d` block containing baked evaluated-world samples for:
-
-- the active supported perspective camera;
-- explicitly marked Blender Empties only.
-
-The S10 contract does not copy Blender Euler channels directly into AE. It preserves the explicit axis contract:
+S10B produces a versioned optional `handoff_3d` block containing baked evaluated-world samples for the active supported perspective camera and explicitly marked Blender Empties. The S10 contract does not copy Blender Euler channels directly into AE. It preserves the explicit axis contract:
 
 ```text
 Blender (x, y, z) -> AE-oriented (x, -z, y)
@@ -97,7 +93,7 @@ See [`docs/CAMERA_NULL_HANDOFF_CONTRACT.md`](docs/CAMERA_NULL_HANDOFF_CONTRACT.m
 
 Authoritative automated integration requires both GitHub Actions jobs:
 
-- `static-validation` — Python/AE contract tests, Studio Preset tests, S10A/S10B schema/compatibility tests, S10C reconstruction checks, deterministic release simulation, S6/S7/S8 regressions, and ExtendScript syntax;
+- `static-validation` — Python/AE contract tests, Studio Preset tests, S10 schema/compatibility/reconstruction checks, S11 documentation/readiness guards, deterministic release simulation, S6/S7/S8 regressions, and ExtendScript syntax;
 - `blender-52-rna-runtime` — official `bpy==5.2.1` registration lifecycle and complete Blender/runtime pytest suite, including evaluated-world sampling and package-generation coverage.
 
 S10C integration evidence:
@@ -118,13 +114,9 @@ Native S10C evidence:
 - unmanaged camera/null collision rejection;
 - project persistence verified.
 
-Historical real-host evidence remains valid for the scopes it actually tested:
+S11 candidate validation also keeps the existing release simulation, authorization, Blender runtime, AE reconstruction, and historical regression suites green. One intermediate S11 CI run exposed a phrase-specific assertion in the new documentation test; the assertion was repaired to test the actual semantic camera/Null requirements without weakening the gate.
 
-- Blender 5.2.1 LTS S8 narrow-panel/localization/Validate/Build gate: PASS;
-- Adobe After Effects 2026 Build 87 S8 localization/fallback gate: PASS;
-- S6/S7 real AE revision/QC campaigns: PASS after repaired native findings.
-
-The Blender suite still reports `Scene.use_nodes` deprecation warnings relevant to future Blender 6.0 work; see [`docs/TECHNICAL_DEBT.md`](docs/TECHNICAL_DEBT.md).
+Historical real-host evidence remains valid only for the scopes it actually tested. The Blender suite still reports `Scene.use_nodes` deprecation warnings relevant to future Blender 6.0 work; see [`docs/TECHNICAL_DEBT.md`](docs/TECHNICAL_DEBT.md).
 
 ## Quick Start
 
@@ -132,23 +124,7 @@ The Blender suite still reports `Scene.use_nodes` deprecation warnings relevant 
 - 日本語: [`docs/QUICK_START_JA.md`](docs/QUICK_START_JA.md)
 - Studio Presets: [`docs/STUDIO_PRESETS.md`](docs/STUDIO_PRESETS.md)
 - S10 handoff contract: [`docs/HANDOFF_3D.md`](docs/HANDOFF_3D.md)
-
-## Repository layout
-
-```text
-CutBridge/
-├── apps/
-│   ├── blender/cutbridge/
-│   └── after-effects/
-├── packages/
-│   ├── shared/
-│   └── update/
-├── tools/
-│   └── build_release.py
-├── docs/
-├── tests/
-└── .github/workflows/
-```
+- Release readiness: [`docs/RELEASE_READINESS.md`](docs/RELEASE_READINESS.md)
 
 ## Compatibility
 
@@ -156,7 +132,7 @@ See [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md).
 
 Minimum declared Blender runtime is **4.2.0**. Current LTS-first targets are Blender **4.2 LTS**, **4.5 LTS**, and **5.2 LTS**. Meeting the minimum version alone is not a certification claim.
 
-Native After Effects behavior has been exercised for S6–S8 and S10C on Adobe After Effects 2026 Build 87. Stable-release compatibility claims still require the broader release checklist, release-target end-to-end validation, and target-user evidence appropriate to the claim.
+After Effects **2024–2026** remains the target range. Real native evidence exists for bounded S6–S8 and S10C scopes on Adobe After Effects 2026 Build 87, Windows 11. This must not be expanded into blanket certification for every AE version, OS, or production workflow.
 
 ## Update policy
 
@@ -167,10 +143,10 @@ The private source repository is **not** the customer update endpoint. CutBridge
 ## Development flow
 
 - `main` — conservative unreleased/release-locked baseline; only deliberate promotion after validation.
-- `develop` — active integration branch; S1–S9 plus S10A–S10C are integrated.
+- `develop` — active integration branch.
 - `feature/*`, `fix/*`, `docs/*` — bounded work branched from current `develop`.
 
-See [`docs/TEST_PLAN.md`](docs/TEST_PLAN.md), [`docs/COMPLETION_STATUS.md`](docs/COMPLETION_STATUS.md), [`docs/ROADMAP.md`](docs/ROADMAP.md), and [`docs/TECHNICAL_DEBT.md`](docs/TECHNICAL_DEBT.md).
+See [`docs/TEST_PLAN.md`](docs/TEST_PLAN.md), [`docs/COMPLETION_STATUS.md`](docs/COMPLETION_STATUS.md), [`docs/ROADMAP.md`](docs/ROADMAP.md), [`docs/RELEASE_READINESS.md`](docs/RELEASE_READINESS.md), and [`docs/TECHNICAL_DEBT.md`](docs/TECHNICAL_DEBT.md).
 
 ## License
 
@@ -178,15 +154,14 @@ CutBridge uses **GPL-3.0-or-later**. The full GPL v3 text is in [`LICENSE`](LICE
 
 ## Release status
 
-Version 0.2.3 remains **unreleased**. There are no release tags or GitHub Releases, and `release-authorization.json` remains unapproved by design.
+Version 0.2.3 remains **unreleased / NOT RELEASE READY**. There are no release tags or GitHub Releases, and `release-authorization.json` remains unapproved by design.
 
-Stable/RC publication is blocked until repository-level release governance in issue #18 is actually enforced and validated, a deliberate candidate is promoted to `main`, the exact tag/current-main tuple is explicitly authorized, published assets are independently checksum-verified, and the remaining release/end-to-end/target-user validation checklist is satisfied.
+Stable/RC publication is blocked until repository-level release governance in issue #18 is actually enforced and validated, S12 release-target end-to-end evidence is recorded, a deliberate candidate is promoted to `main`, the exact tag/current-main tuple is explicitly authorized, published assets are independently checksum-verified, the production update/distribution path is verified, and remaining target-user evidence appropriate to the release claim is complete.
 
 ## Next product work
 
-1. **S11 — QA / docs / release engineering**.
-2. **S12 — End-to-end validation harness**.
-3. **S13 — Manual-finding repair**, only when real manual failures exist.
-4. **S14 — Japanese target-user validation preparation**.
+1. **S12 — End-to-End Blender → package → After Effects validation harness**.
+2. **S13 — Manual-finding repair**, only when real manual failures exist.
+3. **S14 — Japanese target-user validation preparation**.
 
-Release-governance work remains independent of feature development. Do not interpret green CI or S10C integration as publication authorization.
+Release-governance work remains independent of feature development. Do not interpret green CI, S10C native evidence, or S11 release-readiness documentation as publication authorization.

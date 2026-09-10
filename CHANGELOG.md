@@ -4,6 +4,33 @@ All notable CutBridge changes are tracked here.
 
 ## [0.2.3] - Unreleased
 
+### S11 — QA / Docs / Release Engineering
+
+#### Added / changed
+- Reconciled English and Japanese Quick Starts through the S10C camera/3D Null workflow and current release boundary.
+- Reconciled `apps/after-effects/INSTALL.md` through S10C native reconstruction while preserving the four-runtime-file installation contract.
+- Reconciled `docs/HANDOFF_3D.md` from obsolete producer-only language to the bounded S10B producer + S10C After Effects consumer workflow.
+- Expanded `docs/COMPATIBILITY.md` to distinguish **bounded native evidence** from blanket host certification.
+- Added canonical `docs/RELEASE_READINESS.md` separating automated QA, already-recorded native evidence, S12 release-target end-to-end validation, Japanese target-user evidence, repository governance, candidate freeze, deliberate `develop`→`main` promotion, exact authorization, publication, downloaded-asset verification, and production update/distribution verification.
+- Added `tests/test_s11_docs.py` to prevent user/release docs from silently regressing to pre-S10C claims.
+- Reconciled README, completion status, roadmap, and test plan so S12 is the next bounded product phase after S11 integration.
+
+#### QA / release-engineering findings
+- Existing deterministic release builder and release workflow were audited and retained: no reproducible release-runtime defect justified redesign.
+- Existing release-hygiene, authorization, packaging simulation, AE regression, and Blender 5.2.1 runtime gates remain authoritative.
+- Intermediate S11 CI `34449966185` passed static validation and Blender RNA registration but failed one newly added documentation regression because the assertion depended on one exact phrase; the runtime suite otherwise reported 235 PASS / 1 new-doc-test FAIL / 62 warnings / 2 subtests PASS.
+- The assertion was repaired to verify the semantic managed-perspective-camera and managed-3D-Null claims separately without weakening the gate.
+- Corrected head `818d9b8275319194c8c42329b8a139b35239e1aa`, CI `34450066759`: both authoritative jobs PASS.
+- State-document reconciliation after that green run creates a later final S11 candidate SHA that must receive its own full CI before PR/merge.
+
+#### Safety / release status
+- S11 changes documentation, QA coverage, compatibility claims, and release-readiness organization; it does not authorize publication.
+- `main` remains untouched by intended S11 work.
+- `release-authorization.json` remains fail-closed.
+- No release tags or GitHub Releases are created by S11.
+- Issue #18 remains the independent repository-governance blocker.
+- v0.2.3 remains **NOT RELEASE READY** until S12 release-target end-to-end evidence, applicable target-user evidence, repository governance, deliberate promotion, exact authorization, publication verification, and production distribution verification are complete.
+
 ### S10C — Native After Effects camera / 3D Null reconstruction
 
 #### Added
@@ -189,14 +216,15 @@ All notable CutBridge changes are tracked here.
 - Current Blender 5.2.1 suite passes but emits `Scene.use_nodes` deprecation warnings expected to matter for Blender 6.0.
 - Some pinned GitHub Actions revisions still target deprecated Node 20 runtimes and are currently forced by GitHub onto Node 24; pins should be refreshed deliberately.
 - `main` / `develop` promotion must be reconciled deliberately before an RC.
-- S10C native reconstruction has passed its bounded AE parity gate, but broader release-target end-to-end host/OS coverage and Japanese target-user evidence are still separate requirements.
+- S10C native reconstruction has passed its bounded AE parity gate, but broader release-target end-to-end host/OS coverage and Japanese target-user evidence remain separate requirements.
 
 ### Release status
 
-- v0.2.3 remains unreleased.
+- v0.2.3 remains unreleased / NOT RELEASE READY.
 - No release tag or GitHub Release exists.
 - `release-authorization.json` remains unapproved by design.
-- Repository-level release governance issue #18 remains a blocker independently of S1–S10C product integration.
+- Repository-level release governance issue #18 remains independently blocking publication.
+- S12 release-target end-to-end validation is the next product gate after S11 integration.
 
 ## [0.2.2] - Unreleased
 
