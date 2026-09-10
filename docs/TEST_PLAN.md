@@ -288,18 +288,18 @@ Before a stable release claim, execute and record the appropriate real applicati
 - representative Build/QC/revision/save-reopen workflow;
 - real filesystem/path behavior for the supported OS matrix;
 - Studio Preset UI/file-selection usability where that behavior is part of the release claim;
-- S10C native AE camera/null reconstruction and projection/orientation/timing parity before 3D handoff is user-facing;
+- S10C native AE camera/null reconstruction and projection/orientation/timing parity (VALIDATED in AE 2026 Build 87 with 0.00018 px max projection error);
 - published release-asset checksum/content verification;
 - production update-index/update-discovery verification;
 - Japanese target-user validation appropriate to the claim.
 
-Already-passed S6/S7/S8 native gates should not be relabeled as unexecuted, but they also do not automatically certify every release-target host/OS/workflow combination.
+Already-passed S6/S7/S8/S10C native gates should not be relabeled as unexecuted, but they also do not automatically certify every release-target host/OS/workflow combination.
 
-S9 does not require a new native AE gate because AE receives no preset parser or preset UI. S10B likewise does not claim AE reconstruction; producer automation is not a substitute for the S10C native host gate.
+S9 did not require a new native AE gate because AE receives no preset parser or preset UI. S10C fulfills the native AE host gate for 3D camera/null reconstruction with real After Effects execution evidence.
 
 ## 12. Repository/session merge gate
 
-For bounded feature integration such as S10B:
+For bounded feature integration such as S10C:
 
 - branch from the exact green `develop` baseline;
 - keep `main` untouched;
@@ -308,11 +308,12 @@ For bounded feature integration such as S10B:
 - static validation passes on the exact candidate;
 - release simulation passes;
 - historical S6/S7/S8 and identity/localization regressions remain green;
-- full Blender 5.2.1 RNA/runtime suite passes;
+- S10C reconstruction regression suite passes;
+- native After Effects host verification passes with real evidence;
 - PR targets `develop` and the exact head is unchanged;
 - independent PR-event CI passes;
 - merge uses the exact validated candidate;
 - post-merge `develop` CI passes on the exact merge commit;
 - repository status documentation is reconciled before declaring the session fully closed.
 
-Only after those gates pass is S10B considered fully integrated and S10C eligible to begin.
+Only after those gates pass is S10C considered fully integrated and S11 eligible to begin.
