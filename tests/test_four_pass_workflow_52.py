@@ -15,7 +15,9 @@ sys.path.insert(0, str(BLENDER_APP))
 
 import cutbridge  # noqa: E402
 from cutbridge.core import clear_managed_render_outputs, validate_scene  # noqa: E402
+from cutbridge.diagnostics import diagnostic_parts  # noqa: E402
 from cutbridge.operators import _all_validation_issues  # noqa: E402
+from cutbridge.shadow_preflight import shadow_pass_preflight_issues  # noqa: E402
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -51,9 +53,10 @@ def four_pass_scene(tmp_path):
     bpy.context.collection.objects.link(camera)
     scene.camera = camera
 
-    # Cycles exposes the Shadow data pass and supports Freestyle in the 5.2
-    # runtime used by the authoritative automated Blender lane.
-    scene.render.engine = "CYCLES"
+    # Blender 5.2 documents the standalone Shadow render pass for EEVEE. The
+    # authoritative bpy 5.2.1 lane proves the four-pass CutBridge mapping using
+    # that renderer instead of incorrectly assuming Cycles exposes Shadow.
+    scene.render.engine = "BLENDER_EEVEE"
     scene.render.fps = 24
     scene.render.fps_base = 1.0
     scene.render.resolution_x = 1920
@@ -179,3 +182,34 @@ def test_depth_png_is_warning_but_depth_openexr_is_not(four_pass_scene):
     settings.image_format = "OPEN_EXR"
     exr_issues = validate_scene(bpy.context)
     assert not any(item["code"] == "DEPTH_FORMAT_LOSSY" for item in exr_issues)
+
+
+def test_cycles_shadow_is_rejected_before_build_without_state_or_package_damage(four_pass_scene):
+    scene, settings, layer, _ = four_pass_scene
+    scene.render.engine = "CYCLES"
+    _select(settings, ("BEAUTY", "SHADOW"), "PNG")
+    layer.use_pass_shadow = False
+    before_shadow = layer.use_pass_shadow
+    before_probe_groups = {group.name for group in bpy.data.node_groups if group.name.startswith("CutBridge_Shadow_Preflight")}
+
+    issues = shadow_pass_preflight_issues(bpy.context)
+    assert len(issues) == 1
+    assert issues[0]["level"] == "ERROR"
+    assert issues[0]["code"] == "SHADOW_OUTPUT_UNAVAILABLE"
+    assert layer.use_pass_shadow == before_shadow
+    after_probe_groups = {group.name for group in bpy.data.node_groups if group.name.startswith("CutBridge_Shadow_Preflight")}
+    assert after_probe_groups == before_probe_groups
+
+    parts = diagnostic_parts("EN", issues[0])
+    assert parts["title"] == "Shadow Pass Cannot Be Generated"
+    assert parts["continue"].startswith("No")
+    assert "EEVEE" in parts["fix"]
+
+    all_issues = _all_validation_issues(bpy.context)
+    assert any(item["code"] == "SHADOW_OUTPUT_UNAVAILABLE" for item in all_issues)
+
+    with pytest.raises(RuntimeError, match="Shadow Pass Cannot Be Generated"):
+        bpy.ops.cutbridge.build_package()
+    assert settings.last_package_path == ""
+    assert not list(pathlib.Path(settings.output_dir).iterdir())
+    assert layer.use_pass_shadow == before_shadow
