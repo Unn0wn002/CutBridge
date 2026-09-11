@@ -74,10 +74,30 @@ def diagnostic_parts(language: str | None, item: dict) -> dict[str, str]:
     }
 
 
+def _canonical_support_text(item: dict) -> str:
+    message = str(item.get("message", "")).strip()
+    fix = str(item.get("fix", "")).strip()
+    if not message:
+        return ""
+    if fix:
+        return f"{message} Fix: {fix}"
+    return message
+
+
 def format_diagnostic(language: str | None, item: dict) -> str:
-    """Compact structured diagnostic for Blender operator reports."""
-    parts = diagnostic_parts(language, item)
+    """Compact structured diagnostic that preserves canonical support text.
+
+    The human-facing EN/JA explanation leads. Canonical English text remains
+    present when it would otherwise disappear so existing support recipes and
+    host-side regression checks do not lose stable diagnostic substrings.
+    """
+    lang = normalize_language(language)
+    parts = diagnostic_parts(lang, item)
     text = f"{parts['title']}: {parts['what']} Why: {parts['why']} Can I continue? {parts['continue']}"
     if parts["fix"]:
         text += f" Fix: {parts['fix']}"
+
+    canonical = _canonical_support_text(item)
+    if canonical and canonical not in text:
+        text += f" [EN] {canonical}"
     return text
