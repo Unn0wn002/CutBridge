@@ -60,6 +60,7 @@ def line_scene(tmp_path):
     scene.frame_start = 1
     scene.frame_end = 24
 
+    settings.language = "EN"
     settings.project = "LinePreflight"
     settings.episode = "EP01"
     settings.scene_id = "SC010"
@@ -133,8 +134,8 @@ def test_validate_catches_line_failure_before_build(line_scene):
     assert line_errors[0]["level"] == "ERROR"
     assert "As Render Pass" in line_errors[0]["fix"]
 
-    result = bpy.ops.cutbridge.build_package()
-    assert result == {"CANCELLED"}
+    with pytest.raises(RuntimeError, match="Line Pass Cannot Be Generated"):
+        bpy.ops.cutbridge.build_package()
     assert settings.last_package_path == ""
     assert not list(output_dir.iterdir())
 
@@ -147,7 +148,7 @@ def test_preflight_probe_preserves_artist_compositor_and_render_state(line_scene
     if tree is None:
         tree = bpy.data.node_groups.new("CutBridge_Line_Artist_Compositor", "CompositorNodeTree")
         scene.compositing_node_group = tree
-    artist = tree.nodes.new("CompositorNodeValue")
+    artist = tree.nodes.new("CompositorNodeComposite")
     artist.name = "ARTIST_LINE_PREFLIGHT_KEEP"
 
     before_tree = scene.compositing_node_group
