@@ -25,11 +25,33 @@ class CUTBRIDGE_PT_MainPanel(bpy.types.Panel):
         s = scene.cutbridge
         language = s.language
 
-        def labeled_prop(container, data, property_name, label_text):
+        def help_button(container, topic):
+            op = container.operator("cutbridge.context_help", text="", icon="QUESTION", emboss=False)
+            op.topic = topic
+            return op
+
+        def labeled_prop(container, data, property_name, label_text, help_topic=None, enabled=True):
             # Labels and editable values use separate full-width rows so core
             # identifiers remain readable in a practical narrow N-panel.
-            container.label(text=label_text)
-            container.prop(data, property_name, text="")
+            label_row = container.row(align=True)
+            label_row.label(text=label_text)
+            if help_topic:
+                help_button(label_row, help_topic)
+            value_row = container.row()
+            value_row.enabled = enabled
+            value_row.prop(data, property_name, text="")
+
+        def inline_prop_help(container, data, property_name, label_text, topic, enabled=True):
+            row = container.row(align=True)
+            control = row.row(align=True)
+            control.enabled = enabled
+            control.prop(data, property_name, text=label_text)
+            help_button(row, topic)
+
+        def action_help(container, operator_id, text, icon, topic):
+            row = container.row(align=True)
+            row.operator(operator_id, text=text, icon=icon)
+            help_button(row, topic)
 
         labeled_prop(layout, s, "language", tr(language, "language"))
 
@@ -40,7 +62,7 @@ class CUTBRIDGE_PT_MainPanel(bpy.types.Panel):
         labeled_prop(box, s, "scene_id", tr(language, "scene"))
         labeled_prop(box, s, "cut", tr(language, "cut"))
         labeled_prop(box, s, "take", tr(language, "take"))
-        labeled_prop(box, s, "version", tr(language, "version"))
+        labeled_prop(box, s, "version", tr(language, "version"), "version")
 
         box = layout.box()
         box.label(text=tr(language, "scene_metadata"))
@@ -49,13 +71,15 @@ class CUTBRIDGE_PT_MainPanel(bpy.types.Panel):
         row.label(text=tr(language, "frames", value=f"{scene.frame_start}-{scene.frame_end}"))
         box.label(text=tr(language, "resolution", value=f"{scene.render.resolution_x} × {scene.render.resolution_y}"))
         camera_name = scene.camera.name if scene.camera else tr(language, "camera_not_set")
-        box.label(text=tr(language, "camera", value=camera_name))
+        row = box.row(align=True)
+        row.label(text=tr(language, "camera", value=camera_name))
+        help_button(row, "camera")
 
         preset_box = layout.box()
         preset_box.label(text=tr(language, "studio_preset"))
-        labeled_prop(preset_box, s, "studio_preset_mode", tr(language, "preset_mode"))
+        labeled_prop(preset_box, s, "studio_preset_mode", tr(language, "preset_mode"), "studio_preset")
         if s.studio_preset_mode == "CUSTOM":
-            labeled_prop(preset_box, s, "studio_preset_path", tr(language, "preset_json"))
+            labeled_prop(preset_box, s, "studio_preset_path", tr(language, "preset_json"), "studio_preset")
         if s.studio_preset_mode == "MANUAL":
             preset_box.label(text=tr(language, "preset_manual_hint"), icon="INFO")
         else:
@@ -63,21 +87,27 @@ class CUTBRIDGE_PT_MainPanel(bpy.types.Panel):
 
         box = layout.box()
         box.label(text=tr(language, "pass_package"))
-        pass_controls = box.column()
-        pass_controls.enabled = s.studio_preset_mode == "MANUAL"
-        pass_controls.prop(s, "pass_beauty", text=tr(language, "beauty"))
-        pass_controls.prop(s, "pass_line", text=tr(language, "line"))
-        pass_controls.prop(s, "pass_shadow", text=tr(language, "shadow"))
-        pass_controls.prop(s, "pass_depth", text=tr(language, "depth"))
-        labeled_prop(pass_controls, s, "image_format", tr(language, "sequence_format"))
+        controls_enabled = s.studio_preset_mode == "MANUAL"
+        inline_prop_help(box, s, "pass_beauty", tr(language, "beauty"), "beauty", controls_enabled)
+        inline_prop_help(box, s, "pass_line", tr(language, "line"), "line", controls_enabled)
+        inline_prop_help(box, s, "pass_shadow", tr(language, "shadow"), "shadow", controls_enabled)
+        inline_prop_help(box, s, "pass_depth", tr(language, "depth"), "depth", controls_enabled)
+        labeled_prop(
+            box,
+            s,
+            "image_format",
+            tr(language, "sequence_format"),
+            "sequence_format",
+            controls_enabled,
+        )
         if s.studio_preset_mode != "MANUAL":
             box.label(text=tr(language, "preset_controls_passes"))
 
         box = layout.box()
         box.label(text=tr(language, "export"))
-        labeled_prop(box, s, "output_dir", tr(language, "package_output"))
-        box.operator("cutbridge.validate", text=tr(language, "validate_cut"), icon="CHECKMARK")
-        box.operator("cutbridge.build_package", text=tr(language, "build_package"), icon="PACKAGE")
+        labeled_prop(box, s, "output_dir", tr(language, "package_output"), "output_path")
+        action_help(box, "cutbridge.validate", tr(language, "validate_cut"), "CHECKMARK", "validate")
+        action_help(box, "cutbridge.build_package", tr(language, "build_package"), "PACKAGE", "build")
         if s.last_package_path:
             box.operator(
                 "cutbridge.open_package_folder",
