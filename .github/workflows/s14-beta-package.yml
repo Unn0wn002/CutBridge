@@ -1,0 +1,187 @@
+name: S14 Beta Package (Non-Publication)
+
+on:
+  push:
+    branches:
+      - 'beta/s14b-v0.2.3-beta.1-package'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: s14-beta-package-v0.2.3-beta.1
+  cancel-in-progress: false
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out frozen validated source candidate
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: a56e1b57bc711fdc9adfb1c7c4e0f5aacb224e29
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.13'
+
+      - name: Build deterministic beta component packages
+        run: |
+          set -euo pipefail
+          python tools/build_release.py --tag v0.2.3-beta.1 --output dist
+          (cd dist && sha256sum --check SHA256SUMS.txt)
+
+      - name: Assemble S14B tester bundle
+        run: |
+          set -euo pipefail
+          ROOT="bundle/CutBridge-v0.2.3-beta.1-S14B"
+          mkdir -p "$ROOT/Blender" "$ROOT/AfterEffects" "$ROOT/Documentation" "$ROOT/Evidence" "$ROOT/Checksums"
+
+          cp dist/CutBridge-Blender-v0.2.3-beta.1.zip "$ROOT/Blender/"
+          cp dist/CutBridge-AfterEffects-v0.2.3-beta.1.zip "$ROOT/AfterEffects/"
+          cp dist/SHA256SUMS.txt "$ROOT/Checksums/"
+          cp dist/release-metadata.json "$ROOT/Checksums/"
+          cp docs/QUICK_START.md "$ROOT/Documentation/QUICK_START_EN.md"
+          cp docs/QUICK_START_JA.md "$ROOT/Documentation/QUICK_START_JA.md"
+          cp apps/after-effects/INSTALL.md "$ROOT/Documentation/AFTER_EFFECTS_INSTALL.md"
+          cp docs/S14_JP_USER_VALIDATION.md "$ROOT/Documentation/S14_PROTOCOL.md"
+          cp tools/s14/evidence-template.json "$ROOT/Evidence/evidence-template.json"
+          cp LICENSE "$ROOT/LICENSE"
+
+          cat > "$ROOT/README_FIRST_JA.md" <<'EOF'
+          # CutBridge v0.2.3-beta.1 — S14B テストビルド
+
+          **これは正式リリースではありません。制作本番では使用しないでください。**
+
+          このパッケージは、日本語を使用する Blender / After Effects ユーザーによる CutBridge の実利用テスト（S14B）専用です。
+
+          ## 最初に行うこと
+
+          1. `BUILD_INFO.txt` を確認し、テスト対象の Source SHA を記録します。
+          2. `Blender/CutBridge-Blender-v0.2.3-beta.1.zip` を Blender にインストールします。
+          3. `AfterEffects/CutBridge-AfterEffects-v0.2.3-beta.1.zip` を展開し、4つのランタイムファイルを同じフォルダに置きます。
+          4. `Documentation/QUICK_START_JA.md` に沿って基本ワークフローを実行します。
+          5. `Evidence/TEST_RECORD_JA.md` に結果を記録します。
+
+          ## Blender
+
+          推奨テスト環境は Blender 5.2.1 LTS です。Extensions / Add-ons 画面から ZIP をディスクからインストールし、CutBridge を有効にします。3D View で `N` キーを押し、CutBridge パネルを開きます。
+
+          ## After Effects
+
+          検証済み基準ホストは Adobe After Effects 2026 26.3 Build 87 / Windows 11 です。ZIP を展開した後、`CutBridge.jsx`、`revision_manager.js`、`qc_plus.js`、`localization.js` を同じフォルダに置いてください。初回は `File > Scripts > Run Script File...` から `CutBridge.jsx` を実行します。
+
+          ## 基本フロー
+
+          `Blender設定 → Validate Cut → Build Package → 連番レンダー → AEでcutbridge.jsonを読み込み → Build → QC+ → Revision`
+
+          ## テスト時のお願い
+
+          - 分からない箇所があっても、まず画面と説明から判断してください。
+          - モデレーターから手順を教えてもらった場合は、その介入を記録してください。
+          - PASS / FAIL / BLOCKED を正直に記録してください。
+          - 本名、メールアドレス、勤務先、スタジオ名、アカウントIDなどの個人情報は記録しないでください。
+          - スクリーンショットや録画は、本人が保存に同意した場合のみ使用してください。
+          - テスト素材はオリジナル素材、合成テスト素材、または使用許可のある素材のみ使用してください。
+
+          詳細手順は `Documentation/QUICK_START_JA.md`、評価ルールは `Documentation/S14_PROTOCOL.md` を参照してください。
+          EOF
+
+          cat > "$ROOT/README_FIRST_EN.md" <<'EOF'
+          # CutBridge v0.2.3-beta.1 — S14B Test Build
+
+          **This is not an official release. Do not use it for production work.**
+
+          This bundle is frozen for real Japanese-speaking target-user validation of the Blender → After Effects CutBridge workflow.
+
+          1. Read `BUILD_INFO.txt` and record the Source SHA.
+          2. Install the Blender ZIP.
+          3. Extract the After Effects ZIP and keep all four runtime files together.
+          4. Follow `Documentation/QUICK_START_JA.md` or `Documentation/QUICK_START_EN.md`.
+          5. Record test results in `Evidence/TEST_RECORD_JA.md`.
+
+          Recommended beta baseline: Blender 5.2.1 LTS. The native After Effects reference validation used After Effects 2026 26.3 Build 87 on Windows 11.
+
+          Basic workflow: `Blender setup → Validate Cut → Build Package → render sequences → load cutbridge.json in AE → Build → QC+ → compatible Revision`.
+
+          Do not record names, email addresses, employers, studios, account IDs, or other identifying information in the evidence record.
+          EOF
+
+          cat > "$ROOT/Evidence/TEST_RECORD_JA.md" <<'EOF'
+          # S14B テスト記録（日本語）
+
+          Participant ID: `JP-U__`  
+          Experience band: `beginner-production / intermediate-production / advanced-production`  
+          Representative target user: `yes / no`  
+          Blender version / OS:  
+          After Effects version / OS:  
+          Fixture provenance: `synthetic-original / user-owned-original`  
+
+          個人情報（本名、メール、勤務先、スタジオ、アカウントIDなど）は記載しないでください。
+
+          | Task | Result | Observed behavior / 実際に起きたこと | Participant statement / 本人のコメント | Moderator intervention / 介入 | Evidence ref |
+          |---|---|---|---|---|---|
+          | JP01 Blender導入・パネル発見 |  |  |  |  |  |
+          | JP02 日本語UI・安全/状態表示の理解 |  |  |  |  |  |
+          | JP03 Cut metadata / Camera / FPS / Resolution / Frame / Output / Preset設定 |  |  |  |  |  |
+          | JP04 意図的Validation Errorからの復旧 |  |  |  |  |  |
+          | JP05 安全なBuild Package・Version理解 |  |  |  |  |  |
+          | JP06 AEで正しいcutbridge.jsonをLoad |  |  |  |  |  |
+          | JP07 Build後のManaged / Artist objectの区別 |  |  |  |  |  |
+          | JP08 QC+ Clean + Warning/Error理解 |  |  |  |  |  |
+          | JP09 V001→V002 Revision・Artist state保持 |  |  |  |  |  |
+          | JP10 V002→V003 Revision・Artist state保持 |  |  |  |  |  |
+          | JP11 Save/Close/Reopen後の再開・重複なし |  |  |  |  |  |
+          | JP12 Camera / 3D Null handoff（適用時のみ） |  |  |  |  |  |
+
+          Result は `PASS / FAIL / BLOCKED / NOT_APPLICABLE (JP12 only)` を使用してください。
+          EOF
+
+          cat > "$ROOT/BUILD_INFO.txt" <<'EOF'
+          CutBridge S14B frozen beta test bundle
+          Beta tag: v0.2.3-beta.1
+          Product version: 0.2.3
+          Source branch at freeze: develop
+          Source SHA: a56e1b57bc711fdc9adfb1c7c4e0f5aacb224e29
+          Distribution status: TEST BUILD / NOT AN OFFICIAL RELEASE / NOT FOR PRODUCTION
+          Required S14 minimum participants: 3 distinct representative Japanese-speaking target users
+          Component checksums: Checksums/SHA256SUMS.txt
+          EOF
+
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          import zipfile
+
+          root = Path('bundle/CutBridge-v0.2.3-beta.1-S14B')
+          output = Path('bundle/CutBridge-v0.2.3-beta.1-S14B.zip')
+          entries = sorted(p for p in root.rglob('*') if p.is_file())
+          with zipfile.ZipFile(output, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
+              for source in entries:
+                  rel = source.relative_to(root.parent).as_posix()
+                  info = zipfile.ZipInfo(rel, date_time=(1980, 1, 1, 0, 0, 0))
+                  info.create_system = 3
+                  info.external_attr = 0o100644 << 16
+                  zf.writestr(info, source.read_bytes(), compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
+          digest = hashlib.sha256(output.read_bytes()).hexdigest()
+          Path('bundle/CutBridge-v0.2.3-beta.1-S14B.zip.sha256').write_text(
+              f'{digest}  {output.name}\n', encoding='utf-8'
+          )
+          print(f'BUNDLE_SHA256={digest}')
+          PY
+
+          test -s bundle/CutBridge-v0.2.3-beta.1-S14B.zip
+          sha256sum --check bundle/CutBridge-v0.2.3-beta.1-S14B.zip.sha256
+
+      - name: Upload frozen S14B beta bundle
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: CutBridge-v0.2.3-beta.1-S14B
+          path: |
+            bundle/CutBridge-v0.2.3-beta.1-S14B.zip
+            bundle/CutBridge-v0.2.3-beta.1-S14B.zip.sha256
+          if-no-files-found: error
+          retention-days: 30
