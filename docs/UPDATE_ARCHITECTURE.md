@@ -11,19 +11,38 @@ CutBridge separates **private source control** from **plugin distribution**. The
 
 ## Release pipeline
 
-1. A tested release candidate is merged to `main`.
-2. The manifest version and `version.py` must match.
-3. A semantic tag such as `v0.2.0` triggers `.github/workflows/release.yml`.
-4. CI runs the complete static test suite and validates After Effects JSX syntax.
-5. `tools/build_release.py` creates:
-   - `CutBridge-Blender-vX.Y.Z.zip`
-   - `CutBridge-AfterEffects-vX.Y.Z.zip`
+1. A tested release candidate is merged/promoted to `main`.
+2. The manifest version and `version.py` must match the After Effects `PRODUCT_VERSION`.
+3. Keep `release-authorization.json` unapproved until the exact `main` candidate has satisfied the applicable independent-review, real-app/manual, and CI gates.
+4. Commit an explicit authorization for one exact tag/channel/prerelease combination; that authorization change must itself be validated.
+5. A supported tag on the **current `main` HEAD** triggers `.github/workflows/release.yml`:
+   - stable: `vX.Y.Z`
+   - beta validation: `vX.Y.Z-rc.N` or `vX.Y.Z-beta.N`
+   - development validation: `vX.Y.Z-dev.N`
+6. The workflow fails before packaging if the tagged SHA is not current `main`, authorization is absent/unapproved, or tag/channel/prerelease metadata disagree.
+7. CI runs the complete test suite, Blender RNA lifecycle validation, and After Effects JSX syntax checks.
+8. `tools/build_release.py` creates:
+   - `CutBridge-Blender-<tag>.zip`
+   - `CutBridge-AfterEffects-<tag>.zip`
    - `SHA256SUMS.txt`
    - `release-metadata.json`
-6. GitHub Release stores the build artifacts for the development team.
-7. Production distribution later mirrors approved artifacts to a separately hosted update endpoint.
+9. GitHub Release stores the validation/release artifacts for the development team. RC/beta/development tags are marked GitHub prereleases; the unsuffixed stable tag is not.
+10. Download the published assets and independently re-verify contents/checksums before any distribution claim.
+11. Production distribution later mirrors approved stable artifacts and update metadata to a separately hosted endpoint.
 
-The build script rejects a release tag when it does not exactly match `blender_manifest.toml`.
+The release builder validates the numeric product version against `blender_manifest.toml`, `version.py`, and After Effects. Publication authorization is a separate gate and must never be inferred merely from matching versions or green CI.
+
+## Release authorization is fail-closed
+
+Root `release-authorization.json` defaults to an unapproved state. The release workflow requires all of the following:
+
+- tagged SHA equals current `origin/main` HEAD;
+- `approved` is exactly `true`;
+- authorization `tag` equals the triggering tag;
+- authorization `channel` equals the tag-derived channel;
+- authorization `prerelease` equals the tag-derived prerelease status.
+
+This prevents a stale feature/develop commit—or an old but correctly versioned `main`—from being published merely because somebody creates a matching tag. The authorization file is a technical lock, not a substitute for review/manual release evidence.
 
 ## Blender update model
 
@@ -71,6 +90,8 @@ A production index should be hosted on a static HTTPS endpoint that does **not**
 - CutBridge's small release-notification index.
 
 The in-plugin update URL remains blank in source until such an endpoint is deployed. Users/developers may configure a test endpoint in Blender Preferences.
+
+Because no production update endpoint/index publication process has been deployed and verified yet, RC/beta/development GitHub Releases are **manual validation artifacts**. Do not represent GitHub prerelease publication alone as a functioning beta update channel inside Blender.
 
 ## Blender online-access policy
 
