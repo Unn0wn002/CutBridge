@@ -20,6 +20,22 @@ _SPECIFIC = {
             "fix": "このView LayerでFreestyleと「As Render Pass」を有効にするか、Lineを無効にしてください。",
         },
     },
+    "SHADOW_OUTPUT_UNAVAILABLE": {
+        "EN": {
+            "title": "Shadow Pass Cannot Be Generated",
+            "what": "Shadow is enabled, but the active renderer/View Layer does not expose the required Shadow output.",
+            "why": "Shadow pass availability depends on the render engine. Blender 5.2 exposes the standalone Shadow pass in EEVEE, not Cycles.",
+            "continue": "No — not while Shadow remains enabled in this renderer configuration.",
+            "fix": "Use an EEVEE/View Layer setup that exposes Shadow, or disable Shadow.",
+        },
+        "JA": {
+            "title": "Shadowパスを生成できません",
+            "what": "Shadowが有効ですが、現在のレンダーエンジン/View Layerでは必要なShadow出力を利用できません。",
+            "why": "Shadowパスの利用可否はレンダーエンジンに依存します。Blender 5.2の単独ShadowパスはEEVEEで利用でき、Cyclesでは利用できません。",
+            "continue": "いいえ — このレンダー設定でShadowを有効にしたままでは続行できません。",
+            "fix": "Shadow出力を利用できるEEVEE/View Layer設定を使用するか、Shadowを無効にしてください。",
+        },
+    },
     "DEPTH_FORMAT_LOSSY": {
         "EN": {
             "title": "Depth Format Warning",
