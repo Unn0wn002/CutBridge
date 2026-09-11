@@ -1,8 +1,11 @@
 import bpy
 
 from .core import validate_scene
+from .diagnostics import diagnostic_parts
 from .environment import snapshot
-from .localization import localized_issue, tr
+from .handoff_3d import handoff_3d_issues
+from .line_preflight import line_pass_preflight_issues
+from .localization import tr
 from .package_safety import package_target_issues
 from .preferences import RUNTIME_UPDATE_STATE
 from .update_ops import get_preferences
@@ -86,6 +89,8 @@ class CUTBRIDGE_PT_MainPanel(bpy.types.Panel):
         validation_box = layout.box()
         validation_box.label(text=tr(language, "validation_status"))
         issues = validate_scene(context)
+        issues.extend(line_pass_preflight_issues(context))
+        issues.extend(handoff_3d_issues(context))
         issues.extend(package_target_issues(s))
         errors = [item for item in issues if item["level"] == "ERROR"]
         warnings = [item for item in issues if item["level"] == "WARNING"]
@@ -97,12 +102,19 @@ class CUTBRIDGE_PT_MainPanel(bpy.types.Panel):
                 icon="ERROR" if errors else "INFO",
             )
             for item in issues[:3]:
-                icon = "ERROR" if item["level"] == "ERROR" else "INFO"
-                message, fix = localized_issue(language, item)
-                # Stable validation codes stay unchanged across locales.
-                validation_box.label(text=f"{item['code']}: {message}", icon=icon)
-                if fix:
-                    validation_box.label(text=tr(language, "fix", value=fix))
+                level = str(item.get("level", "INFO")).upper()
+                icon = "ERROR" if level == "ERROR" else "INFO"
+                parts = diagnostic_parts(language, item)
+                issue_box = validation_box.box()
+                issue_box.label(text=f"{level}: {parts['title']}", icon=icon)
+                issue_box.label(text=tr(language, "diagnostic_what", value=parts["what"]))
+                issue_box.label(text=tr(language, "diagnostic_why", value=parts["why"]))
+                issue_box.label(text=tr(language, "diagnostic_continue", value=parts["continue"]))
+                if parts["fix"]:
+                    issue_box.label(text=tr(language, "fix", value=parts["fix"]))
+                # Technical identifiers remain visible for support, but are no
+                # longer the first wording a production user has to interpret.
+                issue_box.label(text=tr(language, "support_code", value=item["code"]))
             if len(issues) > 3:
                 validation_box.label(text=tr(language, "more_issues", count=len(issues) - 3))
 
