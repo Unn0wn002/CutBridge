@@ -37,6 +37,10 @@ def test_primary_ui_strings_have_japanese_and_english_variants():
         "validate_cut",
         "build_package",
         "open_package_folder",
+        "diagnostic_what",
+        "diagnostic_why",
+        "diagnostic_continue",
+        "support_code",
     )
     for key in keys:
         ja = loc.tr("JA", key)
@@ -90,20 +94,28 @@ def test_untranslated_japanese_issue_falls_back_without_duplicate_english_block(
     assert "[EN]" not in formatted
 
 
-def test_blender_panel_uses_locale_contract_instead_of_bilingual_slash_labels():
+def test_blender_panel_uses_locale_and_structured_diagnostic_contract():
     source = (BLENDER / "ui.py").read_text(encoding="utf-8")
-    assert "from .localization import localized_issue, tr" in source
+    assert "from .localization import tr" in source
+    assert "from .diagnostics import diagnostic_parts" in source
+    assert "line_pass_preflight_issues(context)" in source
+    assert "handoff_3d_issues(context)" in source
     assert "s.language" in source
     assert 'tr(language, "validate_cut")' in source
     assert 'tr(language, "build_package")' in source
     assert 'tr(language, "validation_status")' in source
+    assert 'tr(language, "diagnostic_what"' in source
+    assert 'tr(language, "diagnostic_why"' in source
+    assert 'tr(language, "diagnostic_continue"' in source
+    assert 'tr(language, "support_code"' in source
     assert "Import Package /" not in source
     assert "Validate Cut /" not in source
 
 
 def test_operator_reports_follow_selected_locale_and_console_stays_canonical():
     source = (BLENDER / "operators.py").read_text(encoding="utf-8")
-    assert "format_localized_issue" in source
+    assert "format_diagnostic" in source
+    assert "line_pass_preflight_issues(context)" in source
     assert 'tr(language, "validation_passed")' in source
     assert 'tr(language, "package_created"' in source
     assert "=== CutBridge Validation ===" in source
