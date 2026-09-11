@@ -14,7 +14,10 @@ def _view_layer(context):
 
 
 def _line_error(detail: str = "") -> dict:
-    message = "Line is enabled, but Blender Freestyle output is unavailable in the current View Layer/render setup."
+    message = (
+        "Line is enabled, but Blender Freestyle output is unavailable in the current View Layer/render setup. "
+        "LINE mapping is unavailable."
+    )
     if detail:
         message += f" {detail}"
     return {
