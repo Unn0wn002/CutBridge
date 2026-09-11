@@ -27,6 +27,7 @@ from .package_safety import (
     package_target_issues,
 )
 from .presets import use_preset_file_snapshot
+from .shadow_preflight import shadow_pass_preflight_issues
 
 
 def _open_folder(path: str):
@@ -41,6 +42,7 @@ def _open_folder(path: str):
 def _all_validation_issues(context) -> list[dict]:
     issues = validate_scene(context)
     issues.extend(line_pass_preflight_issues(context))
+    issues.extend(shadow_pass_preflight_issues(context))
     issues.extend(handoff_3d_issues(context))
     issues.extend(package_target_issues(context.scene.cutbridge))
     return issues
