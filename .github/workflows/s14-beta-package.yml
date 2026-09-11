@@ -174,7 +174,7 @@ jobs:
           PY
 
           test -s bundle/CutBridge-v0.2.3-beta.1-S14B.zip
-          sha256sum --check bundle/CutBridge-v0.2.3-beta.1-S14B.zip.sha256
+          (cd bundle && sha256sum --check CutBridge-v0.2.3-beta.1-S14B.zip.sha256)
 
       - name: Upload frozen S14B beta bundle
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
