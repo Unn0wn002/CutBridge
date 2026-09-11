@@ -148,7 +148,7 @@ def test_preflight_probe_preserves_artist_compositor_and_render_state(line_scene
     if tree is None:
         tree = bpy.data.node_groups.new("CutBridge_Line_Artist_Compositor", "CompositorNodeTree")
         scene.compositing_node_group = tree
-    artist = tree.nodes.new("CompositorNodeComposite")
+    artist = tree.nodes.new("CompositorNodeOutputFile")
     artist.name = "ARTIST_LINE_PREFLIGHT_KEEP"
 
     before_tree = scene.compositing_node_group
