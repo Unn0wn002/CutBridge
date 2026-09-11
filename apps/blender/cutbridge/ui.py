@@ -8,6 +8,7 @@ from .line_preflight import line_pass_preflight_issues
 from .localization import tr
 from .package_safety import package_target_issues
 from .preferences import RUNTIME_UPDATE_STATE
+from .shadow_preflight import shadow_pass_preflight_issues
 from .update_ops import get_preferences
 from .version import DEFAULT_UPDATE_INDEX_URL
 
@@ -120,6 +121,7 @@ class CUTBRIDGE_PT_MainPanel(bpy.types.Panel):
         validation_box.label(text=tr(language, "validation_status"))
         issues = validate_scene(context)
         issues.extend(line_pass_preflight_issues(context))
+        issues.extend(shadow_pass_preflight_issues(context))
         issues.extend(handoff_3d_issues(context))
         issues.extend(package_target_issues(s))
         errors = [item for item in issues if item["level"] == "ERROR"]
