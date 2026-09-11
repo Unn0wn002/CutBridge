@@ -1,118 +1,305 @@
 # CutBridge
 
-**CutBridge is a Blender-to-After Effects production pipeline tool for animation cuts.** It standardizes cut metadata, render-pass packaging, versioning, JSON handoff, compositing setup, QC, controlled revision handling, Japanese-first workflow UX, Studio Presets, and a bounded 3D handoff workflow so artists can move work from Blender into After Effects with less repetitive setup and fewer handoff errors.
+**CutBridge is a Blender → After Effects production handoff tool for animation cuts.**
 
-The primary audience is Japanese animation and content-production artists and studios. English remains a deterministic supported fallback. CutBridge is not a renderer, toon shader, animation generator, general scene exporter, or asset manager; its role is the handoff layer between 3D cut production and compositing.
+It standardizes cut metadata, render-pass packaging, versioning, `cutbridge.json` handoff, After Effects project setup, QC, controlled revision handling, Japanese-first workflow UX, Studio Presets, and an optional bounded Camera/3D Null handoff.
 
-## Current development status
+CutBridge is designed primarily for Japanese animation and content-production users, with deterministic English fallback. It is **not** a renderer, toon shader, animation generator, general scene exporter, or asset manager. Its job is to make the Blender → compositing handoff more repeatable, inspectable, and safer.
 
-**v0.2.3 — unreleased development candidate**
+**v0.2.3 — unreleased development candidate.** There is currently no public GitHub Release. Do not treat this repository state as a stable published release.
 
-Current integrated `develop` baseline after the S13F native repair:
+## What CutBridge does
 
-`0a86d9a0605e1dd9714ef35a547693de76f714f4`
+Typical workflow:
 
-Product engineering and validation are complete through **S13**:
-
-- S1–S9: baseline packaging, Blender render mapping, production hardening, AE import/revision/QC foundations, Japanese-first UX, and Studio Presets.
-- S10A: Blender ↔ After Effects coordinate/timing/camera/Null contract.
-- S10B: optional evaluated-world `handoff_3d` producer.
-- S10C: managed AE Camera/3D Null reconstruction with native projection-parity validation.
-- S11: QA, documentation, compatibility scoping, and release-readiness architecture.
-- S12: release-target real-host Blender → package → After Effects campaign, reconciled to PASS after the S13 repair chain.
-- S13: real-host Camera/Null revision defects repaired and native-validated through V001→V002→V003.
-
-The exact S13F native-tested commit was:
-
-`9c99ae23ccd8c47fdc0fffbd05b99e1326f2ea95`
-
-That exact commit passed Adobe After Effects 2026 `26.3x87` / Build 87 on Windows 11 for the repaired V001→V002→V003 path, including Camera Position/Point of Interest/Zoom refresh, Null Position/Scale refresh, QC+, artist-state preservation, zero duplicate managed Camera/Null layers, and save/close/reopen persistence. It was merged intact through PR #68 and post-merge CI passed on `develop` `0a86d9a...`.
-
-## Current automated validation
-
-The latest post-merge CI on `0a86d9a...` is green:
-
-- `static-validation`: **132 passed + 2 subtests**;
-- deterministic v0.2.3 release-package simulation and checksum verification: PASS;
-- S6 revision regressions: PASS;
-- S7 QC+ regressions: PASS;
-- S8 localization regressions: PASS;
-- S10C reconstruction: **8/8 groups PASS**;
-- S13 3D revision native-host-shaped regression: PASS;
-- ExtendScript syntax checks: PASS;
-- Blender 5.2.1 RNA registration lifecycle: PASS;
-- complete Blender/runtime pytest suite: **245 passed + 2 subtests**.
-
-Automated host-shaped tests do not replace native-host evidence; the relevant real AE evidence is recorded in the S12/S13 issue history and summarized in `docs/S12_S13_EVIDENCE_SUMMARY.md`.
-
-## Blender workflow
+```text
+Blender cut
+  ↓
+Cut metadata + Studio Preset
+  ↓
+Validate Cut
+  ↓
+Build Package
+  ↓
+Render sequences
+  ↓
+cutbridge.json + render payload
+  ↓
+After Effects Import / Build
+  ↓
+QC+
+  ↓
+Compatible V001 → V002 → V003 revisions
+```
 
 CutBridge currently provides:
 
 - Project / Episode / Scene / Cut / Take / Version metadata;
 - FPS, resolution, frame range, and active-camera capture;
-- cut validation and deterministic package generation;
-- transactional BEAUTY / LINE / SHADOW / DEPTH render-output mapping while preserving unrelated compositor nodes;
-- same-version overwrite protection when render/user payload already exists;
-- V001 / V002 / V003 package coexistence;
-- UTF-8 `cutbridge.json` manifest generation;
-- environment diagnostics and LTS-first compatibility status;
-- Stable / Beta / Development update-channel preferences with notification-only update checks;
+- deterministic package and manifest generation;
+- BEAUTY / LINE / SHADOW / DEPTH render-output mapping;
+- same-version overwrite protection;
+- versioned package coexistence such as V001 / V002 / V003;
 - Japanese-first / English-fallback UI;
-- Studio Preset modes: Manual, CutBridge Default, and Custom JSON;
-- strict data-only preset validation;
-- optional evaluated-world camera/Empty sampling into `handoff_3d`.
+- Manual, CutBridge Default, and Custom JSON Studio Presets;
+- After Effects package import and managed project construction;
+- deterministic QC+ diagnostics with stable `CBQ-*` identifiers;
+- non-destructive compatible revision handling;
+- optional bounded Blender Camera / Empty → AE Camera / 3D Null handoff.
 
-## After Effects workflow
+## Current development status
 
-CutBridge currently provides:
+Engineering/native-host validation is complete through **S13**. **S14A**, the Japanese target-user validation protocol and fail-closed evidence tooling, is integrated. The next product-validation step is **S14B: real Japanese target-user execution**.
 
-- ExtendScript / ScriptUI package import;
-- manifest schema/version/path validation;
-- deterministic managed folders, comps, footage, and layer ownership;
-- exact sequence-frame coverage validation;
-- safe repeated Build/reload behavior and conservative collision handling;
-- non-destructive revision workflow with rollback and historical-footage provenance;
-- QC+ PASS / WARNING / ERROR diagnostics with stable `CBQ-*` identifiers;
-- Japanese-first / English-fallback localization;
-- managed Camera and 3D Null reconstruction from supported `handoff_3d` data;
-- version-scoped Camera/Null revision migration using fail-closed topology checks and native-safe bulk keyframe updates.
+The post-S14A `develop` CI is green for both primary jobs:
 
-## 3D handoff boundary
+- `static-validation`;
+- `blender-52-rna-runtime`.
 
-CutBridge intentionally supports a bounded 3D handoff rather than arbitrary Blender scene synchronization.
-
-The current axis contract is:
+The exact S13F native-tested source was:
 
 ```text
-Blender (x, y, z) -> AE-oriented (x, -z, y)
+9c99ae23ccd8c47fdc0fffbd05b99e1326f2ea95
 ```
 
-Timing is baked using:
+That native-tested repair was integrated through the S13F merge chain before the later documentation/S14A closeout work. S13 real-host validation includes Adobe After Effects 2026 `26.3x87` / Build 87 on Windows 11 for the repaired V001 → V002 → V003 workflow. The tested path covered Camera Position / Point of Interest / Zoom updates, Null Position / Scale updates, QC+, artist-state preservation, zero duplicate managed Camera/Null layers, and save/close/reopen persistence.
+
+The bounded S10C Camera/Null reconstruction test measured a maximum 2D projection error of **0.00018066 px** against a **0.05 px** acceptance gate.
+
+Native-host evidence is intentionally scoped to the exact tested hosts and scenarios. It is not blanket certification for every Blender, After Effects, OS, camera configuration, or production pipeline.
+
+---
+
+# How to Use CutBridge
+
+This is the shortest end-to-end path. For detailed validation rules and edge cases, use [`docs/QUICK_START.md`](docs/QUICK_START.md). A Japanese guide is available at [`docs/QUICK_START_JA.md`](docs/QUICK_START_JA.md).
+
+## 1. Install CutBridge in Blender
+
+For development testing, use a verified CutBridge Blender ZIP built from the exact candidate you intend to test.
+
+1. Open a supported Blender version.
+2. Open **Preferences** and use the appropriate **Install from Disk** / extension installation action.
+3. Select the CutBridge Blender ZIP and enable it.
+4. Open a **3D View**.
+5. Press `N` to open the sidebar.
+6. Select the **CutBridge** tab.
+
+Minimum declared Blender runtime: **4.2.0**.
+
+Current LTS-first targets include Blender **4.2 LTS**, **4.5 LTS**, and **5.2 LTS**. Blender **5.2.1** is the current authoritative automated runtime target.
+
+## 2. Prepare the Blender cut
+
+Before building a package:
+
+1. Save the `.blend` file.
+2. Assign an active scene camera.
+3. Set FPS and resolution.
+4. Set the export frame range.
+5. Enter Project / Episode / Scene / Cut / Take / Version metadata.
+6. Select the package output directory.
+7. Choose a **Studio Preset Mode**.
+
+### Studio Preset modes
+
+**Manual** keeps pass and sequence-format controls directly editable.
+
+**CutBridge Default** uses the built-in CutBridge conventions.
+
+**Custom JSON** loads a validated data-only Studio Preset. CutBridge validates the preset before package creation; presets cannot execute arbitrary Blender operations.
+
+See [`docs/STUDIO_PRESETS.md`](docs/STUDIO_PRESETS.md).
+
+## 3. Run Validate Cut
+
+Click **Validate Cut** before building the package.
+
+Validation covers the handoff contract, including:
+
+- identifiers and metadata;
+- active camera;
+- FPS and resolution;
+- frame range;
+- selected/resolved render passes;
+- Studio Preset validity;
+- output target;
+- renderer / View Layer capability;
+- package-target safety;
+- optional 3D handoff validity when enabled.
+
+If CutBridge reports an **ERROR**, fix the problem before continuing. Review warnings rather than ignoring them.
+
+## 4. Build the package
+
+After validation passes, click **Build Package**.
+
+A normal Manual/default package resembles:
+
+```text
+PROJECT_EP01_SC010_C012_T01_V001/
+├── cutbridge.json
+├── camera/
+├── preview/
+└── render/
+    ├── beauty/
+    ├── line/
+    ├── shadow/
+    └── depth/
+```
+
+The exact package structure depends on the resolved Studio Preset and enabled passes.
+
+`cutbridge.json` is the handoff contract consumed by the After Effects side.
+
+### Version safety
+
+Do not overwrite an existing same-version package that already contains render/user payload. Create the next version instead:
+
+```text
+V001 → V002 → V003
+```
+
+CutBridge intentionally fails closed around unsafe same-version replacement.
+
+## 5. Render the required sequences
+
+Render using the CutBridge-configured outputs.
+
+Before moving to After Effects, confirm required pass folders contain the expected frame range. Optional passes may be absent only when permitted by the manifest contract.
+
+## 6. Install CutBridge in After Effects
+
+The current development runtime uses four adjacent files:
+
+```text
+CutBridge.jsx
+revision_manager.js
+qc_plus.js
+localization.js
+```
+
+**Keep all four files together.**
+
+For a first test:
+
+1. Open After Effects.
+2. Choose **File → Scripts → Run Script File...**.
+3. Select `CutBridge.jsx`.
+4. Confirm the CutBridge panel opens.
+5. Use the Japanese / English selector as needed.
+
+For a dockable panel, place all four files in the installed After Effects version's `Scripts/ScriptUI Panels` directory, restart After Effects, then open **Window → CutBridge**.
+
+See [`apps/after-effects/INSTALL.md`](apps/after-effects/INSTALL.md).
+
+## 7. Load `cutbridge.json` and Build
+
+In the CutBridge panel:
+
+1. Select the package's `cutbridge.json`.
+2. Review the package identity.
+3. Confirm FPS, frame count, and validation state.
+4. Run **Build**.
+
+CutBridge creates/reuses only verified CutBridge-managed project objects. It does not automatically adopt unrelated artist objects merely because they have similar names.
+
+If a valid optional `handoff_3d` block exists, CutBridge can reconstruct the supported managed Camera and 3D Null subset.
+
+## 8. Run QC+
+
+After Build, run **QC**.
+
+QC+ reports deterministic PASS / WARNING / ERROR diagnostics using stable `CBQ-*` identifiers. Typical checks include:
+
+- package and manifest state;
+- required/optional sequence availability;
+- comp resolution, pixel aspect, FPS, and duration;
+- managed footage/layer ownership;
+- source consistency;
+- Camera/Null state where applicable;
+- revision compatibility boundaries.
+
+QC is **diagnostic-only**. It does not silently repair ownership, replace sources, or mutate unrelated artist content.
+
+## 9. Apply a compatible revision
+
+When Blender produces a newer package such as V002:
+
+1. Keep the current AE project intact.
+2. Select the newer CutBridge package through the revision workflow.
+3. Review compatibility diagnostics.
+4. Confirm compatible warning-class changes when prompted.
+5. Apply the revision.
+6. Run Build/QC again.
+
+CutBridge updates only verified managed state inside its revision boundary. Incompatible geometry/pass-set/ownership/package-structure changes fail before unsafe source replacement.
+
+The tested S13 path includes chained:
+
+```text
+V001 → V002 → V003
+```
+
+with artist-owned state preserved for the tested fixture.
+
+## 10. Save, close, and reopen normally
+
+Save the After Effects project normally. After reopening, reopen/reload CutBridge and run QC when you need to verify the managed workflow remains coherent.
+
+The native S13 test covered save → close → reopen persistence for the tested AE 2026 workflow.
+
+---
+
+## Optional Camera / 3D Null handoff
+
+The 3D handoff is deliberately bounded. It is **not** general Blender scene synchronization.
+
+Current mapping:
+
+```text
+Blender (x, y, z) → AE-oriented (x, -z, y)
+```
+
+Timing:
 
 ```text
 AE time = (frame - frame_start) / fps
 ```
 
-The S10C native validation measured a maximum 2D projection error of **0.00018066 px** against a **0.05 px** acceptance gate.
+Supported producer scope includes the active perspective camera and explicitly marked Blender Empties under the documented constraints.
 
-Unsupported camera projection, non-square pixels, sensor shift, invalid transforms/markers, unsupported topology changes, ambiguous ownership, or unsafe collisions fail closed rather than being silently approximated.
+CutBridge does **not** promise arbitrary geometry, lights, bones, rigs, hierarchy recreation, or full-scene synchronization.
 
-See `docs/CAMERA_NULL_HANDOFF_CONTRACT.md` and `docs/HANDOFF_3D.md`.
+See [`docs/HANDOFF_3D.md`](docs/HANDOFF_3D.md) and [`docs/CAMERA_NULL_HANDOFF_CONTRACT.md`](docs/CAMERA_NULL_HANDOFF_CONTRACT.md).
+
+## Japanese / English behavior
+
+Japanese is the intended first-class/default UI language. English is the deterministic fallback/support language.
+
+Changing language must not alter package identity, manifest values, managed ownership, Studio Preset resolution, QC identifiers, revision decisions, or unrelated Blender/AE project state.
 
 ## Compatibility
 
-Minimum declared Blender runtime is **4.2.0**. Current LTS-first targets are Blender **4.2 LTS**, **4.5 LTS**, and **5.2 LTS**. Blender 5.2.1 is the current authoritative automated runtime target.
+### Blender
 
-After Effects **2024–2026** remains the target range, but native evidence is bounded to the hosts and scenarios actually tested. Current real-host evidence includes Adobe After Effects 2026 Build 87 (`26.3x87`) on Windows 11. This is not blanket certification for every AE/OS/workflow combination.
+- Minimum declared runtime: **4.2.0**
+- LTS-first targets: **4.2 LTS / 4.5 LTS / 5.2 LTS**
+- Current authoritative automated runtime: **5.2.1**
 
-The Blender suite still reports `Scene.use_nodes` deprecation warnings relevant to Blender 6.0 migration. See `docs/TECHNICAL_DEBT.md`.
+### After Effects
+
+Target range: **After Effects 2024–2026**.
+
+Current real-host evidence includes **After Effects 2026 Build 87 (`26.3x87`) on Windows 11**. This does not imply every AE/OS combination has been natively certified.
+
+See [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md).
 
 ## Release status
 
 **UNRELEASED / PUBLICATION BLOCKED.**
 
-There are no GitHub Releases and `release-authorization.json` remains deliberately fail-closed:
+`release-authorization.json` remains deliberately fail-closed:
 
 ```json
 {
@@ -123,36 +310,44 @@ There are no GitHub Releases and `release-authorization.json` remains deliberate
 }
 ```
 
-Product/native validation progress does **not** authorize publication.
+Remaining release work includes:
 
-The remaining release blockers are primarily release engineering and governance:
+1. real Japanese target-user validation under S14B;
+2. repository release-governance resolution in issue #18;
+3. deliberate `develop` → `main` promotion rather than a blind merge;
+4. authoritative CI on the exact promoted candidate;
+5. exact release authorization only after all prerequisites pass;
+6. published artifact/checksum verification and production update/distribution verification.
 
-1. repository-level branch/tag protection in issue #18;
-2. reconciliation of the materially diverged `develop` and `main` histories through an explicit promotion candidate rather than a blind merge;
-3. authoritative CI on the exact promoted `main` candidate;
-4. Japanese target-user evidence appropriate to production-usability claims;
-5. exact release authorization only after every prerequisite is complete;
-6. published-asset checksum/content verification and production update/distribution verification.
+Do **not** make the repository public merely to bypass the current private-repository governance limitation.
 
-Current GitHub plan/configuration does not provide the required private-repository ruleset controls. Do not make the source repository public merely to satisfy that gate; keep publication blocked until appropriate controls are available.
+## Development roadmap
 
-## Next product/release phase
+```text
+S1–S13  ✅ engineering/native validation completed for documented scope
+S14A    ✅ Japanese target-user protocol + evidence tooling integrated
+S14B    ⏳ real Japanese target-user execution pending
+Release ⛔ not authorized
+```
 
-The next bounded phase is **S14 — Japanese target-user validation and release-preparation evidence**.
+S14 target-user evidence must come from real representative participants. CI, localization, simulated participants, or AI-generated feedback do not count as real target-user validation.
 
-Before feature expansion, keep the current S12/S13 native evidence stable, reconcile repository status documents, and prepare the deliberate `develop` → `main` promotion plan without changing release authorization.
+See [`docs/S14_JP_USER_VALIDATION.md`](docs/S14_JP_USER_VALIDATION.md).
 
-## Key documentation
+## Documentation
 
-- English Quick Start: `docs/QUICK_START.md`
-- 日本語 Quick Start: `docs/QUICK_START_JA.md`
-- Studio Presets: `docs/STUDIO_PRESETS.md`
-- 3D handoff: `docs/HANDOFF_3D.md`
-- Release readiness: `docs/RELEASE_READINESS.md`
-- Completion status: `docs/COMPLETION_STATUS.md`
-- S12/S13 evidence summary: `docs/S12_S13_EVIDENCE_SUMMARY.md`
-- Technical debt: `docs/TECHNICAL_DEBT.md`
+- [English Quick Start](docs/QUICK_START.md)
+- [日本語 Quick Start](docs/QUICK_START_JA.md)
+- [After Effects Installation](apps/after-effects/INSTALL.md)
+- [Studio Presets](docs/STUDIO_PRESETS.md)
+- [3D Handoff](docs/HANDOFF_3D.md)
+- [Compatibility](docs/COMPATIBILITY.md)
+- [S14 Japanese Target-User Validation](docs/S14_JP_USER_VALIDATION.md)
+- [Release Readiness](docs/RELEASE_READINESS.md)
+- [Completion Status](docs/COMPLETION_STATUS.md)
+- [S12/S13 Evidence Summary](docs/S12_S13_EVIDENCE_SUMMARY.md)
+- [Technical Debt](docs/TECHNICAL_DEBT.md)
 
 ## License
 
-CutBridge uses **GPL-3.0-or-later**. The full GPL v3 text is included in `LICENSE` and in release packaging.
+CutBridge uses **GPL-3.0-or-later**. The full GPL v3 text is included in [`LICENSE`](LICENSE) and in release packaging.
