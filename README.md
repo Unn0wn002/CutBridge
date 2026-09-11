@@ -6,7 +6,7 @@ It standardizes cut metadata, render-pass packaging, versioning, `cutbridge.json
 
 CutBridge is designed primarily for Japanese animation and content-production users, with deterministic English fallback. It is **not** a renderer, toon shader, animation generator, general scene exporter, or asset manager. Its job is to make the Blender → compositing handoff more repeatable, inspectable, and safer.
 
-> **Release status:** v0.2.3 is an **unreleased development candidate**. There is currently no public GitHub Release. Do not treat this repository state as a stable published release.
+**v0.2.3 — unreleased development candidate.** There is currently no public GitHub Release. Do not treat this repository state as a stable published release.
 
 ## What CutBridge does
 
@@ -49,20 +49,20 @@ CutBridge currently provides:
 
 ## Current development status
 
-Current `develop` baseline:
+Engineering/native-host validation is complete through **S13**. **S14A**, the Japanese target-user validation protocol and fail-closed evidence tooling, is integrated. The next product-validation step is **S14B: real Japanese target-user execution**.
 
-```text
-77513040e009a39cbc1397dcd0626b6cab1f75d0
-```
-
-Engineering/native-host validation is complete through **S13**. **S14A**, the Japanese target-user validation protocol and fail-closed evidence tooling, is also integrated. The next product-validation step is **S14B: real Japanese target-user execution**.
-
-The current post-S14A `develop` CI is green for both:
+The post-S14A `develop` CI is green for both primary jobs:
 
 - `static-validation`;
 - `blender-52-rna-runtime`.
 
-S13 real-host validation includes Adobe After Effects 2026 `26.3x87` / Build 87 on Windows 11 for the repaired V001 → V002 → V003 workflow. The tested path covered Camera Position / Point of Interest / Zoom updates, Null Position / Scale updates, QC+, artist-state preservation, zero duplicate managed Camera/Null layers, and save/close/reopen persistence.
+The exact S13F native-tested source was:
+
+```text
+9c99ae23ccd8c47fdc0fffbd05b99e1326f2ea95
+```
+
+That native-tested repair was integrated through the S13F merge chain before the later documentation/S14A closeout work. S13 real-host validation includes Adobe After Effects 2026 `26.3x87` / Build 87 on Windows 11 for the repaired V001 → V002 → V003 workflow. The tested path covered Camera Position / Point of Interest / Zoom updates, Null Position / Scale updates, QC+, artist-state preservation, zero duplicate managed Camera/Null layers, and save/close/reopen persistence.
 
 The bounded S10C Camera/Null reconstruction test measured a maximum 2D projection error of **0.00018066 px** against a **0.05 px** acceptance gate.
 
@@ -72,7 +72,7 @@ Native-host evidence is intentionally scoped to the exact tested hosts and scena
 
 # How to Use CutBridge
 
-This section is the shortest end-to-end path. For all validation rules and edge cases, use [`docs/QUICK_START.md`](docs/QUICK_START.md). A Japanese guide is available at [`docs/QUICK_START_JA.md`](docs/QUICK_START_JA.md).
+This is the shortest end-to-end path. For detailed validation rules and edge cases, use [`docs/QUICK_START.md`](docs/QUICK_START.md). A Japanese guide is available at [`docs/QUICK_START_JA.md`](docs/QUICK_START_JA.md).
 
 ## 1. Install CutBridge in Blender
 
@@ -97,13 +97,7 @@ Before building a package:
 2. Assign an active scene camera.
 3. Set FPS and resolution.
 4. Set the export frame range.
-5. Enter the CutBridge metadata:
-   - Project
-   - Episode
-   - Scene
-   - Cut
-   - Take
-   - Version
+5. Enter Project / Episode / Scene / Cut / Take / Version metadata.
 6. Select the package output directory.
 7. Choose a **Studio Preset Mode**.
 
@@ -111,7 +105,7 @@ Before building a package:
 
 **Manual** keeps pass and sequence-format controls directly editable.
 
-**CutBridge Default** uses the built-in CutBridge production conventions.
+**CutBridge Default** uses the built-in CutBridge conventions.
 
 **Custom JSON** loads a validated data-only Studio Preset. CutBridge validates the preset before package creation; presets cannot execute arbitrary Blender operations.
 
@@ -121,7 +115,7 @@ See [`docs/STUDIO_PRESETS.md`](docs/STUDIO_PRESETS.md).
 
 Click **Validate Cut** before building the package.
 
-Validation checks the important handoff contract, including:
+Validation covers the handoff contract, including:
 
 - identifiers and metadata;
 - active camera;
@@ -134,7 +128,7 @@ Validation checks the important handoff contract, including:
 - package-target safety;
 - optional 3D handoff validity when enabled.
 
-If CutBridge reports an **ERROR**, fix the problem before continuing. Warnings should be reviewed rather than ignored.
+If CutBridge reports an **ERROR**, fix the problem before continuing. Review warnings rather than ignoring them.
 
 ## 4. Build the package
 
@@ -160,7 +154,7 @@ The exact package structure depends on the resolved Studio Preset and enabled pa
 
 ### Version safety
 
-Do not overwrite an existing same-version package that already contains render/user payload. Create the next version instead, for example:
+Do not overwrite an existing same-version package that already contains render/user payload. Create the next version instead:
 
 ```text
 V001 → V002 → V003
@@ -187,23 +181,19 @@ localization.js
 
 **Keep all four files together.**
 
-### First test
+For a first test:
 
 1. Open After Effects.
 2. Choose **File → Scripts → Run Script File...**.
 3. Select `CutBridge.jsx`.
 4. Confirm the CutBridge panel opens.
-5. Use the Japanese / English language selector as needed.
+5. Use the Japanese / English selector as needed.
 
-### Dockable panel
-
-For a dockable panel, place all four files in the installed After Effects version's `Scripts/ScriptUI Panels` directory, restart After Effects, then open:
-
-**Window → CutBridge**
+For a dockable panel, place all four files in the installed After Effects version's `Scripts/ScriptUI Panels` directory, restart After Effects, then open **Window → CutBridge**.
 
 See [`apps/after-effects/INSTALL.md`](apps/after-effects/INSTALL.md).
 
-## 7. Load `cutbridge.json` in After Effects
+## 7. Load `cutbridge.json` and Build
 
 In the CutBridge panel:
 
@@ -220,13 +210,11 @@ If a valid optional `handoff_3d` block exists, CutBridge can reconstruct the sup
 
 After Build, run **QC**.
 
-QC+ checks the managed handoff state and reports deterministic PASS / WARNING / ERROR diagnostics using stable `CBQ-*` identifiers.
-
-Typical checks include:
+QC+ reports deterministic PASS / WARNING / ERROR diagnostics using stable `CBQ-*` identifiers. Typical checks include:
 
 - package and manifest state;
 - required/optional sequence availability;
-- composition resolution, pixel aspect, FPS, and duration;
+- comp resolution, pixel aspect, FPS, and duration;
 - managed footage/layer ownership;
 - source consistency;
 - Camera/Null state where applicable;
@@ -236,7 +224,7 @@ QC is **diagnostic-only**. It does not silently repair ownership, replace source
 
 ## 9. Apply a compatible revision
 
-When the Blender side produces a newer package such as V002:
+When Blender produces a newer package such as V002:
 
 1. Keep the current AE project intact.
 2. Select the newer CutBridge package through the revision workflow.
@@ -257,9 +245,9 @@ with artist-owned state preserved for the tested fixture.
 
 ## 10. Save, close, and reopen normally
 
-Save the After Effects project normally. After reopening the project, reopen/reload CutBridge and run QC when you need to verify that the managed workflow is still coherent.
+Save the After Effects project normally. After reopening, reopen/reload CutBridge and run QC when you need to verify the managed workflow remains coherent.
 
-The native S13 test specifically covered save → close → reopen persistence for the tested AE 2026 workflow.
+The native S13 test covered save → close → reopen persistence for the tested AE 2026 workflow.
 
 ---
 
@@ -279,14 +267,11 @@ Timing:
 AE time = (frame - frame_start) / fps
 ```
 
-Supported producer scope includes the active perspective camera and explicitly selected Blender Empties under the documented constraints.
+Supported producer scope includes the active perspective camera and explicitly marked Blender Empties under the documented constraints.
 
 CutBridge does **not** promise arbitrary geometry, lights, bones, rigs, hierarchy recreation, or full-scene synchronization.
 
-See:
-
-- [`docs/HANDOFF_3D.md`](docs/HANDOFF_3D.md)
-- [`docs/CAMERA_NULL_HANDOFF_CONTRACT.md`](docs/CAMERA_NULL_HANDOFF_CONTRACT.md)
+See [`docs/HANDOFF_3D.md`](docs/HANDOFF_3D.md) and [`docs/CAMERA_NULL_HANDOFF_CONTRACT.md`](docs/CAMERA_NULL_HANDOFF_CONTRACT.md).
 
 ## Japanese / English behavior
 
@@ -337,8 +322,6 @@ Remaining release work includes:
 Do **not** make the repository public merely to bypass the current private-repository governance limitation.
 
 ## Development roadmap
-
-Current state:
 
 ```text
 S1–S13  ✅ engineering/native validation completed for documented scope
