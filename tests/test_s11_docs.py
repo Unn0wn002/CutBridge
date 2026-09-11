@@ -8,14 +8,15 @@ def _read(relative: str) -> str:
     return (ROOT / relative).read_text(encoding="utf-8")
 
 
-def test_readme_tracks_live_state_through_s13_and_next_s14():
+def test_readme_tracks_live_state_through_s14a_without_release_claim():
     text = _read("README.md")
-    assert "0a86d9a0605e1dd9714ef35a547693de76f714f4" in text
-    assert "S12" in text and "PASS" in text
-    assert "S13" in text and "9c99ae23ccd8c47fdc0fffbd05b99e1326f2ea95" in text
-    assert "S14" in text
+    assert "S12" in text and "S13" in text
+    assert "9c99ae23ccd8c47fdc0fffbd05b99e1326f2ea95" in text
+    assert "S14A" in text and "S14B" in text
+    assert "real Japanese target-user execution" in text
     assert "UNRELEASED / PUBLICATION BLOCKED" in text
     assert '"approved": false' in text
+    assert "There is currently no public GitHub Release" in text
     assert "S12 — End-to-End Blender → package → After Effects validation harness" not in text
 
 
