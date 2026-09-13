@@ -17,14 +17,17 @@ from .core import (
     validate_scene,
     write_manifest,
 )
+from .diagnostics import format_diagnostic
 from .handoff_3d import build_handoff_3d, handoff_3d_enabled, handoff_3d_issues
-from .localization import format_localized_issue, tr
+from .line_preflight import line_pass_preflight_issues
+from .localization import tr
 from .package_safety import (
     assert_package_integrity,
     format_issue,
     package_target_issues,
 )
 from .presets import use_preset_file_snapshot
+from .shadow_preflight import shadow_pass_preflight_issues
 
 
 def _open_folder(path: str):
@@ -38,6 +41,8 @@ def _open_folder(path: str):
 
 def _all_validation_issues(context) -> list[dict]:
     issues = validate_scene(context)
+    issues.extend(line_pass_preflight_issues(context))
+    issues.extend(shadow_pass_preflight_issues(context))
     issues.extend(handoff_3d_issues(context))
     issues.extend(package_target_issues(context.scene.cutbridge))
     return issues
@@ -59,13 +64,13 @@ class CUTBRIDGE_OT_Validate(bpy.types.Operator):
         warnings = [i for i in issues if i["level"] == "WARNING"]
 
         if errors:
-            first = format_localized_issue(language, errors[0])
+            first = format_diagnostic(language, errors[0])
             self.report(
                 {"ERROR"},
                 tr(language, "validation_failed", errors=len(errors), warnings=len(warnings), detail=first),
             )
         elif warnings:
-            first = format_localized_issue(language, warnings[0])
+            first = format_diagnostic(language, warnings[0])
             self.report(
                 {"WARNING"},
                 tr(language, "validation_warning", warnings=len(warnings), detail=first),
@@ -74,7 +79,8 @@ class CUTBRIDGE_OT_Validate(bpy.types.Operator):
             self.report({"INFO"}, tr(language, "validation_passed"))
 
         # Console output intentionally keeps the canonical English technical
-        # details for support/debugging while the interactive UI is localized.
+        # details and stable codes for support/debugging while the interactive
+        # UI leads with user-facing EN/JA guidance.
         if issues:
             print("\n=== CutBridge Validation ===")
             for item in issues:
@@ -95,7 +101,7 @@ class CUTBRIDGE_OT_BuildPackage(bpy.types.Operator):
         errors = [i for i in issues if i["level"] == "ERROR"]
         if errors:
             for item in errors[:3]:
-                self.report({"ERROR"}, format_localized_issue(language, item))
+                self.report({"ERROR"}, format_diagnostic(language, item))
             return {"CANCELLED"}
 
         settings = context.scene.cutbridge
@@ -125,8 +131,9 @@ class CUTBRIDGE_OT_BuildPackage(bpy.types.Operator):
                     handoff_payload = build_handoff_3d(context)
 
                 # Configure the scene before touching the package directory. If
-                # the selected engine cannot expose a requested logical pass,
-                # Build Package fails without a misleading empty handoff package.
+                # a preflight is bypassed or host state changes between Validate
+                # and Build, the direct Render Layers socket check still fails
+                # closed before package directories are created.
                 configure_render_outputs(context, root)
 
                 manifest = build_manifest(context, root)

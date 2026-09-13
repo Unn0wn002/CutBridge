@@ -19,6 +19,7 @@ from .operators import (
     CUTBRIDGE_OT_BuildPackage,
     CUTBRIDGE_OT_OpenPackageFolder,
 )
+from .help_ops import CUTBRIDGE_OT_ContextHelp
 from .preferences import CUTBRIDGE_AP_Preferences
 from .update_ops import (
     CUTBRIDGE_OT_CheckForUpdates,
@@ -34,6 +35,7 @@ CLASSES = (
     CUTBRIDGE_OT_Validate,
     CUTBRIDGE_OT_BuildPackage,
     CUTBRIDGE_OT_OpenPackageFolder,
+    CUTBRIDGE_OT_ContextHelp,
     CUTBRIDGE_OT_CheckForUpdates,
     CUTBRIDGE_OT_OpenReleasePage,
     CUTBRIDGE_PT_MainPanel,
