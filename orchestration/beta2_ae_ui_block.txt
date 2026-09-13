@@ -1,0 +1,251 @@
+    function packageStatusText(manifest) {
+        if (!manifest) return tr("no_package");
+        return tr("package_status", {name: manifest.package_name || manifest.cut, fps: manifest.fps, frames: manifest.frames.count});
+    }
+
+    function aeUiText(key) {
+        var copy = {
+            EN: {
+                package_section: "Package",
+                actions_section: "Workflow",
+                package_label: "Package",
+                status_label: "Status",
+                status_ready: "READY",
+                status_warning: "WARNING",
+                status_error: "ERROR",
+                none: "None",
+                status_load_prompt: "Load a Blender-generated cutbridge.json to begin.",
+                status_package_loaded: "Package loaded. Review the package details, then Build or run QC+.",
+                status_build_complete: "Build completed. Continue compositing, then run QC+ before handoff.",
+                status_action_failed: "The last action failed. Read the CutBridge error, correct the cause, and retry.",
+                status_qc_pass: "QC+ passed for the inspected scope.",
+                status_qc_warning: "QC+ found warnings. Review them before continuing.",
+                status_qc_error: "QC+ found blocking errors. Fix them before continuing.",
+                status_revision_complete: "Revision updated. Artist-owned work should remain preserved by the revision contract.",
+                desc_load: "Choose the cutbridge.json created by Blender. Loading reads package metadata; it does not build or modify the AE project.",
+                desc_build: "Create or safely reuse CutBridge-managed folders, footage, layers, and the comp from the loaded package.",
+                desc_qc: "Inspect package files, sequences, managed ownership, and comp consistency without rebuilding the project.",
+                desc_revision: "Move to a compatible newer package version while preserving artist-owned effects, masks, layers, and supported properties.",
+                help_what: "What",
+                help_when: "When to use it",
+                help_recommended: "Recommended",
+                help_limits: "Limitations",
+                help_load_title: "Load Package",
+                help_load_what: "Reads the Blender-generated cutbridge.json and prepares CutBridge to work with that package.",
+                help_load_when: "Use this first when opening a package or switching to a different cut.",
+                help_load_recommended: "Load the exact cutbridge.json from the package you intend to composite.",
+                help_load_limits: "Loading alone does not import footage, create comps, or alter artist layers.",
+                help_build_title: "Build",
+                help_build_what: "Creates or safely reuses the deterministic CutBridge-managed AE structure for the loaded package.",
+                help_build_when: "Use after loading a valid package and after the required render sequences are available.",
+                help_build_recommended: "Build once, then continue normal compositing inside the managed comp while keeping artist work separate from managed ownership.",
+                help_build_limits: "Build will not guess unsafe paths or silently adopt ambiguous managed objects. Blocking errors must be resolved first.",
+                help_qc_title: "QC+",
+                help_qc_what: "Checks package identity, sequence completeness, managed ownership, and comp settings without creating replacement objects.",
+                help_qc_when: "Run after Build, before handoff, and again after important revisions.",
+                help_qc_recommended: "Treat ERROR as blocking. Review WARNING before delivery. Keep CBQ support codes when reporting a problem.",
+                help_qc_limits: "QC+ reports problems; it intentionally does not auto-repair ambiguous ownership or missing production content.",
+                help_revision_title: "Revision",
+                help_revision_what: "Updates compatible CutBridge-managed sources and metadata from a newer package version.",
+                help_revision_when: "Use for a normal V001 -> V002 -> V003 source update after the newer Blender package has been generated.",
+                help_revision_recommended: "Save the AE project first, select the newer package, review warnings, and confirm only when the revision is expected.",
+                help_revision_limits: "Unsupported FPS, resolution, duration, pass-set, or ownership changes are blocked or require deliberate rebuild/migration."
+            },
+            JA: {
+                package_section: "パッケージ",
+                actions_section: "ワークフロー",
+                package_label: "パッケージ",
+                status_label: "状態",
+                status_ready: "準備完了 / READY",
+                status_warning: "警告 / WARNING",
+                status_error: "エラー / ERROR",
+                none: "なし",
+                status_load_prompt: "Blenderで生成したcutbridge.jsonを読み込んで開始してください。",
+                status_package_loaded: "パッケージを読み込みました。内容を確認してからBuildまたはQC+を実行してください。",
+                status_build_complete: "Buildが完了しました。コンポジット作業後、受け渡し前にQC+を実行してください。",
+                status_action_failed: "直前の処理に失敗しました。CutBridgeのエラー内容を確認し、原因を修正して再実行してください。",
+                status_qc_pass: "確認した範囲でQC+はPASSです。",
+                status_qc_warning: "QC+で警告があります。続行前に内容を確認してください。",
+                status_qc_error: "QC+で停止が必要なエラーがあります。続行前に修正してください。",
+                status_revision_complete: "差し替えが完了しました。Revision契約の範囲でアーティスト作業は保持されます。",
+                desc_load: "Blenderで生成したcutbridge.jsonを選択します。読み込みだけではAEプロジェクトのBuildや変更は行いません。",
+                desc_build: "読み込んだパッケージからCutBridge管理フォルダー、フッテージ、レイヤー、コンポを作成または安全に再利用します。",
+                desc_qc: "再構築せずに、パッケージ、連番、管理所有権、コンポ設定の整合性を確認します。",
+                desc_revision: "互換性のある新しいパッケージへ差し替え、対応範囲のエフェクト、マスク、手動レイヤーなどアーティスト作業を保持します。",
+                help_what: "機能",
+                help_when: "使用タイミング",
+                help_recommended: "推奨",
+                help_limits: "制限",
+                help_load_title: "パッケージ読み込み",
+                help_load_what: "Blenderで生成したcutbridge.jsonを読み込み、CutBridgeが対象パッケージを扱える状態にします。",
+                help_load_when: "パッケージを初めて開く時、または別のカットへ切り替える時に最初に使用します。",
+                help_load_recommended: "コンポジット対象のパッケージ内にある正しいcutbridge.jsonを選択してください。",
+                help_load_limits: "読み込みだけではフッテージのImport、コンポ作成、アーティストレイヤーの変更は行いません。",
+                help_build_title: "Build",
+                help_build_what: "読み込んだパッケージ用のCutBridge管理AE構造を作成、または安全に再利用します。",
+                help_build_when: "有効なパッケージを読み込み、必要なレンダー連番が準備できた後に使用します。",
+                help_build_recommended: "Build後は管理コンポ内で通常のコンポジット作業を行い、アーティスト作業とCutBridge管理対象を分けてください。",
+                help_build_limits: "危険なパスや所有権が曖昧な管理オブジェクトを推測して採用しません。停止エラーは先に解決してください。",
+                help_qc_title: "QC+",
+                help_qc_what: "パッケージID、連番の完全性、管理所有権、コンポ設定を確認し、代替オブジェクトは自動作成しません。",
+                help_qc_when: "Build後、受け渡し前、重要な差し替え後に実行してください。",
+                help_qc_recommended: "ERRORは停止、WARNINGは納品前に確認してください。問題報告時はCBQサポートコードを残してください。",
+                help_qc_limits: "QC+は問題を報告しますが、曖昧な所有権や不足した制作データを自動修復しません。",
+                help_revision_title: "差し替え / Revision",
+                help_revision_what: "互換性のある新しいパッケージからCutBridge管理ソースとメタデータを更新します。",
+                help_revision_when: "Blender側で新しいパッケージを生成した後、V001 -> V002 -> V003の通常差し替えで使用します。",
+                help_revision_recommended: "先にAEプロジェクトを保存し、新しいパッケージを選択して警告を確認し、意図した差し替えの場合のみ確定してください。",
+                help_revision_limits: "FPS、解像度、尺、パス構成、所有権など非対応の変更は停止されるか、明示的な再構築/移行が必要です。"
+            }
+        };
+        var lang = currentLocale === "JA" ? "JA" : "EN";
+        return copy[lang][key] || copy.EN[key] || key;
+    }
+
+    function aeHelpCopy(topic) {
+        var prefix = "help_" + topic + "_";
+        return {
+            title: aeUiText(prefix + "title"),
+            what: aeUiText(prefix + "what"),
+            when: aeUiText(prefix + "when"),
+            recommended: aeUiText(prefix + "recommended"),
+            limits: aeUiText(prefix + "limits")
+        };
+    }
+
+    function showContextHelp(topic) {
+        var help = aeHelpCopy(topic);
+        alert(
+            "CutBridge — " + help.title + "\n\n" +
+            aeUiText("help_what") + ": " + help.what + "\n\n" +
+            aeUiText("help_when") + ": " + help.when + "\n\n" +
+            aeUiText("help_recommended") + ": " + help.recommended + "\n\n" +
+            aeUiText("help_limits") + ": " + help.limits
+        );
+    }
+
+    function loadOnly(onLoaded, onError) {
+        try {
+            var m = chooseManifest();
+            if (m && onLoaded) onLoaded(m);
+            return m;
+        } catch (e) {
+            if (onError) onError(e);
+            alertError(e.toString());
+            return null;
+        }
+    }
+
+    function buildUI(thisObj) {
+        loadLocalePreference();
+        var pal = (thisObj instanceof Panel) ? thisObj : new Window("palette", "CutBridge", undefined, {resizeable: true}); if (!pal) return pal;
+        pal.orientation = "column"; pal.alignChildren = ["fill", "top"]; pal.spacing = 8; pal.margins = 12;
+
+        var panelStatusKind = state.manifest ? "READY" : "WARNING";
+        var panelStatusKey = state.manifest ? "status_package_loaded" : "status_load_prompt";
+
+        var title = pal.add("statictext", undefined, "CutBridge");
+        try { title.graphics.font = ScriptUI.newFont(title.graphics.font.name, "BOLD", 16); } catch (e) {}
+
+        var localeRow = pal.add("group");
+        localeRow.orientation = "row"; localeRow.alignChildren = ["left", "center"];
+        var localeLabel = localeRow.add("statictext", undefined, tr("language_label"));
+        var localeSelect = localeRow.add("dropdownlist", undefined, ["日本語", "English"]); localeSelect.selection = currentLocale === "JA" ? 0 : 1;
+
+        var packagePanel = pal.add("panel", undefined, aeUiText("package_section"));
+        packagePanel.orientation = "column"; packagePanel.alignChildren = ["fill", "top"]; packagePanel.spacing = 4; packagePanel.margins = 10;
+        var packageName = packagePanel.add("statictext", undefined, ""); packageName.characters = 48;
+        var packageMeta = packagePanel.add("statictext", undefined, packageStatusText(state.manifest)); packageMeta.characters = 48;
+        var statusKind = packagePanel.add("statictext", undefined, ""); statusKind.characters = 48;
+        var statusDetail = packagePanel.add("statictext", undefined, "", {multiline: true}); statusDetail.characters = 52; statusDetail.preferredSize.height = 34;
+
+        var actionsPanel = pal.add("panel", undefined, aeUiText("actions_section"));
+        actionsPanel.orientation = "column"; actionsPanel.alignChildren = ["fill", "top"]; actionsPanel.spacing = 5; actionsPanel.margins = 10;
+
+        function addAction(buttonText, descriptionKey, helpTopic, handler) {
+            var row = actionsPanel.add("group"); row.orientation = "row"; row.alignChildren = ["fill", "center"];
+            var button = row.add("button", undefined, buttonText); button.alignment = ["fill", "center"];
+            var helpButton = row.add("button", undefined, "?"); helpButton.preferredSize.width = 30;
+            var description = actionsPanel.add("statictext", undefined, aeUiText(descriptionKey), {multiline: true});
+            description.characters = 52; description.preferredSize.height = 34;
+            button.onClick = handler;
+            helpButton.onClick = function() { showContextHelp(helpTopic); };
+            return {button: button, help: helpButton, description: description};
+        }
+
+        function statusLabelFor(kind) {
+            if (kind === "ERROR") return aeUiText("status_error");
+            if (kind === "READY") return aeUiText("status_ready");
+            return aeUiText("status_warning");
+        }
+
+        function refreshPackagePanel() {
+            var manifest = state.manifest;
+            packagePanel.text = aeUiText("package_section");
+            actionsPanel.text = aeUiText("actions_section");
+            packageName.text = aeUiText("package_label") + ": " + (manifest ? (manifest.package_name || manifest.cut || aeUiText("none")) : aeUiText("none"));
+            packageMeta.text = packageStatusText(manifest);
+            statusKind.text = aeUiText("status_label") + ": " + statusLabelFor(panelStatusKind);
+            statusDetail.text = aeUiText(panelStatusKey);
+        }
+
+        function setPanelStatus(kind, key) {
+            panelStatusKind = kind;
+            panelStatusKey = key;
+            refreshPackagePanel();
+        }
+
+        var loadAction = addAction(tr("import_package"), "desc_load", "load", function() {
+            loadOnly(
+                function() { setPanelStatus("READY", "status_package_loaded"); },
+                function() { setPanelStatus("ERROR", "status_action_failed"); }
+            );
+        });
+        var buildAction = addAction(tr("build_comp"), "desc_build", "build", function() {
+            var result = buildComp();
+            if (result && result.success) setPanelStatus("READY", "status_build_complete");
+            else if (result) setPanelStatus("ERROR", "status_action_failed");
+        });
+        var qcAction = addAction(tr("run_qc"), "desc_qc", "qc", function() {
+            try {
+                var result = runQC(), headline = result && result.report ? String(result.report.headline || "").toUpperCase() : "";
+                if (headline.indexOf("ERROR") >= 0) setPanelStatus("ERROR", "status_qc_error");
+                else if (headline.indexOf("WARNING") >= 0) setPanelStatus("WARNING", "status_qc_warning");
+                else if (result && result.report) setPanelStatus("READY", "status_qc_pass");
+            } catch (e) {
+                setPanelStatus("ERROR", "status_action_failed");
+                alertError(e.toString());
+            }
+        });
+        var revisionAction = addAction(tr("update_revision"), "desc_revision", "revision", function() {
+            var beforeVersion = state.manifest ? state.manifest.version : null;
+            updateRevision();
+            var afterVersion = state.manifest ? state.manifest.version : null;
+            if (beforeVersion !== null && afterVersion !== null && beforeVersion !== afterVersion) setPanelStatus("READY", "status_revision_complete");
+            else refreshPackagePanel();
+        });
+
+        var note = pal.add("statictext", undefined, tr("workflow_note", {version: CutBridgeContract.PRODUCT_VERSION}), {multiline: true}); note.preferredSize.height = 32;
+
+        function refreshLocale() {
+            localeSelect.selection = currentLocale === "JA" ? 0 : 1;
+            localeLabel.text = tr("language_label");
+            loadAction.button.text = tr("import_package"); loadAction.description.text = aeUiText("desc_load");
+            buildAction.button.text = tr("build_comp"); buildAction.description.text = aeUiText("desc_build");
+            qcAction.button.text = tr("run_qc"); qcAction.description.text = aeUiText("desc_qc");
+            revisionAction.button.text = tr("update_revision"); revisionAction.description.text = aeUiText("desc_revision");
+            note.text = tr("workflow_note", {version: CutBridgeContract.PRODUCT_VERSION});
+            refreshPackagePanel();
+            try { pal.layout.layout(true); } catch (layoutError) {}
+        }
+
+        localeSelect.onChange = function() {
+            if (!localeSelect.selection) return;
+            saveLocalePreference(localeSelect.selection.index === 0 ? "JA" : "EN");
+            refreshLocale();
+        };
+
+        refreshPackagePanel();
+        pal.onResizing = pal.onResize = function() { this.layout.resize(); };
+        return pal;
+    }
