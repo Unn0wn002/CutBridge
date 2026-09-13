@@ -1,0 +1,77 @@
+name: Build Frozen beta.2 Candidate
+
+on:
+  push:
+    branches:
+      - build/beta2-candidate-artifact
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact frozen candidate
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: 7fd7c34f16e43d328fbf88e63b534d1f04507cbd
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.13'
+
+      - name: Verify frozen source identity and release lock
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "7fd7c34f16e43d328fbf88e63b534d1f04507cbd"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          auth = json.loads(Path('release-authorization.json').read_text(encoding='utf-8'))
+          if auth != {'approved': False, 'tag': None, 'channel': None, 'prerelease': None}:
+              raise SystemExit('Release authorization changed; candidate packaging aborted.')
+          PY
+
+      - name: Build deterministic beta.2 artifacts
+        run: python tools/build_release.py --tag v0.2.3-beta.2 --output dist
+
+      - name: Verify artifact checksums
+        run: cd dist && sha256sum --check SHA256SUMS.txt
+
+      - name: Add candidate identity and tester documents
+        run: |
+          cat > dist/CANDIDATE_IDENTITY.txt <<EOF
+          CutBridge v0.2.3-beta.2 frozen test candidate
+          Source SHA: 7fd7c34f16e43d328fbf88e63b534d1f04507cbd
+          Source branch: candidate/v0.2.3-beta.2
+          Build workflow run: ${GITHUB_RUN_ID}
+          Release authorization: FALSE
+          Status: TEST CANDIDATE — NOT RELEASE READY
+          EOF
+          cp docs/QUICK_START_BETA2.md dist/QUICK_START_BETA2.md
+          cp docs/QUICK_START_BETA2_JA.md dist/QUICK_START_BETA2_JA.md
+          cp docs/AE_PANEL_BETA2.md dist/AE_PANEL_BETA2.md
+          cp docs/S14_JP_USER_VALIDATION.md dist/S14_JP_USER_VALIDATION.md
+          cp LICENSE dist/LICENSE
+
+      - name: Upload frozen candidate bundle
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: CutBridge-v0.2.3-beta.2-FROZEN-CANDIDATE
+          path: |
+            dist/CutBridge-Blender-v0.2.3-beta.2.zip
+            dist/CutBridge-AfterEffects-v0.2.3-beta.2.zip
+            dist/SHA256SUMS.txt
+            dist/release-metadata.json
+            dist/CANDIDATE_IDENTITY.txt
+            dist/QUICK_START_BETA2.md
+            dist/QUICK_START_BETA2_JA.md
+            dist/AE_PANEL_BETA2.md
+            dist/S14_JP_USER_VALIDATION.md
+            dist/LICENSE
+          if-no-files-found: error
+          retention-days: 7
