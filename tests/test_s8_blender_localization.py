@@ -103,6 +103,10 @@ def test_blender_panel_uses_locale_and_structured_diagnostic_contract():
     # to explicit Validate Cut / Build Package operations.
     assert "line_pass_preflight_issues(context)" not in source
     assert "shadow_pass_preflight_issues(context)" not in source
+    # Issue #83: general panel status is lifecycle-aware and must not reuse the
+    # stricter Build Package overwrite guard for an already-built render target.
+    assert "package_lifecycle_issues(context)" in source
+    assert "package_target_issues" not in source
     assert "handoff_3d_issues(context)" in source
     assert "s.language" in source
     assert 'tr(language, "validate_cut")' in source
@@ -121,10 +125,22 @@ def test_operator_reports_follow_selected_locale_and_console_stays_canonical():
     assert "format_diagnostic" in source
     assert "line_pass_preflight_issues(context)" in source
     assert "shadow_pass_preflight_issues(context)" in source
+    assert "package_lifecycle_issues(context)" in source
+    assert "package_target_issues(context.scene.cutbridge)" in source
+    assert "for_build=True" in source
     assert 'tr(language, "validation_passed")' in source
     assert 'tr(language, "package_created"' in source
     assert "=== CutBridge Validation ===" in source
     assert "format_issue(item)" in source
+
+
+def test_issue83_has_action_specific_package_diagnostics_in_both_languages():
+    source = (BLENDER / "diagnostics.py").read_text(encoding="utf-8")
+    for code in ("PACKAGE_RENDER_READY", "PACKAGE_EXISTS", "PACKAGE_STATE_MISMATCH"):
+        assert f'"{code}"' in source
+    assert "Ready to Render" in source
+    assert "Yes for rendering the already-built package; no for rebuilding this same version." in source
+    assert "パッケージ作成済み" in source
 
 
 def test_blender_language_property_defaults_to_japanese():
