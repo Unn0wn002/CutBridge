@@ -118,8 +118,8 @@ class CUTBRIDGE_PT_MainPanel(bpy.types.Panel):
         validation_box = layout.box()
         validation_box.label(text=tr(language, "validation_status"))
         # Panel draw must remain read-only. Line/Shadow socket probes create
-        # temporary compositor datablocks, so they run only from explicit
-        # Validate Cut / Build Package operations where mutation is controlled.
+        # temporary compositor datablocks, so they run only from the explicit
+        # validation and package-build operators where mutation is controlled.
         issues = validate_scene(context)
         issues.extend(handoff_3d_issues(context))
         issues.extend(package_target_issues(s))
