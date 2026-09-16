@@ -4,11 +4,9 @@ from .core import validate_scene
 from .diagnostics import diagnostic_parts
 from .environment import snapshot
 from .handoff_3d import handoff_3d_issues
-from .line_preflight import line_pass_preflight_issues
 from .localization import tr
 from .package_safety import package_target_issues
 from .preferences import RUNTIME_UPDATE_STATE
-from .shadow_preflight import shadow_pass_preflight_issues
 from .update_ops import get_preferences
 from .version import DEFAULT_UPDATE_INDEX_URL
 
@@ -119,9 +117,10 @@ class CUTBRIDGE_PT_MainPanel(bpy.types.Panel):
 
         validation_box = layout.box()
         validation_box.label(text=tr(language, "validation_status"))
+        # Panel draw must remain read-only. Line/Shadow socket probes create
+        # temporary compositor datablocks, so they run only from explicit
+        # Validate Cut / Build Package operations where mutation is controlled.
         issues = validate_scene(context)
-        issues.extend(line_pass_preflight_issues(context))
-        issues.extend(shadow_pass_preflight_issues(context))
         issues.extend(handoff_3d_issues(context))
         issues.extend(package_target_issues(s))
         errors = [item for item in issues if item["level"] == "ERROR"]
