@@ -160,7 +160,7 @@ def test_rendered_package_with_changed_contract_fails_closed(configured_scene):
     assert len(lifecycle) == 1
     assert lifecycle[0]["level"] == "ERROR"
     assert lifecycle[0]["code"] == "PACKAGE_STATE_MISMATCH"
-    assert "does not match the current cut/render settings" in lifecycle[0]["message"]
+    assert "no longer matches the current cut/render settings" in lifecycle[0]["message"]
     assert "increment Version" in lifecycle[0]["fix"]
 
     # Build remains protected independently of the lifecycle diagnostic.
