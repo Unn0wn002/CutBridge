@@ -5,7 +5,7 @@ from .diagnostics import diagnostic_parts
 from .environment import snapshot
 from .handoff_3d import handoff_3d_issues
 from .localization import tr
-from .package_safety import package_target_issues
+from .package_safety import package_lifecycle_issues
 from .preferences import RUNTIME_UPDATE_STATE
 from .update_ops import get_preferences
 from .version import DEFAULT_UPDATE_INDEX_URL
@@ -122,11 +122,21 @@ class CUTBRIDGE_PT_MainPanel(bpy.types.Panel):
         # validation and package-build operators where mutation is controlled.
         issues = validate_scene(context)
         issues.extend(handoff_3d_issues(context))
-        issues.extend(package_target_issues(s))
+        issues.extend(package_lifecycle_issues(context))
         errors = [item for item in issues if item["level"] == "ERROR"]
         warnings = [item for item in issues if item["level"] == "WARNING"]
+        infos = [item for item in issues if item["level"] == "INFO"]
+
         if not issues:
             validation_box.label(text=tr(language, "ready_to_build"), icon="CHECKMARK")
+        elif not errors and not warnings and infos:
+            parts = diagnostic_parts(language, infos[0])
+            validation_box.label(text=parts["title"], icon="CHECKMARK")
+            validation_box.label(text=parts["what"])
+            validation_box.label(text=parts["continue"])
+            if parts["fix"]:
+                validation_box.label(text=tr(language, "fix", value=parts["fix"]))
+            validation_box.label(text=tr(language, "support_code", value=infos[0]["code"]))
         else:
             validation_box.label(
                 text=tr(language, "validation_counts", errors=len(errors), warnings=len(warnings)),
