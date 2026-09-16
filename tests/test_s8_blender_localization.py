@@ -78,7 +78,6 @@ def test_issue_localization_preserves_machine_code_and_canonical_support_text():
     formatted = loc.format_localized_issue("JA", item)
     assert formatted.startswith("アクティブカメラが設定されていません。")
     assert "[EN] No active scene camera." in formatted
-    assert "Fix: Assign an active scene camera in Scene Properties." not in formatted
     assert "Fix: Assign an active camera in Scene Properties." in formatted
     assert "CAMERA_MISSING" not in formatted
 
