@@ -78,6 +78,7 @@ def test_issue_localization_preserves_machine_code_and_canonical_support_text():
     formatted = loc.format_localized_issue("JA", item)
     assert formatted.startswith("アクティブカメラが設定されていません。")
     assert "[EN] No active scene camera." in formatted
+    assert "Fix: Assign an active scene camera in Scene Properties." not in formatted
     assert "Fix: Assign an active camera in Scene Properties." in formatted
     assert "CAMERA_MISSING" not in formatted
 
@@ -98,7 +99,11 @@ def test_blender_panel_uses_locale_and_structured_diagnostic_contract():
     source = (BLENDER / "ui.py").read_text(encoding="utf-8")
     assert "from .localization import tr" in source
     assert "from .diagnostics import diagnostic_parts" in source
-    assert "line_pass_preflight_issues(context)" in source
+    # Issue #82: panel draw must remain read-only. The Line/Shadow preflight
+    # probes allocate temporary compositor datablocks and therefore belong only
+    # to explicit Validate Cut / Build Package operations.
+    assert "line_pass_preflight_issues(context)" not in source
+    assert "shadow_pass_preflight_issues(context)" not in source
     assert "handoff_3d_issues(context)" in source
     assert "s.language" in source
     assert 'tr(language, "validate_cut")' in source
@@ -116,6 +121,7 @@ def test_operator_reports_follow_selected_locale_and_console_stays_canonical():
     source = (BLENDER / "operators.py").read_text(encoding="utf-8")
     assert "format_diagnostic" in source
     assert "line_pass_preflight_issues(context)" in source
+    assert "shadow_pass_preflight_issues(context)" in source
     assert 'tr(language, "validation_passed")' in source
     assert 'tr(language, "package_created"' in source
     assert "=== CutBridge Validation ===" in source
