@@ -24,6 +24,7 @@ from .localization import tr
 from .package_safety import (
     assert_package_integrity,
     format_issue,
+    package_lifecycle_issues,
     package_target_issues,
 )
 from .presets import use_preset_file_snapshot
@@ -39,12 +40,18 @@ def _open_folder(path: str):
         subprocess.Popen(["xdg-open", path])
 
 
-def _all_validation_issues(context) -> list[dict]:
+def _all_validation_issues(context, *, for_build: bool = False) -> list[dict]:
     issues = validate_scene(context)
     issues.extend(line_pass_preflight_issues(context))
     issues.extend(shadow_pass_preflight_issues(context))
     issues.extend(handoff_3d_issues(context))
-    issues.extend(package_target_issues(context.scene.cutbridge))
+    if for_build:
+        # Build Package has a stricter action-specific contract: it must never
+        # overwrite render/user payload, even when that same package is a valid
+        # render-ready target for Blender's Render Animation workflow.
+        issues.extend(package_target_issues(context.scene.cutbridge))
+    else:
+        issues.extend(package_lifecycle_issues(context))
     return issues
 
 
@@ -55,13 +62,14 @@ def _language(context) -> str:
 class CUTBRIDGE_OT_Validate(bpy.types.Operator):
     bl_idname = "cutbridge.validate"
     bl_label = "Validate Cut"
-    bl_description = "Check cut metadata, scene settings, render mapping, Studio Preset, optional 3D handoff, and package target safety"
+    bl_description = "Check cut metadata, scene settings, render mapping, Studio Preset, optional 3D handoff, and package lifecycle state"
 
     def execute(self, context):
         language = _language(context)
         issues = _all_validation_issues(context)
         errors = [i for i in issues if i["level"] == "ERROR"]
         warnings = [i for i in issues if i["level"] == "WARNING"]
+        infos = [i for i in issues if i["level"] == "INFO"]
 
         if errors:
             first = format_diagnostic(language, errors[0])
@@ -75,6 +83,8 @@ class CUTBRIDGE_OT_Validate(bpy.types.Operator):
                 {"WARNING"},
                 tr(language, "validation_warning", warnings=len(warnings), detail=first),
             )
+        elif infos:
+            self.report({"INFO"}, format_diagnostic(language, infos[0]))
         else:
             self.report({"INFO"}, tr(language, "validation_passed"))
 
@@ -97,7 +107,7 @@ class CUTBRIDGE_OT_BuildPackage(bpy.types.Operator):
 
     def execute(self, context):
         language = _language(context)
-        issues = _all_validation_issues(context)
+        issues = _all_validation_issues(context, for_build=True)
         errors = [i for i in issues if i["level"] == "ERROR"]
         if errors:
             for item in errors[:3]:
