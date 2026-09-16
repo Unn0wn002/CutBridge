@@ -52,6 +52,54 @@ _SPECIFIC = {
             "fix": "正確なDepthデータが必要な場合はOpenEXRを使用してください。",
         },
     },
+    "PACKAGE_RENDER_READY": {
+        "EN": {
+            "title": "Package Already Built — Ready to Render",
+            "what": "The current package already contains render/user payload and its manifest matches the current cut/render settings.",
+            "why": "This is a valid post-build state. CutBridge's overwrite protection applies to Build Package, not to Blender's Render Animation command.",
+            "continue": "Yes — continue Render Animation. Do not rebuild this same version.",
+            "fix": "Increment Version only when intentionally creating a new revision/package.",
+        },
+        "JA": {
+            "title": "パッケージ作成済み — レンダリング可能",
+            "what": "現在のパッケージには既存のレンダー/ユーザーデータがあり、manifestは現在のカット/レンダー設定と一致しています。",
+            "why": "これは正常な作成後の状態です。CutBridgeの上書き保護は「パッケージ作成」に対するもので、Blenderの「アニメーションをレンダリング」は停止しません。",
+            "continue": "はい — そのままアニメーションをレンダリングできます。同じVersionでパッケージを再作成しないでください。",
+            "fix": "新しいリビジョン/パッケージを意図して作成するときだけVersionを上げてください。",
+        },
+    },
+    "PACKAGE_EXISTS": {
+        "EN": {
+            "title": "Existing Package Is Protected",
+            "what": "This version already contains render/user data, so Build Package will not overwrite it.",
+            "why": "CutBridge protects completed or in-progress package payload from destructive same-version rebuilds.",
+            "continue": "Yes for rendering the already-built package; no for rebuilding this same version.",
+            "fix": "Continue Render Animation without Build Package, or increment Version for a new revision.",
+        },
+        "JA": {
+            "title": "既存パッケージを保護しています",
+            "what": "このVersionには既存のレンダー/ユーザーデータがあるため、「パッケージ作成」では上書きしません。",
+            "why": "CutBridgeは完成済み/レンダリング途中のデータを同じVersionの再作成から保護します。",
+            "continue": "既存パッケージのレンダリングは続行できますが、同じVersionのパッケージ再作成はできません。",
+            "fix": "パッケージを再作成せずレンダリングを続けるか、新しいリビジョンではVersionを上げてください。",
+        },
+    },
+    "PACKAGE_STATE_MISMATCH": {
+        "EN": {
+            "title": "Existing Package Does Not Match Current Settings",
+            "what": "The target package already contains payload, but its manifest cannot be verified as the current cut/render contract.",
+            "why": "Writing new output with changed settings could mix incompatible frames or metadata into an existing revision.",
+            "continue": "No — not for new output into this existing package with the changed settings.",
+            "fix": "Restore the settings used by the package or increment Version for a new revision.",
+        },
+        "JA": {
+            "title": "既存パッケージと現在の設定が一致しません",
+            "what": "出力先には既存データがありますが、manifestを現在のカット/レンダー契約と一致する状態として確認できません。",
+            "why": "設定が変わったまま新しい出力を書き込むと、既存リビジョンに互換性のないフレームやメタデータが混在する可能性があります。",
+            "continue": "いいえ — 変更後の設定で、この既存パッケージへ新しい出力を追加しないでください。",
+            "fix": "そのパッケージ作成時の設定に戻すか、新しいリビジョンとしてVersionを上げてください。",
+        },
+    },
 }
 
 _GENERIC = {
