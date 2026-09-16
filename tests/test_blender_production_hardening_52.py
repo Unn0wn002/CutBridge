@@ -19,6 +19,7 @@ from cutbridge.core import clear_managed_render_outputs  # noqa: E402
 from cutbridge.package_safety import (  # noqa: E402
     assert_package_integrity,
     format_issue,
+    package_lifecycle_issues,
     package_target_issues,
 )
 
@@ -98,6 +99,10 @@ def test_unrendered_scaffold_can_be_refreshed_but_is_explicitly_warned(configure
     assert [item["code"] for item in issues] == ["PACKAGE_SCAFFOLD_REFRESH"]
     assert issues[0]["level"] == "WARNING"
 
+    lifecycle = package_lifecycle_issues(bpy.context)
+    assert [item["code"] for item in lifecycle] == ["PACKAGE_SCAFFOLD_REFRESH"]
+    assert lifecycle[0]["level"] == "WARNING"
+
     second_root, _ = _build(settings)
     assert second_root == first_root
 
@@ -112,12 +117,55 @@ def test_existing_render_payload_blocks_same_version_overwrite(configured_scene)
     assert len(issues) == 1
     assert issues[0]["level"] == "ERROR"
     assert issues[0]["code"] == "PACKAGE_EXISTS"
-    assert "Increment Version" in issues[0]["fix"]
+    assert "increment Version" in issues[0]["fix"]
+    assert "do not run Build Package again" in issues[0]["fix"]
     assert "Fix:" in format_issue(issues[0])
 
     with pytest.raises(RuntimeError, match="will not be overwritten"):
         bpy.ops.cutbridge.build_package()
     assert frame.read_bytes() == b"rendered-frame-placeholder"
+
+
+def test_matching_rendered_package_is_info_render_ready_for_general_validation(configured_scene):
+    _, settings, _ = configured_scene
+    root, _ = _build(settings)
+    frame = root / "render" / "beauty" / "C001_BEAUTY_1001.png"
+    frame.write_bytes(b"rendered-frame-placeholder")
+
+    lifecycle = package_lifecycle_issues(bpy.context)
+    assert len(lifecycle) == 1
+    assert lifecycle[0]["level"] == "INFO"
+    assert lifecycle[0]["code"] == "PACKAGE_RENDER_READY"
+    assert "matches the current cut/render settings" in lifecycle[0]["message"]
+    assert "Continue Render Animation" in lifecycle[0]["fix"]
+
+    # Validate Cut remains a non-destructive lifecycle check. It must not turn
+    # the valid post-build render state into the Build Package overwrite error.
+    assert bpy.ops.cutbridge.validate() == {"FINISHED"}
+
+    build_guard = package_target_issues(settings)
+    assert [item["code"] for item in build_guard] == ["PACKAGE_EXISTS"]
+    assert build_guard[0]["level"] == "ERROR"
+
+
+def test_rendered_package_with_changed_contract_fails_closed(configured_scene):
+    scene, settings, _ = configured_scene
+    root, _ = _build(settings)
+    frame = root / "render" / "beauty" / "C001_BEAUTY_1001.png"
+    frame.write_bytes(b"rendered-frame-placeholder")
+
+    scene.frame_end += 1
+    lifecycle = package_lifecycle_issues(bpy.context)
+
+    assert len(lifecycle) == 1
+    assert lifecycle[0]["level"] == "ERROR"
+    assert lifecycle[0]["code"] == "PACKAGE_STATE_MISMATCH"
+    assert "does not match the current cut/render settings" in lifecycle[0]["message"]
+    assert "increment Version" in lifecycle[0]["fix"]
+
+    # Build remains protected independently of the lifecycle diagnostic.
+    build_guard = package_target_issues(settings)
+    assert [item["code"] for item in build_guard] == ["PACKAGE_EXISTS"]
 
 
 def test_payload_probe_stops_after_first_payload(configured_scene, monkeypatch):
