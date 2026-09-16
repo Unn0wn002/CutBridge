@@ -94,6 +94,14 @@ Defense-in-depth remains in the Build path: if host state changes or validation 
 
 Artist-owned compositor state must remain intact. CutBridge owns only its managed mapping namespace.
 
+### After Build Package: render-ready state
+
+Once the current package contains render/user payload, **Build Package remains protected and will not overwrite the same Version**. That protection is action-specific: it does not block Blender's Render Animation command.
+
+If the existing `cutbridge.json` still matches the current cut/render contract, general Validation Status reports **Package Already Built — Ready to Render** (`PACKAGE_RENDER_READY`). Continue Render Animation and do not run Build Package again for that same Version.
+
+If the package already contains payload but the current cut/render settings no longer match its manifest, validation reports `PACKAGE_STATE_MISMATCH`. Restore the original settings or increment Version before creating new output; do not mix changed settings into the existing revision.
+
 ## Version workflow
 
 `Version` is the package revision number.
@@ -102,7 +110,7 @@ Artist-owned compositor state must remain intact. CutBridge owns only its manage
 - next revision: V002;
 - next revision: V003.
 
-Do not overwrite an existing same-version package that contains render/user payload. Increase Version for a new revision so older packages can coexist.
+Do not overwrite an existing same-version package that contains render/user payload. Increase Version for a new revision so older packages can coexist. If the same Version is already built and still matches the current settings, continue rendering that package without rebuilding it.
 
 ## Package Output
 
