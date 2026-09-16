@@ -31,6 +31,18 @@ def test_usability_docs_explain_line_depth_version_and_overwrite_safety():
         assert phrase in en
 
 
+def test_issue83_docs_distinguish_rendering_from_same_version_rebuild():
+    en = (DOCS / "QUICK_START_BETA2.md").read_text(encoding="utf-8")
+    ja = (DOCS / "QUICK_START_BETA2_JA.md").read_text(encoding="utf-8")
+    assert "Package Already Built — Ready to Render" in en
+    assert "PACKAGE_RENDER_READY" in en
+    assert "PACKAGE_STATE_MISMATCH" in en
+    assert "does not block Blender's Render Animation command" in en
+    assert "パッケージ作成済み — レンダリング可能" in ja
+    assert "PACKAGE_RENDER_READY" in ja
+    assert "PACKAGE_STATE_MISMATCH" in ja
+
+
 def test_four_pass_doc_records_renderer_boundary_without_blanket_claim():
     text = (DOCS / "FOUR_PASS_WORKFLOW_BETA2.md").read_text(encoding="utf-8")
     assert "Beauty + Line + Shadow + Depth" in text
