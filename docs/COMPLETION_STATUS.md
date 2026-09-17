@@ -1,180 +1,169 @@
 # CutBridge Completion Status
 
-## Current state
+## Current state — 17 September 2026
 
-- **Latest integrated `develop`:** `0a86d9a0605e1dd9714ef35a547693de76f714f4`.
-- **Product version:** `0.2.3` unreleased.
-- **Integrated product/validation sessions:** S1–S13.
-- **S12:** PASS after the completed S13F native repair chain.
-- **S13:** PASS / closed after exact native-tested commit `9c99ae23ccd8c47fdc0fffbd05b99e1326f2ea95` was pushed, CI-gated, merged intact through PR #68, and passed post-merge CI.
-- **Release authorization:** `approved: false` by design.
-- **GitHub Releases:** none.
-- **Repository governance issue #18:** OPEN and still blocks RC/stable publication.
-- **Next bounded phase:** S14 — Japanese target-user validation and release-preparation evidence.
+CutBridge v0.2.3 remains **UNRELEASED / NOT RELEASE READY**.
 
-CutBridge is currently **engineering-green on `develop` but NOT RELEASE READY**.
+The current product/runtime source immediately before this documentation reconciliation is `develop` commit `caaede1c296b9087ffee1b57a0907620b3495ffb`. Its tree is `fff813588579c16da0ad2353e5256ea63368b6b6`, which contains the natively owner-tested Blender repairs for Issues #82 and #83. This documentation update does not change runtime behavior.
 
-## Integrated foundation
+Current repository boundaries:
 
-### S1 — Baseline / deterministic packaging
-PASS / integrated.
+- `main`: `7a34ebdcb297ced7e275c4c58382f765deee0ed9`;
+- promotion PR #74: OPEN / unmerged / mergeable, but deliberately blocked by release gates;
+- `release-authorization.json`: `approved: false`;
+- GitHub Release publication: not authorized;
+- repository governance Issue #18: OPEN publication blocker;
+- S14 Issue #71: OPEN; real representative Japanese target-user execution is still pending;
+- Issue #80: OPEN post-v0.2.3 design task for per-pass output formats, not a v0.2.3 release blocker.
 
-Established deterministic Blender and After Effects packaging, GPL inclusion, checksums, output safety, and release-hygiene foundations.
+## Current verified engineering state
 
-### S2 — Blender render mapping
-PASS / integrated.
+### Integrated foundation — S1 through S13
 
-Transactional BEAUTY / LINE / SHADOW / DEPTH mapping with deterministic output paths, renderer/View Layer validation, and unrelated compositor-node preservation.
+The previously completed S1-S13 engineering foundation remains integrated for its documented scope:
 
-### S3 — Blender production hardening
-PASS / integrated.
+- deterministic Blender/After Effects packaging and release hygiene;
+- transactional Beauty / Line / Shadow / Depth Blender output mapping;
+- package safety, same-version overwrite protection, UTF-8/Japanese-safe metadata;
+- strict After Effects package/manifest/path/frame/pass validation;
+- managed AE Build/reload/repeated-build ownership safety;
+- compatible non-destructive V001 -> V002 -> V003 revision workflow;
+- QC+ diagnostics;
+- Japanese-first UI with deterministic English fallback;
+- Studio Presets;
+- optional bounded Camera/3D Null handoff;
+- native AE Camera/Null reconstruction and revision repair;
+- QA, documentation, release-authorization and deterministic-packaging controls.
 
-Added same-version payload protection, package integrity checks, version coexistence, UTF-8/Japanese-safe metadata, and production-oriented validation.
+Historical S12/S13 native evidence remains SHA-bound to the commits recorded in `docs/S12_S13_EVIDENCE_SUMMARY.md` and must not be reattributed to later commits without explicit retesting.
 
-### S4 — After Effects handoff contract hardening
-PASS / integrated.
+### Beta.2 repair chain
 
-Added strict manifest/schema/path/frame/pass validation and safe package-consumption behavior.
+The historical frozen candidate `candidate/v0.2.3-beta.2` is fixed at:
 
-### S5 — AE import / composition reliability
-PASS / integrated.
+`7fd7c34f16e43d328fbf88e63b534d1f04507cbd`
 
-Managed ownership, repeated-build/reload safety, ambiguity/collision rejection, rollback, package-structure checks, and ownership-aware QC.
+That candidate was useful for beta/internal validation, but material Blender-side findings were discovered after it was frozen. Therefore beta.2 is no longer the correct candidate identity for further current candidate-level testing.
 
-### S6 — Non-destructive revision manager
-PASS / integrated / native-host validated.
+#### Issue #82 — Blender Render Animation crash
 
-Compatible source revisions preserve artist state and use fail-closed ownership/rollback semantics.
+**CONFIRMED FIXED for the tested environment.**
 
-### S7 — QC+
-PASS / integrated / native-host validated.
+Owner/local Windows testing isolated a CutBridge/Blender interaction in which the N-panel continuously ran Line/Shadow compositor socket preflight during panel redraw. The probe created and removed temporary compositor datablocks while interactive Render Animation could be starting after View Layer pass changes.
 
-Deterministic `CBQ-*` PASS/WARNING/ERROR diagnostics with stable support identifiers and remediation guidance.
+Repair:
 
-### S8 — Japanese-first UX
-PASS / integrated / native-host validated.
+- remove Line/Shadow compositor preflight from continuous panel draw;
+- keep both preflights in explicit `Validate Cut` and `Build Package` operations.
 
-Japanese is the first-class/default display language and English is the deterministic fallback. Safety logic and machine identifiers remain locale-independent.
+Native owner verification on Windows 11 + Blender 5.2.1 LTS passed:
 
-### S8.5 — Repository-state reconciliation
-PASS / integrated.
+- normal CutBridge N-panel visible;
+- V005 `Validate Cut -> Build Package -> interactive Render Animation`;
+- 24/24 frames for Beauty, Line, Shadow, Depth;
+- all tested pass-combination cases;
+- save/close/reopen persistence;
+- V006 fresh revision Build + immediate Render Animation;
+- explicit invalid Line/Shadow fail-closed checks;
+- panel non-mutation check.
 
-Documentation/status maintenance only; runtime and release authorization were unchanged.
+Blender 4.2 and 4.5 were **not** natively verified for this repair and must remain UNVERIFIED.
 
-### S9 — Studio Presets
-PASS / integrated.
+#### Issue #83 — post-build PACKAGE_EXISTS guidance
 
-Delivered Manual / CutBridge Default / Custom JSON presets with strict declarative validation, deterministic naming/folders/passes/formats, and a Blender-side trust boundary.
+**CONFIRMED FIXED for the tested environment.**
 
-### S10A — Camera/Null handoff contract
-PASS / integrated.
+The previous general Validation Status / `Validate Cut` flow incorrectly reused the strict Build Package overwrite error after a valid package already contained render payload. The repair now separates action-specific build protection from package lifecycle state:
 
-Established the explicit spatial/timing/camera contract, including the axis mapping:
+- matching existing payload package -> `PACKAGE_RENDER_READY` INFO; continue Render Animation;
+- deliberate same-Version Build Package -> `PACKAGE_EXISTS` ERROR; refuse overwrite;
+- existing payload + changed cut/render contract -> `PACKAGE_STATE_MISMATCH` ERROR; fail closed.
 
-```text
-Blender (x, y, z) -> AE-oriented (x, -z, y)
-```
+Native owner verification on Windows 11 + Blender 5.2.1 LTS passed:
 
-and time mapping:
+- exact owner-test artifact checksum match;
+- clean V007 Validate/Build;
+- 24/24 frames across Beauty, Line, Shadow, Depth;
+- `PACKAGE_RENDER_READY` after payload exists;
+- same-version rebuild refusal with manifest/render data preserved;
+- frame-range mismatch detection and recovery;
+- continued render with normal panel visible, with no Issue #82 regression;
+- V007 -> V008 independent revision workflow;
+- English and Japanese lifecycle diagnostics;
+- data preservation across blocked build attempts.
 
-```text
-(frame - frame_start) / fps
-```
-
-### S10B — Optional 3D handoff producer
-PASS / integrated.
-
-Added versioned optional `handoff_3d` data with evaluated-world camera and explicitly marked Empty sampling, bounded samples, state restoration, and fail-closed unsupported cases.
-
-### S10C — Native AE Camera/3D Null reconstruction
-PASS / integrated / native-host validated.
-
-Native Adobe After Effects 2026 Build 87 / Windows 11 evidence using Blender 5.2.1-produced handoff data showed:
-
-- managed Camera/3D Null reconstruction PASS;
-- maximum 2D projection error `0.00018066 px` against a `<= 0.05 px` gate;
-- QC+ 10/10 PASS;
-- zero duplicate managed layers on repeated Build;
-- unmanaged collision rejection;
-- save/reopen persistence PASS.
-
-### S11 — QA / Docs / Release Engineering
-PASS / integrated.
-
-Established the EN/JA user documentation, compatibility scoping, release-readiness checklist, release authorization regression coverage, deterministic release simulation, and technical-debt tracking.
-
-### S12 — Release-target end-to-end validation
-PASS / closed after repair chain.
-
-The initial release-target campaign on Windows 11 + Blender 5.2.1 LTS + Adobe After Effects 2026 `26.3x87` exposed real revision defects instead of weakening the acceptance gate. The campaign remained fail-closed while repairs were developed.
-
-After S13F, the previously failing real-AE revision path completed V001→V002→V003 with clean QC, correct 3D ownership/data refresh, artist-state preservation, zero duplicate managed 3D layers, and save/close/reopen persistence. Issue #58 was then reconciled to PASS and closed.
-
-The repository currently does not contain a final committed structured `s12-evidence.json` PASS record. The issue/PR/native evidence is real and retained, but this missing structured artifact must be treated as an evidence-traceability gap rather than fabricated retroactively. See `S12_S13_EVIDENCE_SUMMARY.md`.
-
-### S13 — AE Camera/Null revision repair
-PASS / integrated / native-host validated.
-
-The S13 sequence repaired multiple real-host findings while preserving fail-closed behavior:
-
-1. Camera/Null ownership and baked-data migration across revisions.
-2. Camera Point-of-Interest access failure in real AE CameraLayer context.
-3. Missing canonical-CI execution of the S13 native-host-shaped regression.
-4. Native keyframe mutation failure caused by repeated key removal/per-key writes.
-
-Final native-tested source commit:
-
-`9c99ae23ccd8c47fdc0fffbd05b99e1326f2ea95`
-
-Final integration chain:
-
-- exact-head push CI: PASS;
-- PR #68 exact-head CI: PASS;
-- merge to `develop`: `0a86d9a0605e1dd9714ef35a547693de76f714f4`;
-- post-merge CI run `34504009878`: PASS.
-
-The tested commit was merged intact without amend, rebase, squash, or cherry-pick, so the SHA-bound native result remains attributable to the integrated source.
+Issues #82 and #83 are closed on GitHub as completed. This is owner/internal engineering evidence, not S14B customer/representative Japanese-user evidence.
 
 ## Latest authoritative automated evidence
 
-Post-merge CI on `develop` `0a86d9a...`:
+Exact-head CI on pre-documentation `develop` commit `caaede1c296b9087ffee1b57a0907620b3495ffb` passed both push and PR workflows.
 
-- static suite: **132 passed + 2 subtests**;
-- deterministic v0.2.3 package simulation/checksum verification: PASS;
+Recorded results include:
+
+- static validation: **133 passed + 2 subtests**;
+- deterministic v0.2.3 package/checksum simulation: PASS;
 - S6/S7/S8/S10C/S13 regression checks: PASS;
-- ExtendScript syntax: PASS;
+- ExtendScript syntax checks: PASS;
 - Blender 5.2.1 RNA registration lifecycle: PASS;
-- complete Blender/runtime pytest suite: **245 passed + 2 subtests**;
-- known warnings: Blender `Scene.use_nodes` deprecation relevant to Blender 6.0 migration.
+- complete Blender/runtime pytest suite: **289 passed, 72 warnings + 2 subtests**.
 
-## Release boundary
+Known automated warning debt includes Blender `Scene.use_nodes` deprecation ahead of Blender 6.0 and GitHub Actions runtime deprecation messages from pinned upstream actions. These are not recorded as current v0.2.3 functional blockers, but remain technical debt.
 
-Current status remains **NOT RELEASE READY**.
+## Evidence boundaries
 
-The following still block RC/stable publication:
+### S12 structured evidence traceability
 
-1. **Repository governance #18** — `main` and `develop` are not protected and required private-repository ruleset controls are unavailable under the current GitHub plan/configuration.
-2. **Material `main`/`develop` divergence** — `develop` is hundreds of commits ahead while `main` contains release-lock changes that must be preserved deliberately. Do not blind-merge.
-3. **Exact promoted-main CI** — no release candidate has yet been deliberately promoted and validated on `main`.
-4. **Japanese target-user evidence** — required before broad target-user production-usability claims.
-5. **Explicit exact release authorization** — must remain false until all prerequisites are complete.
-6. **Publication and independent artifact verification** — no GitHub Release exists yet.
-7. **Production update/distribution path** — must be deployed and verified separately from the private source repository.
+The repository still does **not** contain a final committed structured `s12-evidence.json` PASS record.
 
-## Known technical debt
+The issue/PR/native S12/S13 evidence is real and retained, but the missing structured record remains an evidence-traceability gap. Do not fabricate historical hashes, paths, timestamps, or a retroactive PASS JSON. If an authentic original record exists externally, recover and validate that exact record; otherwise preserve the limitation explicitly.
 
-Priority debt remains:
+### S14 target-user validation
 
-1. migrate away from deprecated Blender `Scene.use_nodes` behavior before Blender 6.0;
-2. refresh pinned GitHub Actions revisions whose underlying action runtimes still emit Node 20 deprecation warnings;
-3. deliberately reconcile `main` and `develop` before release promotion;
-4. prevent status documents/tests from freezing historical session state as current state;
-5. recover or explicitly document the missing final structured S12 evidence record without fabricating data.
+S14A protocol preparation exists, but S14B real representative Japanese-speaking target-user execution is not complete. Owner testing must not be represented as S14B PASS, customer validation, representative Japanese-user evidence, or proof of broad Japanese production usability.
 
-See `TECHNICAL_DEBT.md`.
+Any broad Japanese production-usability claim therefore remains blocked unless real S14B evidence is completed or the intended release-facing claim is explicitly narrowed through a reviewed decision.
 
-## Next bounded phase
+## Candidate identity after beta.2
 
-**S14 — Japanese target-user validation and release-preparation evidence.**
+Because Issues #82 and #83 required material product-source changes after frozen beta.2, the next current candidate must use a new identity.
 
-Do not begin broad new feature expansion until the repository status/evidence trail is reconciled and the release-governance boundary remains explicit.
+**Required next freeze:** `candidate/v0.2.3-beta.3` from an exact green `develop` commit after release-readiness documentation reconciliation.
+
+The beta.3 freeze must record:
+
+- exact source commit;
+- exact artifact names and SHA-256 hashes;
+- authoritative CI at the frozen source;
+- which native evidence carries forward unchanged and which tests were rerun;
+- owner/internal regression result for the exact beta.3 candidate.
+
+Do not mutate the historical beta.2 identity.
+
+## Release blockers / gates
+
+The remaining path to an RC/stable release is:
+
+1. **Reconcile current release-readiness documentation** to the post-#82/#83 source state.
+2. **Freeze exact beta.3 candidate** from a green develop head.
+3. **Run bounded owner/internal regression on exact beta.3** and record the candidate identity/evidence.
+4. **Resolve S12 structured-evidence traceability truthfully** without fabrication.
+5. **Complete S14B real Japanese target-user validation** for broad target-user usability claims, or explicitly narrow those claims through a reviewed decision.
+6. **Resolve repository governance Issue #18.** Current private-repository branch/tag protection capability remains insufficient; do not make the repository public merely to satisfy the checklist.
+7. **Freeze/review PR #74 at the exact approved candidate head** and require authoritative CI there.
+8. **Merge develop -> main only after the above gates are satisfied.**
+9. **Verify authoritative CI on the exact promoted main commit.**
+10. **Explicitly authorize one exact current-main/tag/channel/prerelease tuple** only after prerequisites pass.
+11. **Publish and independently verify downloaded artifacts/checksums/content.**
+12. **Verify the production update/distribution path separately.**
+
+Until these gates are satisfied, `release-authorization.json` must remain fail-closed and no stable/RC publication is authorized.
+
+## Non-blocking post-v0.2.3 work
+
+Issue #80 remains intentionally outside the v0.2.3 release scope. Per-pass output formats require coordinated manifest/preset/Blender/AE compatibility work and must not be half-implemented into the current release candidate.
+
+## Recommended immediate phase
+
+**Beta.3 candidate freeze and exact-candidate owner regression.**
+
+After that, continue release preparation only within the explicit evidence/governance boundaries above.
