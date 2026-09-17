@@ -1,6 +1,8 @@
 # CutBridge S12/S13 Evidence Summary
 
-Status: **S12 PASS / S13 PASS for the recorded SHA-bound scope / v0.2.3 STILL UNRELEASED**
+Status: **S12 PASS / S13 PASS / v0.2.3 STILL UNRELEASED**
+
+Scope note: those PASS statements are limited to the recorded SHA-bound S12/S13 evidence described below; they are not a claim that later source commits inherited new native evidence automatically.
 
 This file consolidates the verifiable repository and issue evidence for the historical S12 release-target campaign and S13 repair chain. It is an evidence index, not a substitute for an authentic structured native-evidence artifact, and it must not be used to reattribute historical native results to later source commits.
 
