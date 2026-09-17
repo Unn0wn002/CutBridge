@@ -4,6 +4,8 @@
 
 CutBridge v0.2.3 remains **UNRELEASED / NOT RELEASE READY**.
 
+- **Integrated product/validation sessions:** S1–S13.
+
 The current product/runtime source immediately before this documentation reconciliation is `develop` commit `caaede1c296b9087ffee1b57a0907620b3495ffb`. Its tree is `fff813588579c16da0ad2353e5256ea63368b6b6`, which contains the natively owner-tested Blender repairs for Issues #82 and #83. This documentation update does not change runtime behavior.
 
 Current repository boundaries:
