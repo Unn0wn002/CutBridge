@@ -78,7 +78,7 @@ These are bounded evidence statements. They do not certify every target host/OS 
 
 ## 4. S12 release-target end-to-end evidence
 
-Status: **PASS AFTER S13F REPAIR CHAIN / STRUCTURED-EVIDENCE TRACEABILITY GAP REMAINS**.
+Status: **PASS AFTER S13F REPAIR CHAIN / STRUCTURED-EVIDENCE TRACEABILITY DECISION RESOLVED**.
 
 The initial S12 campaign correctly produced `FAIL_REPAIR_REQUIRED` after real-host defects were found. The acceptance criteria were not weakened. S13 then repaired the native findings, culminating in exact candidate `9c99ae23...`, which passed the previously failing real-AE V001→V002→V003 path and persistence checks. Issue #58 was reconciled to PASS and closed after exact-head push CI, PR CI, merge, and post-merge CI all passed.
 
@@ -96,11 +96,15 @@ Completed native behavior includes:
 - [x] no duplicate managed Camera/Null layers are created;
 - [x] save → close → reopen persistence passes for the tested scope.
 
-Evidence-traceability limitation:
+Evidence-traceability resolution:
 
-- [ ] a final committed structured `s12-evidence.json` PASS record is not present in the current `develop` tree;
-- [ ] if the original structured record exists externally, recover it with authentic checksums/evidence references and validate it with `tools/s12/validate_evidence.py`;
-- [ ] if it never existed, do **not** fabricate a retroactive PASS JSON. Preserve the truthful issue/PR/native record and explicitly document the missing structured artifact.
+- [x] confirmed that a final committed structured `s12-evidence.json` PASS record is not present in the retained repository evidence;
+- [x] audited the surviving Issue #58 / Issue #60 / PR #68 / CI evidence and preserved the historical SHA-bound native result without reattributing it to later commits;
+- [x] determined that the missing PASS JSON cannot be reconstructed truthfully because required historical artifact hashes, fixture hash and per-gate evidence references are not all established by the surviving record;
+- [x] selected the fail-closed non-fabrication path: no retroactive PASS JSON will be created;
+- [x] retained the missing JSON as an explicit historical provenance limitation and kept the S12 template/validator requirement for future campaigns.
+
+This closes the S12 **traceability decision gate** for v0.2.3. It does not assert that the missing structured artifact existed, does not broaden S12 native evidence, and does not authorize release.
 
 See `S12_S13_EVIDENCE_SUMMARY.md`.
 
@@ -234,7 +238,7 @@ Use one of these states:
 
 **NOT RELEASE READY.**
 
-S12/S13 product/native blockers are resolved for their tested scope, but repository governance #18, structured evidence traceability, S14 target-user evidence for broad JP production claims, deliberate promotion to `main`, exact release authorization, publication, and distribution verification remain incomplete.
+S12/S13 product/native blockers are resolved for their tested scope, and the S12 structured-evidence traceability decision is resolved through the documented non-fabrication path. Repository governance #18, S14 target-user evidence for broad JP production claims, deliberate promotion to `main`, exact release authorization, publication, and distribution verification remain incomplete.
 
 ## Related documents
 
