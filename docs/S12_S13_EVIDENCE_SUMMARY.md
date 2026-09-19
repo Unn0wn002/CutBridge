@@ -85,34 +85,35 @@ Post-merge CI on `0a86d9a0605e1dd9714ef35a547693de76f714f4` recorded:
 
 For current automated evidence, use the current CI and `docs/COMPLETION_STATUS.md` rather than treating these historical counts as latest state.
 
-## Structured evidence-record limitation
+## Structured evidence-record resolution
 
-The repository does not contain a final committed `s12-evidence.json` PASS record. The repository contains the S12 evidence template and validator, but not a final structured PASS artifact.
+Repository and historical GitHub evidence were re-audited on 20 September 2026. No authentic final committed `s12-evidence.json` PASS artifact is available in the repository history/evidence set inspected for this release.
 
-Therefore:
+The surviving historical evidence is sufficient to retain the bounded S12/S13 native result, but it is not sufficient to reconstruct the missing structured artifact without inventing fields that the schema requires. In particular, a retroactive PASS JSON would require authentic artifact SHA-256 values, the fixture SHA-256, and per-gate evidence references. Those values are not established by the surviving record and must not be guessed or back-filled from later beta artifacts.
 
-- do not claim that a final structured JSON record was committed when it was not;
-- do not generate fake historical checksums, timestamps or evidence paths;
-- if the authentic original record exists outside the repository, recover that exact record and validate it;
-- otherwise preserve this limitation explicitly in release-readiness documentation.
+Therefore the traceability decision is final for v0.2.3:
 
-The absence of the structured file is an **evidence-traceability gap**, not proof that the recorded native run did not happen.
+- the historical S12/S13 result remains **PASS for its recorded SHA-bound tested scope** based on Issue #58, Issue #60, PR #68 and the exact-head/post-merge CI chain;
+- the structured `s12-evidence.json` artifact is classified **historically unavailable / not reconstructable without fabrication**;
+- no retroactive PASS JSON will be created;
+- `tools/s12/evidence-template.json` and `validate_evidence.py` remain the required fail-closed mechanism for future campaigns;
+- the missing historical JSON is retained as an explicit provenance limitation, not an open request to manufacture or recover data that is no longer evidenced.
 
-## Current release context — 17 September 2026
+This resolves the **decision/traceability gate** for v0.2.3 by choosing the documented non-fabrication path. It does not convert the missing artifact into evidence, does not broaden the native-test claim, and does not authorize release.
+
+## Current release context — 20 September 2026
 
 After the historical S12/S13 chain, frozen beta.2 exposed additional Blender-side findings during owner/internal testing. Issues #82 and #83 were repaired and natively owner-verified on Windows 11 + Blender 5.2.1 LTS, then closed. Those later Blender repairs do not alter the historical S12/S13 AE evidence described above, but they do mean the old beta.2 candidate is no longer the correct current candidate identity.
 
-The next candidate must be a new `v0.2.3-beta.3` freeze from a green current `develop` source. Candidate-level regression evidence must be recorded against that exact new identity.
+The frozen `candidate/v0.2.3-beta.3` identity and bounded owner/internal regression are complete for their recorded scope. The S12 structured-evidence traceability decision above is also complete: no retroactive PASS JSON will be fabricated.
 
 Current release blockers/gates include:
 
-1. freeze and verify the new beta.3 candidate;
-2. resolve the S12 structured-evidence traceability gap truthfully;
-3. complete S14B real Japanese target-user validation for broad target-user usability claims, or explicitly narrow the intended claim through review;
-4. repository-level governance Issue #18;
-5. exact promotion-head and promoted-main CI;
-6. explicit exact release authorization;
-7. publication plus independent downloaded-asset verification;
-8. production update/distribution verification.
+1. complete S14B real Japanese target-user validation for broad target-user usability claims, or explicitly narrow the intended claim through review;
+2. repository-level governance Issue #18;
+3. exact promotion-head and promoted-main CI;
+4. explicit exact release authorization;
+5. publication plus independent downloaded-asset verification;
+6. production update/distribution verification.
 
 Current release state remains **NOT RELEASE READY**.
