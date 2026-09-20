@@ -1,18 +1,34 @@
 import os
 import subprocess
 import sys
+from contextlib import nullcontext
+from pathlib import Path
 
 import bpy
 
 from .core import (
     absolute_output_dir,
+    active_preset,
     build_manifest,
+    configure_render_outputs,
+    effective_package_name,
     ensure_package_dirs,
-    package_name,
     selected_passes,
     validate_scene,
     write_manifest,
 )
+from .diagnostics import format_diagnostic
+from .handoff_3d import build_handoff_3d, handoff_3d_enabled, handoff_3d_issues
+from .line_preflight import line_pass_preflight_issues
+from .localization import tr
+from .package_safety import (
+    assert_package_integrity,
+    format_issue,
+    package_lifecycle_issues,
+    package_target_issues,
+)
+from .presets import use_preset_file_snapshot
+from .shadow_preflight import shadow_pass_preflight_issues
 
 
 def _open_folder(path: str):
@@ -24,27 +40,61 @@ def _open_folder(path: str):
         subprocess.Popen(["xdg-open", path])
 
 
+def _all_validation_issues(context, *, for_build: bool = False) -> list[dict]:
+    issues = validate_scene(context)
+    issues.extend(line_pass_preflight_issues(context))
+    issues.extend(shadow_pass_preflight_issues(context))
+    issues.extend(handoff_3d_issues(context))
+    if for_build:
+        # Build Package has a stricter action-specific contract: it must never
+        # overwrite render/user payload, even when that same package is a valid
+        # render-ready target for Blender's Render Animation workflow.
+        issues.extend(package_target_issues(context.scene.cutbridge))
+    else:
+        issues.extend(package_lifecycle_issues(context))
+    return issues
+
+
+def _language(context) -> str:
+    return getattr(context.scene.cutbridge, "language", "EN")
+
+
 class CUTBRIDGE_OT_Validate(bpy.types.Operator):
     bl_idname = "cutbridge.validate"
     bl_label = "Validate Cut"
-    bl_description = "Check cut metadata and Blender scene settings"
+    bl_description = "Check cut metadata, scene settings, render mapping, Studio Preset, optional 3D handoff, and package lifecycle state"
 
     def execute(self, context):
-        issues = validate_scene(context)
+        language = _language(context)
+        issues = _all_validation_issues(context)
         errors = [i for i in issues if i["level"] == "ERROR"]
         warnings = [i for i in issues if i["level"] == "WARNING"]
+        infos = [i for i in issues if i["level"] == "INFO"]
 
         if errors:
-            self.report({"ERROR"}, f"CutBridge: {len(errors)} error(s), {len(warnings)} warning(s). See console.")
+            first = format_diagnostic(language, errors[0])
+            self.report(
+                {"ERROR"},
+                tr(language, "validation_failed", errors=len(errors), warnings=len(warnings), detail=first),
+            )
         elif warnings:
-            self.report({"WARNING"}, f"CutBridge: valid with {len(warnings)} warning(s). See console.")
+            first = format_diagnostic(language, warnings[0])
+            self.report(
+                {"WARNING"},
+                tr(language, "validation_warning", warnings=len(warnings), detail=first),
+            )
+        elif infos:
+            self.report({"INFO"}, format_diagnostic(language, infos[0]))
         else:
-            self.report({"INFO"}, "CutBridge: validation passed.")
+            self.report({"INFO"}, tr(language, "validation_passed"))
 
+        # Console output intentionally keeps the canonical English technical
+        # details and stable codes for support/debugging while the interactive
+        # UI leads with user-facing EN/JA guidance.
         if issues:
             print("\n=== CutBridge Validation ===")
             for item in issues:
-                print(f"[{item['level']}] {item['code']}: {item['message']} FIX: {item['fix']}")
+                print(f"[{item['level']}] {item['code']}: {format_issue(item)}")
             print("============================\n")
 
         return {"FINISHED"}
@@ -53,24 +103,62 @@ class CUTBRIDGE_OT_Validate(bpy.types.Operator):
 class CUTBRIDGE_OT_BuildPackage(bpy.types.Operator):
     bl_idname = "cutbridge.build_package"
     bl_label = "Build Package"
-    bl_description = "Create deterministic cut folders and cutbridge.json manifest"
+    bl_description = "Configure deterministic render outputs and create a new non-overwriting CutBridge package"
 
     def execute(self, context):
-        issues = validate_scene(context)
+        language = _language(context)
+        issues = _all_validation_issues(context, for_build=True)
         errors = [i for i in issues if i["level"] == "ERROR"]
         if errors:
             for item in errors[:3]:
-                self.report({"ERROR"}, item["message"])
+                self.report({"ERROR"}, format_diagnostic(language, item))
             return {"CANCELLED"}
 
         settings = context.scene.cutbridge
-        root = absolute_output_dir(settings) / package_name(settings)
-        ensure_package_dirs(root, selected_passes(settings))
-        manifest = build_manifest(context, root)
-        manifest_path = write_manifest(manifest, root)
+        try:
+            preset = active_preset(settings)
+            snapshot_context = nullcontext(preset)
+            if str(getattr(settings, "studio_preset_mode", "MANUAL")).upper() == "CUSTOM":
+                raw_path = str(getattr(settings, "studio_preset_path", "") or "").strip()
+                resolved_path = Path(bpy.path.abspath(raw_path)).expanduser().resolve()
+                snapshot_context = use_preset_file_snapshot(resolved_path, preset)
+        except (OSError, RuntimeError, ValueError) as exc:
+            self.report({"ERROR"}, tr(language, "package_build_failed", detail=str(exc)))
+            return {"CANCELLED"}
+
+        try:
+            with snapshot_context:
+                # The custom preset snapshot stays fixed for package naming,
+                # compositor mapping, manifest generation, and directory setup.
+                root = absolute_output_dir(settings) / effective_package_name(settings)
+                passes = selected_passes(settings)
+
+                # S10B evaluates the opt-in 3D payload before changing compositor
+                # state or touching the package directory. Any unsupported animated
+                # transform therefore fails closed without leaving a partial package.
+                handoff_payload = None
+                if handoff_3d_enabled(settings):
+                    handoff_payload = build_handoff_3d(context)
+
+                # Configure the scene before touching the package directory. If
+                # a preflight is bypassed or host state changes between Validate
+                # and Build, the direct Render Layers socket check still fails
+                # closed before package directories are created.
+                configure_render_outputs(context, root)
+
+                manifest = build_manifest(context, root)
+                if handoff_payload is not None:
+                    manifest["handoff_3d"] = handoff_payload
+                ensure_package_dirs(root, passes, manifest.get("folders"))
+                manifest_path = write_manifest(manifest, root)
+                assert_package_integrity(root, manifest, passes)
+        except (OSError, RuntimeError, ValueError) as exc:
+            self.report({"ERROR"}, tr(language, "package_build_failed", detail=str(exc)))
+            return {"CANCELLED"}
+
         settings.last_package_path = str(root)
 
-        self.report({"INFO"}, f"CutBridge package created: {manifest_path}")
+        self.report({"INFO"}, tr(language, "package_created", path=manifest_path))
         print(f"CutBridge package: {root}")
         return {"FINISHED"}
 
@@ -80,9 +168,10 @@ class CUTBRIDGE_OT_OpenPackageFolder(bpy.types.Operator):
     bl_label = "Open Package Folder"
 
     def execute(self, context):
+        language = _language(context)
         path = context.scene.cutbridge.last_package_path
         if not path or not os.path.isdir(path):
-            self.report({"WARNING"}, "Build a package first.")
+            self.report({"WARNING"}, tr(language, "build_first"))
             return {"CANCELLED"}
         _open_folder(path)
         return {"FINISHED"}

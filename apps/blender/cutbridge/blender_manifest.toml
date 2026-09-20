@@ -4,7 +4,7 @@ id = "cutbridge"
 version = "0.2.3"
 name = "CutBridge"
 tagline = "Anime cut handoff pipeline for Blender and After Effects"
-maintainer = "CutBridge Student Project"
+maintainer = "CutBridge Project"
 type = "add-on"
 tags = ["Animation"]
 

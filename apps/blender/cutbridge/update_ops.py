@@ -115,8 +115,13 @@ def _startup_update_check():
 
 
 def schedule_startup_update_check():
-    if not bpy.app.timers.is_registered(_startup_update_check):
-        bpy.app.timers.register(_startup_update_check, first_interval=4.0)
+    # Temporarily disabled while isolating Blender 5.2.1 Render Animation crash
+    # reported in owner validation (#82). Manual update checks remain available.
+    # A background bpy.app.timer touching bpy.context shortly after add-on
+    # registration is not required for core CutBridge handoff functionality and
+    # is being removed from the beta candidate until native render safety is
+    # revalidated.
+    return None
 
 
 def cancel_startup_update_check():

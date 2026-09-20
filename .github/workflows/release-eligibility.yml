@@ -1,0 +1,56 @@
+name: Release Tag Eligibility
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  release-tag-eligibility:
+    name: release-tag-eligibility
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.13'
+      - name: Require explicit release authorization on exact current main
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${GITHUB_REF}" != "refs/heads/main" ]]; then
+            echo "Release tag eligibility may only be evaluated on refs/heads/main."
+            exit 1
+          fi
+
+          MAIN_SHA="$(git rev-parse 'refs/remotes/origin/main^{commit}')"
+          if [[ "${GITHUB_SHA}" != "${MAIN_SHA}" ]]; then
+            echo "Workflow SHA ${GITHUB_SHA} is not current main HEAD ${MAIN_SHA}."
+            exit 1
+          fi
+
+          AUTH_TAG="$(python - <<'PY'
+          import json
+          from pathlib import Path
+
+          approval = json.loads(Path("release-authorization.json").read_text(encoding="utf-8"))
+          tag = approval.get("tag")
+          print(tag if isinstance(tag, str) else "")
+          PY
+          )"
+
+          if [[ -z "${AUTH_TAG}" ]]; then
+            echo "Release authorization has no tag."
+            exit 1
+          fi
+
+          python tools/validate_release_authorization.py \
+            --tag "${AUTH_TAG}" \
+            --sha "${GITHUB_SHA}" \
+            --main-sha "${MAIN_SHA}"

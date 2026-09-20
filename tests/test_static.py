@@ -11,6 +11,7 @@ import tomllib
 import zipfile
 
 import pytest
+from jsonschema import Draft202012Validator
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 BLENDER = ROOT / "apps" / "blender" / "cutbridge"
@@ -54,6 +55,12 @@ def test_blender_manifest_is_hardened_and_version_synced():
     assert "files" in manifest["permissions"]
     assert "network" in manifest["permissions"]
     assert manifest["build"]["paths_exclude_pattern"]
+    version_module = _load_module("cutbridge_version_test", BLENDER / "version.py")
+    assert version_module.VERSION == tuple(int(x) for x in manifest["version"].split("."))
+    assert "SPDX:GPL-3.0-or-later" in manifest["license"]
+    assert "GNU GENERAL PUBLIC LICENSE" in (ROOT / "LICENSE").read_text(encoding="utf-8")
+    assert f'**v{manifest["version"]} ' in (ROOT / "README.md").read_text(encoding="utf-8")
+    assert f'## [{manifest["version"]}]' in (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
 
 
 def test_addon_preferences_do_not_store_transport_strings_in_rna():
@@ -112,6 +119,9 @@ def test_shared_and_update_schemas_parse():
     assert shared["title"] == "CutBridge Manifest"
     assert update_schema["title"] == "CutBridge Release Index"
     assert example["schema_version"] == 1
+    Draft202012Validator.check_schema(shared)
+    Draft202012Validator.check_schema(update_schema)
+    Draft202012Validator(update_schema).validate(example)
 
 
 def test_update_selection_respects_channel_version_platform_and_blender():
@@ -227,9 +237,23 @@ def test_release_builder_produces_expected_artifacts(tmp_path):
         archived_version_source = archive.read("version.py").decode("utf-8")
         assert archived_manifest["version"] == version
         assert f'__version__ = "{version}"' in archived_version_source
+        assert archive.read("LICENSE") == (ROOT / "LICENSE").read_bytes()
 
     with zipfile.ZipFile(ae_zip) as archive:
-        assert archive.namelist() == ["CutBridge.jsx"]
+        assert archive.namelist() == [
+            "CutBridge.jsx",
+            "revision_manager.js",
+            "qc_plus.js",
+            "localization.js",
+            "INSTALL.md",
+            "LICENSE",
+        ]
+        assert archive.read("CutBridge.jsx") == (ROOT / "apps/after-effects/CutBridge.jsx").read_bytes()
+        assert archive.read("revision_manager.js") == (ROOT / "apps/after-effects/revision_manager.js").read_bytes()
+        assert archive.read("qc_plus.js") == (ROOT / "apps/after-effects/qc_plus.js").read_bytes()
+        assert archive.read("localization.js") == (ROOT / "apps/after-effects/localization.js").read_bytes()
+        assert archive.read("INSTALL.md") == (ROOT / "apps/after-effects/INSTALL.md").read_bytes()
+        assert archive.read("LICENSE") == (ROOT / "LICENSE").read_bytes()
 
     checksum_lines = checksum_file.read_text(encoding="utf-8").splitlines()
     assert len(checksum_lines) == 2

@@ -5,18 +5,26 @@ on:
     branches: [main, develop, 'feature/**', 'fix/**']
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   static-validation:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: '3.11'
       - name: Install test dependencies
-        run: python -m pip install pytest
+        run: python -m pip install pytest jsonschema
       - name: Run tests
-        run: pytest -q tests/test_static.py
+        run: pytest -q tests/test_static.py tests/test_release_hygiene.py tests/test_release_authorization.py tests/test_ae_contract.py tests/test_ae_s5.py tests/test_ae_s6.py tests/test_ae_s7.py tests/test_ae_s8.py tests/test_s8_blender_localization.py tests/test_studio_presets.py tests/test_camera_handoff_contract.py tests/test_handoff_3d_schema.py tests/test_ae_install_docs.py tests/test_ae_package_identity.py
       - name: Simulate release packaging
         shell: bash
         run: |
@@ -32,21 +40,53 @@ jobs:
           test -f "dist-ci/CutBridge-AfterEffects-v${VERSION}.zip"
           test -f dist-ci/SHA256SUMS.txt
           test -f dist-ci/release-metadata.json
+          (cd dist-ci && sha256sum --check SHA256SUMS.txt)
+
+      - name: Run S6 revision contract checks
+        run: |
+          node tests/ae_s6_revision_checks.cjs
+          node tests/ae_s6_optional_pass_lifecycle_checks.cjs
+          node tests/ae_s6_extend_script_binding_checks.cjs
+      - name: Run S7 QC+ diagnostic checks
+        run: |
+          node tests/ae_s7_qc_plus_checks.cjs
+          node tests/ae_s7_native_qc_binding_checks.cjs
+      - name: Run S8 localization checks
+        run: |
+          node tests/ae_s8_localization_checks.cjs
+          node tests/ae_s8_native_ui_binding_checks.cjs
+      - name: Run S10C reconstruction checks
+        run: |
+          node tests/ae_s10c_reconstruction_checks.cjs
+      - name: Run S13 3D revision native-host regression
+        run: |
+          node tests/ae_s13_revision_3d_tag_migration_checks.cjs
       - name: Check ExtendScript syntax with Node parser
         run: |
           cp apps/after-effects/CutBridge.jsx /tmp/CutBridge.js
+          cp apps/after-effects/revision_manager.js /tmp/revision_manager.js
+          cp apps/after-effects/qc_plus.js /tmp/qc_plus.js
+          cp apps/after-effects/localization.js /tmp/localization.js
           node --check /tmp/CutBridge.js
+          node --check /tmp/revision_manager.js
+          node --check /tmp/qc_plus.js
+          node --check /tmp/localization.js
 
   blender-52-rna-runtime:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: '3.13'
       - name: Install Blender integration test dependencies
         run: python -m pip install --disable-pip-version-check pytest jsonschema bpy==5.2.1
       - name: Register, unregister, and re-register CutBridge in Blender RNA
         run: python tests/test_blender_runtime_52.py
-      - name: Build and validate CutBridge packages in Blender 5.2.1 RNA
-        run: pytest -q tests/test_blender_integration_52.py
+      - name: Run the complete suite including Blender package integration
+        run: pytest -q

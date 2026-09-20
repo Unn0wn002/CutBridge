@@ -4,7 +4,7 @@
 
 It standardizes cut metadata, render-pass packaging, versioning, `cutbridge.json` handoff, After Effects project setup, QC, controlled revision handling, Japanese-first workflow UX, Studio Presets, and an optional bounded Camera/3D Null handoff.
 
-CutBridge is designed primarily for Japanese animation and content-production users, with deterministic English fallback. It is **not** a renderer, toon shader, animation generator, general scene exporter, or asset manager. Its job is to make the Blender → compositing handoff more repeatable, inspectable, and safer.
+CutBridge is designed for Japanese animation and content-production workflows, with a Japanese-first UI and deterministic English fallback. For v0.2.3, this is an implementation/design statement rather than a representative-user usability claim: S14B target-user validation remains NOT_EXECUTED. CutBridge is **not** a renderer, toon shader, animation generator, general scene exporter, or asset manager. Its job is to make the Blender → compositing handoff more repeatable, inspectable, and safer.
 
 **v0.2.3 — unreleased development candidate.** There is currently no public GitHub Release. Do not treat this repository state as a stable published release.
 
@@ -49,7 +49,7 @@ CutBridge currently provides:
 
 ## Current development status
 
-Engineering/native-host validation is complete through **S13**. **S14A**, the Japanese target-user validation protocol and fail-closed evidence tooling, is integrated. The next product-validation step is **S14B: real Japanese target-user execution**.
+Engineering/native-host validation is complete through **S13**. **S14A**, the Japanese target-user validation protocol and fail-closed evidence tooling, is integrated. For v0.2.3, the release-facing Japanese claim scope is deliberately narrowed instead of claiming S14B completion. **S14B remains NOT_EXECUTED** and is reserved for a future release or claim that needs representative Japanese target-user usability evidence.
 
 The post-S14A `develop` CI is green for both primary jobs:
 
@@ -312,12 +312,13 @@ See [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md).
 
 Remaining release work includes:
 
-1. real Japanese target-user validation under S14B;
-2. repository release-governance resolution in issue #18;
-3. deliberate `develop` → `main` promotion rather than a blind merge;
-4. authoritative CI on the exact promoted candidate;
-5. exact release authorization only after all prerequisites pass;
-6. published artifact/checksum verification and production update/distribution verification.
+1. repository release-governance resolution in issue #18;
+2. deliberate `develop` → `main` promotion rather than a blind merge;
+3. authoritative CI on the exact promoted candidate;
+4. exact release authorization only after all prerequisites pass;
+5. published artifact/checksum verification and production update/distribution verification.
+
+For v0.2.3, S14B is **not** listed as a prerequisite because the release-facing claim is explicitly narrowed. The release must not state or imply representative Japanese-user validation, customer validation, proven ease of use, broad Japanese production usability, or S14B PASS.
 
 Do **not** make the repository public merely to bypass the current private-repository governance limitation.
 
@@ -326,11 +327,12 @@ Do **not** make the repository public merely to bypass the current private-repos
 ```text
 S1–S13  ✅ engineering/native validation completed for documented scope
 S14A    ✅ Japanese target-user protocol + evidence tooling integrated
-S14B    ⏳ real Japanese target-user execution pending
+S14B    ⏸ NOT_EXECUTED; deferred for broader future usability claims
+v0.2.3  ✅ Japanese release-facing claim scope narrowed
 Release ⛔ not authorized
 ```
 
-S14 target-user evidence must come from real representative participants. CI, localization, simulated participants, or AI-generated feedback do not count as real target-user validation.
+S14 target-user evidence must come from real representative participants. CI, localization, owner testing, simulated participants, or AI-generated feedback do not count as real target-user validation. Accordingly, v0.2.3 makes no representative Japanese-user usability claim.
 
 See [`docs/S14_JP_USER_VALIDATION.md`](docs/S14_JP_USER_VALIDATION.md).
 
