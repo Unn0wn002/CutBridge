@@ -140,7 +140,17 @@ Required before RC/stable publication:
 - [ ] validate unauthorized and stale-tag negative cases;
 - [ ] keep issue #18 OPEN until these controls are actually available and tested.
 
-Current private-repository plan/configuration does not expose the required GitHub ruleset capability. Do **not** make the repository public merely to satisfy this checklist. Workflow-local authorization is defense-in-depth, not a replacement for repository governance.
+Verified platform state on 20 September 2026:
+
+- repository remains private;
+- GitHub branch metadata reports `main` and `develop` as `protected: false`;
+- the repository rulesets API returns: `Upgrade to GitHub Pro or make this repository public to enable this feature.`;
+- this connected GitHub integration cannot administer branch protection/rulesets;
+- the source repository must **not** be made public merely to satisfy governance;
+- `.github/CODEOWNERS` assigns the active repository owner to release-sensitive workflows, authorization, packaging and release-readiness files as repository-local defense-in-depth;
+- CI regression coverage requires those CODEOWNERS entries to remain present.
+
+The CODEOWNERS mapping, exact-main/tag authorization checks, pinned Actions, read-only validation/package permissions, deterministic packaging and repeated authorization revalidation are useful defense-in-depth. They do **not** replace enforced branch/tag controls. Issue #18 therefore remains a publication blocker until the platform-level controls are actually available, enabled and tested.
 
 ## 7. Freeze release candidate on `develop`
 
