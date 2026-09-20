@@ -115,20 +115,20 @@ Integration:
 - merge to `develop` `0a86d9a0605e1dd9714ef35a547693de76f714f4`;
 - post-merge CI `34504009878`: PASS.
 
-## S14 — Japanese Target-User Validation & Release Preparation — NEXT
+## S14 — Japanese Target-User Validation & Release Preparation
 
-S14 is now the next bounded phase.
+**S14A COMPLETE / S14B NOT_EXECUTED for v0.2.3.**
 
-Objectives:
+The S14 protocol and fail-closed evidence tooling are integrated. For v0.2.3, the release-facing Japanese claim was deliberately narrowed instead of fabricating or waiting on representative-user evidence.
 
-- define Japanese target-user task scripts and acceptance criteria;
-- validate terminology, onboarding, install, Blender validation/build, package transfer, AE Build/QC, revision handling, and error recovery with actual target users when making production-usability claims;
-- record task completion, friction, rework, terminology feedback, and material blockers;
-- repair material user-facing findings before release claims;
-- preserve bounded compatibility language;
-- do not fabricate participants, observations, timing, or measurements.
+Current boundary:
 
-S14 should not broaden CutBridge into a renderer, shader system, asset manager, geometry exporter, or arbitrary scene synchronizer.
+- Japanese-first UI and deterministic English fallback may be described as implemented behavior;
+- engineering/native evidence may be described only for its recorded tested scope;
+- no representative Japanese-user validation, customer validation, proven ease-of-use, broad Japanese production-usability, statistical usability, or S14B PASS claim may be made;
+- S14B remains available for a future release or claim that needs broader representative target-user evidence.
+
+S14 must not broaden CutBridge into a renderer, shader system, asset manager, geometry exporter, or arbitrary scene synchronizer.
 
 ## Release-preparation track
 
@@ -142,30 +142,34 @@ Release engineering can proceed in parallel only where it does not weaken govern
 
 ### B. Repository governance
 
-Issue #18 remains an independent publication blocker.
+Issue #18 remains an independent publication blocker only for controlled enforcement-path validation.
 
-Required before RC/stable publication:
+Configured and verified:
 
-- protect `main` and `develop`;
-- require authoritative CI for protected promotion/integration;
-- restrict `v*` release-tag mutation;
-- protect against historical-workflow publication;
-- record and test repository-admin controls.
+- protected `main`;
+- protected `develop`;
+- authoritative CI required for protected promotion/integration;
+- admin-controlled `v*.*.*` release-tag mutation;
+- no-bypass `release-tag-eligibility` required check for matching tag creation;
+- release authorization remains fail-closed.
 
-Current private-repository plan/configuration does not expose the required ruleset capability. Do not make the repository public merely to satisfy the gate.
+Remaining:
+
+- record the negative eligibility result while authorization is false;
+- later record the explicitly authorized exact-current-main eligibility path;
+- keep publication blocked until both are satisfied.
 
 ### C. Deliberate `develop` → `main` promotion
 
-`main` and `develop` are materially diverged. Do not blind-merge.
+**COMPLETE / VERIFIED.**
 
-Before promotion:
-
-- compare `main...candidate` file-by-file;
-- preserve required main-side release-lock intent;
-- preserve the newer hardened release workflow on `develop`;
-- produce an explicit promotion tree/commit;
-- run authoritative CI on the exact promoted `main` candidate;
-- keep release authorization false during promotion validation.
+- promotion head: `501f9bd6b6c69cf8859f96f0fd6441afc48c0b50`;
+- fresh PR CI `35511056270` attempt 2: PASS;
+- PR #74 merged through protected `main`;
+- promoted `main`: `049081f0fe3d3e74d77db807910c2e0fff56fe73`;
+- post-promotion CI `35513361337`: PASS;
+- release authorization remained false;
+- `main` and `develop` trees are identical; `main` is one merge commit ahead.
 
 ### D. Exact release authorization
 
@@ -187,7 +191,7 @@ Current priority debt:
 1. Blender 6.0 migration away from deprecated `Scene.use_nodes`;
 2. refresh pinned GitHub Actions revisions whose underlying action runtimes still emit Node 20 deprecation warnings;
 3. prevent session-status tests from freezing historical state as current state;
-4. reconcile branch history before release promotion;
+4. complete controlled release-tag eligibility enforcement testing before publication;
 5. maintain a durable native-evidence trail.
 
 See `TECHNICAL_DEBT.md`.
