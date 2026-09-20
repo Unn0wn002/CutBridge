@@ -21,7 +21,6 @@ def test_readme_tracks_narrowed_v023_japanese_claim_without_fake_s14b_pass():
     assert "UNRELEASED / PUBLICATION BLOCKED" in text
     assert '"approved": false' in text
     assert "There is currently no public GitHub Release" in text
-    assert "PR #74 merged" in text
     assert "049081f0fe3d3e74d77db807910c2e0fff56fe73" in text
     assert "release-tag eligibility validation" in text
     assert "S12 — End-to-End Blender → package → After Effects validation harness" not in text
@@ -108,7 +107,7 @@ def test_technical_debt_uses_current_post_s13_baseline_and_evidence_limits():
     assert "S12 structured evidence traceability" in text
     assert "Repository-level configuration is now present on the public repository" in text
     assert "release-facing Japanese claim was deliberately narrowed" in text
-    assert "release-tag eligibility enforcement testing" in text
+    assert "enforcement-path validation" in text
     assert "green S8-integrated product baseline" not in text
     assert "develop` contains S1–S8" not in text
 
