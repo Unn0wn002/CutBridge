@@ -174,3 +174,18 @@ def test_ci_workflow_is_read_only_and_pins_actions():
     assert _workflow_uses_are_pinned(workflow)
     assert "@v4" not in workflow and "@v5" not in workflow
     assert workflow.count("persist-credentials: false") == 2
+
+
+def test_codeowners_covers_release_sensitive_controls():
+    codeowners = (ROOT / ".github" / "CODEOWNERS").read_text(encoding="utf-8")
+
+    assert "* @Unn0wn002" in codeowners
+    for required in [
+        "/.github/workflows/ @Unn0wn002",
+        "/release-authorization.json @Unn0wn002",
+        "/tools/validate_release_authorization.py @Unn0wn002",
+        "/tools/build_release.py @Unn0wn002",
+        "/docs/RELEASE_CHECKLIST.md @Unn0wn002",
+        "/docs/RELEASE_READINESS.md @Unn0wn002",
+    ]:
+        assert required in codeowners
