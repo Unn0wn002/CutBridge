@@ -114,22 +114,27 @@ On `develop` `0a86d9a...`:
 
 These automated results confirm integration stability but do not replace the native evidence above.
 
-## 5. Evidence-traceability limitation
+## 5. Evidence-traceability resolution
 
-The current `develop` tree contains:
+The current repository retains:
 
 - `tools/s12/README.md`;
 - `tools/s12/evidence-template.json`;
 - `tools/s12/validate_evidence.py`.
 
-A final committed structured `s12-evidence.json` PASS record is **not present in the repository tree**.
+A final committed structured `s12-evidence.json` PASS record is **not present in the retained repository evidence**.
 
-This must be handled conservatively:
+On 20 September 2026 the project re-audited the surviving S12/S13 repository and GitHub record. The historical native result remains supported for its recorded SHA-bound scope, but the evidence set does not establish all values required to reconstruct a valid historical PASS JSON, including the complete authentic artifact/fixture hashes and per-gate evidence references.
 
-1. if the authentic original structured evidence record exists externally, recover it with its genuine artifact/fixture hashes and evidence references;
-2. validate that authentic record with `tools/s12/validate_evidence.py`;
-3. if it never existed, do **not** manufacture a retroactive PASS record;
-4. retain the issue/PR/native evidence as the historical source and explicitly record the structured-evidence gap.
+The v0.2.3 decision is therefore:
+
+1. do **not** manufacture a retroactive PASS record;
+2. retain Issue #58, Issue #60, PR #68 and the exact-head/integration CI chain as the historical source;
+3. classify the structured JSON as historically unavailable / not truthfully reconstructable from retained evidence;
+4. keep that absence as an explicit provenance limitation rather than an unresolved request to invent data;
+5. require future S12 campaigns to create and validate their structured record contemporaneously.
+
+This resolves the traceability decision gate without pretending the missing artifact exists.
 
 See `S12_S13_EVIDENCE_SUMMARY.md`.
 

@@ -1,6 +1,6 @@
 # CutBridge Completion Status
 
-## Current state — 17 September 2026
+## Current state — 20 September 2026
 
 CutBridge v0.2.3 remains **UNRELEASED / NOT RELEASE READY**.
 
@@ -117,9 +117,11 @@ Known automated warning debt includes Blender `Scene.use_nodes` deprecation ahea
 
 ### S12 structured evidence traceability
 
-The repository still does **not** contain a final committed structured `s12-evidence.json` PASS record.
+**RESOLVED as a traceability decision for v0.2.3; historical structured artifact remains unavailable.**
 
-The issue/PR/native S12/S13 evidence is real and retained, but the missing structured record remains an evidence-traceability gap. Do not fabricate historical hashes, paths, timestamps, or a retroactive PASS JSON. If an authentic original record exists externally, recover and validate that exact record; otherwise preserve the limitation explicitly.
+A 20 September 2026 audit of the retained repository/GitHub evidence found no authentic final committed `s12-evidence.json` PASS artifact. The historical Issue #58 / Issue #60 / PR #68 / CI chain supports the bounded SHA-bound native S12/S13 result, but it does not establish every field required to reconstruct the missing structured JSON.
+
+The project therefore takes the fail-closed non-fabrication path: no historical hashes, fixture hash, per-gate evidence paths, timestamps, or PASS JSON will be invented. The missing JSON remains an explicit provenance limitation. Future S12 campaigns must create and validate the structured record contemporaneously using the existing template and validator.
 
 ### S14 target-user validation
 
@@ -150,7 +152,7 @@ The remaining path to an RC/stable release is:
 1. **Reconcile current release-readiness documentation** to the post-#82/#83 source state.
 2. **Freeze exact beta.3 candidate** from a green develop head.
 3. **Run bounded owner/internal regression on exact beta.3** and record the candidate identity/evidence.
-4. **Resolve S12 structured-evidence traceability truthfully** without fabrication.
+4. **S12 structured-evidence traceability decision: COMPLETE** through the documented non-fabrication path; the historical JSON remains unavailable and must not be recreated.
 5. **Complete S14B real Japanese target-user validation** for broad target-user usability claims, or explicitly narrow those claims through a reviewed decision.
 6. **Resolve repository governance Issue #18.** Current private-repository branch/tag protection capability remains insufficient; do not make the repository public merely to satisfy the checklist.
 7. **Freeze/review PR #74 at the exact approved candidate head** and require authoritative CI there.
@@ -168,6 +170,6 @@ Issue #80 remains intentionally outside the v0.2.3 release scope. Per-pass outpu
 
 ## Recommended immediate phase
 
-**Beta.3 candidate freeze and exact-candidate owner regression.**
+**S14B target-user validation / claim-scope decision, then repository governance Issue #18.**
 
-After that, continue release preparation only within the explicit evidence/governance boundaries above.
+The beta.3 freeze, bounded owner/internal regression, and S12 traceability decision are complete for their recorded scopes. Continue release preparation only within the explicit evidence/governance boundaries above.
