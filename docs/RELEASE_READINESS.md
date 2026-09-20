@@ -150,7 +150,11 @@ Verified platform state on 20 September 2026:
 - `.github/CODEOWNERS` assigns the active repository owner to release-sensitive workflows, authorization, packaging and release-readiness files as repository-local defense-in-depth;
 - CI regression coverage requires those CODEOWNERS entries to remain present.
 
-The CODEOWNERS mapping, exact-main/tag authorization checks, pinned Actions, read-only validation/package permissions, deterministic packaging and repeated authorization revalidation are useful defense-in-depth. They do **not** replace enforced branch/tag controls. Issue #18 therefore remains a publication blocker until the platform-level controls are actually available, enabled and tested.
+The CODEOWNERS mapping, exact-main/tag authorization checks, pinned Actions, read-only validation/package permissions, deterministic packaging and repeated authorization revalidation are useful defense-in-depth.
+
+Current public-repository governance now includes active `Protect main`, `Protect develop`, and `Protect release tags` rulesets. A separate manual `Release Tag Eligibility` workflow is also required before release-tag creation: its check context is `release-tag-eligibility`, and it can succeed only when manually dispatched on the exact current `main` SHA with an approved release authorization tuple.
+
+To close the stale/historical-tag gap, configure a second tag ruleset targeting `v*.*.*` with **no bypass actors** and required status check `release-tag-eligibility` from GitHub Actions. GitHub aggregates applicable rulesets, so the existing admin-only tag-mutation ruleset remains in force while the no-bypass eligibility ruleset independently requires the current-main authorization check.
 
 ## 7. Freeze release candidate on `develop`
 
