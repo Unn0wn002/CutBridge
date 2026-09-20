@@ -1,6 +1,6 @@
 # CutBridge Technical Debt
 
-This file records known engineering/release debt that does not invalidate the current S1–S13 green `develop` baseline but should be resolved deliberately before it becomes a release or compatibility risk.
+This file records known engineering/release debt that does not invalidate the current S1–S13 validated product baseline or the protected promotion to `main`, but should be resolved deliberately before it becomes a release or compatibility risk.
 
 S12/S13 closeout reference points:
 
@@ -50,28 +50,22 @@ CutBridge intentionally pins release-sensitive actions for supply-chain/reproduc
 - [ ] Run complete CI and release simulation after pin updates.
 - [ ] Record exact new SHAs and validation evidence.
 
-## Priority A — `main` / `develop` release-promotion reconciliation
+## RESOLVED — `main` / `develop` release-promotion reconciliation
 
-### Current evidence
+### Verified result
 
-`main` is intentionally a conservative release-locked baseline while `develop` contains the completed S1–S13 product/validation work plus subsequent status reconciliation. The histories are materially diverged rather than a simple linear promotion state.
+The promotion risk was resolved deliberately rather than by blind merge:
 
-The `develop` release workflow is also newer and more strongly segmented than the older `main` workflow: validation, packaging, and publication are separated, authorization is revalidated, release-sensitive actions are pinned, and the downloaded bundle is rechecked before publication.
+- exact protected `develop` promotion head: `501f9bd6b6c69cf8859f96f0fd6441afc48c0b50`;
+- fresh pre-promotion PR CI `35511056270` attempt 2: PASS;
+- PR #74 merged through protected `main`;
+- promoted `main` merge commit: `049081f0fe3d3e74d77db807910c2e0fff56fe73`;
+- post-promotion `main` CI `35513361337`: PASS;
+- `main` is one merge commit ahead of `develop` with zero file differences;
+- the hardened release workflow and fail-closed authorization controls are present on `main`;
+- `release-authorization.json` remained unapproved throughout promotion.
 
-### Risk
-
-A naive merge/cherry-pick strategy immediately before release could omit safety changes, restore the older release workflow, reintroduce stale files, or produce a `main` tree that differs materially from the validated `develop` candidate.
-
-### Required work before RC promotion
-
-- [ ] Freeze the exact release-candidate SHA on `develop` only after remaining prerequisite evidence is complete.
-- [ ] Compare `main...candidate` file-by-file and classify every `main`-only change.
-- [ ] Preserve required `main`-side release-lock intent deliberately.
-- [ ] Preserve the hardened `develop` release workflow rather than reverting to the older `main` workflow.
-- [ ] Produce an explicit promotion plan/tree whose contents are explainable.
-- [ ] Verify the promoted `main` tree matches the intended candidate plus only documented release-governance differences.
-- [ ] Require green authoritative CI on the exact promoted `main` SHA.
-- [ ] Keep release authorization unapproved until all release gates are deliberately satisfied.
+This item is no longer release-promotion debt. Future changes should continue through protected `develop` and deliberate PR promotion to protected `main`.
 
 ## Priority A — S12 structured evidence traceability
 
@@ -98,25 +92,28 @@ See `S12_S13_EVIDENCE_SUMMARY.md`.
 
 Tracked primarily in issue #18.
 
-Workflow-local authorization is defense-in-depth but cannot replace repository-level control of branches, tags, and historical-workflow publication.
+Repository-level configuration is now present on the public repository:
 
-Current private-repository plan/configuration does not provide the required ruleset capability. Do **not** make the source repository public merely to satisfy the checklist.
+- protected `main` via `Protect main`;
+- protected `develop` via `Protect develop`;
+- admin-controlled `v*.*.*` tag mutation via `Protect release tags`;
+- independent no-bypass required check `release-tag-eligibility` via `Require release tag eligibility`;
+- exact current-main/tag/channel/prerelease authorization remains fail-closed.
 
-Required before RC/stable publication:
+Remaining governance work before publication is **enforcement-path validation**, not missing configuration:
 
-- branch protection/governance for `main` and `develop`;
-- `v*` tag creation/update/deletion restriction or equivalent release-path control;
-- protection against stale/historical commit workflow publication;
-- explicit auditable authorization for exact main/tag/channel/prerelease;
-- post-publication artifact checksum/content verification.
+- record the negative eligibility result while authorization is false;
+- record the explicitly authorized exact-current-main eligibility path later;
+- keep release authorization false until those gates are satisfied;
+- independently verify published artifacts/checksums/content after any real publication.
 
 ## Priority B — Japanese target-user evidence
 
 S8 native UI validation and later real-host engineering validation passed, but UI correctness is not the same as representative target-user usability/productivity evidence.
 
-S14 is the next bounded product/release-readiness phase.
+For v0.2.3, the release-facing Japanese claim was deliberately narrowed. S14A is complete and S14B remains NOT_EXECUTED; representative-user evidence is therefore deferred unless a future release intends broader usability/productivity claims.
 
-Before broad claims about Japanese workflow productivity or ease of use:
+Before any future broad claims about Japanese workflow productivity or ease of use:
 
 - [ ] define the exact target-user tasks and acceptance criteria;
 - [ ] recruit appropriate representative testers through a legitimate process;
@@ -161,6 +158,6 @@ The following remain deliberate design boundaries, not defects:
 - QC is diagnostic-only and does not automatically repair ownership;
 - revision updates are source-oriented and fail closed on incompatible geometry/pass-set/package structure;
 - Camera/3D Null handoff is bounded and is not arbitrary scene synchronization;
-- private source control is separate from customer update distribution;
+- source-repository hosting is separate from customer update distribution; repository visibility does not turn GitHub source hosting into the production update endpoint;
 - release authorization defaults to false;
 - Japanese is the primary UI language while English remains a deterministic fallback/support language.
