@@ -14,7 +14,7 @@ def test_readme_tracks_narrowed_v023_japanese_claim_without_fake_s14b_pass():
     assert "9c99ae23ccd8c47fdc0fffbd05b99e1326f2ea95" in text
     assert "S14A" in text and "S14B" in text
     assert "S14B remains NOT_EXECUTED" in text
-    assert "promotion PR #74: CLOSED / merged" in text
+    assert "The deliberate `develop` → `main` promotion is complete through PR #74" in text
     assert "049081f0fe3d3e74d77db807910c2e0fff56fe73" in text
     assert "release-facing Japanese claim scope is deliberately narrowed" in text
     assert "no representative Japanese-user usability claim" in text
@@ -36,7 +36,9 @@ def test_completion_status_reconciles_s12_s13_without_release_claim():
     assert "9c99ae23ccd8c47fdc0fffbd05b99e1326f2ea95" in text
     assert "NOT RELEASE READY" in text
     assert "S14" in text
-    assert "S14 claim-scope decision: COMPLETE through narrowing" in text
+    assert "**v0.2.3 S14 claim-scope decision** through narrowing" in text
+    assert "promotion PR #74: CLOSED / merged" in text
+    assert "049081f0fe3d3e74d77db807910c2e0fff56fe73" in text
     assert "S14B remains NOT_EXECUTED" in text
 
 
@@ -100,7 +102,7 @@ def test_quick_starts_track_s13_and_point_to_s14():
 
 def test_technical_debt_uses_current_post_s13_baseline_and_evidence_limits():
     text = _read("docs/TECHNICAL_DEBT.md")
-    assert "S1–S13 green `develop` baseline" in text
+    assert "S1–S13 validated product baseline" in text
     assert "245 tests + 2 subtests" in text
     assert "62 deprecation warnings" in text
     assert "S12 structured evidence traceability" in text
