@@ -1,0 +1,14 @@
+# CutBridge code ownership
+#
+# Defense-in-depth only: CODEOWNERS does not replace repository-level
+# branch/tag protection or required-review enforcement.
+
+* @Unn0wn002
+
+# Release-sensitive controls
+/.github/workflows/ @Unn0wn002
+/release-authorization.json @Unn0wn002
+/tools/validate_release_authorization.py @Unn0wn002
+/tools/build_release.py @Unn0wn002
+/docs/RELEASE_CHECKLIST.md @Unn0wn002
+/docs/RELEASE_READINESS.md @Unn0wn002
