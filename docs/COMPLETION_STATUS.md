@@ -2,7 +2,7 @@
 
 ## Current state — 20 September 2026
 
-CutBridge v0.2.3 remains **UNRELEASED / NOT RELEASE READY**.
+CutBridge v0.2.3 remains **UNRELEASED / NOT RELEASE READY**. The Japanese release-facing claim for v0.2.3 is now deliberately narrowed; S14B representative-user validation remains NOT_EXECUTED and is not claimed as complete.
 
 - **Integrated product/validation sessions:** S1–S13.
 - Historical S13 runtime integration baseline: `0a86d9a0605e1dd9714ef35a547693de76f714f4`.
@@ -17,7 +17,7 @@ Current repository boundaries:
 - `release-authorization.json`: `approved: false`;
 - GitHub Release publication: not authorized;
 - repository governance Issue #18: OPEN publication blocker;
-- S14 Issue #71: OPEN; real representative Japanese target-user execution is still pending;
+- S14 Issue #71: representative Japanese target-user execution remains NOT_EXECUTED; v0.2.3 claim scope is narrowed so no representative-user usability claim is made;
 - Issue #80: OPEN post-v0.2.3 design task for per-pass output formats, not a v0.2.3 release blocker.
 
 ## Current verified engineering state
@@ -123,27 +123,33 @@ A 20 September 2026 audit of the retained repository/GitHub evidence found no au
 
 The project therefore takes the fail-closed non-fabrication path: no historical hashes, fixture hash, per-gate evidence paths, timestamps, or PASS JSON will be invented. The missing JSON remains an explicit provenance limitation. Future S12 campaigns must create and validate the structured record contemporaneously using the existing template and validator.
 
-### S14 target-user validation
+### S14 target-user validation / claim-scope decision
 
-S14A protocol preparation exists, but S14B real representative Japanese-speaking target-user execution is not complete. Owner testing must not be represented as S14B PASS, customer validation, representative Japanese-user evidence, or proof of broad Japanese production usability.
+S14A protocol preparation exists. S14B real representative Japanese-speaking target-user execution remains **NOT_EXECUTED**.
 
-Any broad Japanese production-usability claim therefore remains blocked unless real S14B evidence is completed or the intended release-facing claim is explicitly narrowed through a reviewed decision.
+For v0.2.3, the release-facing claim has been explicitly narrowed:
 
-## Candidate identity after beta.2
+- Japanese-first UI and deterministic English fallback may be described as implemented behavior;
+- engineering/native Japanese/English workflow evidence may be described only for its recorded tested scope;
+- beta.3 owner/internal testing remains owner/internal engineering evidence only;
+- no representative Japanese-user validation, customer validation, broad Japanese production-usability, ease-of-use, statistical usability, or S14B PASS claim may be made.
 
-Because Issues #82 and #83 required material product-source changes after frozen beta.2, the next current candidate must use a new identity.
+This resolves the v0.2.3 S14 **release-claim gate** without inventing participant evidence. The S14 protocol remains available for a future broader claim.
 
-**Required next freeze:** `candidate/v0.2.3-beta.3` from an exact green `develop` commit after release-readiness documentation reconciliation.
+## Candidate identity and beta.3 result
 
-The beta.3 freeze must record:
+The historical frozen beta.3 owner-test candidate is:
 
-- exact source commit;
-- exact artifact names and SHA-256 hashes;
-- authoritative CI at the frozen source;
-- which native evidence carries forward unchanged and which tests were rerun;
-- owner/internal regression result for the exact beta.3 candidate.
+`candidate/v0.2.3-beta.3` at `00d2e51a6266d140d499e48b45557eb084568d9f`.
 
-Do not mutate the historical beta.2 identity.
+Recorded deterministic artifacts:
+
+- Blender `CutBridge-Blender-v0.2.3-beta.3.zip` — SHA-256 `d665f5a20de7cbdd054a181c74b42c2d8bc68ce5e754592dc63d3d098b0c173c`;
+- After Effects `CutBridge-AfterEffects-v0.2.3-beta.3.zip` — SHA-256 `85be3e40ed07dfa2db71007dbdb5266cd968a970737af43bb64a7a4d64b9c98a`.
+
+The bounded beta.3 owner/internal regression passed for the recorded Windows 11 Home Single Language 25H2 / Blender 5.2.1 / After Effects 2026 v26.3 scope, including the Issue #82 render-crash regression, Issue #83 package lifecycle behavior, AE repeated Build, V003 QC, compatible revision/artist-state reporting, and persistence.
+
+Later `develop` commits through `c8721ece179a3dd9afe0e9676477239872574b8e` are documentation/test reconciliation and do not retroactively change the SHA-bound beta.3 candidate identity.
 
 ## Release blockers / gates
 
@@ -153,7 +159,7 @@ The remaining path to an RC/stable release is:
 2. **Freeze exact beta.3 candidate** from a green develop head.
 3. **Run bounded owner/internal regression on exact beta.3** and record the candidate identity/evidence.
 4. **S12 structured-evidence traceability decision: COMPLETE** through the documented non-fabrication path; the historical JSON remains unavailable and must not be recreated.
-5. **Complete S14B real Japanese target-user validation** for broad target-user usability claims, or explicitly narrow those claims through a reviewed decision.
+5. **v0.2.3 S14 claim-scope decision: COMPLETE through narrowing.** S14B remains NOT_EXECUTED; no representative Japanese-user usability claim is permitted for v0.2.3.
 6. **Resolve repository governance Issue #18.** Current private-repository branch/tag protection capability remains insufficient; do not make the repository public merely to satisfy the checklist.
 7. **Freeze/review PR #74 at the exact approved candidate head** and require authoritative CI there.
 8. **Merge develop -> main only after the above gates are satisfied.**
@@ -170,6 +176,6 @@ Issue #80 remains intentionally outside the v0.2.3 release scope. Per-pass outpu
 
 ## Recommended immediate phase
 
-**S14B target-user validation / claim-scope decision, then repository governance Issue #18.**
+**Repository governance Issue #18, then exact promotion-head review/CI.**
 
-The beta.3 freeze, bounded owner/internal regression, and S12 traceability decision are complete for their recorded scopes. Continue release preparation only within the explicit evidence/governance boundaries above.
+The beta.3 freeze, bounded owner/internal regression, S12 traceability decision, and v0.2.3 S14 claim-scope decision are complete for their recorded scopes. S14B remains NOT_EXECUTED and may be pursued later only if broader Japanese target-user usability claims are desired.
