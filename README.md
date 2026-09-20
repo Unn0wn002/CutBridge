@@ -51,10 +51,17 @@ CutBridge currently provides:
 
 Engineering/native-host validation is complete through **S13**. **S14A**, the Japanese target-user validation protocol and fail-closed evidence tooling, is integrated. For v0.2.3, the release-facing Japanese claim scope is deliberately narrowed instead of claiming S14B completion. **S14B remains NOT_EXECUTED** and is reserved for a future release or claim that needs representative Japanese target-user usability evidence.
 
-The post-S14A `develop` CI is green for both primary jobs:
+The deliberate `develop` → `main` promotion is complete through PR #74.
 
-- `static-validation`;
-- `blender-52-rna-runtime`.
+Current promotion state:
+
+- protected `develop`: `501f9bd6b6c69cf8859f96f0fd6441afc48c0b50`;
+- protected `main`: `049081f0fe3d3e74d77db807910c2e0fff56fe73`;
+- fresh pre-promotion PR CI `35511056270` attempt 2: PASS;
+- post-promotion `main` CI `35513361337`: PASS;
+- required jobs: `static-validation` and `blender-52-rna-runtime`.
+
+Promotion does not authorize publication. `release-authorization.json` remains fail-closed.
 
 The exact S13F native-tested source was:
 
@@ -312,15 +319,15 @@ See [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md).
 
 Remaining release work includes:
 
-1. repository release-governance resolution in issue #18;
-2. deliberate `develop` → `main` promotion rather than a blind merge;
-3. authoritative CI on the exact promoted candidate;
-4. exact release authorization only after all prerequisites pass;
-5. published artifact/checksum verification and production update/distribution verification.
+1. complete the controlled negative and authorized-current-main release-tag eligibility validation tracked in issue #18;
+2. explicitly authorize one exact current-main/tag/channel/prerelease tuple only after that validation;
+3. publish only through the guarded Release workflow;
+4. independently verify published artifacts/checksums/content;
+5. verify the production update/distribution endpoint separately from GitHub source hosting.
 
 For v0.2.3, S14B is **not** listed as a prerequisite because the release-facing claim is explicitly narrowed. The release must not state or imply representative Japanese-user validation, customer validation, proven ease of use, broad Japanese production usability, or S14B PASS.
 
-Do **not** make the repository public merely to bypass the current private-repository governance limitation.
+The source repository is now public and protected by active branch/tag rulesets. Repository visibility is not a substitute for release authorization, release-tag eligibility, artifact verification, or a production update/distribution channel.
 
 ## Development roadmap
 

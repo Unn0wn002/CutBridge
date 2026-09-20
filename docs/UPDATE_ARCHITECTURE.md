@@ -1,12 +1,12 @@
 # CutBridge Update Architecture
 
-CutBridge separates **private source control** from **plugin distribution**. The private GitHub repository is never treated as the client update server.
+CutBridge separates **source-repository hosting** from **plugin distribution**. Repository visibility does not make the GitHub source repository the client update server.
 
 ## Development source
 
-- Private source repository: `Unn0wn002/CutBridge`.
-- `main`: stable/release-ready source.
-- `develop`: active integration.
+- Source repository: `Unn0wn002/CutBridge` (currently public and protected by branch/tag rulesets).
+- `main`: protected promotion/release-candidate branch; promotion does not itself authorize publication.
+- `develop`: protected active integration branch.
 - `feature/*`: isolated work.
 
 ## Release pipeline
@@ -84,7 +84,7 @@ The client format is defined by:
 - `packages/update/release-index.schema.json`
 - `packages/update/release-index.example.json`
 
-A production index should be hosted on a static HTTPS endpoint that does **not** expose the private source repository. A single host may contain both:
+A production index should be hosted on a static HTTPS endpoint separate from the source repository and its development/release-control surface. A single host may contain both:
 
 - Blender's generated extension repository `index.json` and release ZIP files.
 - CutBridge's small release-notification index.
@@ -109,4 +109,4 @@ Rollback is a distribution concern, not an active-session self-modification feat
 
 ## Privacy rule
 
-**Do not make the private source repository public solely to implement updates.** Distribution artifacts and update metadata must be published separately.
+**Do not use source-repository visibility as an update-distribution mechanism.** Distribution artifacts and update metadata must be published through the separately verified distribution path.
