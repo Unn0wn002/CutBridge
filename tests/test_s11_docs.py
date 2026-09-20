@@ -61,7 +61,9 @@ def test_evidence_summary_preserves_sha_bound_native_evidence_and_limitations():
     assert "34503571091" in text
     assert "34503805612" in text
     assert "34504009878" in text
-    assert "Structured evidence-record resolution" in text\n    assert "historically unavailable / not reconstructable without fabrication" in text\n    assert "no retroactive PASS JSON will be created" in text
+    assert "Structured evidence-record resolution" in text
+    assert "historically unavailable / not reconstructable without fabrication" in text
+    assert "no retroactive PASS JSON will be created" in text
     assert "NOT RELEASE READY" in text
 
 
