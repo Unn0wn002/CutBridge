@@ -36,7 +36,7 @@ def test_release_readiness_records_completed_native_path_but_fails_closed():
     assert "UNRELEASED / PUBLICATION BLOCKED" in text
     assert "S12 release-target campaign executed and reconciled to PASS" in text
     assert "S13 real-host Camera/Null revision defects repaired and integrated" in text
-    assert "STRUCTURED-EVIDENCE TRACEABILITY GAP REMAINS" in text
+    assert "STRUCTURED-EVIDENCE TRACEABILITY DECISION RESOLVED" in text
     assert "issue #18" in text
     assert "Do not perform a blind merge" in text
     assert "NOT RELEASE READY" in text
@@ -61,7 +61,7 @@ def test_evidence_summary_preserves_sha_bound_native_evidence_and_limitations():
     assert "34503571091" in text
     assert "34503805612" in text
     assert "34504009878" in text
-    assert "evidence-traceability gap" in text
+    assert "Structured evidence-record resolution" in text\n    assert "historically unavailable / not reconstructable without fabrication" in text\n    assert "no retroactive PASS JSON will be created" in text
     assert "NOT RELEASE READY" in text
 
 
