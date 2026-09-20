@@ -8,15 +8,21 @@ CutBridge v0.2.3 remains **UNRELEASED / NOT RELEASE READY**. The Japanese releas
 - Historical S13 runtime integration baseline: `0a86d9a0605e1dd9714ef35a547693de76f714f4`.
 - Historical final native-tested S13F source: `9c99ae23ccd8c47fdc0fffbd05b99e1326f2ea95`.
 
-The current product/runtime source immediately before this documentation reconciliation is `develop` commit `caaede1c296b9087ffee1b57a0907620b3495ffb`. Its tree is `fff813588579c16da0ad2353e5256ea63368b6b6`, which contains the natively owner-tested Blender repairs for Issues #82 and #83. This documentation update does not change runtime behavior.
+The protected promotion head was `develop` commit `501f9bd6b6c69cf8859f96f0fd6441afc48c0b50`. PR #74 promoted that exact tree to protected `main`, producing merge commit `049081f0fe3d3e74d77db807910c2e0fff56fe73`. The promoted `main` tree has zero file differences from the promotion head. This documentation reconciliation does not change runtime behavior.
 
 Current repository boundaries:
 
-- `main`: `7a34ebdcb297ced7e275c4c58382f765deee0ed9`;
-- promotion PR #74: OPEN / unmerged / mergeable, but deliberately blocked by release gates;
+- repository visibility: public;
+- protected `develop`: `501f9bd6b6c69cf8859f96f0fd6441afc48c0b50`;
+- protected `main`: `049081f0fe3d3e74d77db807910c2e0fff56fe73`;
+- promotion PR #74: CLOSED / merged;
+- pre-promotion CI `35511056270` attempt 2: PASS;
+- post-promotion `main` CI `35513361337`: PASS;
+- four active governance rulesets protect `main`, `develop`, release-tag mutation, and no-bypass release-tag eligibility;
 - `release-authorization.json`: `approved: false`;
-- GitHub Release publication: not authorized;
-- repository governance Issue #18: OPEN publication blocker;
+- release tag refs: none;
+- GitHub Releases: none;
+- repository governance Issue #18: OPEN only for controlled negative/authorized release-tag enforcement-path validation;
 - S14 Issue #71: representative Japanese target-user execution remains NOT_EXECUTED; v0.2.3 claim scope is narrowed so no representative-user usability claim is made;
 - Issue #80: OPEN post-v0.2.3 design task for per-pass output formats, not a v0.2.3 release blocker.
 
@@ -100,7 +106,7 @@ Issues #82 and #83 are closed on GitHub as completed. This is owner/internal eng
 
 ## Latest authoritative automated evidence
 
-Exact-head CI on pre-documentation `develop` commit `caaede1c296b9087ffee1b57a0907620b3495ffb` passed both push and PR workflows.
+Authoritative promotion evidence is green: exact promotion-head PR CI `35511056270` attempt 2 passed on `501f9bd6b6c69cf8859f96f0fd6441afc48c0b50`, and post-promotion `main` CI `35513361337` passed on `049081f0fe3d3e74d77db807910c2e0fff56fe73`.
 
 Recorded results include:
 
@@ -149,24 +155,28 @@ Recorded deterministic artifacts:
 
 The bounded beta.3 owner/internal regression passed for the recorded Windows 11 Home Single Language 25H2 / Blender 5.2.1 / After Effects 2026 v26.3 scope, including the Issue #82 render-crash regression, Issue #83 package lifecycle behavior, AE repeated Build, V003 QC, compatible revision/artist-state reporting, and persistence.
 
-Later `develop` commits through `c8721ece179a3dd9afe0e9676477239872574b8e` are documentation/test reconciliation and do not retroactively change the SHA-bound beta.3 candidate identity.
+Later documentation/governance commits through promotion head `501f9bd6b6c69cf8859f96f0fd6441afc48c0b50` do not retroactively change the SHA-bound beta.3 candidate identity.
 
 ## Release blockers / gates
 
-The remaining path to an RC/stable release is:
+Completed:
 
-1. **Reconcile current release-readiness documentation** to the post-#82/#83 source state.
-2. **Freeze exact beta.3 candidate** from a green develop head.
-3. **Run bounded owner/internal regression on exact beta.3** and record the candidate identity/evidence.
-4. **S12 structured-evidence traceability decision: COMPLETE** through the documented non-fabrication path; the historical JSON remains unavailable and must not be recreated.
-5. **v0.2.3 S14 claim-scope decision: COMPLETE through narrowing.** S14B remains NOT_EXECUTED; no representative Japanese-user usability claim is permitted for v0.2.3.
-6. **Resolve repository governance Issue #18.** Current private-repository branch/tag protection capability remains insufficient; do not make the repository public merely to satisfy the checklist.
-7. **Freeze/review PR #74 at the exact approved candidate head** and require authoritative CI there.
-8. **Merge develop -> main only after the above gates are satisfied.**
-9. **Verify authoritative CI on the exact promoted main commit.**
-10. **Explicitly authorize one exact current-main/tag/channel/prerelease tuple** only after prerequisites pass.
-11. **Publish and independently verify downloaded artifacts/checksums/content.**
-12. **Verify the production update/distribution path separately.**
+1. **Release-readiness documentation reconciliation** through the post-#82/#83 state.
+2. **Historical beta.3 freeze** and bounded owner/internal regression for the recorded tested scope.
+3. **S12 structured-evidence traceability decision** through the documented non-fabrication path.
+4. **v0.2.3 S14 claim-scope decision** through narrowing; S14B remains NOT_EXECUTED.
+5. **Repository governance configuration**: protected `main`, protected `develop`, admin-controlled `v*.*.*` mutation, and no-bypass `release-tag-eligibility`.
+6. **Exact PR #74 promotion-head verification** with fresh authoritative CI.
+7. **Deliberate `develop` → `main` promotion** through protected PR #74.
+8. **Post-promotion `main` CI** on `049081f0fe3d3e74d77db807910c2e0fff56fe73`.
+
+Remaining before RC/stable publication:
+
+9. **Controlled governance enforcement-path validation** under Issue #18: record the negative eligibility result while authorization is false, then later the explicitly authorized current-main path.
+10. **Explicitly authorize one exact current-main/tag/channel/prerelease tuple** only after the governance validation gate is satisfied.
+11. **Publish only through the guarded Release workflow.**
+12. **Independently verify downloaded artifacts/checksums/content.**
+13. **Verify the production update/distribution path separately.**
 
 Until these gates are satisfied, `release-authorization.json` must remain fail-closed and no stable/RC publication is authorized.
 
@@ -176,6 +186,6 @@ Issue #80 remains intentionally outside the v0.2.3 release scope. Per-pass outpu
 
 ## Recommended immediate phase
 
-**Repository governance Issue #18, then exact promotion-head review/CI.**
+**Controlled release-tag eligibility validation under Issue #18.**
 
-The beta.3 freeze, bounded owner/internal regression, S12 traceability decision, and v0.2.3 S14 claim-scope decision are complete for their recorded scopes. S14B remains NOT_EXECUTED and may be pursued later only if broader Japanese target-user usability claims are desired.
+Promotion is complete and green. Keep `release-authorization.json` false while recording the negative eligibility result, then exercise the explicitly authorized exact-current-main path only after that negative gate is verified. S14B remains NOT_EXECUTED and may be pursued later only if broader Japanese target-user usability claims are desired.
