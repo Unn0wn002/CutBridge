@@ -189,3 +189,23 @@ def test_codeowners_covers_release_sensitive_controls():
         "/docs/RELEASE_READINESS.md @Unn0wn002",
     ]:
         assert required in codeowners
+
+
+def test_release_eligibility_workflow_is_manual_read_only_and_current_main_only():
+    workflow = (ROOT / ".github" / "workflows" / "release-eligibility.yml").read_text(encoding="utf-8")
+
+    assert "workflow_dispatch:" in workflow
+    assert "push:" not in workflow
+    assert "permissions:\n  contents: read" in workflow
+    assert "name: release-tag-eligibility" in workflow
+    assert "refs/heads/main" in workflow
+    assert "refs/remotes/origin/main^{commit}" in workflow
+    assert 'if [[ "${GITHUB_SHA}" != "${MAIN_SHA}" ]]' in workflow
+    assert "release-authorization.json" in workflow
+    assert "validate_release_authorization.py" in workflow
+    assert '--tag "${AUTH_TAG}"' in workflow
+    assert '--sha "${GITHUB_SHA}"' in workflow
+    assert '--main-sha "${MAIN_SHA}"' in workflow
+    assert "persist-credentials: false" in workflow
+    assert "fetch-depth: 0" in workflow
+    assert _workflow_uses_are_pinned(workflow)
