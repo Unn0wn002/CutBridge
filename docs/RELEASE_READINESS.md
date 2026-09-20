@@ -6,9 +6,11 @@ This is the canonical release-readiness checklist for CutBridge v0.2.3. Green pr
 
 ## Current repository boundary
 
-Current integrated `develop` after the S12 traceability reconciliation:
+Current protected branch state:
 
-`c8721ece179a3dd9afe0e9676477239872574b8e`
+- `develop`: `501f9bd6b6c69cf8859f96f0fd6441afc48c0b50`;
+- `main`: `049081f0fe3d3e74d77db807910c2e0fff56fe73` (PR #74 promotion merge);
+- `main` is one merge commit ahead of `develop` with zero file differences.
 
 Current release state:
 
@@ -19,13 +21,16 @@ Current release state:
 - beta.3 owner/internal regression: PASS for the recorded Windows 11 / Blender 5.2.1 / After Effects 2026 v26.3 scope;
 - S12 structured-evidence traceability decision: resolved through the documented non-fabrication path;
 - v0.2.3 Japanese release-facing claim scope: narrowed; S14B representative-user execution remains NOT_EXECUTED and is not claimed as PASS;
+- repository visibility: public;
+- active governance rulesets: `Protect main`, `Protect develop`, `Protect release tags`, and `Require release tag eligibility`;
+- pre-promotion exact-head CI `35511056270` attempt 2: PASS;
+- promoted-main CI `35513361337`: PASS;
 - `release-authorization.json`: `approved: false`;
+- release tag refs: none;
 - GitHub Releases: none;
-- repository-level release governance issue #18: OPEN;
-- `main` remains unchanged and promotion PR #74 remains open/unmerged;
-- next blocking phase: repository governance issue #18, followed by exact promotion-head validation.
+- repository-governance issue #18: OPEN only for controlled negative/authorized release-tag path validation.
 
-Do not edit this checklist to imply publication is allowed while #18 is unresolved or release authorization remains unapproved.
+Promotion is complete, but publication remains fail-closed until #18 validation and exact release authorization are complete.
 
 ## 1. Product / contract integration
 
@@ -42,7 +47,7 @@ Do not edit this checklist to imply publication is allowed while #18 is unresolv
 
 ## 2. Automated QA baseline
 
-Latest authoritative post-merge CI on exact `develop` `c8721ece...` is PASS:
+Latest authoritative promotion evidence is PASS: pre-promotion PR CI `35511056270` attempt 2 on exact `develop` head `501f9bd6...`, and post-promotion `main` CI `35513361337` on `049081f0...`:
 
 - [x] Python/static contract suite exists and is authoritative.
 - [x] Blender 5.2.1 RNA lifecycle gate exists.
@@ -57,10 +62,10 @@ Latest authoritative post-merge CI on exact `develop` `c8721ece...` is PASS:
 - [x] S13 3D revision native-host-shaped regression is wired into canonical CI.
 - [x] latest static suite: 132 passed + 2 subtests.
 - [x] latest complete Blender/runtime suite: 245 passed + 2 subtests.
-- [ ] final release-candidate CI PASS on an explicitly frozen `develop` release-candidate SHA.
-- [ ] promoted `main` candidate CI PASS on the exact promoted SHA.
+- [x] final promotion-head CI PASS on explicitly frozen `develop` SHA `501f9bd6b6c69cf8859f96f0fd6441afc48c0b50`.
+- [x] promoted `main` candidate CI PASS on exact promoted SHA `049081f0fe3d3e74d77db807910c2e0fff56fe73`.
 
-The latest green integration SHA is not automatically the release candidate; freezing/promoting is a separate deliberate step.
+Promotion is complete. The remaining release gates are governance-path validation, exact authorization, publication, and independent artifact/distribution verification.
 
 ## 3. Native evidence already recorded
 
@@ -127,63 +132,58 @@ This **claim-scope narrowing resolves the v0.2.3 S14 release-claim gate**. It do
 
 See `S14_JP_USER_VALIDATION.md`.
 
-## 6. Repository governance — BLOCKED BY #18
+## 6. Repository governance — CONTROLLED VALIDATION PENDING (#18)
 
-Required before RC/stable publication:
+Required governance configuration is now present:
 
-- [ ] protect `main` against accidental/direct changes outside the intended release path;
-- [ ] protect `develop` against accidental/direct changes outside the intended integration path;
-- [ ] require authoritative CI for protected integration/promotion;
-- [ ] restrict creation/update/deletion of `v*` release tags to the intended release path or equivalent;
-- [ ] protect against historical-workflow publication that bypasses current release safeguards;
-- [ ] record repository-admin settings evidence;
-- [ ] validate unauthorized and stale-tag negative cases;
-- [ ] keep issue #18 OPEN until these controls are actually available and tested.
+- [x] `main` protected by active ruleset `Protect main` (ID 23728298);
+- [x] `develop` protected by active ruleset `Protect develop` (ID 23728435);
+- [x] authoritative checks `static-validation` and `blender-52-rna-runtime` required for protected branch updates;
+- [x] release-tag creation/update/deletion restricted by `Protect release tags` (ID 23728606);
+- [x] matching `v*.*.*` tags independently require no-bypass status check `release-tag-eligibility` through ruleset `Require release tag eligibility` (ID 23728953);
+- [x] `.github/CODEOWNERS` covers release-sensitive controls as defense-in-depth;
+- [x] exact-main/tag/channel/prerelease authorization validation remains fail-closed;
+- [ ] run and record the controlled negative eligibility test while authorization is false;
+- [ ] run and record the explicitly authorized current-main eligibility path before publication;
+- [ ] keep issue #18 OPEN until those enforcement-path tests are recorded.
 
 Verified platform state on 20 September 2026:
 
-- repository remains private;
-- GitHub branch metadata reports `main` and `develop` as `protected: false`;
-- the repository rulesets API returns: `Upgrade to GitHub Pro or make this repository public to enable this feature.`;
-- this connected GitHub integration cannot administer branch protection/rulesets;
-- the source repository must **not** be made public merely to satisfy governance;
-- `.github/CODEOWNERS` assigns the active repository owner to release-sensitive workflows, authorization, packaging and release-readiness files as repository-local defense-in-depth;
-- CI regression coverage requires those CODEOWNERS entries to remain present.
+- repository is public;
+- `main` and `develop` report `protected: true`;
+- all four governance rulesets above are ACTIVE;
+- PR #74 promotion to protected `main` completed successfully;
+- promoted-main CI `35513361337` passed both required jobs;
+- `release-authorization.json` remains `approved: false`;
+- no release tag or GitHub Release exists.
 
-The CODEOWNERS mapping, exact-main/tag authorization checks, pinned Actions, read-only validation/package permissions, deterministic packaging and repeated authorization revalidation are useful defense-in-depth.
-
-Current public-repository governance now includes active `Protect main`, `Protect develop`, and `Protect release tags` rulesets. A separate manual `Release Tag Eligibility` workflow is also required before release-tag creation: its check context is `release-tag-eligibility`, and it can succeed only when manually dispatched on the exact current `main` SHA with an approved release authorization tuple.
-
-To close the stale/historical-tag gap, configure a second tag ruleset targeting `v*.*.*` with **no bypass actors** and required status check `release-tag-eligibility` from GitHub Actions. GitHub aggregates applicable rulesets, so the existing admin-only tag-mutation ruleset remains in force while the no-bypass eligibility ruleset independently requires the current-main authorization check.
+The manual `Release Tag Eligibility` workflow is present on current `main`. It is read-only and fails unless it is run on exact current `main` with a non-empty, approved authorization tuple that passes the existing validator. The current connected GitHub integration cannot dispatch that manual workflow or create tags, so the final enforcement-path validation requires the repository UI or another authorized GitHub client.
 
 ## 7. Freeze release candidate on `develop`
 
-Only after required native/product/evidence scope is complete:
+Promotion candidate record:
 
-- [x] beta.3 was frozen at `00d2e51a6266d140d499e48b45557eb084568d9f` and owner/internal regression passed for the recorded scope;
-- [ ] choose the exact final promotion head after documentation/governance prerequisites are satisfied;
-- [ ] record complete candidate diff and test evidence;
-- [ ] require authoritative candidate CI PASS;
-- [ ] stop feature changes on that candidate;
-- [ ] if the candidate changes, invalidate candidate-specific evidence and repeat affected gates.
+- [x] historical beta.3 runtime candidate remains SHA-bound to `00d2e51a6266d140d499e48b45557eb084568d9f` with owner/internal regression PASS for the recorded scope;
+- [x] final promotion head frozen at `501f9bd6b6c69cf8859f96f0fd6441afc48c0b50`;
+- [x] candidate diff/test/governance evidence recorded in PR #74 and Issue #18;
+- [x] fresh authoritative PR CI `35511056270` attempt 2 PASS on the exact promotion head;
+- [x] feature changes stopped for the promotion operation.
 
-The historical beta.3 runtime candidate remains SHA-bound to `00d2e51a...`. Current `develop` includes later documentation/test reconciliation and is not automatically authorized for promotion or release.
+The frozen promotion head included later documentation/governance reconciliation beyond the historical beta.3 runtime SHA. That distinction remains explicit.
 
 ## 8. Deliberate `develop` → `main` promotion
 
-`main` and `develop` are materially diverged. **Do not perform a blind merge.**
+**COMPLETE / VERIFIED.**
 
-The current release architecture on `develop` is also stronger than the older workflow on `main`; promotion must preserve the hardened validation/package/publish separation and release-authorization checks.
+- [x] prior `main`-only history was reconciled without changing the validated product tree;
+- [x] hardened validation/package/publish separation and fail-closed release authorization were preserved;
+- [x] PR #74 promoted exact `develop` head `501f9bd6b6c69cf8859f96f0fd6441afc48c0b50`;
+- [x] protected `main` merge commit is `049081f0fe3d3e74d77db807910c2e0fff56fe73`;
+- [x] compare shows `main` one merge commit ahead of `develop` with zero file differences;
+- [x] post-promotion CI `35513361337` PASS on exact promoted `main`;
+- [x] release authorization remained false throughout promotion.
 
-Before promotion:
-
-- [ ] compare current `main...candidate` file-by-file;
-- [ ] identify the five `main`-side commits/changes that are absent from `develop` and determine which release-lock behavior must be deliberately preserved;
-- [ ] preserve the hardened `develop` release workflow rather than reverting to the older `main` workflow;
-- [ ] produce an explicit promotion tree/commit whose contents are explainable;
-- [ ] verify the promoted `main` tree matches intended candidate contents plus deliberately preserved release controls;
-- [ ] require authoritative CI PASS on the exact promoted `main` SHA;
-- [ ] keep release authorization false throughout promotion validation.
+Promotion completion does not authorize tagging or publication.
 
 ## 9. Release authorization
 
@@ -191,9 +191,9 @@ Authorization is one exact tuple, not a reusable global switch.
 
 Before changing `release-authorization.json`:
 
-- [ ] governance section complete;
+- [ ] governance enforcement-path validation complete under Issue #18;
 - [x] evidence scope is complete for the **narrowed** v0.2.3 Japanese release-facing claim; S14B remains NOT_EXECUTED and no broad representative-user claim is permitted;
-- [ ] exact promoted `main` SHA has green authoritative CI;
+- [x] exact promoted `main` SHA `049081f0fe3d3e74d77db807910c2e0fff56fe73` has green authoritative CI `35513361337`;
 - [ ] choose exact release tag;
 - [ ] derive intended channel and prerelease state;
 - [ ] update authorization for that exact tag/channel/prerelease tuple only;
@@ -260,7 +260,7 @@ Use one of these states:
 
 **NOT RELEASE READY.**
 
-S12/S13 product/native blockers are resolved for their tested scope, the S12 structured-evidence traceability decision is resolved through the documented non-fabrication path, and the v0.2.3 Japanese release-facing claim is narrowed so S14B is not represented as completed or required for that narrow claim. Repository governance #18, deliberate promotion to `main`, exact release authorization, publication, and distribution verification remain incomplete.
+S12/S13 product/native blockers are resolved for their tested scope, the S12 structured-evidence traceability decision is resolved through the documented non-fabrication path, the v0.2.3 Japanese release-facing claim is narrowed, repository protection is configured, and deliberate promotion to protected `main` completed with green CI. Controlled governance enforcement-path validation under #18, exact release authorization, publication, and independent artifact/distribution verification remain incomplete.
 
 ## Related documents
 
