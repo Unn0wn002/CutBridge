@@ -1,12 +1,28 @@
 # CutBridge S14 — Japanese Target-User Validation Protocol
 
-Status: **PROTOCOL PREPARATION / NO TARGET-USER PASS CLAIM YET**
+Status: **S14A COMPLETE / S14B NOT EXECUTED / v0.2.3 RELEASE CLAIM SCOPE NARROWED**
 
 Tracking issue: #71.
 
 This protocol defines the bounded Japanese target-user validation required before CutBridge makes broad production-usability claims for v0.2.3. It is intentionally separate from S12/S13 native-host engineering evidence.
 
 A green CI run, Japanese-localized UI, native AE validation, or completion of this document does **not** count as target-user validation.
+
+## v0.2.3 release-facing claim decision — 20 September 2026
+
+For v0.2.3, the project has chosen the **narrow-claim path** instead of claiming S14B completion.
+
+S14B remains `NOT_EXECUTED`. No representative Japanese-speaking participant cohort has been recorded, and no S14 PASS, customer-validation, usability-rate, completion-time, or representative-production-usability claim may be made.
+
+The v0.2.3 release-facing scope is limited to evidence actually established by engineering/native testing:
+
+- CutBridge implements a Japanese-first UI with deterministic English fallback;
+- Japanese/English UI behavior and selected diagnostics have engineering/native test coverage in the documented tested environments;
+- the Blender → package → After Effects workflow passed the recorded beta.3 owner/internal regression for its exact tested scope;
+- the product may be described as **designed for** Japanese animation/content-production workflows, but not as **validated by representative Japanese production users**;
+- no claim may state or imply that CutBridge is proven easy to use, broadly production-ready for Japanese users, statistically validated, customer-approved, or representative-user validated.
+
+This decision resolves the **v0.2.3 S14 release-claim gate** by narrowing the claim rather than fabricating or waiting on evidence that does not exist. The protocol below remains authoritative if a future release intends to make broader Japanese target-user usability claims. S14B evidence can be executed later and must remain separate from the current owner/internal engineering evidence.
 
 ## 1. Starting baseline
 
@@ -227,6 +243,8 @@ S14A provides:
 Copy the template for a real campaign. Do not edit the committed template into a fake PASS example.
 
 ## 12. Release boundary
+
+For v0.2.3, S14B is not a prerequisite for the narrowed release-facing claim defined above. It becomes required again before any broader Japanese target-user production-usability claim is introduced.
 
 S14 PASS still does not authorize publication.
 

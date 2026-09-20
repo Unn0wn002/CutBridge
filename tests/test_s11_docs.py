@@ -8,12 +8,14 @@ def _read(relative: str) -> str:
     return (ROOT / relative).read_text(encoding="utf-8")
 
 
-def test_readme_tracks_live_state_through_s14a_without_release_claim():
+def test_readme_tracks_narrowed_v023_japanese_claim_without_fake_s14b_pass():
     text = _read("README.md")
     assert "S12" in text and "S13" in text
     assert "9c99ae23ccd8c47fdc0fffbd05b99e1326f2ea95" in text
     assert "S14A" in text and "S14B" in text
-    assert "real Japanese target-user execution" in text
+    assert "S14B remains NOT_EXECUTED" in text
+    assert "release-facing Japanese claim scope is deliberately narrowed" in text
+    assert "no representative Japanese-user usability claim" in text
     assert "UNRELEASED / PUBLICATION BLOCKED" in text
     assert '"approved": false' in text
     assert "There is currently no public GitHub Release" in text
@@ -29,6 +31,8 @@ def test_completion_status_reconciles_s12_s13_without_release_claim():
     assert "9c99ae23ccd8c47fdc0fffbd05b99e1326f2ea95" in text
     assert "NOT RELEASE READY" in text
     assert "S14" in text
+    assert "S14 claim-scope decision: COMPLETE through narrowing" in text
+    assert "S14B remains NOT_EXECUTED" in text
 
 
 def test_release_readiness_records_completed_native_path_but_fails_closed():
@@ -41,6 +45,8 @@ def test_release_readiness_records_completed_native_path_but_fails_closed():
     assert "Do not perform a blind merge" in text
     assert "NOT RELEASE READY" in text
     assert "release-authorization.json" in text
+    assert "claim-scope narrowing resolves the v0.2.3 S14 release-claim gate" in text
+    assert "S14B representative Japanese-speaking target-user execution remains **NOT_EXECUTED**" in text
 
 
 def test_s12_runbook_is_now_a_completed_campaign_record():
@@ -119,3 +125,13 @@ def test_compatibility_scopes_native_ae_evidence_to_tested_host():
     assert "0.00018066 px" in text
     assert "target range rather than a blanket certification claim" in text
     assert "Stable broad compatibility certification: **not yet claimed**" in text
+
+
+def test_s14_protocol_preserves_not_executed_state_after_claim_narrowing():
+    text = _read("docs/S14_JP_USER_VALIDATION.md")
+    assert "S14A COMPLETE / S14B NOT EXECUTED / v0.2.3 RELEASE CLAIM SCOPE NARROWED" in text
+    assert "S14B remains `NOT_EXECUTED`" in text
+    assert "no S14 PASS" in text
+    assert "validated by representative Japanese production users" in text
+    assert "resolves the **v0.2.3 S14 release-claim gate**" in text
+    assert "S14B is not a prerequisite for the narrowed release-facing claim" in text

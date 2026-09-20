@@ -6,9 +6,9 @@ This is the canonical release-readiness checklist for CutBridge v0.2.3. Green pr
 
 ## Current repository boundary
 
-Current integrated `develop` after S13F:
+Current integrated `develop` after the S12 traceability reconciliation:
 
-`0a86d9a0605e1dd9714ef35a547693de76f714f4`
+`c8721ece179a3dd9afe0e9676477239872574b8e`
 
 Current release state:
 
@@ -16,11 +16,14 @@ Current release state:
 - S1–S13 product/validation work: integrated or completed as documented below;
 - S12 release-target real-host path: PASS after S13F repair chain;
 - S13 native repair: PASS / integrated;
+- beta.3 owner/internal regression: PASS for the recorded Windows 11 / Blender 5.2.1 / After Effects 2026 v26.3 scope;
+- S12 structured-evidence traceability decision: resolved through the documented non-fabrication path;
+- v0.2.3 Japanese release-facing claim scope: narrowed; S14B representative-user execution remains NOT_EXECUTED and is not claimed as PASS;
 - `release-authorization.json`: `approved: false`;
 - GitHub Releases: none;
 - repository-level release governance issue #18: OPEN;
-- `main` and `develop`: materially diverged and not suitable for blind merge;
-- next bounded phase: S14 Japanese target-user validation and release-preparation evidence.
+- `main` remains unchanged and promotion PR #74 remains open/unmerged;
+- next blocking phase: repository governance issue #18, followed by exact promotion-head validation.
 
 Do not edit this checklist to imply publication is allowed while #18 is unresolved or release authorization remains unapproved.
 
@@ -39,7 +42,7 @@ Do not edit this checklist to imply publication is allowed while #18 is unresolv
 
 ## 2. Automated QA baseline
 
-Latest authoritative post-merge CI on exact `develop` `0a86d9a...` is PASS:
+Latest authoritative post-merge CI on exact `develop` `c8721ece...` is PASS:
 
 - [x] Python/static contract suite exists and is authoritative.
 - [x] Blender 5.2.1 RNA lifecycle gate exists.
@@ -108,17 +111,21 @@ This closes the S12 **traceability decision gate** for v0.2.3. It does not asser
 
 See `S12_S13_EVIDENCE_SUMMARY.md`.
 
-## 5. Japanese target-user evidence — S14
+## 5. Japanese target-user evidence / v0.2.3 claim scope — S14
 
-Required before broad Japanese target-user production-usability claims:
+S14A protocol preparation is complete. S14B representative Japanese-speaking target-user execution remains **NOT_EXECUTED**.
 
-- [ ] define Japanese user task script and acceptance criteria;
-- [ ] test with actual target users if making production-usability claims;
-- [ ] record task completion, error/rework observations, terminology feedback, and material blockers;
-- [ ] repair material findings before release claims;
-- [ ] do not fabricate participants, observations, or measurements.
+For v0.2.3, the release-facing claim has been deliberately narrowed rather than treating missing participant evidence as a PASS:
 
-A Japanese-first UI implementation and Japanese-language native sanity testing are not equivalent to target-user validation.
+- [x] Japanese-first UI with deterministic English fallback may be described as an implemented product characteristic;
+- [x] documented engineering/native Japanese/English UI and workflow checks may be described only for their recorded tested environments;
+- [x] beta.3 owner/internal workflow validation may be described only as owner/internal engineering evidence for the tested scope;
+- [x] no claim will state or imply representative Japanese-user validation, customer validation, proven ease of use, broad Japanese production usability, statistical usability evidence, or S14B PASS;
+- [x] S14B remains available as a future protocol and becomes required before introducing broader Japanese target-user usability claims.
+
+This **claim-scope narrowing resolves the v0.2.3 S14 release-claim gate**. It does not create target-user evidence and does not change the S14 evidence template from `NOT_EXECUTED`.
+
+See `S14_JP_USER_VALIDATION.md`.
 
 ## 6. Repository governance — BLOCKED BY #18
 
@@ -139,13 +146,14 @@ Current private-repository plan/configuration does not expose the required GitHu
 
 Only after required native/product/evidence scope is complete:
 
-- [ ] choose one exact `develop` SHA as the release candidate;
+- [x] beta.3 was frozen at `00d2e51a6266d140d499e48b45557eb084568d9f` and owner/internal regression passed for the recorded scope;
+- [ ] choose the exact final promotion head after documentation/governance prerequisites are satisfied;
 - [ ] record complete candidate diff and test evidence;
 - [ ] require authoritative candidate CI PASS;
 - [ ] stop feature changes on that candidate;
 - [ ] if the candidate changes, invalidate candidate-specific evidence and repeat affected gates.
 
-Current `0a86d9a...` is the latest green integrated development candidate, not yet an authorized/frozen release candidate.
+The historical beta.3 runtime candidate remains SHA-bound to `00d2e51a...`. Current `develop` includes later documentation/test reconciliation and is not automatically authorized for promotion or release.
 
 ## 8. Deliberate `develop` → `main` promotion
 
@@ -170,7 +178,7 @@ Authorization is one exact tuple, not a reusable global switch.
 Before changing `release-authorization.json`:
 
 - [ ] governance section complete;
-- [ ] required release-target/target-user validation complete for the intended claim;
+- [x] evidence scope is complete for the **narrowed** v0.2.3 Japanese release-facing claim; S14B remains NOT_EXECUTED and no broad representative-user claim is permitted;
 - [ ] exact promoted `main` SHA has green authoritative CI;
 - [ ] choose exact release tag;
 - [ ] derive intended channel and prerelease state;
@@ -238,7 +246,7 @@ Use one of these states:
 
 **NOT RELEASE READY.**
 
-S12/S13 product/native blockers are resolved for their tested scope, and the S12 structured-evidence traceability decision is resolved through the documented non-fabrication path. Repository governance #18, S14 target-user evidence for broad JP production claims, deliberate promotion to `main`, exact release authorization, publication, and distribution verification remain incomplete.
+S12/S13 product/native blockers are resolved for their tested scope, the S12 structured-evidence traceability decision is resolved through the documented non-fabrication path, and the v0.2.3 Japanese release-facing claim is narrowed so S14B is not represented as completed or required for that narrow claim. Repository governance #18, deliberate promotion to `main`, exact release authorization, publication, and distribution verification remain incomplete.
 
 ## Related documents
 
