@@ -70,7 +70,8 @@
         "required": ["name", "required"],
         "properties": {
           "name": {"enum": ["BEAUTY", "LINE", "SHADOW", "DEPTH"]},
-          "required": {"type": "boolean"}
+          "required": {"type": "boolean"},
+          "image_format": {"enum": ["PNG", "OPEN_EXR", "TIFF"]}
         }
       }
     },
