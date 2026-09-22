@@ -1,6 +1,6 @@
 {
-  "approved": true,
-  "tag": "v0.2.3",
-  "channel": "stable",
-  "prerelease": false
+  "approved": false,
+  "tag": null,
+  "channel": null,
+  "prerelease": null
 }
