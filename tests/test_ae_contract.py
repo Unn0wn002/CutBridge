@@ -78,6 +78,28 @@ def test_ae_accepts_current_manifest_contract():
     assert result == []
 
 
+def test_ae_accepts_optional_per_pass_format_and_rejects_extension_mismatch():
+    manifest = _manifest()
+    manifest["passes"][0]["image_format"] = "PNG"
+    assert _run_node_contract(
+        f"console.log(JSON.stringify(contract.validateManifest({json.dumps(manifest)})));"
+    ) == []
+
+    manifest["passes"][0]["image_format"] = "OPEN_EXR"
+    errors = _run_node_contract(
+        f"console.log(JSON.stringify(contract.validateManifest({json.dumps(manifest)})));"
+    )
+    assert any("extension does not match image_format OPEN_EXR" in message for message in errors)
+
+
+def test_ae_legacy_manifest_without_per_pass_format_remains_valid():
+    manifest = _manifest()
+    assert "image_format" not in manifest["passes"][0]
+    assert _run_node_contract(
+        f"console.log(JSON.stringify(contract.validateManifest({json.dumps(manifest)})));"
+    ) == []
+
+
 def test_ae_sequence_coverage_requires_every_expected_frame():
     manifest = _manifest()
     pass_info = manifest["passes"][0]
