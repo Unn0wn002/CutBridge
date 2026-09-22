@@ -13,7 +13,7 @@ For a dockable panel, place this file in After Effects/Scripts/ScriptUI Panels a
 */
 
 var CutBridgeContract = (function () {
-    var PRODUCT_VERSION = "0.2.3";
+    var PRODUCT_VERSION = "0.2.4";
     var SCHEMA = "cutbridge-manifest";
     var SCHEMA_VERSION = 1;
     var MANAGED_PREFIX = "CUTBRIDGE|1|";

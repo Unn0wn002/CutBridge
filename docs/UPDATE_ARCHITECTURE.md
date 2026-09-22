@@ -28,7 +28,7 @@ CutBridge separates **source-repository hosting** from **plugin distribution**. 
    - `release-metadata.json`
 9. GitHub Release stores the validation/release artifacts for the development team. RC/beta/development tags are marked GitHub prereleases; the unsuffixed stable tag is not.
 10. Download the published assets and independently re-verify contents/checksums before any distribution claim.
-11. Production distribution later mirrors approved stable artifacts and update metadata to a separately hosted endpoint.
+11. Production distribution mirrors approved stable artifacts and update metadata to the separately hosted `Unn0wn002/cutbridge-distribution` endpoint.
 
 The release builder validates the numeric product version against `blender_manifest.toml`, `version.py`, and After Effects. Publication authorization is a separate gate and must never be inferred merely from matching versions or green CI.
 
@@ -89,9 +89,16 @@ A production index should be hosted on a static HTTPS endpoint separate from the
 - Blender's generated extension repository `index.json` and release ZIP files.
 - CutBridge's small release-notification index.
 
-The in-plugin update URL remains blank in source until such an endpoint is deployed. Users/developers may configure a test endpoint in Blender Preferences.
+Production D1 is deployed and verified at:
 
-Because no production update endpoint/index publication process has been deployed and verified yet, RC/beta/development GitHub Releases are **manual validation artifacts**. Do not represent GitHub prerelease publication alone as a functioning beta update channel inside Blender.
+- CutBridge notification index: `https://unn0wn002.github.io/cutbridge-distribution/cutbridge/release-index.json`;
+- Blender repository index: `https://unn0wn002.github.io/cutbridge-distribution/blender/index.json`.
+
+The released v0.2.3 client keeps its compiled update URL blank. The v0.2.4 source baseline points its **manual** notification checker to the verified production index. The endpoint is not stored as a user-editable Blender RNA string and contains no credentials.
+
+Automatic startup update scheduling remains disabled following Issue #82. Wiring the manual endpoint does not restore `bpy.app.timer` registration or background checks.
+
+RC/beta/development GitHub Releases remain **manual validation artifacts** unless a matching entry is deliberately published to the production distribution. Do not represent GitHub prerelease publication alone as a functioning beta update channel inside Blender.
 
 ## Blender online-access policy
 

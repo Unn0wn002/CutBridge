@@ -13,7 +13,7 @@ python -m pytest -q
 python tests/test_blender_runtime_52.py
 cp apps/after-effects/CutBridge.jsx /tmp/CutBridge.js
 node --check /tmp/CutBridge.js
-python tools/build_release.py --tag v0.2.3 --output dist-ci
+python tools/build_release.py --tag v0.2.4 --output dist-ci
 (cd dist-ci && sha256sum --check SHA256SUMS.txt)
 ```
 

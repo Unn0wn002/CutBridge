@@ -32,13 +32,13 @@ class ReleaseHygieneTests(unittest.TestCase):
         self.output = Path(self.temp.name) / "dist"
 
     def test_identical_sources_produce_identical_artifacts(self):
-        self.builder.build("v0.2.3", self.output)
+        self.builder.build("v0.2.4", self.output)
         before = {p.name: p.read_bytes() for p in self.output.iterdir()}
         for path in self.root.rglob("*"):
             if path.is_file():
                 os.utime(path, (946684800, 946684800))
                 path.chmod(0o600)
-        self.builder.build("v0.2.3", self.output)
+        self.builder.build("v0.2.4", self.output)
         self.assertEqual(before, {p.name: p.read_bytes() for p in self.output.iterdir()})
 
     def test_unrelated_output_is_never_deleted(self):
@@ -46,26 +46,26 @@ class ReleaseHygieneTests(unittest.TestCase):
         marker = self.output / "unrelated.txt"
         marker.write_text("preserve me", encoding="utf-8")
         with self.assertRaises(ValueError):
-            self.builder.build("v0.2.3", self.output)
+            self.builder.build("v0.2.4", self.output)
         self.assertEqual(marker.read_text(encoding="utf-8"), "preserve me")
         self.assertEqual(list(self.output.iterdir()), [marker])
 
     def test_source_directory_cannot_be_used_as_output(self):
         before = self.builder.AE_SCRIPT.read_bytes()
         with self.assertRaises(ValueError):
-            self.builder.build("v0.2.3", self.builder.AE_SCRIPT.parent)
+            self.builder.build("v0.2.4", self.builder.AE_SCRIPT.parent)
         self.assertEqual(self.builder.AE_SCRIPT.read_bytes(), before)
 
     def test_both_packages_include_declared_license(self):
-        self.builder.build("v0.2.3", self.output)
+        self.builder.build("v0.2.4", self.output)
         for archive_path in self.output.glob("*.zip"):
             with self.subTest(archive=archive_path.name), zipfile.ZipFile(archive_path) as archive:
                 self.assertIn("LICENSE", archive.namelist())
                 self.assertEqual(archive.read("LICENSE"), (ROOT / "LICENSE").read_bytes())
 
     def test_ae_package_contains_all_required_runtime_sidecars(self):
-        self.builder.build("v0.2.3", self.output)
-        archive_path = self.output / "CutBridge-AfterEffects-v0.2.3.zip"
+        self.builder.build("v0.2.4", self.output)
+        archive_path = self.output / "CutBridge-AfterEffects-v0.2.4.zip"
         with zipfile.ZipFile(archive_path) as archive:
             assert archive.namelist() == [
                 "CutBridge.jsx",
@@ -78,7 +78,7 @@ class ReleaseHygieneTests(unittest.TestCase):
             self.assertEqual(archive.read("localization.js"), (ROOT / "apps/after-effects/localization.js").read_bytes())
 
     def test_tag_mismatch_preserves_output(self):
-        self.builder.build("v0.2.3", self.output)
+        self.builder.build("v0.2.4", self.output)
         before = {p.name: p.read_bytes() for p in self.output.iterdir()}
         with self.assertRaises(ValueError):
             self.builder.build("v9.9.9", self.output)
@@ -86,54 +86,60 @@ class ReleaseHygieneTests(unittest.TestCase):
 
     def test_version_constant_mismatch_is_rejected(self):
         source = self.builder.BLENDER_ROOT / "version.py"
-        source.write_text(source.read_text().replace("VERSION = (0, 2, 3)", "VERSION = (0, 2, 2)"))
+        source.write_text(source.read_text().replace("VERSION = (0, 2, 4)", "VERSION = (0, 2, 2)"))
         with self.assertRaises(ValueError):
-            self.builder.build("v0.2.3", self.output)
+            self.builder.build("v0.2.4", self.output)
         self.assertFalse(self.output.exists())
 
     def test_ae_version_mismatch_is_rejected_before_output(self):
         source = self.builder.AE_SCRIPT
         source.write_text(source.read_text(encoding="utf-8").replace(
-            'var PRODUCT_VERSION = "0.2.3";', 'var PRODUCT_VERSION = "0.2.2";'), encoding="utf-8")
+            'var PRODUCT_VERSION = "0.2.4";', 'var PRODUCT_VERSION = "0.2.2";'), encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "PRODUCT_VERSION"):
-            self.builder.build("v0.2.3", self.output)
+            self.builder.build("v0.2.4", self.output)
         self.assertFalse(self.output.exists())
 
     def test_missing_qc_plus_sidecar_is_rejected_before_output(self):
         self.builder.AE_QC_PLUS.unlink()
         with self.assertRaisesRegex(ValueError, "qc_plus"):
-            self.builder.build("v0.2.3", self.output)
+            self.builder.build("v0.2.4", self.output)
         self.assertFalse(self.output.exists())
 
     def test_missing_localization_sidecar_is_rejected_before_output(self):
         self.builder.AE_LOCALIZATION.unlink()
         with self.assertRaisesRegex(ValueError, "localization"):
-            self.builder.build("v0.2.3", self.output)
+            self.builder.build("v0.2.4", self.output)
         self.assertFalse(self.output.exists())
 
     def test_artifact_symlink_cannot_overwrite_another_file(self):
         self.output.mkdir()
         victim = Path(self.temp.name) / "preserve.txt"
         victim.write_text("preserve me")
-        (self.output / "CutBridge-Blender-v0.2.3.zip").symlink_to(victim)
+        (self.output / "CutBridge-Blender-v0.2.4.zip").symlink_to(victim)
         with self.assertRaises(ValueError):
-            self.builder.build("v0.2.3", self.output)
+            self.builder.build("v0.2.4", self.output)
         self.assertEqual(victim.read_text(), "preserve me")
 
     def test_rc_build_uses_beta_prerelease_metadata(self):
-        metadata = self.builder.build("v0.2.3-rc.1", self.output)
-        self.assertEqual(metadata["version"], "0.2.3-rc.1")
-        self.assertEqual(metadata["product_version"], "0.2.3")
+        metadata = self.builder.build("v0.2.4-rc.1", self.output)
+        self.assertEqual(metadata["version"], "0.2.4-rc.1")
+        self.assertEqual(metadata["product_version"], "0.2.4")
         self.assertEqual(metadata["channel"], "beta")
         self.assertIs(metadata["prerelease"], True)
-        self.assertTrue((self.output / "CutBridge-Blender-v0.2.3-rc.1.zip").is_file())
-        self.assertTrue((self.output / "CutBridge-AfterEffects-v0.2.3-rc.1.zip").is_file())
+        self.assertTrue((self.output / "CutBridge-Blender-v0.2.4-rc.1.zip").is_file())
+        self.assertTrue((self.output / "CutBridge-AfterEffects-v0.2.4-rc.1.zip").is_file())
 
     def test_development_build_uses_development_channel(self):
-        metadata = self.builder.build("v0.2.3-dev.1", self.output)
-        self.assertEqual(metadata["version"], "0.2.3-dev.1")
+        metadata = self.builder.build("v0.2.4-dev.1", self.output)
+        self.assertEqual(metadata["version"], "0.2.4-dev.1")
         self.assertEqual(metadata["channel"], "development")
         self.assertIs(metadata["prerelease"], True)
+
+    def test_release_metadata_uses_visibility_neutral_distribution_boundary(self):
+        metadata = self.builder.build("v0.2.4", self.output)
+        note = metadata["distribution_note"]
+        self.assertIn("separate from the source repository", note)
+        self.assertNotIn("private source repository", note)
 
     def test_release_workflow_publishes_verification_assets(self):
         workflow = (ROOT / ".github/workflows/release.yml").read_text(encoding="utf-8")

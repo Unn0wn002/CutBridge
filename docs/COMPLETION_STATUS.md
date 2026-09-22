@@ -1,28 +1,29 @@
 # CutBridge Completion Status
 
-## Current state — 20 September 2026
+## Current state — 22 September 2026
 
-CutBridge v0.2.3 remains **UNRELEASED / NOT RELEASE READY**. The Japanese release-facing claim for v0.2.3 is now deliberately narrowed; S14B representative-user validation remains NOT_EXECUTED and is not claimed as complete.
+CutBridge v0.2.3 is released, published, independently verified, and mirrored to the separate production distribution. The active v0.2.4 source baseline is **UNRELEASED / NOT AUTHORIZED FOR PUBLICATION**. S14B representative-user validation remains NOT_EXECUTED and is not claimed as complete.
 
 - **Integrated product/validation sessions:** S1–S13.
 - Historical S13 runtime integration baseline: `0a86d9a0605e1dd9714ef35a547693de76f714f4`.
 - Historical final native-tested S13F source: `9c99ae23ccd8c47fdc0fffbd05b99e1326f2ea95`.
 
-The protected promotion head was `develop` commit `501f9bd6b6c69cf8859f96f0fd6441afc48c0b50`. PR #74 promoted that exact tree to protected `main`, producing merge commit `049081f0fe3d3e74d77db807910c2e0fff56fe73`. The promoted `main` tree has zero file differences from the promotion head. This documentation reconciliation does not change runtime behavior.
+Stable tag `v0.2.3` and protected `main` both resolve to `1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f`. The v0.2.4 working branch deliberately starts from that exact released main history so its four release-side commits reconcile back into active development through a PR to protected `develop`.
 
 Current repository boundaries:
 
 - repository visibility: public;
-- protected `develop`: `501f9bd6b6c69cf8859f96f0fd6441afc48c0b50`;
-- protected `main`: `049081f0fe3d3e74d77db807910c2e0fff56fe73`;
-- promotion PR #74: CLOSED / merged;
-- pre-promotion CI `35511056270` attempt 2: PASS;
-- post-promotion `main` CI `35513361337`: PASS;
+- protected `develop`: `f39b9f41c66c8abc0f895066675d80b0747c6053`;
+- protected `main`: `1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f`;
+- stable tag `v0.2.3`: exact protected-main SHA above;
+- v0.2.3 GitHub Release: published, non-prerelease, four verified assets;
+- production distribution commit: `635c1384af2649d4ce49705cce41f98826a861cc`;
+- production notification index: `https://unn0wn002.github.io/cutbridge-distribution/cutbridge/release-index.json`;
+- production Blender repository: `https://unn0wn002.github.io/cutbridge-distribution/blender/index.json`;
 - four active governance rulesets protect `main`, `develop`, release-tag mutation, and no-bypass release-tag eligibility;
 - `release-authorization.json`: `approved: false`;
-- release tag refs: none;
-- GitHub Releases: none;
-- repository governance Issue #18: OPEN only for controlled negative/authorized release-tag enforcement-path validation;
+- no v0.2.4 tag, release authorization, GitHub Release, or production distribution entry exists;
+- automatic startup update scheduling remains disabled following Issue #82;
 - S14 Issue #71: representative Japanese target-user execution remains NOT_EXECUTED; v0.2.3 claim scope is narrowed so no representative-user usability claim is made;
 - Issue #80: OPEN post-v0.2.3 design task for per-pass output formats, not a v0.2.3 release blocker.
 
@@ -157,28 +158,18 @@ The bounded beta.3 owner/internal regression passed for the recorded Windows 11 
 
 Later documentation/governance commits through promotion head `501f9bd6b6c69cf8859f96f0fd6441afc48c0b50` do not retroactively change the SHA-bound beta.3 candidate identity.
 
-## Release blockers / gates
+## Release and development gates
 
-Completed:
+The v0.2.3 governance, exact authorization, guarded publication, downloaded-asset verification, and separate production-distribution verification gates are complete. Released v0.2.3 remains immutable.
 
-1. **Release-readiness documentation reconciliation** through the post-#82/#83 state.
-2. **Historical beta.3 freeze** and bounded owner/internal regression for the recorded tested scope.
-3. **S12 structured-evidence traceability decision** through the documented non-fabrication path.
-4. **v0.2.3 S14 claim-scope decision** through narrowing; S14B remains NOT_EXECUTED.
-5. **Repository governance configuration**: protected `main`, protected `develop`, admin-controlled `v*.*.*` mutation, and no-bypass `release-tag-eligibility`.
-6. **Exact PR #74 promotion-head verification** with fresh authoritative CI.
-7. **Deliberate `develop` → `main` promotion** through protected PR #74.
-8. **Post-promotion `main` CI** on `049081f0fe3d3e74d77db807910c2e0fff56fe73`.
+The v0.2.4 development boundary is fail-closed:
 
-Remaining before RC/stable publication:
-
-9. **Controlled governance enforcement-path validation** under Issue #18: record the negative eligibility result while authorization is false, then later the explicitly authorized current-main path.
-10. **Explicitly authorize one exact current-main/tag/channel/prerelease tuple** only after the governance validation gate is satisfied.
-11. **Publish only through the guarded Release workflow.**
-12. **Independently verify downloaded artifacts/checksums/content.**
-13. **Verify the production update/distribution path separately.**
-
-Until these gates are satisfied, `release-authorization.json` must remain fail-closed and no stable/RC publication is authorized.
+1. reconcile released `main` ancestry through a reviewed PR to protected `develop`;
+2. keep `release-authorization.json` unapproved;
+3. validate the 0.2.4 package with Blender's standalone extension validator;
+4. verify manual notification checks do not offer the older production v0.2.3 as an update;
+5. keep automatic startup update scheduling disabled and preserve the Issue #82 panel-readonly regression;
+6. do not publish a v0.2.4 tag, GitHub Release, or production distribution entry from this baseline task.
 
 ## Non-blocking post-v0.2.3 work
 
@@ -186,6 +177,4 @@ Issue #80 remains intentionally outside the v0.2.3 release scope. Per-pass outpu
 
 ## Recommended immediate phase
 
-**Controlled release-tag eligibility validation under Issue #18.**
-
-Promotion is complete and green. Keep `release-authorization.json` false while recording the negative eligibility result, then exercise the explicitly authorized exact-current-main path only after that negative gate is verified. S14B remains NOT_EXECUTED and may be pursued later only if broader Japanese target-user usability claims are desired.
+Complete the v0.2.4 baseline branch, native Blender validation, and authoritative PR CI into protected `develop`. Stop before merge pending explicit owner authorization. S14B remains NOT_EXECUTED and may be pursued later only if broader Japanese target-user usability claims are desired.

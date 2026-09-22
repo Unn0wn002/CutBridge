@@ -210,7 +210,7 @@ def build(tag: str, output_dir: Path) -> dict:
         },
         "distribution_note": (
             "Mirror release artifacts and a generated update index to a distribution endpoint "
-            "that is separate from the private source repository"
+            "that is separate from the source repository"
         ),
     }
     metadata_path = output_dir / "release-metadata.json"
@@ -226,7 +226,7 @@ def main() -> int:
     parser.add_argument(
         "--tag",
         required=True,
-        help="Release tag, e.g. v0.2.3 or v0.2.3-rc.1",
+        help="Release tag, e.g. v0.2.4 or v0.2.4-rc.1",
     )
     parser.add_argument("--output", default="dist", help="Output directory")
     args = parser.parse_args()
