@@ -135,6 +135,12 @@ class ReleaseHygieneTests(unittest.TestCase):
         self.assertEqual(metadata["channel"], "development")
         self.assertIs(metadata["prerelease"], True)
 
+    def test_release_metadata_uses_visibility_neutral_distribution_boundary(self):
+        metadata = self.builder.build("v0.2.4", self.output)
+        note = metadata["distribution_note"]
+        self.assertIn("separate from the source repository", note)
+        self.assertNotIn("private source repository", note)
+
     def test_release_workflow_publishes_verification_assets(self):
         workflow = (ROOT / ".github/workflows/release.yml").read_text(encoding="utf-8")
         marker = "- name: Publish GitHub Release"

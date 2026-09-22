@@ -210,7 +210,7 @@ def build(tag: str, output_dir: Path) -> dict:
         },
         "distribution_note": (
             "Mirror release artifacts and a generated update index to a distribution endpoint "
-            "that is separate from the private source repository"
+            "that is separate from the source repository"
         ),
     }
     metadata_path = output_dir / "release-metadata.json"

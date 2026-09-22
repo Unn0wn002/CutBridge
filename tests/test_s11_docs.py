@@ -40,18 +40,20 @@ def test_completion_status_reconciles_released_v023_and_v024_development():
     assert "S14B remains NOT_EXECUTED" in text
 
 
-def test_release_readiness_records_completed_native_path_but_fails_closed():
+def test_release_readiness_records_published_v023_and_fail_closed_v024():
     text = _read("docs/RELEASE_READINESS.md")
-    assert "UNRELEASED / PUBLICATION BLOCKED" in text
+    assert "v0.2.3 PUBLISHED / VERIFIED" in text
+    assert "v0.2.4 UNRELEASED / NOT AUTHORIZED" in text
     assert "S12 release-target campaign executed and reconciled to PASS" in text
     assert "S13 real-host Camera/Null revision defects repaired and integrated" in text
     assert "STRUCTURED-EVIDENCE TRACEABILITY DECISION RESOLVED" in text
-    assert "issue #18" in text
+    assert "Issue #18" in text and "OPEN" in text
     assert "PR #74 promoted exact `develop` head" in text
-    assert "049081f0fe3d3e74d77db807910c2e0fff56fe73" in text
+    assert "1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f" in text
+    assert "635c1384af2649d4ce49705cce41f98826a861cc" in text
+    assert "https://unn0wn002.github.io/cutbridge-distribution/cutbridge/release-index.json" in text
+    assert "https://unn0wn002.github.io/cutbridge-distribution/blender/index.json" in text
     assert "Require release tag eligibility" in text
-    assert "CONTROLLED VALIDATION PENDING" in text
-    assert "NOT RELEASE READY" in text
     assert "release-authorization.json" in text
     assert "claim-scope narrowing resolves the v0.2.3 S14 release-claim gate" in text
     assert "S14B representative Japanese-speaking target-user execution remains **NOT_EXECUTED**" in text
@@ -98,15 +100,19 @@ def test_quick_starts_track_s13_and_point_to_s14():
     assert "S12_S13_EVIDENCE_SUMMARY.md" in ja
 
 
-def test_technical_debt_uses_current_post_s13_baseline_and_evidence_limits():
+def test_technical_debt_uses_current_release_baseline_and_evidence_limits():
     text = _read("docs/TECHNICAL_DEBT.md")
     assert "S1–S13 validated product baseline" in text
+    assert "stable v0.2.3: released and immutable" in text
+    assert "active development: `0.2.4`" in text
+    assert "release authorization: `approved: false`" in text
+    assert "publication governance issue #18: OPEN" in text
     assert "245 tests + 2 subtests" in text
     assert "62 deprecation warnings" in text
     assert "S12 structured evidence traceability" in text
     assert "Repository-level configuration is now present on the public repository" in text
     assert "release-facing Japanese claim was deliberately narrowed" in text
-    assert "enforcement-path validation" in text
+    assert "The v0.2.3 governance path is complete" in text
     assert "green S8-integrated product baseline" not in text
     assert "develop` contains S1–S8" not in text
 
@@ -162,4 +168,29 @@ def test_roadmap_tracks_completed_promotion_and_deferred_s14b():
     assert "S14A COMPLETE / S14B NOT_EXECUTED for v0.2.3" in text
     assert "COMPLETE / VERIFIED" in text
     assert "35513361337" in text
-    assert "controlled release-tag eligibility enforcement testing" in text
+    assert "Stable v0.2.3 publication and production D1 distribution are complete" in text
+    assert "v0.2.4 is the active unreleased development baseline" in text
+    assert "subsequent releases and distribution automation" in text
+
+
+def test_current_release_docs_do_not_restore_stale_prepublication_claims():
+    documents = {
+        path: _read(path)
+        for path in (
+            "docs/RELEASE_READINESS.md",
+            "docs/ROADMAP.md",
+            "docs/TECHNICAL_DEBT.md",
+            "docs/RELEASE_CHECKLIST.md",
+        )
+    }
+    combined = "\n".join(documents.values())
+
+    assert "private source repository" not in combined
+    assert "Version `0.2.3` remains unreleased" not in combined
+    assert "product version: `0.2.3` unreleased" not in combined
+    assert "no release tag or GitHub Release exists" not in combined
+    assert "there are still no GitHub Releases or release tags" not in combined
+    assert "release tag refs: none" not in combined
+    assert "GitHub Releases: none" not in combined
+    assert "production D1 distribution: pending" not in combined
+    assert "deploy/verify the production update/distribution endpoint" not in combined
