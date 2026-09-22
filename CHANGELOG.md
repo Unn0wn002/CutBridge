@@ -5,6 +5,8 @@ All notable CutBridge changes are tracked here.
 ## [0.2.4] - Unreleased
 
 ### Changed
+- Added an additive per-pass image-format contract for v0.2.4: new manifests/presets may declare `image_format` per pass while historical data continues to fall back to the package-level format.
+- Added Manual-mode advanced per-pass format controls; Depth defaults to OpenEXR when per-pass overrides are enabled.
 - Started active development from the exact released v0.2.3 `main` history so the release commits reconcile safely back into protected `develop`.
 - Restored `release-authorization.json` to its fail-closed development state; v0.2.4 is not authorized for publication.
 - Wired the manual Blender update checker to the verified production notification index hosted separately from the source repository.
