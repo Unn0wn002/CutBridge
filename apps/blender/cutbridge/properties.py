@@ -49,6 +49,31 @@ class CUTBRIDGE_PG_Settings(bpy.types.PropertyGroup):
         ),
         default="PNG",
     )
+    per_pass_formats_enabled: BoolProperty(
+        name="Per-Pass Formats",
+        description="Use an explicit image format for each enabled render pass instead of the global Sequence Format",
+        default=False,
+    )
+    format_beauty: EnumProperty(
+        name="Beauty Format",
+        items=(("PNG", "PNG", ""), ("OPEN_EXR", "OpenEXR", ""), ("TIFF", "TIFF", "")),
+        default="PNG",
+    )
+    format_line: EnumProperty(
+        name="Line Format",
+        items=(("PNG", "PNG", ""), ("OPEN_EXR", "OpenEXR", ""), ("TIFF", "TIFF", "")),
+        default="PNG",
+    )
+    format_shadow: EnumProperty(
+        name="Shadow Format",
+        items=(("PNG", "PNG", ""), ("OPEN_EXR", "OpenEXR", ""), ("TIFF", "TIFF", "")),
+        default="PNG",
+    )
+    format_depth: EnumProperty(
+        name="Depth Format",
+        items=(("PNG", "PNG", ""), ("OPEN_EXR", "OpenEXR", ""), ("TIFF", "TIFF", "")),
+        default="OPEN_EXR",
+    )
 
     # BEAUTY has a renderer-independent Combined/Image source. Other logical
     # passes are opt-in because their availability depends on the active engine
