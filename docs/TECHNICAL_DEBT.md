@@ -15,7 +15,7 @@ S12/S13 closeout reference points:
 
 ### Current evidence
 
-The latest Blender 5.2.1 runtime suite passes **245 tests + 2 subtests** and currently emits **62 deprecation warnings**. The principal known source remains `Scene.use_nodes` usage in render-mapping state capture/rollback.
+The latest exact-head Blender 5.2.1 runtime suite on the v0.2.4 integration baseline passes **307 tests + 2 subtests** and emits **72 deprecation warnings**. The principal known source remains `Scene.use_nodes` usage in render-mapping state capture/rollback.
 
 Blender reports that `Scene.use_nodes` is expected to be removed in Blender 6.0.
 
