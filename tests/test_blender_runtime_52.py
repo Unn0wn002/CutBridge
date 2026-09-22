@@ -12,7 +12,7 @@ BLENDER_APP = ROOT / "apps" / "blender"
 sys.path.insert(0, str(BLENDER_APP))
 
 import cutbridge  # noqa: E402
-from cutbridge import update_ops  # noqa: E402
+from cutbridge import core, update_ops  # noqa: E402
 
 
 def is_registered(cls):
@@ -33,6 +33,21 @@ def run_cycle():
     assert not bpy.app.timers.is_registered(update_ops._startup_update_check)
     for cls in cutbridge.CLASSES:
         assert is_registered(cls), f"class did not register: {cls.__name__}"
+
+    scene = bpy.context.scene
+    if scene is not None:
+        settings = scene.cutbridge
+        assert hasattr(settings, "per_pass_formats_enabled")
+        assert hasattr(settings, "format_depth")
+        settings.pass_beauty = True
+        settings.pass_depth = True
+        settings.image_format = "PNG"
+        settings.per_pass_formats_enabled = True
+        settings.format_beauty = "PNG"
+        settings.format_depth = "OPEN_EXR"
+        assert core.effective_pass_image_format(settings, "BEAUTY") == "PNG"
+        assert core.effective_pass_image_format(settings, "DEPTH") == "OPEN_EXR"
+
     cutbridge.unregister()
     assert_clean()
 

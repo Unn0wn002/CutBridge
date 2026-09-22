@@ -171,6 +171,12 @@ var CutBridgeContract = (function () {
         if (first < 0 || pattern.replace("####", "").indexOf("#") >= 0) throw new Error("Sequence pattern must contain exactly one #### frame token.");
     }
     function patternToRegex(pattern) { validatePattern(pattern); return new RegExp("^" + escapeRegex(pattern).replace("####", "(-?\\d+)") + "$", "i"); }
+    function extensionForImageFormat(imageFormat) {
+        if (imageFormat === "PNG") return ".png";
+        if (imageFormat === "OPEN_EXR") return ".exr";
+        if (imageFormat === "TIFF") return ".tif";
+        return null;
+    }
     function expectedFrameName(pattern, frame) {
         validatePattern(pattern);
         if (!isInteger(frame) || frame < 0) throw new Error("Export frame must be a non-negative finite integer.");
@@ -259,6 +265,14 @@ var CutBridgeContract = (function () {
                 try { relativePassPath(p.path); } catch (pathError) { errors.push(p.name + ": " + pathError.message); }
                 try { patternToRegex(p.sequence_pattern); } catch (patternError) { errors.push(p.name + ": " + patternError.message); }
                 if (p.required !== undefined && typeof p.required !== "boolean") errors.push(p.name + ": required must be a boolean.");
+                if (p.image_format !== undefined) {
+                    var expectedExtension = extensionForImageFormat(p.image_format);
+                    if (!expectedExtension) errors.push(p.name + ": image_format must be PNG, OPEN_EXR, or TIFF.");
+                    else if (typeof p.sequence_pattern === "string" &&
+                        p.sequence_pattern.toLowerCase().slice(-expectedExtension.length) !== expectedExtension) {
+                        errors.push(p.name + ": sequence_pattern extension does not match image_format " + p.image_format + ".");
+                    }
+                }
             }
             if (manifest.ae && manifest.ae.layer_order !== undefined) {
                 if (!isArray(manifest.ae.layer_order)) errors.push("Manifest ae.layer_order must be an array when provided.");
@@ -406,7 +420,7 @@ var CutBridgeContract = (function () {
 
     return {parseJSON: parseJSON, zeroPad: zeroPad, trimPythonWhitespace: trimPythonWhitespace, PRODUCT_VERSION: PRODUCT_VERSION, relativePassPath: relativePassPath, pathIsInside: pathIsInside,
         SCHEMA: SCHEMA, SCHEMA_VERSION: SCHEMA_VERSION, validateManifest: validateManifest, validateHandoff3D: validateHandoff3D, patternToRegex: patternToRegex,
-        expectedFrameName: expectedFrameName, sequenceCoverage: sequenceCoverage, managedIdentity: managedIdentity, managedTag: managedTag,
+        expectedFrameName: expectedFrameName, extensionForImageFormat: extensionForImageFormat, sequenceCoverage: sequenceCoverage, managedIdentity: managedIdentity, managedTag: managedTag,
         expectedCompSpec: expectedCompSpec, compSpecErrors: compSpecErrors, passNames: passNames, sameFilesystemPath: sameFilesystemPath,
         footageReuseErrors: footageReuseErrors, isArray: isArray};
 })();
