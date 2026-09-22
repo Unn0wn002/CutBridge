@@ -10,8 +10,10 @@ Current protected branch and release state — 22 September 2026:
 
 - protected `main`: `1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f`;
 - stable tag `v0.2.3`: the same exact SHA as `main`;
-- protected `develop`: `f39b9f41c66c8abc0f895066675d80b0747c6053`;
-- active v0.2.4 reconciliation work: PR #92 targets protected `develop` from the released `main` ancestry.
+- protected `develop`: active v0.2.4 integration branch; integration-sweep baseline before this documentation reconciliation: `f2abcd814fde2bc8a2a45ba0c897fec1544f8e55`;
+- PR #92 updater/distribution/version baseline: merged into protected `develop`;
+- PR #93 backward-compatible per-pass output formats: merged; Issue #80 native acceptance completed 10/10 and exact post-merge CI passed;
+- PR #94 release-tag eligibility main-push trigger fix: merged; exact post-merge CI run `35756924486` passed both required jobs.
 
 Stable v0.2.3 state:
 
@@ -61,8 +63,11 @@ Historical v0.2.3 promotion evidence is PASS: pre-promotion PR CI `35511056270` 
 - [x] S8 localization regression suites exist.
 - [x] S10C reconstruction regression suite exists.
 - [x] S13 3D revision native-host-shaped regression is wired into canonical CI.
-- [x] latest static suite: 132 passed + 2 subtests.
-- [x] latest complete Blender/runtime suite: 245 passed + 2 subtests.
+- [x] latest exact-head static suite on integration baseline `f2abcd814fde2bc8a2a45ba0c897fec1544f8e55`: 147 passed + 2 subtests.
+- [x] latest exact-head complete Blender/runtime suite: 307 passed, 72 warnings + 2 subtests.
+- [x] exact-head release simulation built both v0.2.4 ZIPs and verified `SHA256SUMS.txt`.
+- [x] exact-head Blender 5.2.1 RNA register/unregister/re-register lifecycle step passed.
+- [x] exact-head push CI run `35756924486` passed `static-validation` and `blender-52-rna-runtime`.
 - [x] final promotion-head CI PASS on explicitly frozen `develop` SHA `501f9bd6b6c69cf8859f96f0fd6441afc48c0b50`.
 - [x] promoted `main` candidate CI PASS on exact promoted SHA `049081f0fe3d3e74d77db807910c2e0fff56fe73`.
 
@@ -255,7 +260,7 @@ Use one of these states:
 
 **v0.2.3 PUBLISHED / VERIFIED.**
 
-Stable v0.2.3 is released and immutable at `1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f`; its GitHub Release, artifacts, metadata, and separate production D1 distribution are verified. Active v0.2.4 is **NOT RELEASE READY / NOT AUTHORIZED**: authorization is fail-closed, startup scheduling remains disabled, S14B remains `NOT_EXECUTED`, and no v0.2.4 tag, Release, or distribution entry exists.
+Stable v0.2.3 is released and immutable at `1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f`; its GitHub Release, artifacts, metadata, and separate production D1 distribution are verified. Active v0.2.4 is **NOT RELEASE READY / NOT AUTHORIZED**: PR #92, PR #93, and PR #94 are integrated with green exact-head CI; Issue #80 is completed; authorization remains fail-closed; startup scheduling remains disabled; S14B remains `NOT_EXECUTED`; and no v0.2.4 tag, Release, or distribution entry exists. The next release gate is candidate freeze plus bounded combined native release-candidate regression on the exact frozen SHA.
 
 ## Related documents
 

@@ -107,8 +107,8 @@ def test_technical_debt_uses_current_release_baseline_and_evidence_limits():
     assert "active development: `0.2.4`" in text
     assert "release authorization: `approved: false`" in text
     assert "publication governance issue #18: OPEN" in text
-    assert "245 tests + 2 subtests" in text
-    assert "62 deprecation warnings" in text
+    assert "307 tests + 2 subtests" in text
+    assert "72 deprecation warnings" in text
     assert "S12 structured evidence traceability" in text
     assert "Repository-level configuration is now present on the public repository" in text
     assert "release-facing Japanese claim was deliberately narrowed" in text
@@ -171,6 +171,23 @@ def test_roadmap_tracks_completed_promotion_and_deferred_s14b():
     assert "Stable v0.2.3 publication and production D1 distribution are complete" in text
     assert "v0.2.4 is the active unreleased development baseline" in text
     assert "subsequent releases and distribution automation" in text
+
+
+def test_v024_current_facing_docs_track_integrated_develop_baseline():
+    readiness = _read("docs/RELEASE_READINESS.md")
+    completion = _read("docs/COMPLETION_STATUS.md")
+
+    for text in (readiness, completion):
+        assert "f2abcd814fde2bc8a2a45ba0c897fec1544f8e55" in text
+        assert "f39b9f41c66c8abc0f895066675d80b0747c6053" not in text
+
+    assert "PR #92 updater/distribution/version baseline: merged" in readiness
+    assert "PR #93 backward-compatible per-pass output formats: merged" in readiness
+    assert "PR #94 release-tag eligibility main-push trigger fix: merged" in readiness
+    assert "35756924486" in readiness
+    assert "Issue #80: COMPLETED for v0.2.4" in completion
+    assert "Issue #80: OPEN" not in completion
+    assert "307 passed, 72 warnings + 2 subtests" in completion
 
 
 def test_current_release_docs_do_not_restore_stale_prepublication_claims():
