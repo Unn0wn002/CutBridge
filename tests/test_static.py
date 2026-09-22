@@ -8,6 +8,7 @@ import re
 import subprocess
 import sys
 import tomllib
+import urllib.parse
 import zipfile
 
 import pytest
@@ -15,6 +16,10 @@ from jsonschema import Draft202012Validator
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 BLENDER = ROOT / "apps" / "blender" / "cutbridge"
+PRODUCTION_UPDATE_INDEX_URL = (
+    "https://unn0wn002.github.io/cutbridge-distribution/"
+    "cutbridge/release-index.json"
+)
 
 
 def _load_module(name: str, path: pathlib.Path):
@@ -49,7 +54,7 @@ def test_blender_manifest_is_hardened_and_version_synced():
     assert manifest["schema_version"] == "1.0.0"
     assert manifest["id"] == "cutbridge"
     assert manifest["type"] == "add-on"
-    assert manifest["version"] == _version_from_source() == "0.2.3"
+    assert manifest["version"] == _version_from_source() == "0.2.4"
     assert manifest["blender_version_min"] == "4.2.0"
     assert "Animation" in manifest["tags"]
     assert "files" in manifest["permissions"]
@@ -61,6 +66,57 @@ def test_blender_manifest_is_hardened_and_version_synced():
     assert "GNU GENERAL PUBLIC LICENSE" in (ROOT / "LICENSE").read_text(encoding="utf-8")
     assert f'**v{manifest["version"]} ' in (ROOT / "README.md").read_text(encoding="utf-8")
     assert f'## [{manifest["version"]}]' in (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+
+
+def test_blender_manifest_permission_descriptions_fit_validator_limit():
+    with (BLENDER / "blender_manifest.toml").open("rb") as fh:
+        permissions = tomllib.load(fh)["permissions"]
+
+    assert permissions
+    for permission, description in permissions.items():
+        assert isinstance(description, str) and description
+        assert len(description) <= 64, (
+            f"{permission} permission description is {len(description)} characters"
+        )
+
+
+def test_production_update_index_url_is_exact_https_distribution_endpoint():
+    version_module = _load_module("cutbridge_version_endpoint_test", BLENDER / "version.py")
+    endpoint = version_module.DEFAULT_UPDATE_INDEX_URL
+    parsed = urllib.parse.urlparse(endpoint)
+
+    assert endpoint == PRODUCTION_UPDATE_INDEX_URL
+    assert parsed.scheme == "https"
+    assert parsed.hostname == "unn0wn002.github.io"
+    assert "/cutbridge-distribution/" in parsed.path
+    assert "github.com/Unn0wn002/CutBridge" not in endpoint
+    assert "raw.githubusercontent.com" not in endpoint
+
+
+def test_development_release_authorization_is_fail_closed():
+    authorization = json.loads(
+        (ROOT / "release-authorization.json").read_text(encoding="utf-8")
+    )
+    assert authorization == {
+        "approved": False,
+        "tag": None,
+        "channel": None,
+        "prerelease": None,
+    }
+
+
+def test_startup_update_scheduling_remains_disabled():
+    tree = ast.parse((BLENDER / "update_ops.py").read_text(encoding="utf-8"))
+    function = next(
+        node
+        for node in tree.body
+        if isinstance(node, ast.FunctionDef)
+        and node.name == "schedule_startup_update_check"
+    )
+    assert len(function.body) == 1
+    assert isinstance(function.body[0], ast.Return)
+    assert isinstance(function.body[0].value, ast.Constant)
+    assert function.body[0].value.value is None
 
 
 def test_addon_preferences_do_not_store_transport_strings_in_rna():
@@ -150,6 +206,13 @@ def test_update_selection_respects_channel_version_platform_and_blender():
                 "platforms": ["windows-x64"],
                 "release_page_url": "https://example.invalid/1.0.0",
             },
+            {
+                "version": "0.4.0-dev.1",
+                "channel": "development",
+                "blender_version_min": "4.2.0",
+                "platforms": ["windows-x64"],
+                "release_page_url": "https://example.invalid/0.4.0-dev.1",
+            },
         ],
     }
 
@@ -171,6 +234,15 @@ def test_update_selection_respects_channel_version_platform_and_blender():
     )
     assert beta["version"] == "0.3.0-beta.1"
 
+    development = updates.select_latest_compatible(
+        payload,
+        current_version="0.2.1",
+        blender_version=(5, 2, 1),
+        platform_name="windows-x64",
+        selected_channel="development",
+    )
+    assert development["version"] == "0.4.0-dev.1"
+
     too_old = updates.select_latest_compatible(
         payload,
         current_version="0.2.1",
@@ -191,6 +263,31 @@ def test_update_selection_respects_channel_version_platform_and_blender():
 
     with pytest.raises(updates.UpdateIndexError):
         updates.validate_update_index({"schema_version": 99, "releases": []})
+
+
+def test_current_version_never_selects_older_production_stable():
+    updates = _load_module("cutbridge_updates_no_downgrade_test", BLENDER / "updates.py")
+    version_module = _load_module("cutbridge_version_no_downgrade_test", BLENDER / "version.py")
+    payload = {
+        "schema_version": 1,
+        "releases": [
+            {
+                "version": "0.2.3",
+                "channel": "stable",
+                "blender_version_min": "4.2.0",
+                "release_page_url": "https://example.invalid/0.2.3",
+            }
+        ],
+    }
+
+    for channel in ("stable", "beta", "development"):
+        assert updates.select_latest_compatible(
+            payload,
+            current_version=version_module.__version__,
+            blender_version=(5, 2, 1),
+            platform_name="windows-x64",
+            selected_channel=channel,
+        ) is None
 
 
 def test_release_builder_produces_expected_artifacts(tmp_path):

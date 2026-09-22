@@ -2,7 +2,25 @@
 
 All notable CutBridge changes are tracked here.
 
-## [0.2.3] - Unreleased
+## [0.2.4] - Unreleased
+
+### Changed
+- Started active development from the exact released v0.2.3 `main` history so the release commits reconcile safely back into protected `develop`.
+- Restored `release-authorization.json` to its fail-closed development state; v0.2.4 is not authorized for publication.
+- Wired the manual Blender update checker to the verified production notification index hosted separately from the source repository.
+
+### Fixed
+- Shortened every Blender manifest permission description to the current 64-character validator limit without changing its meaning.
+- Added regression coverage for version synchronization, manifest permission lengths, production endpoint identity, no-downgrade selection, fail-closed authorization, and disabled startup scheduling.
+
+### Safety
+- Automatic startup update checking remains disabled following Issue #82.
+- Stable v0.2.3, its tag, GitHub Release, assets, and production distribution entry remain immutable.
+- S14B representative Japanese target-user validation remains `NOT_EXECUTED`.
+
+## [0.2.3] - 2026-09-21
+
+Stable v0.2.3 was published from `1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f` and independently mirrored to the verified production distribution. Historical milestone notes below retain the fail-closed boundary that applied before publication.
 
 ### S12/S13 — Release-target validation and native revision repair
 

@@ -8,36 +8,35 @@ def _read(relative: str) -> str:
     return (ROOT / relative).read_text(encoding="utf-8")
 
 
-def test_readme_tracks_narrowed_v023_japanese_claim_without_fake_s14b_pass():
+def test_readme_tracks_released_v023_and_fail_closed_v024_baseline():
     text = _read("README.md")
     assert "S12" in text and "S13" in text
     assert "9c99ae23ccd8c47fdc0fffbd05b99e1326f2ea95" in text
     assert "S14A" in text and "S14B" in text
     assert "S14B remains NOT_EXECUTED" in text
-    assert "The deliberate `develop` → `main` promotion is complete through PR #74" in text
-    assert "049081f0fe3d3e74d77db807910c2e0fff56fe73" in text
-    assert "release-facing Japanese claim scope is deliberately narrowed" in text
+    assert "Stable v0.2.3 remains published and immutable" in text
+    assert "v0.2.4 — unreleased development baseline" in text
+    assert "1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f" in text
+    assert "https://unn0wn002.github.io/cutbridge-distribution/cutbridge/release-index.json" in text
+    assert "automatic startup update scheduling remains disabled" in text
     assert "no representative Japanese-user usability claim" in text
-    assert "UNRELEASED / PUBLICATION BLOCKED" in text
+    assert "v0.2.4 UNRELEASED / PUBLICATION NOT AUTHORIZED" in text
     assert '"approved": false' in text
-    assert "There is currently no public GitHub Release" in text
-    assert "049081f0fe3d3e74d77db807910c2e0fff56fe73" in text
-    assert "release-tag eligibility validation" in text
     assert "S12 — End-to-End Blender → package → After Effects validation harness" not in text
 
 
-def test_completion_status_reconciles_s12_s13_without_release_claim():
+def test_completion_status_reconciles_released_v023_and_v024_development():
     text = _read("docs/COMPLETION_STATUS.md")
     assert "Integrated product/validation sessions:** S1–S13" in text
     assert "S12" in text and "PASS" in text
     assert "S13" in text and "PASS" in text
     assert "0a86d9a0605e1dd9714ef35a547693de76f714f4" in text
     assert "9c99ae23ccd8c47fdc0fffbd05b99e1326f2ea95" in text
-    assert "NOT RELEASE READY" in text
+    assert "v0.2.3 is released, published, independently verified" in text
+    assert "v0.2.4 source baseline is **UNRELEASED / NOT AUTHORIZED FOR PUBLICATION**" in text
+    assert "1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f" in text
+    assert "635c1384af2649d4ce49705cce41f98826a861cc" in text
     assert "S14" in text
-    assert "**v0.2.3 S14 claim-scope decision** through narrowing" in text
-    assert "promotion PR #74: CLOSED / merged" in text
-    assert "049081f0fe3d3e74d77db807910c2e0fff56fe73" in text
     assert "S14B remains NOT_EXECUTED" in text
 
 
@@ -151,6 +150,9 @@ def test_update_architecture_separates_public_source_from_distribution():
     text = _read("docs/UPDATE_ARCHITECTURE.md")
     assert "currently public and protected by branch/tag rulesets" in text
     assert "Repository visibility does not make the GitHub source repository the client update server" in text
+    assert "https://unn0wn002.github.io/cutbridge-distribution/cutbridge/release-index.json" in text
+    assert "https://unn0wn002.github.io/cutbridge-distribution/blender/index.json" in text
+    assert "Automatic startup update scheduling remains disabled" in text
     assert "Do not use source-repository visibility as an update-distribution mechanism" in text
     assert "private source repository" not in text
 

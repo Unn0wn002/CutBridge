@@ -4,9 +4,9 @@
 
 It standardizes cut metadata, render-pass packaging, versioning, `cutbridge.json` handoff, After Effects project setup, QC, controlled revision handling, Japanese-first workflow UX, Studio Presets, and an optional bounded Camera/3D Null handoff.
 
-CutBridge is designed for Japanese animation and content-production workflows, with a Japanese-first UI and deterministic English fallback. For v0.2.3, this is an implementation/design statement rather than a representative-user usability claim: S14B target-user validation remains NOT_EXECUTED. CutBridge is **not** a renderer, toon shader, animation generator, general scene exporter, or asset manager. Its job is to make the Blender → compositing handoff more repeatable, inspectable, and safer.
+CutBridge is designed for Japanese animation and content-production workflows, with a Japanese-first UI and deterministic English fallback. This is an implementation/design statement rather than a representative-user usability claim: S14B target-user validation remains NOT_EXECUTED. CutBridge is **not** a renderer, toon shader, animation generator, general scene exporter, or asset manager. Its job is to make the Blender → compositing handoff more repeatable, inspectable, and safer.
 
-**v0.2.3 — unreleased development candidate.** There is currently no public GitHub Release. Do not treat this repository state as a stable published release.
+**v0.2.4 — unreleased development baseline.** Stable v0.2.3 remains published and immutable. No v0.2.4 release is authorized or published.
 
 ## What CutBridge does
 
@@ -49,19 +49,15 @@ CutBridge currently provides:
 
 ## Current development status
 
-Engineering/native-host validation is complete through **S13**. **S14A**, the Japanese target-user validation protocol and fail-closed evidence tooling, is integrated. For v0.2.3, the release-facing Japanese claim scope is deliberately narrowed instead of claiming S14B completion. **S14B remains NOT_EXECUTED** and is reserved for a future release or claim that needs representative Japanese target-user usability evidence.
+Engineering/native-host validation is complete through **S13**. **S14A**, the Japanese target-user validation protocol and fail-closed evidence tooling, is integrated. The v0.2.3 release-facing Japanese claim scope was deliberately narrowed instead of claiming S14B completion. **S14B remains NOT_EXECUTED** and is reserved for a future release or claim that needs representative Japanese target-user usability evidence.
 
-The deliberate `develop` → `main` promotion is complete through PR #74.
+Stable v0.2.3 was published from protected `main` at `1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f`; tag `v0.2.3` points to that exact commit. Its verified production distribution is separate from the source repository:
 
-Current promotion state:
+- release index: `https://unn0wn002.github.io/cutbridge-distribution/cutbridge/release-index.json`;
+- Blender repository: `https://unn0wn002.github.io/cutbridge-distribution/blender/index.json`;
+- distribution commit: `635c1384af2649d4ce49705cce41f98826a861cc`.
 
-- protected `develop`: `501f9bd6b6c69cf8859f96f0fd6441afc48c0b50`;
-- protected `main`: `049081f0fe3d3e74d77db807910c2e0fff56fe73`;
-- fresh pre-promotion PR CI `35511056270` attempt 2: PASS;
-- post-promotion `main` CI `35513361337`: PASS;
-- required jobs: `static-validation` and `blender-52-rna-runtime`.
-
-Promotion does not authorize publication. `release-authorization.json` remains fail-closed.
+The v0.2.4 development baseline starts from that released `main` history so it can reconcile safely into protected `develop`. `release-authorization.json` is restored to fail-closed. The manual update checker uses the verified production notification index; automatic startup update scheduling remains disabled after Issue #82.
 
 The exact S13F native-tested source was:
 
@@ -304,7 +300,7 @@ See [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md).
 
 ## Release status
 
-**UNRELEASED / PUBLICATION BLOCKED.**
+**v0.2.4 UNRELEASED / PUBLICATION NOT AUTHORIZED.** Stable v0.2.3 remains released and immutable.
 
 `release-authorization.json` remains deliberately fail-closed:
 
@@ -317,13 +313,13 @@ See [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md).
 }
 ```
 
-Remaining release work includes:
+Before any v0.2.4 publication:
 
-1. complete the controlled negative and authorized-current-main release-tag eligibility validation tracked in issue #18;
-2. explicitly authorize one exact current-main/tag/channel/prerelease tuple only after that validation;
-3. publish only through the guarded Release workflow;
-4. independently verify published artifacts/checksums/content;
-5. verify the production update/distribution endpoint separately from GitHub source hosting.
+1. merge the reviewed baseline through protected `develop` only after authoritative CI;
+2. complete applicable native validation for an exact future candidate;
+3. explicitly authorize one exact current-main/tag/channel/prerelease tuple only at release time;
+4. publish only through the guarded Release workflow;
+5. independently verify published artifacts before adding a production distribution entry.
 
 For v0.2.3, S14B is **not** listed as a prerequisite because the release-facing claim is explicitly narrowed. The release must not state or imply representative Japanese-user validation, customer validation, proven ease of use, broad Japanese production usability, or S14B PASS.
 
@@ -335,8 +331,8 @@ The source repository is now public and protected by active branch/tag rulesets.
 S1–S13  ✅ engineering/native validation completed for documented scope
 S14A    ✅ Japanese target-user protocol + evidence tooling integrated
 S14B    ⏸ NOT_EXECUTED; deferred for broader future usability claims
-v0.2.3  ✅ Japanese release-facing claim scope narrowed
-Release ⛔ not authorized
+v0.2.3  ✅ stable release published; production D1 deployed
+v0.2.4  🛠 unreleased development baseline; authorization false
 ```
 
 S14 target-user evidence must come from real representative participants. CI, localization, owner testing, simulated participants, or AI-generated feedback do not count as real target-user validation. Accordingly, v0.2.3 makes no representative Japanese-user usability claim.

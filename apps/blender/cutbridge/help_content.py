@@ -62,13 +62,13 @@ HELP_CONTENT = {
     },
     "sequence_format": {
         "EN": ("Sequence Format", (
-            ("What is this?", "The image-sequence format used by the current v0.2.3 package architecture."),
+            ("What is this?", "The image-sequence format used by the current v0.2.4 package architecture."),
             ("Current behavior", "One selected format applies to every enabled pass in the package."),
             ("Recommended", "PNG is practical for normal image passes; OpenEXR is recommended when accurate Depth data matters."),
             ("Limitation", "Per-pass format overrides are not part of the current stable manifest contract."),
         )),
         "JA": ("連番形式", (
-            ("これは何？", "現在のv0.2.3パッケージ構成で使用する画像連番形式です。"),
+            ("これは何？", "現在のv0.2.4パッケージ構成で使用する画像連番形式です。"),
             ("現在の動作", "選択した1つの形式が、パッケージ内の有効な全パスに適用されます。"),
             ("推奨", "通常の画像パスはPNGが扱いやすく、正確なDepthが必要な場合はOpenEXRを推奨します。"),
             ("制限", "パスごとの形式上書きは、現在の安定したmanifest契約には含まれていません。"),

@@ -226,7 +226,7 @@ def main() -> int:
     parser.add_argument(
         "--tag",
         required=True,
-        help="Release tag, e.g. v0.2.3 or v0.2.3-rc.1",
+        help="Release tag, e.g. v0.2.4 or v0.2.4-rc.1",
     )
     parser.add_argument("--output", default="dist", help="Output directory")
     args = parser.parse_args()
