@@ -78,6 +78,18 @@ def test_ae_accepts_current_manifest_contract():
     assert result == []
 
 
+def test_manifest_schema_accepts_legacy_and_optional_per_pass_format():
+    from jsonschema import Draft202012Validator
+
+    schema = json.loads((ROOT / "packages/shared/cutbridge-manifest.schema.json").read_text(encoding="utf-8"))
+    legacy = _manifest()
+    Draft202012Validator(schema).validate(legacy)
+
+    current = _manifest()
+    current["passes"][0]["image_format"] = "PNG"
+    Draft202012Validator(schema).validate(current)
+
+
 def test_ae_accepts_optional_per_pass_format_and_rejects_extension_mismatch():
     manifest = _manifest()
     manifest["passes"][0]["image_format"] = "PNG"
