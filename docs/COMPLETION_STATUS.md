@@ -13,7 +13,7 @@ Stable tag `v0.2.3` and protected `main` both resolve to `1fd2f67935600b06ef9d53
 Current repository boundaries:
 
 - repository visibility: public;
-- protected `develop`: `f39b9f41c66c8abc0f895066675d80b0747c6053`;
+- protected `develop`: active v0.2.4 integration branch; integration-sweep baseline before this documentation reconciliation: `f2abcd814fde2bc8a2a45ba0c897fec1544f8e55`;
 - protected `main`: `1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f`;
 - stable tag `v0.2.3`: exact protected-main SHA above;
 - v0.2.3 GitHub Release: published, non-prerelease, four verified assets;
@@ -25,7 +25,7 @@ Current repository boundaries:
 - no v0.2.4 tag, release authorization, GitHub Release, or production distribution entry exists;
 - automatic startup update scheduling remains disabled following Issue #82;
 - S14 Issue #71: representative Japanese target-user execution remains NOT_EXECUTED; v0.2.3 claim scope is narrowed so no representative-user usability claim is made;
-- Issue #80: OPEN post-v0.2.3 design task for per-pass output formats, not a v0.2.3 release blocker.
+- Issue #80: COMPLETED for v0.2.4; PR #93 per-pass output formats passed native Blender/After Effects acceptance (10/10 criteria), merged to protected `develop`, and post-merge CI passed.
 
 ## Current verified engineering state
 
@@ -111,12 +111,14 @@ Authoritative promotion evidence is green: exact promotion-head PR CI `355110562
 
 Recorded results include:
 
-- static validation: **133 passed + 2 subtests**;
-- deterministic v0.2.3 package/checksum simulation: PASS;
+Current exact-head v0.2.4 integration baseline evidence on `f2abcd814fde2bc8a2a45ba0c897fec1544f8e55`:
+- static validation: **147 passed + 2 subtests**;
+- deterministic v0.2.4 package/checksum simulation: PASS;
 - S6/S7/S8/S10C/S13 regression checks: PASS;
 - ExtendScript syntax checks: PASS;
 - Blender 5.2.1 RNA registration lifecycle: PASS;
-- complete Blender/runtime pytest suite: **289 passed, 72 warnings + 2 subtests**.
+- complete Blender/runtime pytest suite: **307 passed, 72 warnings + 2 subtests**;
+- authoritative post-merge push CI run `35756924486`: PASS for `static-validation` and `blender-52-rna-runtime`.
 
 Known automated warning debt includes Blender `Scene.use_nodes` deprecation ahead of Blender 6.0 and GitHub Actions runtime deprecation messages from pinned upstream actions. These are not recorded as current v0.2.3 functional blockers, but remain technical debt.
 
@@ -164,17 +166,19 @@ The v0.2.3 governance, exact authorization, guarded publication, downloaded-asse
 
 The v0.2.4 development boundary is fail-closed:
 
-1. reconcile released `main` ancestry through a reviewed PR to protected `develop`;
-2. keep `release-authorization.json` unapproved;
-3. validate the 0.2.4 package with Blender's standalone extension validator;
-4. verify manual notification checks do not offer the older production v0.2.3 as an update;
+1. released `main` ancestry reconciliation is complete through merged PR #92;
+2. PR #93 per-pass output formats and Issue #80 native acceptance are complete and integrated;
+3. PR #94 release-tag eligibility push-trigger repair is complete and integrated;
+4. keep `release-authorization.json` unapproved;
 5. keep automatic startup update scheduling disabled and preserve the Issue #82 panel-readonly regression;
-6. do not publish a v0.2.4 tag, GitHub Release, or production distribution entry from this baseline task.
+6. freeze an exact v0.2.4 candidate only after current-facing documentation and CI are reconciled;
+7. run a bounded combined native Blender/After Effects release-candidate regression on the exact frozen candidate;
+8. do not publish a v0.2.4 tag, GitHub Release, or production distribution entry before the later explicit release path.
 
 ## Non-blocking post-v0.2.3 work
 
-Issue #80 remains intentionally outside the v0.2.3 release scope. Per-pass output formats require coordinated manifest/preset/Blender/AE compatibility work and must not be half-implemented into the current release candidate.
+Issue #80 was intentionally outside the v0.2.3 release scope and is now completed for v0.2.4. The coordinated manifest/preset/Blender/AE per-pass implementation was integrated through PR #93 with native acceptance evidence and green post-merge CI.
 
 ## Recommended immediate phase
 
-Complete the v0.2.4 baseline branch, native Blender validation, and authoritative PR CI into protected `develop`. Stop before merge pending explicit owner authorization. S14B remains NOT_EXECUTED and may be pursued later only if broader Japanese target-user usability claims are desired.
+Complete this v0.2.4 integration-sweep reconciliation with exact-head CI. If green, freeze an exact v0.2.4 candidate SHA and run the bounded combined native release-candidate regression before any promotion or release authorization. S14B remains NOT_EXECUTED and is only required if broader Japanese target-user usability claims are desired.
