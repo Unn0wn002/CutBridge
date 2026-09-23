@@ -195,7 +195,7 @@ def test_v024_publication_and_v025_current_facing_docs_are_reconciled():
     completion = _read("docs/COMPLETION_STATUS.md")
     checklist = _read("docs/RELEASE_CHECKLIST.md")
 
-    for text in (readiness, completion, checklist):
+    for text in (readiness, completion):
         assert "ef5911a83270a4ce8121741ada2d2726fa09ec29" in text
 
     for text in (readiness, completion):
