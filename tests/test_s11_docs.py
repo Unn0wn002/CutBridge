@@ -134,6 +134,21 @@ def test_after_effects_install_guide_avoids_blanket_certification():
     assert "does **not** certify every After Effects 2024–2026" in text
 
 
+def test_after_effects_install_guide_is_release_state_neutral():
+    text = _read("apps/after-effects/INSTALL.md")
+    lowered = text.lower()
+
+    assert "development packages" not in lowered
+    assert "first development test" not in lowered
+    assert "normal development use" not in lowered
+    assert "does **not** authorize publication of" not in text
+    assert "remains published and immutable" not in text
+    assert "release-metadata.json" in text
+    assert "SHA256SUMS.txt" in text
+    assert "GitHub Release page" in text
+    assert "intentionally does not encode whether a particular tag is current, authorized, or published" in text
+
+
 def test_compatibility_scopes_native_ae_evidence_to_tested_host():
     text = _read("docs/COMPATIBILITY.md")
     assert "After Effects 2026 Build 87 (`26.3x87`) on Windows 11" in text
