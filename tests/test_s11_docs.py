@@ -104,8 +104,8 @@ def test_technical_debt_uses_current_release_baseline_and_evidence_limits():
     text = _read("docs/TECHNICAL_DEBT.md")
     assert "S1–S13 validated product baseline" in text
     assert "stable v0.2.3: released and immutable" in text
-    assert "active development: `0.2.4`" in text
-    assert "release authorization: `approved: false`" in text
+    assert "active release line: `0.2.4`, promoted to protected `main` through PR #97" in text
+    assert "release authorization on this branch: exact tuple `v0.2.4` / `stable` / non-prerelease is `approved: true`" in text
     assert "publication governance issue #18: OPEN" in text
     assert "307 tests + 2 subtests" in text
     assert "72 deprecation warnings" in text
