@@ -6,7 +6,7 @@ It standardizes cut metadata, render-pass packaging, versioning, `cutbridge.json
 
 CutBridge is designed for Japanese animation and content-production workflows, with a Japanese-first UI and deterministic English fallback. This is an implementation/design statement rather than a representative-user usability claim: S14B target-user validation remains NOT_EXECUTED. CutBridge is **not** a renderer, toon shader, animation generator, general scene exporter, or asset manager. Its job is to make the Blender → compositing handoff more repeatable, inspectable, and safer.
 
-**v0.2.4 — promoted / release-authorized stable candidate; not yet tagged or published.** Stable v0.2.3 remains published and immutable. The exact v0.2.4 tuple is authorized as `v0.2.4` / `stable` / non-prerelease, but publication remains blocked until release-tag eligibility passes on the exact authorized current `main`.
+**v0.2.5 — unreleased development baseline.** GitHub Release v0.2.4 is published and immutable. Production distribution intentionally remains on v0.2.3 because the immutable v0.2.4 After Effects ZIP contains stale pre-publication `INSTALL.md` wording tracked in Issue #99. The source fix is included in v0.2.5 development; no v0.2.5 release is authorized or published.
 
 ## What CutBridge does
 
@@ -51,13 +51,13 @@ CutBridge currently provides:
 
 Engineering/native-host validation is complete through **S13**. **S14A**, the Japanese target-user validation protocol and fail-closed evidence tooling, is integrated. The v0.2.3 release-facing Japanese claim scope was deliberately narrowed instead of claiming S14B completion. **S14B remains NOT_EXECUTED** and is reserved for a future release or claim that needs representative Japanese target-user usability evidence.
 
-Stable v0.2.3 was published from protected `main` at `1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f`; tag `v0.2.3` points to that exact commit. Its verified production distribution is separate from the source repository:
+GitHub Release v0.2.4 was published from protected `main` at `a393e409d19445c4090460b7e7b4716779161fa4`; tag `v0.2.4` points to that exact commit. Its published assets were independently verified. The separate production distribution intentionally remains on verified v0.2.3 while Issue #99 is carried forward through the v0.2.5 patch line:
 
 - release index: `https://unn0wn002.github.io/cutbridge-distribution/cutbridge/release-index.json`;
 - Blender repository: `https://unn0wn002.github.io/cutbridge-distribution/blender/index.json`;
 - distribution commit: `635c1384af2649d4ce49705cce41f98826a861cc`.
 
-The v0.2.4 line was promoted through protected `develop` → `main` after exact-head CI and bounded native candidate validation. `release-authorization.json` now authorizes only the exact stable tuple `v0.2.4` / `stable` / `prerelease: false`; there is still no v0.2.4 tag, GitHub Release, or production distribution entry. The manual update checker uses the verified production notification index; automatic startup update scheduling remains disabled after Issue #82.
+The v0.2.5 development baseline reconciles the published v0.2.4 `main` history with the Issue #99 source fix from protected `develop`. Product identity is bumped to 0.2.5 and `release-authorization.json` is restored to fail-closed. The manual update checker continues to use the verified production notification index; automatic startup update scheduling remains disabled after Issue #82.
 
 The exact S13F native-tested source was:
 
@@ -300,7 +300,7 @@ See [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md).
 
 ## Release status
 
-**v0.2.4 UNRELEASED / PUBLICATION NOT AUTHORIZED.** Stable v0.2.3 remains released and immutable.
+**v0.2.5 UNRELEASED / PUBLICATION NOT AUTHORIZED.** GitHub Release v0.2.4 remains published and immutable. Production distribution remains on v0.2.3 pending a corrected post-v0.2.4 release.
 
 `release-authorization.json` remains deliberately fail-closed:
 
@@ -313,7 +313,7 @@ See [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md).
 }
 ```
 
-Before any v0.2.4 publication:
+Before any v0.2.5 publication:
 
 1. merge the reviewed baseline through protected `develop` only after authoritative CI;
 2. complete applicable native validation for an exact future candidate;
@@ -331,8 +331,9 @@ The source repository is now public and protected by active branch/tag rulesets.
 S1–S13  ✅ engineering/native validation completed for documented scope
 S14A    ✅ Japanese target-user protocol + evidence tooling integrated
 S14B    ⏸ NOT_EXECUTED; deferred for broader future usability claims
-v0.2.3  ✅ stable release published; production D1 deployed
-v0.2.4  🛠 unreleased development baseline; authorization false
+v0.2.3  ✅ production distribution remains deployed
+v0.2.4  ✅ GitHub stable release published; production distribution held for Issue #99
+v0.2.5  🛠 patch-development baseline; authorization false
 ```
 
 S14 target-user evidence must come from real representative participants. CI, localization, owner testing, simulated participants, or AI-generated feedback do not count as real target-user validation. Accordingly, v0.2.3 makes no representative Japanese-user usability claim.
