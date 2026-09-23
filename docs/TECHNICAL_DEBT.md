@@ -7,9 +7,10 @@ S12/S13 closeout reference points:
 - PR #69 state-reconciliation merge: `fbfe83324808c9051e88e845d7ffe225bd56530f`;
 - S13F runtime integration baseline: `0a86d9a0605e1dd9714ef35a547693de76f714f4`;
 - stable v0.2.3: released and immutable at main/tag SHA `1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f`;
-- active development: `0.2.4`;
-- release authorization: `approved: false`;
-- publication governance issue #18: OPEN; its latest live evidence records completed v0.2.3 publication, independent asset verification, and production D1 deployment.
+- stable v0.2.4: published and independently verified on GitHub at main/tag SHA `a393e409d19445c4090460b7e7b4716779161fa4`;
+- active development: `0.2.5`; Issue #99 source remediation included; release authorization is `approved: false`;
+- production distribution: intentionally remains on v0.2.3 until a corrected post-v0.2.4 release is published and verified;
+- publication governance issue #18: CLOSED / COMPLETED; Issue #99 is the separate release-hygiene/distribution hold.
 
 ## Priority A — Blender 6.0 compositor API migration
 
@@ -108,7 +109,7 @@ The v0.2.3 governance path is complete:
 - the v0.2.3 GitHub Release and downloaded artifacts were independently verified;
 - production D1 is deployed separately at `Unn0wn002/cutbridge-distribution` commit `635c1384af2649d4ce49705cce41f98826a861cc`.
 
-Issue #18 remains open as the live governance/release evidence log. For active v0.2.4 development, authorization is fail-closed and no tag, GitHub Release, or distribution entry exists. Subsequent releases must repeat exact-candidate authorization, protected tag creation, independent asset verification, and additive distribution publication.
+Issue #18 is closed as completed after the authorized v0.2.4 exact-current-main tag/publication path and independent asset verification passed. Issue #99 remains open because the immutable published v0.2.4 AE ZIP contains stale release-state wording; its source fix is carried by active v0.2.5 development. Subsequent releases must repeat exact-candidate authorization, protected tag creation, independent asset verification, and additive distribution publication.
 
 ## Priority B — Japanese target-user evidence
 

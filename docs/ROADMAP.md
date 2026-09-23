@@ -1,6 +1,6 @@
 # CutBridge Roadmap
 
-Status reconciled through the v0.2.4 source baseline. Stable v0.2.3 publication and production D1 distribution are complete; v0.2.4 is the active unreleased development baseline. Session numbers describe bounded product work and do not guarantee public release numbers.
+Status reconciled through the v0.2.4 GitHub publication and Issue #99 remediation path. v0.2.4 is published and independently verified on GitHub at `a393e409d19445c4090460b7e7b4716779161fa4`; production distribution remains on v0.2.3 because the immutable v0.2.4 AE package contains stale release-state wording. v0.2.5 is the active unreleased patch-development baseline with fail-closed authorization. Session numbers describe bounded product work and do not guarantee public release numbers.
 
 ## Completed foundation — S1–S9
 
@@ -142,7 +142,7 @@ Release engineering can proceed in parallel only where it does not weaken govern
 
 ### B. Repository governance
 
-Issue #18 remains **OPEN** as the live governance/release evidence log. Its latest evidence records the v0.2.3 authorized path, publication, independent artifact verification, and production D1 deployment as complete.
+Issue #18 is **CLOSED / COMPLETED** after repository-level negative enforcement, the authorized exact-current-main v0.2.4 positive path, GitHub Release publication, and independent asset verification were all recorded. Issue #99 is the separate release-hygiene/distribution hold.
 
 Configured and verified:
 
@@ -151,13 +151,15 @@ Configured and verified:
 - authoritative CI required for protected promotion/integration;
 - admin-controlled `v*.*.*` release-tag mutation;
 - no-bypass `release-tag-eligibility` required check for matching tag creation;
-- v0.2.3 authorization and publication completed on exact protected `main`;
-- active v0.2.4 release authorization is fail-closed.
+- v0.2.3 authorization/publication and production D1 deployment completed;
+- v0.2.4 authorization/tag/GitHub Release publication completed on exact protected `main`;
+- active v0.2.5 release authorization is fail-closed.
 
 Future release work:
 
 - repeat the exact-current-main authorization and eligibility path for each subsequent release;
-- keep v0.2.4 publication blocked while authorization is false;
+- keep v0.2.5 publication blocked while authorization is false;
+- keep production distribution on v0.2.3 until a corrected post-v0.2.4 release passes its own publication and independent-verification gates;
 - preserve the existing protected-branch/tag controls and evidence trail.
 
 ### C. Historical v0.2.3 `develop` → `main` promotion
@@ -174,11 +176,11 @@ Future release work:
 
 ### D. Exact release authorization
 
-**v0.2.3 COMPLETE / VERIFIED.** The exact `v0.2.3` / stable / non-prerelease tuple was authorized only for current `main`. Active v0.2.4 authorization is false. Future authorization must remain exact, non-reusable, and limited to a fully validated current-main candidate.
+**v0.2.3 and v0.2.4 authorization paths COMPLETE / VERIFIED.** The exact v0.2.4 stable/non-prerelease tuple was consumed only on current-main release SHA `a393e409d19445c4090460b7e7b4716779161fa4`. Active v0.2.5 authorization is false. Future authorization must remain exact, non-reusable, and limited to a fully validated current-main candidate.
 
 ### E. Publication and distribution verification
 
-**v0.2.3 COMPLETE / VERIFIED.** Publication, downloaded-asset checks, metadata verification, and the separate production D1 endpoint are complete at distribution commit `635c1384af2649d4ce49705cce41f98826a861cc`:
+**v0.2.4 GITHUB PUBLICATION / ASSET VERIFICATION COMPLETE; PRODUCTION DISTRIBUTION HELD.** v0.2.4 was published and independently verified on exact SHA `a393e409d19445c4090460b7e7b4716779161fa4`. Production D1 intentionally remains on verified v0.2.3 at distribution commit `635c1384af2649d4ce49705cce41f98826a861cc` because Issue #99 identified stale release-state wording in the immutable v0.2.4 AE package:
 
 - notification index: `https://unn0wn002.github.io/cutbridge-distribution/cutbridge/release-index.json`;
 - Blender repository: `https://unn0wn002.github.io/cutbridge-distribution/blender/index.json`;

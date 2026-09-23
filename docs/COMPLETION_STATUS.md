@@ -2,27 +2,28 @@
 
 ## Current state — 23 September 2026
 
-CutBridge v0.2.3 is released, published, independently verified, and mirrored to the separate production distribution. The active v0.2.4 source baseline is **UNRELEASED / NOT AUTHORIZED FOR PUBLICATION**. S14B representative-user validation remains NOT_EXECUTED and is not claimed as complete.
+CutBridge v0.2.4 is **PUBLISHED / VERIFIED ON GITHUB** at exact main/tag SHA `a393e409d19445c4090460b7e7b4716779161fa4`. Production distribution remains intentionally on v0.2.3 because Issue #99 found stale pre-publication wording in the immutable v0.2.4 AE package. v0.2.5 is the **UNRELEASED / NOT AUTHORIZED** patch-development baseline carrying the source fix. S14B representative-user validation remains NOT_EXECUTED and is not claimed as complete.
 
 - **Integrated product/validation sessions:** S1–S13.
 - Historical S13 runtime integration baseline: `0a86d9a0605e1dd9714ef35a547693de76f714f4`.
 - Historical final native-tested S13F source: `9c99ae23ccd8c47fdc0fffbd05b99e1326f2ea95`.
 
-Stable tag `v0.2.3` and protected `main` both resolve to `1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f`. The v0.2.4 working branch deliberately starts from that exact released main history so its four release-side commits reconcile back into active development through a PR to protected `develop`.
+Stable tag `v0.2.3` remains immutable at `1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f`. Stable tag `v0.2.4` and protected `main` resolve to `a393e409d19445c4090460b7e7b4716779161fa4`; Release workflow `35843821702` published the verified GitHub release. The v0.2.5 baseline deliberately reconciles that release history with PR #100 / Issue #99 source remediation.
 
 Current repository boundaries:
 
 - repository visibility: public;
-- protected `develop`: `ef5911a83270a4ce8121741ada2d2726fa09ec29`; this is also the frozen `candidate/v0.2.4-beta.1` source SHA;
-- protected `main`: `1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f`;
-- stable tag `v0.2.3`: exact protected-main SHA above;
-- v0.2.3 GitHub Release: published, non-prerelease, four verified assets;
+- protected `main` / stable tag `v0.2.4`: `a393e409d19445c4090460b7e7b4716779161fa4`;
+- v0.2.4 GitHub Release: published, non-prerelease, latest; Release run `35843821702` SUCCESS;
+- frozen runtime candidate `candidate/v0.2.4-beta.1`: `ef5911a83270a4ce8121741ada2d2726fa09ec29`;
+- v0.2.5 development line: product identity 0.2.5, Issue #99 source fix included, release authorization fail-closed;
+- stable tag `v0.2.3`: immutable historical release;
 - production distribution commit: `635c1384af2649d4ce49705cce41f98826a861cc`;
 - production notification index: `https://unn0wn002.github.io/cutbridge-distribution/cutbridge/release-index.json`;
 - production Blender repository: `https://unn0wn002.github.io/cutbridge-distribution/blender/index.json`;
 - four active governance rulesets protect `main`, `develop`, release-tag mutation, and no-bypass release-tag eligibility;
-- `release-authorization.json`: `approved: false`;
-- no v0.2.4 tag, release authorization, GitHub Release, or production distribution entry exists;
+- `release-authorization.json` for active v0.2.5 development: `approved: false` with null tag/channel/prerelease;
+- v0.2.4 tag/GitHub Release exist and are immutable; no v0.2.4 production distribution entry exists because Issue #99 triggered a distribution hold;
 - automatic startup update scheduling remains disabled following Issue #82;
 - S14 Issue #71: representative Japanese target-user execution remains NOT_EXECUTED; v0.2.3 claim scope is narrowed so no representative-user usability claim is made;
 - Issue #80: COMPLETED for v0.2.4; PR #93 per-pass output formats passed native Blender/After Effects acceptance (10/10 criteria), merged to protected `develop`, and post-merge CI passed;
@@ -179,17 +180,24 @@ Later documentation/governance commits through promotion head `501f9bd6b6c69cf88
 
 The v0.2.3 governance, exact authorization, guarded publication, downloaded-asset verification, and separate production-distribution verification gates are complete. Released v0.2.3 remains immutable.
 
-The v0.2.4 development boundary is fail-closed:
+The v0.2.4 GitHub release path is complete:
 
-1. released `main` ancestry reconciliation is complete through merged PR #92;
-2. PR #93 per-pass output formats and Issue #80 native acceptance are complete and integrated;
-3. PR #94 release-tag eligibility push-trigger repair is complete and integrated;
-4. keep `release-authorization.json` unapproved;
-5. keep automatic startup update scheduling disabled and preserve the Issue #82 panel-readonly regression;
-6. exact v0.2.4 candidate freeze is complete at `ef5911a83270a4ce8121741ada2d2726fa09ec29`;
-7. bounded combined native Blender/After Effects release-candidate regression is complete for the recorded tested scope, including the focused Issue #82 clean-exit rerun;
-8. reconcile promotion-facing documentation and obtain green exact-head CI before any protected `develop` → `main` promotion;
-9. do not publish a v0.2.4 tag, GitHub Release, or production distribution entry before the later explicit release path.
+1. exact v0.2.4 candidate freeze and bounded native validation completed;
+2. protected promotion, exact stable authorization, and current-main release-tag eligibility completed;
+3. tag `v0.2.4` was created only on exact authorized main `a393e409d19445c4090460b7e7b4716779161fa4`;
+4. Release workflow `35843821702` completed SUCCESS and published the stable GitHub Release;
+5. independent asset verification passed for both ZIPs, checksums, metadata, archive integrity, version identity, and licenses;
+6. Issue #99 records a user-facing packaged AE documentation defect; published v0.2.4 remains immutable;
+7. production distribution therefore remains on v0.2.3 rather than mirroring v0.2.4.
+
+The v0.2.5 development boundary is fail-closed:
+
+1. reconcile published v0.2.4 main ancestry with the PR #100 Issue #99 source fix;
+2. use product version 0.2.5 across Blender/After Effects packaging identity;
+3. keep `release-authorization.json` unapproved;
+4. keep automatic startup update scheduling disabled;
+5. require exact-head CI on the reconciled protected-development baseline before candidate freeze;
+6. do not authorize/tag/publish v0.2.5 or update production distribution without later explicit gates.
 
 ## Non-blocking post-v0.2.3 work
 
@@ -197,4 +205,4 @@ Issue #80 was intentionally outside the v0.2.3 release scope and is now complete
 
 ## Recommended immediate phase
 
-Complete this promotion-readiness reconciliation with exact-head CI. If green, open a protected `develop` → `main` promotion PR from the exact reviewed head and stop before merge pending explicit owner authorization. Keep `release-authorization.json` fail-closed until promotion and post-promotion CI are complete. S14B remains NOT_EXECUTED and is only required if broader Japanese target-user usability claims are desired.
+Complete the post-v0.2.4 ancestry/version reconciliation with green exact-head CI and integrate it through protected `develop` only after explicit owner merge authorization. After integration, the next patch-release gate is an exact v0.2.5 candidate freeze plus deterministic packaging; native rerun scope can then be bounded to the actual delta because runtime logic is unchanged by Issue #99. Keep release authorization false and production distribution on v0.2.3 until the later v0.2.5 publication path is explicitly authorized and verified. S14B remains NOT_EXECUTED and is only required if broader Japanese target-user usability claims are desired.
