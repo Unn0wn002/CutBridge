@@ -6,14 +6,16 @@ This is the canonical release-readiness record. It preserves useful v0.2.3 pre-r
 
 ## Current repository boundary
 
-Current protected branch and release state — 22 September 2026:
+Current protected branch and release state — 23 September 2026:
 
 - protected `main`: `1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f`;
 - stable tag `v0.2.3`: the same exact SHA as `main`;
-- protected `develop`: active v0.2.4 integration branch; integration-sweep baseline before this documentation reconciliation: `f2abcd814fde2bc8a2a45ba0c897fec1544f8e55`;
+- protected `develop`: `ef5911a83270a4ce8121741ada2d2726fa09ec29`; this is also the frozen `candidate/v0.2.4-beta.1` source SHA;
 - PR #92 updater/distribution/version baseline: merged into protected `develop`;
 - PR #93 backward-compatible per-pass output formats: merged; Issue #80 native acceptance completed 10/10 and exact post-merge CI passed;
-- PR #94 release-tag eligibility main-push trigger fix: merged; exact post-merge CI run `35756924486` passed both required jobs.
+- PR #94 release-tag eligibility main-push trigger fix: merged; exact post-merge CI run `35756924486` passed both required jobs;
+- PR #95 integration-sweep documentation reconciliation: merged; post-merge push CI run `35797413040` passed both required jobs;
+- frozen candidate `candidate/v0.2.4-beta.1`: exact SHA `ef5911a83270a4ce8121741ada2d2726fa09ec29`; deterministic Blender ZIP SHA-256 `3819b6178cac31b6613d475aeaf84faeaee99b97add94eca6375f1c408f487c2`; deterministic After Effects ZIP SHA-256 `e249d6f83c95b7eded472c8bd473c5034e8ab500fa28945b460f150518a6f73b`.
 
 Stable v0.2.3 state:
 
@@ -33,7 +35,7 @@ Stable v0.2.3 state:
 - active governance rulesets: `Protect main`, `Protect develop`, `Protect release tags`, and `Require release tag eligibility`;
 - repository-governance Issue #18: **OPEN**; its latest live evidence records completed v0.2.3 authorization, publication, independent asset verification, and production D1 deployment.
 
-Active v0.2.4 development remains fail-closed: `release-authorization.json` is unapproved, no v0.2.4 tag/GitHub Release/distribution entry exists, automatic startup update scheduling remains disabled, and S14B remains `NOT_EXECUTED`.
+Active v0.2.4 remains fail-closed: `release-authorization.json` is unapproved, no v0.2.4 tag/GitHub Release/distribution entry exists, automatic startup update scheduling remains disabled, and S14B remains `NOT_EXECUTED`. The exact beta.1 candidate has completed the bounded native release-candidate gate for the recorded Windows 11 / Blender 5.2.1 / After Effects 2026 scope; this evidence does not authorize promotion or publication.
 
 ## 1. Product / contract integration
 
@@ -63,11 +65,11 @@ Historical v0.2.3 promotion evidence is PASS: pre-promotion PR CI `35511056270` 
 - [x] S8 localization regression suites exist.
 - [x] S10C reconstruction regression suite exists.
 - [x] S13 3D revision native-host-shaped regression is wired into canonical CI.
-- [x] latest exact-head static suite on integration baseline `f2abcd814fde2bc8a2a45ba0c897fec1544f8e55`: 147 passed + 2 subtests.
+- [x] latest exact-head static suite on frozen candidate / protected `develop` `ef5911a83270a4ce8121741ada2d2726fa09ec29`: 147 passed + 2 subtests.
 - [x] latest exact-head complete Blender/runtime suite: 307 passed, 72 warnings + 2 subtests.
 - [x] exact-head release simulation built both v0.2.4 ZIPs and verified `SHA256SUMS.txt`.
 - [x] exact-head Blender 5.2.1 RNA register/unregister/re-register lifecycle step passed.
-- [x] exact-head push CI run `35756924486` passed `static-validation` and `blender-52-rna-runtime`.
+- [x] exact-head post-merge/candidate push CI run `35797413040` passed `static-validation` and `blender-52-rna-runtime`.
 - [x] final promotion-head CI PASS on explicitly frozen `develop` SHA `501f9bd6b6c69cf8859f96f0fd6441afc48c0b50`.
 - [x] promoted `main` candidate CI PASS on exact promoted SHA `049081f0fe3d3e74d77db807910c2e0fff56fe73`.
 
@@ -87,6 +89,18 @@ Those promotion checks established the pre-release baseline. The later v0.2.3 au
 - [x] S13F native run verified Camera Position/POI/Zoom and Null Position/Scale refresh.
 - [x] S13F native run verified QC+, artist-state preservation, zero duplicate managed 3D layers, and save/close/reopen persistence.
 - [x] the exact native-tested S13F commit was merged intact through PR #68 and post-merge CI passed on `0a86d9a...`.
+
+### v0.2.4 beta.1 exact-candidate native gate
+
+The frozen v0.2.4 beta.1 candidate is `candidate/v0.2.4-beta.1` at `ef5911a83270a4ce8121741ada2d2726fa09ec29`, identical to protected `develop` at the recorded gate.
+
+- [x] deterministic Blender candidate ZIP SHA-256: `3819b6178cac31b6613d475aeaf84faeaee99b97add94eca6375f1c408f487c2`;
+- [x] deterministic After Effects candidate ZIP SHA-256: `e249d6f83c95b7eded472c8bd473c5034e8ab500fa28945b460f150518a6f73b`;
+- [x] bounded local Windows native candidate campaign recorded PASS for Blender 5.2.1 LTS and After Effects 2026 26.3x87 Build 87 for the tested scope, including exact-artifact installation, package/per-pass behavior, Issue #83 safety, updater safety, AE Build/QC+/revision/artist-state/persistence and negative-manifest handling;
+- [x] focused Issue #82 exact-candidate rerun on Blender 5.2.1 LTS completed a 3-frame mixed-format interactive Render Animation with the normal CutBridge N-panel active, produced 12 non-zero expected outputs, generated no new crash dump, remained responsive, used Blender's normal quit operator without external force termination, and exited with process code `0`;
+- [x] the prior forced-termination evidence ambiguity is cleared for this candidate.
+
+This native evidence is bounded to the recorded hosts. It does not validate Blender 4.2/4.5, does not constitute S14B representative-user validation, and does not authorize promotion, tagging, or publication.
 
 These are bounded evidence statements. They do not certify every target host/OS combination.
 
@@ -260,7 +274,7 @@ Use one of these states:
 
 **v0.2.3 PUBLISHED / VERIFIED.**
 
-Stable v0.2.3 is released and immutable at `1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f`; its GitHub Release, artifacts, metadata, and separate production D1 distribution are verified. Active v0.2.4 is **NOT RELEASE READY / NOT AUTHORIZED**: PR #92, PR #93, and PR #94 are integrated with green exact-head CI; Issue #80 is completed; authorization remains fail-closed; startup scheduling remains disabled; S14B remains `NOT_EXECUTED`; and no v0.2.4 tag, Release, or distribution entry exists. The next release gate is candidate freeze plus bounded combined native release-candidate regression on the exact frozen SHA.
+Stable v0.2.3 is released and immutable at `1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f`; its GitHub Release, artifacts, metadata, and separate production D1 distribution are verified. Active v0.2.4 is **CANDIDATE VALIDATED / NOT AUTHORIZED**: PR #92, PR #93, PR #94, and PR #95 are integrated with green exact-head CI; Issue #80 is completed; `candidate/v0.2.4-beta.1` is frozen at `ef5911a83270a4ce8121741ada2d2726fa09ec29`; deterministic candidate packaging and the bounded native Blender/After Effects candidate campaign are recorded PASS for the tested scope; the focused Issue #82 clean-exit rerun is PASS; authorization remains fail-closed; startup scheduling remains disabled; S14B remains `NOT_EXECUTED`; and no v0.2.4 tag, Release, or distribution entry exists. The next gate is promotion-readiness reconciliation plus exact-head CI, followed by a deliberate protected `develop` → `main` promotion PR.
 
 ## Related documents
 
