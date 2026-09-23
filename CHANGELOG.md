@@ -2,7 +2,27 @@
 
 All notable CutBridge changes are tracked here.
 
-## [0.2.4] - Unreleased
+## [0.2.5] - Unreleased
+
+### Fixed
+- Made the packaged After Effects `INSTALL.md` release-state-neutral after Issue #99 found stale pre-publication wording in the immutable v0.2.4 AE ZIP.
+- Added source-level and built-ZIP regression coverage so future AE release packages cannot silently restore version-specific development/publication claims.
+
+### Changed
+- Reconciled the published v0.2.4 `main` history with the protected development line after PR #100.
+- Bumped the Blender manifest/version module and After Effects product identity to 0.2.5 for the next patch-development baseline.
+
+### Safety
+- Restored `release-authorization.json` to the fail-closed development tuple; v0.2.5 is not authorized for publication.
+- Published tag/assets for v0.2.4 remain immutable.
+- Production distribution remains intentionally on v0.2.3 until a corrected post-v0.2.4 release is published, independently verified, and deliberately promoted.
+- Automatic startup update scheduling remains disabled; S14B remains `NOT_EXECUTED`.
+
+## [0.2.4] - 2026-09-23
+
+Stable v0.2.4 was published from protected `main` at `a393e409d19445c4090460b7e7b4716779161fa4` after exact authorization and release-tag eligibility passed. Release workflow run `35843821702` completed successfully. Independent verification confirmed Blender ZIP SHA-256 `3819b6178cac31b6613d475aeaf84faeaee99b97add94eca6375f1c408f487c2` and After Effects ZIP SHA-256 `e249d6f83c95b7eded472c8bd473c5034e8ab500fa28945b460f150518a6f73b`.
+
+Production distribution was intentionally not advanced to v0.2.4 because independent package inspection found stale pre-publication wording in the AE `INSTALL.md` (Issue #99). Historical development bullets below retain the boundary that applied before publication.
 
 ### Changed
 - Added an additive per-pass image-format contract for v0.2.4: new manifests/presets may declare `image_format` per pass while historical data continues to fall back to the package-level format.
