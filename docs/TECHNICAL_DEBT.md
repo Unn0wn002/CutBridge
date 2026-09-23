@@ -7,9 +7,9 @@ S12/S13 closeout reference points:
 - PR #69 state-reconciliation merge: `fbfe83324808c9051e88e845d7ffe225bd56530f`;
 - S13F runtime integration baseline: `0a86d9a0605e1dd9714ef35a547693de76f714f4`;
 - stable v0.2.3: released and immutable at main/tag SHA `1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f`;
-- active development: `0.2.4`;
-- release authorization: `approved: false`;
-- publication governance issue #18: OPEN; its latest live evidence records completed v0.2.3 publication, independent asset verification, and production D1 deployment.
+- active release line: `0.2.4`, promoted to protected `main` through PR #97;
+- release authorization on this branch: exact tuple `v0.2.4` / `stable` / non-prerelease is `approved: true`; tag/publication remain pending;
+- publication governance issue #18: OPEN; its live evidence includes v0.2.3 publication/distribution and the v0.2.4 promotion/authorization path.
 
 ## Priority A — Blender 6.0 compositor API migration
 

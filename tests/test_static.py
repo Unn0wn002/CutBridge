@@ -93,15 +93,15 @@ def test_production_update_index_url_is_exact_https_distribution_endpoint():
     assert "raw.githubusercontent.com" not in endpoint
 
 
-def test_development_release_authorization_is_fail_closed():
+def test_release_authorization_matches_v024_stable_tuple():
     authorization = json.loads(
         (ROOT / "release-authorization.json").read_text(encoding="utf-8")
     )
     assert authorization == {
-        "approved": False,
-        "tag": None,
-        "channel": None,
-        "prerelease": None,
+        "approved": True,
+        "tag": "v0.2.4",
+        "channel": "stable",
+        "prerelease": False,
     }
 
 

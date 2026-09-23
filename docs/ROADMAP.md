@@ -1,6 +1,6 @@
 # CutBridge Roadmap
 
-Status reconciled through the v0.2.4 source baseline. Stable v0.2.3 publication and production D1 distribution are complete; v0.2.4 is the active unreleased development baseline. Session numbers describe bounded product work and do not guarantee public release numbers.
+Status reconciled through the v0.2.4 release-authorization gate. Stable v0.2.3 publication and production D1 distribution are complete; v0.2.4 has been promoted to protected `main` and its exact stable/non-prerelease tuple is authorized on the release branch, but no v0.2.4 tag, GitHub Release, or production distribution entry exists yet. Session numbers describe bounded product work and do not guarantee public release numbers.
 
 ## Completed foundation — S1–S9
 

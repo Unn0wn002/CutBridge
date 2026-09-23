@@ -8,24 +8,24 @@ def _read(relative: str) -> str:
     return (ROOT / relative).read_text(encoding="utf-8")
 
 
-def test_readme_tracks_released_v023_and_fail_closed_v024_baseline():
+def test_readme_tracks_released_v023_and_authorized_v024_boundary():
     text = _read("README.md")
     assert "S12" in text and "S13" in text
     assert "9c99ae23ccd8c47fdc0fffbd05b99e1326f2ea95" in text
     assert "S14A" in text and "S14B" in text
     assert "S14B remains NOT_EXECUTED" in text
     assert "Stable v0.2.3 remains published and immutable" in text
-    assert "v0.2.4 — unreleased development baseline" in text
+    assert "v0.2.4 — promoted / release-authorized stable candidate; not yet tagged or published" in text
     assert "1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f" in text
     assert "https://unn0wn002.github.io/cutbridge-distribution/cutbridge/release-index.json" in text
     assert "automatic startup update scheduling remains disabled" in text
     assert "no representative Japanese-user usability claim" in text
-    assert "v0.2.4 UNRELEASED / PUBLICATION NOT AUTHORIZED" in text
-    assert '"approved": false' in text
+    assert "exact v0.2.4 tuple is authorized as `v0.2.4` / `stable` / non-prerelease" in text
+    assert "`release-authorization.json` now authorizes only the exact stable tuple" in text
     assert "S12 — End-to-End Blender → package → After Effects validation harness" not in text
 
 
-def test_completion_status_reconciles_released_v023_and_v024_development():
+def test_completion_status_reconciles_released_v023_and_v024_authorization():
     text = _read("docs/COMPLETION_STATUS.md")
     assert "Integrated product/validation sessions:** S1–S13" in text
     assert "S12" in text and "PASS" in text
@@ -33,17 +33,17 @@ def test_completion_status_reconciles_released_v023_and_v024_development():
     assert "0a86d9a0605e1dd9714ef35a547693de76f714f4" in text
     assert "9c99ae23ccd8c47fdc0fffbd05b99e1326f2ea95" in text
     assert "v0.2.3 is released, published, independently verified" in text
-    assert "v0.2.4 source baseline is **UNRELEASED / NOT AUTHORIZED FOR PUBLICATION**" in text
+    assert "v0.2.4 is **PROMOTED / EXACT STABLE TUPLE AUTHORIZED / NOT TAGGED OR PUBLISHED**" in text
     assert "1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f" in text
     assert "635c1384af2649d4ce49705cce41f98826a861cc" in text
     assert "S14" in text
     assert "S14B remains NOT_EXECUTED" in text
 
 
-def test_release_readiness_records_published_v023_and_fail_closed_v024():
+def test_release_readiness_records_published_v023_and_authorized_v024():
     text = _read("docs/RELEASE_READINESS.md")
     assert "v0.2.3 PUBLISHED / VERIFIED" in text
-    assert "v0.2.4 UNRELEASED / NOT AUTHORIZED" in text
+    assert "v0.2.4 PROMOTED / AUTHORIZED / NOT TAGGED" in text
     assert "S12 release-target campaign executed and reconciled to PASS" in text
     assert "S13 real-host Camera/Null revision defects repaired and integrated" in text
     assert "STRUCTURED-EVIDENCE TRACEABILITY DECISION RESOLVED" in text
@@ -104,8 +104,8 @@ def test_technical_debt_uses_current_release_baseline_and_evidence_limits():
     text = _read("docs/TECHNICAL_DEBT.md")
     assert "S1–S13 validated product baseline" in text
     assert "stable v0.2.3: released and immutable" in text
-    assert "active development: `0.2.4`" in text
-    assert "release authorization: `approved: false`" in text
+    assert "active release line: `0.2.4`, promoted to protected `main` through PR #97" in text
+    assert "release authorization on this branch: exact tuple `v0.2.4` / `stable` / non-prerelease is `approved: true`" in text
     assert "publication governance issue #18: OPEN" in text
     assert "307 tests + 2 subtests" in text
     assert "72 deprecation warnings" in text
@@ -169,11 +169,11 @@ def test_roadmap_tracks_completed_promotion_and_deferred_s14b():
     assert "COMPLETE / VERIFIED" in text
     assert "35513361337" in text
     assert "Stable v0.2.3 publication and production D1 distribution are complete" in text
-    assert "v0.2.4 is the active unreleased development baseline" in text
+    assert "v0.2.4 has been promoted to protected `main`" in text
     assert "subsequent releases and distribution automation" in text
 
 
-def test_v024_current_facing_docs_track_frozen_candidate_and_promotion_gate():
+def test_v024_current_facing_docs_track_authorization_and_publication_gate():
     readiness = _read("docs/RELEASE_READINESS.md")
     completion = _read("docs/COMPLETION_STATUS.md")
     checklist = _read("docs/RELEASE_CHECKLIST.md")
@@ -195,7 +195,10 @@ def test_v024_current_facing_docs_track_frozen_candidate_and_promotion_gate():
     assert "Issue #80: OPEN" not in completion
     assert "307 passed, 72 warnings + 2 subtests" in completion
     assert "focused Issue #82 rerun PASS" in completion
-    assert "protected `develop` → `main`" in checklist
+    assert "exact-current-main `release-tag-eligibility` PASS" in checklist
+    assert "`v0.2.4` / `stable` / `prerelease: false`" in checklist
+    assert "30ea64c10617858a55fa9c32ef5f8ac18922964a" in readiness
+    assert "PROMOTED / EXACT TUPLE AUTHORIZED / NOT TAGGED OR PUBLISHED" in readiness
 
 
 def test_current_release_docs_do_not_restore_stale_prepublication_claims():
