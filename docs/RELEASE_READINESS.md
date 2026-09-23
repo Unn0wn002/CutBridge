@@ -217,7 +217,7 @@ For v0.2.3:
 - [x] exact current `main` SHA `1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f` was authorized for `v0.2.3` / stable / non-prerelease;
 - [x] the authorization change and eligibility check passed before tag creation.
 
-For v0.2.4, this release-authorization change approves exactly one tuple: `approved: true`, tag `v0.2.4`, channel `stable`, `prerelease: false`. The authorization is not reusable for another tag or channel, and no tag or publication has occurred yet.
+For v0.2.4, `release-authorization.json` on this branch approves exactly one tuple: `approved: true`, tag `v0.2.4`, channel `stable`, `prerelease: false`. The authorization is not reusable for another tag or channel, and no tag or publication has occurred yet.
 
 Supported tag forms:
 
