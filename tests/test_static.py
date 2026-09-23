@@ -349,7 +349,13 @@ def test_release_builder_produces_expected_artifacts(tmp_path):
         assert archive.read("revision_manager.js") == (ROOT / "apps/after-effects/revision_manager.js").read_bytes()
         assert archive.read("qc_plus.js") == (ROOT / "apps/after-effects/qc_plus.js").read_bytes()
         assert archive.read("localization.js") == (ROOT / "apps/after-effects/localization.js").read_bytes()
-        assert archive.read("INSTALL.md") == (ROOT / "apps/after-effects/INSTALL.md").read_bytes()
+        archived_install = archive.read("INSTALL.md").decode("utf-8")
+        assert archived_install.encode("utf-8") == (ROOT / "apps/after-effects/INSTALL.md").read_bytes()
+        assert not re.search(r"v\\d+\\.\\d+\\.\\d+\\s+development", archived_install, flags=re.IGNORECASE)
+        assert "does **not** authorize publication of" not in archived_install
+        assert "remains published and immutable" not in archived_install
+        assert "release-metadata.json" in archived_install
+        assert "GitHub Release page" in archived_install
         assert archive.read("LICENSE") == (ROOT / "LICENSE").read_bytes()
 
     checksum_lines = checksum_file.read_text(encoding="utf-8").splitlines()
