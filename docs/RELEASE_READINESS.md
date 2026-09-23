@@ -1,17 +1,18 @@
 # CutBridge Release Readiness
 
-Status: **v0.2.3 PUBLISHED / VERIFIED; v0.2.4 PROMOTED / AUTHORIZED / NOT TAGGED**
+Status: **v0.2.4 PUBLISHED / VERIFIED ON GITHUB; PRODUCTION DISTRIBUTION HELD; v0.2.5 DEVELOPMENT / NOT AUTHORIZED**
 
-This is the canonical release-readiness record. It preserves useful v0.2.3 pre-release evidence while distinguishing it from the current v0.2.4 publication boundary. Green product CI and successful native validation are necessary, but neither alone authorizes publication; the exact release tuple and current-main eligibility gate remain separate controls.
+This is the canonical release-readiness record. It preserves historical v0.2.3/v0.2.4 evidence while distinguishing the published-but-not-distributed v0.2.4 state from the current v0.2.5 development boundary. Green product CI and successful native validation are necessary, but neither alone authorizes a future publication; the exact release tuple and current-main eligibility gate remain separate controls.
 
 ## Current repository boundary
 
 Current protected branch and release state — 23 September 2026:
 
 - stable tag `v0.2.3`: immutable at `1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f`;
-- PR #97 promoted the verified v0.2.4 line to protected `main`; promotion merge commit: `30ea64c10617858a55fa9c32ef5f8ac18922964a`;
-- protected `develop` after promotion: `56bcfe186339c18f319989d46e392155c80cc9b3`;
-- frozen runtime candidate `candidate/v0.2.4-beta.1`: `ef5911a83270a4ce8121741ada2d2726fa09ec29`; the candidate-to-promotion delta is promotion-readiness documentation/tests only;
+- stable tag `v0.2.4` and protected `main`: exact SHA `a393e409d19445c4090460b7e7b4716779161fa4`;
+- GitHub Release v0.2.4: published, non-draft, non-prerelease, latest; Release workflow `35843821702` completed SUCCESS;
+- v0.2.5 development baseline: reconciles the published v0.2.4 main history with PR #100 / Issue #99 source remediation and restores fail-closed authorization;
+- frozen runtime candidate `candidate/v0.2.4-beta.1`: `ef5911a83270a4ce8121741ada2d2726fa09ec29`;
 - PR #92 updater/distribution/version baseline: merged into protected `develop`;
 - PR #93 backward-compatible per-pass output formats: merged; Issue #80 native acceptance completed 10/10 and exact post-merge CI passed;
 - PR #94 release-tag eligibility main-push trigger fix: merged; exact post-merge CI run `35756924486` passed both required jobs;
@@ -34,9 +35,9 @@ Stable v0.2.3 state:
 - v0.2.3 Japanese release-facing claim scope: narrowed; S14B representative-user execution remains NOT_EXECUTED and is not claimed as PASS;
 - repository visibility: public;
 - active governance rulesets: `Protect main`, `Protect develop`, `Protect release tags`, and `Require release tag eligibility`;
-- repository-governance Issue #18: **OPEN**; its latest live evidence records completed v0.2.3 authorization, publication, independent asset verification, and production D1 deployment.
+- repository-governance Issue #18: **CLOSED / COMPLETED** after the authorized exact-current-main v0.2.4 tag path, Release workflow publication, and independent asset verification passed.
 
-v0.2.4 remains publication-fail-closed even though its exact stable tuple is now explicitly authorized on this release branch: `v0.2.4` / `stable` / `prerelease: false`. No v0.2.4 tag, GitHub Release, or production distribution entry exists. Automatic startup update scheduling remains disabled and S14B remains `NOT_EXECUTED`. Publication must not proceed until this authorization is merged through protected `main`, the resulting exact-main `release-tag-eligibility` status passes, and the separately controlled tag/publication path is deliberately exercised.
+v0.2.4 publication is complete on GitHub and its tag/assets remain immutable. Independent verification found the AE package documentation defect tracked in Issue #99, so production distribution intentionally remains on v0.2.3. The v0.2.5 development baseline carries the source fix and restores `release-authorization.json` to `approved: false` with null tag/channel/prerelease. Automatic startup update scheduling remains disabled and S14B remains `NOT_EXECUTED`.
 
 ## 1. Product / contract integration
 
@@ -153,7 +154,7 @@ This **claim-scope narrowing resolves the v0.2.3 S14 release-claim gate**. It do
 
 See `S14_JP_USER_VALIDATION.md`.
 
-## 6. Repository governance — v0.2.3 COMPLETE / Issue #18 OPEN
+## 6. Repository governance — COMPLETE / Issue #18 CLOSED
 
 Required governance configuration is now present:
 
@@ -178,7 +179,7 @@ Historical pre-release checkpoint — 20 September 2026:
 - promoted-main CI `35513361337` passed both required jobs;
 - v0.2.3 had not yet been authorized, tagged, or published at that checkpoint.
 
-Current state — 22 September 2026: Issue #18 remains open as the live governance/release evidence log. Its latest evidence records v0.2.3 as published and independently verified with production D1 deployed. Active v0.2.4 development has restored authorization to fail-closed.
+Current state — 23 September 2026: Issue #18 is closed as completed after the positive authorized v0.2.4 exact-current-main tag/publication path and independent asset verification passed. The separate Issue #99 package-documentation defect does not invalidate governance enforcement and remains the reason production distribution is held.
 
 ## 7. Historical v0.2.3 candidate freeze on `develop`
 
@@ -217,7 +218,7 @@ For v0.2.3:
 - [x] exact current `main` SHA `1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f` was authorized for `v0.2.3` / stable / non-prerelease;
 - [x] the authorization change and eligibility check passed before tag creation.
 
-For v0.2.4, `release-authorization.json` on this branch approves exactly one tuple: `approved: true`, tag `v0.2.4`, channel `stable`, `prerelease: false`. The authorization is not reusable for another tag or channel, and no tag or publication has occurred yet.
+For v0.2.4, the exact `v0.2.4` / stable / non-prerelease authorization was consumed by the published release at `a393e409d19445c4090460b7e7b4716779161fa4`. For active v0.2.5 development, `release-authorization.json` is restored to `approved: false` with null tag/channel/prerelease. No v0.2.5 authorization has occurred.
 
 Supported tag forms:
 
@@ -260,7 +261,7 @@ GitHub Release publication alone is not a functioning production update channel.
 - [x] HTTPS delivery, schemas, production downloads, checksums, Blender sync/discovery/install, and versioned retention policy verified;
 - [x] v0.2.3 left immutable; future stable versions must be additive so earlier stable artifacts remain available for rollback.
 
-The v0.2.4 manual checker uses the verified notification index. Automatic startup update scheduling remains disabled. No v0.2.4 distribution entry exists.
+The manual checker uses the verified notification index. Automatic startup update scheduling remains disabled. No v0.2.4 distribution entry exists because Issue #99 triggered a deliberate distribution hold; production continues to advertise only v0.2.3 until a corrected post-v0.2.4 release is published and verified.
 
 ## 13. Final release decision
 
@@ -273,9 +274,9 @@ Use one of these states:
 
 ### Current verdict
 
-**v0.2.3 PUBLISHED / VERIFIED.**
+**v0.2.4 PUBLISHED / VERIFIED ON GITHUB; PRODUCTION DISTRIBUTION HELD. v0.2.5 DEVELOPMENT / NOT AUTHORIZED.**
 
-Stable v0.2.3 is released and immutable at `1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f`; its GitHub Release, artifacts, metadata, and separate production D1 distribution are verified. v0.2.4 is **PROMOTED / EXACT TUPLE AUTHORIZED / NOT TAGGED OR PUBLISHED**: the frozen runtime candidate remains `ef5911a83270a4ce8121741ada2d2726fa09ec29`; deterministic packaging, bounded native Blender/After Effects candidate testing, and the focused Issue #82 clean-exit rerun are recorded PASS for the tested scope; PR #97 promotion and post-promotion CI are complete; this authorization approves only `v0.2.4` / `stable` / non-prerelease; startup scheduling remains disabled; S14B remains `NOT_EXECUTED`; and no v0.2.4 tag, Release, or production distribution entry exists. The next gate is protected-main integration of this authorization followed by exact-current-main `release-tag-eligibility` PASS before any tag creation.
+Stable GitHub release v0.2.4 is immutable at `a393e409d19445c4090460b7e7b4716779161fa4`; deterministic candidate/native evidence and independent published-asset verification are recorded PASS for the tested scope. Production distribution intentionally remains on v0.2.3 because Issue #99 found stale release-state wording in the immutable v0.2.4 AE `INSTALL.md`. The v0.2.5 development baseline carries the source remediation, bumps product identity to 0.2.5, keeps startup scheduling disabled, preserves S14B as `NOT_EXECUTED`, and restores release authorization to fail-closed. The next release gate is integration of this reconciled baseline through protected `develop` with exact-head CI before any v0.2.5 candidate freeze or release authorization.
 
 ## Related documents
 
