@@ -173,21 +173,29 @@ def test_roadmap_tracks_completed_promotion_and_deferred_s14b():
     assert "subsequent releases and distribution automation" in text
 
 
-def test_v024_current_facing_docs_track_integrated_develop_baseline():
+def test_v024_current_facing_docs_track_frozen_candidate_and_promotion_gate():
     readiness = _read("docs/RELEASE_READINESS.md")
     completion = _read("docs/COMPLETION_STATUS.md")
+    checklist = _read("docs/RELEASE_CHECKLIST.md")
+
+    for text in (readiness, completion, checklist):
+        assert "ef5911a83270a4ce8121741ada2d2726fa09ec29" in text
 
     for text in (readiness, completion):
-        assert "f2abcd814fde2bc8a2a45ba0c897fec1544f8e55" in text
+        assert "f2abcd814fde2bc8a2a45ba0c897fec1544f8e55" not in text
         assert "f39b9f41c66c8abc0f895066675d80b0747c6053" not in text
 
-    assert "PR #92 updater/distribution/version baseline: merged" in readiness
-    assert "PR #93 backward-compatible per-pass output formats: merged" in readiness
-    assert "PR #94 release-tag eligibility main-push trigger fix: merged" in readiness
-    assert "35756924486" in readiness
+    assert "candidate/v0.2.4-beta.1" in readiness
+    assert "3819b6178cac31b6613d475aeaf84faeaee99b97add94eca6375f1c408f487c2" in readiness
+    assert "e249d6f83c95b7eded472c8bd473c5034e8ab500fa28945b460f150518a6f73b" in readiness
+    assert "35797413040" in readiness
+    assert "focused Issue #82 exact-candidate rerun" in readiness
+    assert "process code `0`" in readiness
     assert "Issue #80: COMPLETED for v0.2.4" in completion
     assert "Issue #80: OPEN" not in completion
     assert "307 passed, 72 warnings + 2 subtests" in completion
+    assert "focused Issue #82 rerun PASS" in completion
+    assert "protected `develop` → `main`" in checklist
 
 
 def test_current_release_docs_do_not_restore_stale_prepublication_claims():
