@@ -1,6 +1,6 @@
 # CutBridge for After Effects — Installation
 
-CutBridge v0.2.3 development packages use **four adjacent runtime files**:
+CutBridge v0.2.4 development packages use **four adjacent runtime files**:
 
 - `CutBridge.jsx` — panel, package import, Build, QC, revision adapter, localization binding, and S10C managed camera/3D Null reconstruction.
 - `revision_manager.js` — S6 non-destructive revision-manager core.
@@ -101,9 +101,7 @@ The remaining broader release-target Blender → package → AE campaign belongs
 
 ## Release boundary
 
-The native evidence above does **not** authorize publication of v0.2.3.
-
-There is currently no release tag or GitHub Release. Release governance issue #18, deliberate candidate promotion, exact release authorization, published-asset verification, production update-index verification, and the remaining release-target validation gates are still required.
+The native evidence above does **not** authorize publication of v0.2.4. Stable v0.2.3 remains published and immutable; v0.2.4 development starts with fail-closed release authorization and requires its own exact-candidate validation before any future release.
 
 See:
 

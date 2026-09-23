@@ -165,6 +165,19 @@ def effective_image_format(settings) -> str:
         return str(getattr(settings, "image_format", "PNG"))
 
 
+def effective_pass_image_format(settings, pass_name: str, preset: dict | None = None) -> str:
+    """Return an explicit pass format when present, else the legacy global format."""
+    try:
+        resolved = preset or active_preset(settings)
+        global_format = str(resolved["output"]["image_format"])
+        for item in resolved.get("passes", []):
+            if item.get("name") == pass_name:
+                return str(item.get("image_format") or global_format)
+        return global_format
+    except (PresetError, KeyError, TypeError):
+        return str(getattr(settings, "image_format", "PNG"))
+
+
 def absolute_output_dir(settings) -> Path:
     # bpy.path.abspath resolves // relative to the current .blend path.
     return Path(bpy.path.abspath(settings.output_dir)).expanduser().resolve()
@@ -208,11 +221,11 @@ def render_mapping_issues(context) -> list[dict]:
                 "Disable this CutBridge pass or choose a render engine/View Layer that exposes the required pass.",
             )
 
-    if "DEPTH" in selected_passes(settings) and effective_image_format(settings) != "OPEN_EXR":
+    if "DEPTH" in selected_passes(settings) and effective_pass_image_format(settings, "DEPTH") != "OPEN_EXR":
         warn(
             "DEPTH_FORMAT_LOSSY",
-            "DEPTH is a floating-point data pass but the selected package format is not OpenEXR.",
-            "Prefer OpenEXR when DEPTH values must remain numerically accurate.",
+            "DEPTH is a floating-point data pass but its effective format is not OpenEXR.",
+            "Prefer OpenEXR for the DEPTH pass when values must remain numerically accurate.",
         )
 
     return issues
@@ -396,7 +409,6 @@ def configure_render_outputs(context, package_root: Path) -> dict[str, str]:
         raise RuntimeError("No active View Layer is available for render mapping.")
 
     pass_names = [item["name"] for item in preset["passes"]]
-    image_format = preset["output"]["image_format"]
     render_folder = preset["folders"]["render"]
     state = _capture_render_mapping_state(scene, layer, pass_names)
     tree = None
@@ -420,6 +432,7 @@ def configure_render_outputs(context, package_root: Path) -> dict[str, str]:
         created_names.append(render_layers.name)
 
         for index, pass_name in enumerate(pass_names):
+            image_format = effective_pass_image_format(settings, pass_name, preset)
             source_socket = _find_output_socket(render_layers, pass_name)
             if source_socket is None:
                 expected = "/".join(PASS_MAPPINGS[pass_name]["socket_names"])
@@ -501,12 +514,12 @@ def build_manifest(context, package_root: Path) -> dict:
         raise ValueError("Negative export frames are unsupported. Rebase the cut and preroll to frame 0 or later.")
     s = scene.cutbridge
     preset = active_preset(s)
-    image_format = preset["output"]["image_format"]
-    ext = extension_for(image_format)
     passes = []
     render_folder = preset["folders"]["render"]
     for pass_spec in preset["passes"]:
         pass_name = pass_spec["name"]
+        image_format = effective_pass_image_format(s, pass_name, preset)
+        ext = extension_for(image_format)
         folder_name = pass_name.lower()
         sequence_stem = safe_token(
             format_template(preset, "sequence", _template_values(s, preset, pass_name)),
@@ -519,6 +532,7 @@ def build_manifest(context, package_root: Path) -> dict:
                 "path": f"{render_folder}/{folder_name}",
                 "sequence_pattern": f"{sequence_stem}{ext}",
                 "required": bool(pass_spec["required"]),
+                "image_format": image_format,
             }
         )
 

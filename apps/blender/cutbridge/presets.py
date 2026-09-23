@@ -78,14 +78,20 @@ def manual_preset(settings) -> dict:
     from disk and therefore cannot introduce a preset-file trust boundary.
     """
     passes = []
-    for name, attr in (
-        ("BEAUTY", "pass_beauty"),
-        ("LINE", "pass_line"),
-        ("SHADOW", "pass_shadow"),
-        ("DEPTH", "pass_depth"),
+    use_per_pass_formats = bool(getattr(settings, "per_pass_formats_enabled", False))
+    for name, attr, format_attr in (
+        ("BEAUTY", "pass_beauty", "format_beauty"),
+        ("LINE", "pass_line", "format_line"),
+        ("SHADOW", "pass_shadow", "format_shadow"),
+        ("DEPTH", "pass_depth", "format_depth"),
     ):
         if bool(getattr(settings, attr, False)):
-            passes.append({"name": name, "required": True})
+            item = {"name": name, "required": True}
+            if use_per_pass_formats:
+                item["image_format"] = str(
+                    getattr(settings, format_attr, getattr(settings, "image_format", "PNG"))
+                )
+            passes.append(item)
 
     return {
         "schema": PRESET_SCHEMA,
@@ -239,17 +245,31 @@ def validate_preset(data: object) -> dict:
     for index, item in enumerate(passes):
         if not isinstance(item, dict):
             raise PresetError("PRESET_FIELD_INVALID", f"preset.passes[{index}] must be an object.")
-        _expect_keys(item, {"name", "required"}, {"name", "required"}, f"preset.passes[{index}]")
+        _expect_keys(
+            item,
+            {"name", "required", "image_format"},
+            {"name", "required"},
+            f"preset.passes[{index}]",
+        )
         name = item.get("name")
         required = item.get("required")
+        pass_image_format = item.get("image_format")
         if name not in SUPPORTED_PASSES:
             raise PresetError("PRESET_FIELD_INVALID", f"preset.passes[{index}].name is unsupported: {name!r}.")
         if name in seen_passes:
             raise PresetError("PRESET_FIELD_INVALID", f"Preset pass {name} is duplicated.")
         if not isinstance(required, bool):
             raise PresetError("PRESET_FIELD_INVALID", f"preset.passes[{index}].required must be boolean.")
+        if pass_image_format is not None and pass_image_format not in SUPPORTED_IMAGE_FORMATS:
+            raise PresetError(
+                "PRESET_FIELD_INVALID",
+                f"preset.passes[{index}].image_format must be one of {', '.join(SUPPORTED_IMAGE_FORMATS)}.",
+            )
         seen_passes.add(name)
-        normalized_passes.append({"name": name, "required": required})
+        normalized_item = {"name": name, "required": required}
+        if pass_image_format is not None:
+            normalized_item["image_format"] = pass_image_format
+        normalized_passes.append(normalized_item)
 
     output = data.get("output")
     if not isinstance(output, dict):

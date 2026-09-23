@@ -191,11 +191,11 @@ def test_codeowners_covers_release_sensitive_controls():
         assert required in codeowners
 
 
-def test_release_eligibility_workflow_is_manual_read_only_and_current_main_only():
+def test_release_eligibility_workflow_runs_on_main_push_and_is_read_only():
     workflow = (ROOT / ".github" / "workflows" / "release-eligibility.yml").read_text(encoding="utf-8")
 
     assert "workflow_dispatch:" in workflow
-    assert "push:" not in workflow
+    assert "push:\n    branches: [main]" in workflow
     assert "permissions:\n  contents: read" in workflow
     assert "name: release-tag-eligibility" in workflow
     assert "refs/heads/main" in workflow

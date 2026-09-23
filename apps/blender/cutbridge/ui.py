@@ -99,6 +99,25 @@ class CUTBRIDGE_PT_MainPanel(bpy.types.Panel):
             "sequence_format",
             controls_enabled,
         )
+        if s.studio_preset_mode == "MANUAL":
+            inline_prop_help(
+                box,
+                s,
+                "per_pass_formats_enabled",
+                tr(language, "per_pass_formats"),
+                "sequence_format",
+                controls_enabled,
+            )
+            if s.per_pass_formats_enabled:
+                for prop_name, pass_key in (
+                    ("format_beauty", "beauty"),
+                    ("format_line", "line"),
+                    ("format_shadow", "shadow"),
+                    ("format_depth", "depth"),
+                ):
+                    row = box.row()
+                    row.enabled = controls_enabled and bool(getattr(s, "pass_" + pass_key))
+                    row.prop(s, prop_name, text=tr(language, pass_key))
         if s.studio_preset_mode != "MANUAL":
             box.label(text=tr(language, "preset_controls_passes"))
 

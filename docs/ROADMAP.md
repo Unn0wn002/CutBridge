@@ -1,6 +1,6 @@
 # CutBridge Roadmap
 
-Status reconciled through **S13 — native AE revision repair**. Version `0.2.3` remains unreleased; session numbers describe bounded product work and do not guarantee public release numbers.
+Status reconciled through the v0.2.4 source baseline. Stable v0.2.3 publication and production D1 distribution are complete; v0.2.4 is the active unreleased development baseline. Session numbers describe bounded product work and do not guarantee public release numbers.
 
 ## Completed foundation — S1–S9
 
@@ -142,7 +142,7 @@ Release engineering can proceed in parallel only where it does not weaken govern
 
 ### B. Repository governance
 
-Issue #18 remains an independent publication blocker only for controlled enforcement-path validation.
+Issue #18 remains **OPEN** as the live governance/release evidence log. Its latest evidence records the v0.2.3 authorized path, publication, independent artifact verification, and production D1 deployment as complete.
 
 Configured and verified:
 
@@ -151,15 +151,16 @@ Configured and verified:
 - authoritative CI required for protected promotion/integration;
 - admin-controlled `v*.*.*` release-tag mutation;
 - no-bypass `release-tag-eligibility` required check for matching tag creation;
-- release authorization remains fail-closed.
+- v0.2.3 authorization and publication completed on exact protected `main`;
+- active v0.2.4 release authorization is fail-closed.
 
-Remaining:
+Future release work:
 
-- record the negative eligibility result while authorization is false;
-- later record the explicitly authorized exact-current-main eligibility path;
-- keep publication blocked until both are satisfied.
+- repeat the exact-current-main authorization and eligibility path for each subsequent release;
+- keep v0.2.4 publication blocked while authorization is false;
+- preserve the existing protected-branch/tag controls and evidence trail.
 
-### C. Deliberate `develop` → `main` promotion
+### C. Historical v0.2.3 `develop` → `main` promotion
 
 **COMPLETE / VERIFIED.**
 
@@ -173,16 +174,17 @@ Remaining:
 
 ### D. Exact release authorization
 
-Only after every prerequisite is complete, authorize one exact current-main/tag/channel/prerelease tuple. Authorization must not be reusable or broad.
+**v0.2.3 COMPLETE / VERIFIED.** The exact `v0.2.3` / stable / non-prerelease tuple was authorized only for current `main`. Active v0.2.4 authorization is false. Future authorization must remain exact, non-reusable, and limited to a fully validated current-main candidate.
 
 ### E. Publication and distribution verification
 
-After an authorized publication:
+**v0.2.3 COMPLETE / VERIFIED.** Publication, downloaded-asset checks, metadata verification, and the separate production D1 endpoint are complete at distribution commit `635c1384af2649d4ce49705cce41f98826a861cc`:
 
-- independently download and checksum release assets;
-- verify package contents and release metadata;
-- deploy/verify the production update/distribution endpoint separate from the private source repository;
-- verify notification-only update behavior and rollback policy.
+- notification index: `https://unn0wn002.github.io/cutbridge-distribution/cutbridge/release-index.json`;
+- Blender repository: `https://unn0wn002.github.io/cutbridge-distribution/blender/index.json`;
+- stable v0.2.3 assets remain versioned and immutable.
+
+Production endpoint deployment is no longer pending. Future distribution work concerns subsequent releases and distribution automation, including additive retention, index generation, and independently verified promotion of newly authorized artifacts.
 
 ## Technical-debt track
 
@@ -191,7 +193,7 @@ Current priority debt:
 1. Blender 6.0 migration away from deprecated `Scene.use_nodes`;
 2. refresh pinned GitHub Actions revisions whose underlying action runtimes still emit Node 20 deprecation warnings;
 3. prevent session-status tests from freezing historical state as current state;
-4. complete controlled release-tag eligibility enforcement testing before publication;
+4. preserve exact-candidate release governance and verification for subsequent releases;
 5. maintain a durable native-evidence trail.
 
 See `TECHNICAL_DEBT.md`.

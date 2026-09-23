@@ -6,15 +6,16 @@ S12/S13 closeout reference points:
 
 - PR #69 state-reconciliation merge: `fbfe83324808c9051e88e845d7ffe225bd56530f`;
 - S13F runtime integration baseline: `0a86d9a0605e1dd9714ef35a547693de76f714f4`;
-- product version: `0.2.3` unreleased;
+- stable v0.2.3: released and immutable at main/tag SHA `1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f`;
+- active development: `0.2.4`;
 - release authorization: `approved: false`;
-- publication governance issue #18: OPEN.
+- publication governance issue #18: OPEN; its latest live evidence records completed v0.2.3 publication, independent asset verification, and production D1 deployment.
 
 ## Priority A — Blender 6.0 compositor API migration
 
 ### Current evidence
 
-The latest Blender 5.2.1 runtime suite passes **245 tests + 2 subtests** and currently emits **62 deprecation warnings**. The principal known source remains `Scene.use_nodes` usage in render-mapping state capture/rollback.
+The latest exact-head Blender 5.2.1 runtime suite on the v0.2.4 integration baseline passes **307 tests + 2 subtests** and emits **72 deprecation warnings**. The principal known source remains `Scene.use_nodes` usage in render-mapping state capture/rollback.
 
 Blender reports that `Scene.use_nodes` is expected to be removed in Blender 6.0.
 
@@ -100,12 +101,14 @@ Repository-level configuration is now present on the public repository:
 - independent no-bypass required check `release-tag-eligibility` via `Require release tag eligibility`;
 - exact current-main/tag/channel/prerelease authorization remains fail-closed.
 
-Remaining governance work before publication is **enforcement-path validation**, not missing configuration:
+The v0.2.3 governance path is complete:
 
-- record the negative eligibility result while authorization is false;
-- record the explicitly authorized exact-current-main eligibility path later;
-- keep release authorization false until those gates are satisfied;
-- independently verify published artifacts/checksums/content after any real publication.
+- unauthorized-current-main and stale/historical tag attempts were rejected;
+- the explicitly authorized exact-current-main eligibility path passed;
+- the v0.2.3 GitHub Release and downloaded artifacts were independently verified;
+- production D1 is deployed separately at `Unn0wn002/cutbridge-distribution` commit `635c1384af2649d4ce49705cce41f98826a861cc`.
+
+Issue #18 remains open as the live governance/release evidence log. For active v0.2.4 development, authorization is fail-closed and no tag, GitHub Release, or distribution entry exists. Subsequent releases must repeat exact-candidate authorization, protected tag creation, independent asset verification, and additive distribution publication.
 
 ## Priority B — Japanese target-user evidence
 

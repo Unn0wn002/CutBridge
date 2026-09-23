@@ -1,30 +1,32 @@
 # CutBridge Completion Status
 
-## Current state — 20 September 2026
+## Current state — 23 September 2026
 
-CutBridge v0.2.3 remains **UNRELEASED / NOT RELEASE READY**. The Japanese release-facing claim for v0.2.3 is now deliberately narrowed; S14B representative-user validation remains NOT_EXECUTED and is not claimed as complete.
+CutBridge v0.2.3 is released, published, independently verified, and mirrored to the separate production distribution. The active v0.2.4 source baseline is **UNRELEASED / NOT AUTHORIZED FOR PUBLICATION**. S14B representative-user validation remains NOT_EXECUTED and is not claimed as complete.
 
 - **Integrated product/validation sessions:** S1–S13.
 - Historical S13 runtime integration baseline: `0a86d9a0605e1dd9714ef35a547693de76f714f4`.
 - Historical final native-tested S13F source: `9c99ae23ccd8c47fdc0fffbd05b99e1326f2ea95`.
 
-The protected promotion head was `develop` commit `501f9bd6b6c69cf8859f96f0fd6441afc48c0b50`. PR #74 promoted that exact tree to protected `main`, producing merge commit `049081f0fe3d3e74d77db807910c2e0fff56fe73`. The promoted `main` tree has zero file differences from the promotion head. This documentation reconciliation does not change runtime behavior.
+Stable tag `v0.2.3` and protected `main` both resolve to `1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f`. The v0.2.4 working branch deliberately starts from that exact released main history so its four release-side commits reconcile back into active development through a PR to protected `develop`.
 
 Current repository boundaries:
 
 - repository visibility: public;
-- protected `develop`: `501f9bd6b6c69cf8859f96f0fd6441afc48c0b50`;
-- protected `main`: `049081f0fe3d3e74d77db807910c2e0fff56fe73`;
-- promotion PR #74: CLOSED / merged;
-- pre-promotion CI `35511056270` attempt 2: PASS;
-- post-promotion `main` CI `35513361337`: PASS;
+- protected `develop`: `ef5911a83270a4ce8121741ada2d2726fa09ec29`; this is also the frozen `candidate/v0.2.4-beta.1` source SHA;
+- protected `main`: `1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f`;
+- stable tag `v0.2.3`: exact protected-main SHA above;
+- v0.2.3 GitHub Release: published, non-prerelease, four verified assets;
+- production distribution commit: `635c1384af2649d4ce49705cce41f98826a861cc`;
+- production notification index: `https://unn0wn002.github.io/cutbridge-distribution/cutbridge/release-index.json`;
+- production Blender repository: `https://unn0wn002.github.io/cutbridge-distribution/blender/index.json`;
 - four active governance rulesets protect `main`, `develop`, release-tag mutation, and no-bypass release-tag eligibility;
 - `release-authorization.json`: `approved: false`;
-- release tag refs: none;
-- GitHub Releases: none;
-- repository governance Issue #18: OPEN only for controlled negative/authorized release-tag enforcement-path validation;
+- no v0.2.4 tag, release authorization, GitHub Release, or production distribution entry exists;
+- automatic startup update scheduling remains disabled following Issue #82;
 - S14 Issue #71: representative Japanese target-user execution remains NOT_EXECUTED; v0.2.3 claim scope is narrowed so no representative-user usability claim is made;
-- Issue #80: OPEN post-v0.2.3 design task for per-pass output formats, not a v0.2.3 release blocker.
+- Issue #80: COMPLETED for v0.2.4; PR #93 per-pass output formats passed native Blender/After Effects acceptance (10/10 criteria), merged to protected `develop`, and post-merge CI passed;
+- `candidate/v0.2.4-beta.1`: frozen and deterministic at `ef5911a83270a4ce8121741ada2d2726fa09ec29`; bounded exact-candidate native Blender/After Effects regression is recorded PASS for the tested scope, including the focused Issue #82 clean-exit rerun.
 
 ## Current verified engineering state
 
@@ -104,18 +106,34 @@ Native owner verification on Windows 11 + Blender 5.2.1 LTS passed:
 
 Issues #82 and #83 are closed on GitHub as completed. This is owner/internal engineering evidence, not S14B customer/representative Japanese-user evidence.
 
+### v0.2.4 beta.1 exact-candidate native regression
+
+The frozen candidate `candidate/v0.2.4-beta.1` resolves to `ef5911a83270a4ce8121741ada2d2726fa09ec29`, matching protected `develop` at the recorded gate.
+
+Recorded exact-candidate evidence includes:
+
+- exact Blender candidate ZIP SHA-256 `3819b6178cac31b6613d475aeaf84faeaee99b97add94eca6375f1c408f487c2`;
+- exact After Effects candidate ZIP SHA-256 `e249d6f83c95b7eded472c8bd473c5034e8ab500fa28945b460f150518a6f73b`;
+- bounded Windows native Blender 5.2.1 + After Effects 2026 candidate campaign PASS for the tested scope;
+- focused Issue #82 rerun PASS: 3-frame mixed-format interactive Render Animation with the normal N-panel active, 12 expected non-zero outputs, no new crash dump, responsive Blender host, no external force-kill, and actual process exit code `0`.
+
+The focused rerun used Blender's own normal quit operator. It establishes clean technical shutdown, not evidence that a user literally clicked the menu item. Blender 4.2/4.5 and S14B remain unverified by this campaign.
+
 ## Latest authoritative automated evidence
 
 Authoritative promotion evidence is green: exact promotion-head PR CI `35511056270` attempt 2 passed on `501f9bd6b6c69cf8859f96f0fd6441afc48c0b50`, and post-promotion `main` CI `35513361337` passed on `049081f0fe3d3e74d77db807910c2e0fff56fe73`.
 
 Recorded results include:
 
-- static validation: **133 passed + 2 subtests**;
-- deterministic v0.2.3 package/checksum simulation: PASS;
+Current exact-head v0.2.4 frozen-candidate evidence on `ef5911a83270a4ce8121741ada2d2726fa09ec29`:
+- static validation: **147 passed + 2 subtests**;
+- deterministic v0.2.4 package/checksum simulation: PASS;
 - S6/S7/S8/S10C/S13 regression checks: PASS;
 - ExtendScript syntax checks: PASS;
 - Blender 5.2.1 RNA registration lifecycle: PASS;
-- complete Blender/runtime pytest suite: **289 passed, 72 warnings + 2 subtests**.
+- complete Blender/runtime pytest suite: **307 passed, 72 warnings + 2 subtests**;
+- authoritative post-merge/candidate push CI run `35797413040`: PASS for `static-validation` and `blender-52-rna-runtime`;
+- deterministic candidate packaging reproduced identical Blender ZIP SHA-256 `3819b6178cac31b6613d475aeaf84faeaee99b97add94eca6375f1c408f487c2` and After Effects ZIP SHA-256 `e249d6f83c95b7eded472c8bd473c5034e8ab500fa28945b460f150518a6f73b`.
 
 Known automated warning debt includes Blender `Scene.use_nodes` deprecation ahead of Blender 6.0 and GitHub Actions runtime deprecation messages from pinned upstream actions. These are not recorded as current v0.2.3 functional blockers, but remain technical debt.
 
@@ -157,35 +175,26 @@ The bounded beta.3 owner/internal regression passed for the recorded Windows 11 
 
 Later documentation/governance commits through promotion head `501f9bd6b6c69cf8859f96f0fd6441afc48c0b50` do not retroactively change the SHA-bound beta.3 candidate identity.
 
-## Release blockers / gates
+## Release and development gates
 
-Completed:
+The v0.2.3 governance, exact authorization, guarded publication, downloaded-asset verification, and separate production-distribution verification gates are complete. Released v0.2.3 remains immutable.
 
-1. **Release-readiness documentation reconciliation** through the post-#82/#83 state.
-2. **Historical beta.3 freeze** and bounded owner/internal regression for the recorded tested scope.
-3. **S12 structured-evidence traceability decision** through the documented non-fabrication path.
-4. **v0.2.3 S14 claim-scope decision** through narrowing; S14B remains NOT_EXECUTED.
-5. **Repository governance configuration**: protected `main`, protected `develop`, admin-controlled `v*.*.*` mutation, and no-bypass `release-tag-eligibility`.
-6. **Exact PR #74 promotion-head verification** with fresh authoritative CI.
-7. **Deliberate `develop` → `main` promotion** through protected PR #74.
-8. **Post-promotion `main` CI** on `049081f0fe3d3e74d77db807910c2e0fff56fe73`.
+The v0.2.4 development boundary is fail-closed:
 
-Remaining before RC/stable publication:
-
-9. **Controlled governance enforcement-path validation** under Issue #18: record the negative eligibility result while authorization is false, then later the explicitly authorized current-main path.
-10. **Explicitly authorize one exact current-main/tag/channel/prerelease tuple** only after the governance validation gate is satisfied.
-11. **Publish only through the guarded Release workflow.**
-12. **Independently verify downloaded artifacts/checksums/content.**
-13. **Verify the production update/distribution path separately.**
-
-Until these gates are satisfied, `release-authorization.json` must remain fail-closed and no stable/RC publication is authorized.
+1. released `main` ancestry reconciliation is complete through merged PR #92;
+2. PR #93 per-pass output formats and Issue #80 native acceptance are complete and integrated;
+3. PR #94 release-tag eligibility push-trigger repair is complete and integrated;
+4. keep `release-authorization.json` unapproved;
+5. keep automatic startup update scheduling disabled and preserve the Issue #82 panel-readonly regression;
+6. exact v0.2.4 candidate freeze is complete at `ef5911a83270a4ce8121741ada2d2726fa09ec29`;
+7. bounded combined native Blender/After Effects release-candidate regression is complete for the recorded tested scope, including the focused Issue #82 clean-exit rerun;
+8. reconcile promotion-facing documentation and obtain green exact-head CI before any protected `develop` → `main` promotion;
+9. do not publish a v0.2.4 tag, GitHub Release, or production distribution entry before the later explicit release path.
 
 ## Non-blocking post-v0.2.3 work
 
-Issue #80 remains intentionally outside the v0.2.3 release scope. Per-pass output formats require coordinated manifest/preset/Blender/AE compatibility work and must not be half-implemented into the current release candidate.
+Issue #80 was intentionally outside the v0.2.3 release scope and is now completed for v0.2.4. The coordinated manifest/preset/Blender/AE per-pass implementation was integrated through PR #93 with native acceptance evidence and green post-merge CI.
 
 ## Recommended immediate phase
 
-**Controlled release-tag eligibility validation under Issue #18.**
-
-Promotion is complete and green. Keep `release-authorization.json` false while recording the negative eligibility result, then exercise the explicitly authorized exact-current-main path only after that negative gate is verified. S14B remains NOT_EXECUTED and may be pursued later only if broader Japanese target-user usability claims are desired.
+Complete this promotion-readiness reconciliation with exact-head CI. If green, open a protected `develop` → `main` promotion PR from the exact reviewed head and stop before merge pending explicit owner authorization. Keep `release-authorization.json` fail-closed until promotion and post-promotion CI are complete. S14B remains NOT_EXECUTED and is only required if broader Japanese target-user usability claims are desired.

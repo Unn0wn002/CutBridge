@@ -52,6 +52,31 @@ def test_manual_mode_preserves_legacy_pass_and_format_controls():
     assert presets.version_token_for(manual, 7) == "V007"
 
 
+def test_manual_mode_can_enable_per_pass_formats_with_depth_exr_default():
+    manual = presets.manual_preset(
+        _manual_settings(
+            pass_line=True,
+            pass_depth=True,
+            per_pass_formats_enabled=True,
+            format_beauty="PNG",
+            format_line="PNG",
+            format_shadow="PNG",
+            format_depth="OPEN_EXR",
+        )
+    )
+    by_name = {item["name"]: item for item in manual["passes"]}
+    assert by_name["BEAUTY"]["image_format"] == "PNG"
+    assert by_name["LINE"]["image_format"] == "PNG"
+    assert by_name["DEPTH"]["image_format"] == "OPEN_EXR"
+    assert manual["output"]["image_format"] == "PNG"
+
+
+def test_legacy_manual_mode_omits_per_pass_fields_and_keeps_global_fallback():
+    manual = presets.manual_preset(_manual_settings(pass_depth=True, image_format="TIFF"))
+    assert manual["output"]["image_format"] == "TIFF"
+    assert all("image_format" not in item for item in manual["passes"])
+
+
 def test_valid_custom_preset_can_change_order_format_folders_and_versioning():
     custom = presets.default_preset()
     custom["id"] = "jp-studio-a"
@@ -62,8 +87,8 @@ def test_valid_custom_preset_can_change_order_format_folders_and_versioning():
         "camera": "handoff/camera",
     }
     custom["passes"] = [
-        {"name": "LINE", "required": False},
-        {"name": "BEAUTY", "required": True},
+        {"name": "LINE", "required": False, "image_format": "PNG"},
+        {"name": "BEAUTY", "required": True, "image_format": "OPEN_EXR"},
     ]
     custom["output"]["image_format"] = "TIFF"
     custom["versioning"] = {"prefix": "R", "padding": 4}
@@ -74,6 +99,8 @@ def test_valid_custom_preset_can_change_order_format_folders_and_versioning():
     normalized = presets.validate_preset(custom)
     assert [item["name"] for item in normalized["passes"]] == ["LINE", "BEAUTY"]
     assert normalized["passes"][0]["required"] is False
+    assert normalized["passes"][0]["image_format"] == "PNG"
+    assert normalized["passes"][1]["image_format"] == "OPEN_EXR"
     assert normalized["folders"]["render"] == "frames/final"
     assert normalized["output"]["image_format"] == "TIFF"
     assert presets.version_token_for(normalized, 12) == "R0012"
@@ -103,6 +130,7 @@ def test_valid_custom_preset_can_change_order_format_folders_and_versioning():
         (lambda p: p["naming"].update({"package": "{__class__}"}), "PRESET_FIELD_INVALID"),
         (lambda p: p["naming"].update({"sequence": "{cut}_{pass}"}), "PRESET_FIELD_INVALID"),
         (lambda p: p["passes"].append({"name": "BEAUTY", "required": True}), "PRESET_FIELD_INVALID"),
+        (lambda p: p["passes"][0].update({"image_format": "MOVIE"}), "PRESET_FIELD_INVALID"),
         (lambda p: p["output"].update({"image_format": "MOVIE"}), "PRESET_FIELD_INVALID"),
         (lambda p: p.update({"command": "rm -rf /"}), "PRESET_FIELD_INVALID"),
     ],

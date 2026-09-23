@@ -135,6 +135,13 @@
           },
           "required": {
             "type": "boolean"
+          },
+          "image_format": {
+            "enum": [
+              "PNG",
+              "OPEN_EXR",
+              "TIFF"
+            ]
           }
         }
       }
