@@ -1,15 +1,15 @@
 # CutBridge for After Effects — Installation
 
-CutBridge v0.2.4 development packages use **four adjacent runtime files**:
+CutBridge After Effects packages use **four adjacent runtime files**:
 
 - `CutBridge.jsx` — panel, package import, Build, QC, revision adapter, localization binding, and S10C managed camera/3D Null reconstruction.
 - `revision_manager.js` — S6 non-destructive revision-manager core.
 - `qc_plus.js` — S7 deterministic QC+ diagnostic engine.
 - `localization.js` — S8 Japanese-first / English-fallback localization engine.
 
-**Keep these files together.** All four files should remain adjacent for normal development use. `revision_manager.js` and `qc_plus.js` are safety-critical runtime sidecars. `localization.js` is UX-only: if it cannot be loaded, the panel must fall back deterministically to English without weakening Build/QC/Revision validation.
+**Keep these files together.** All four files should remain adjacent for normal use. `revision_manager.js` and `qc_plus.js` are safety-critical runtime sidecars. `localization.js` is UX-only: if it cannot be loaded, the panel must fall back deterministically to English without weakening Build/QC/Revision validation.
 
-## First development test
+## First-run smoke test
 
 1. Keep `CutBridge.jsx`, `revision_manager.js`, `qc_plus.js`, and `localization.js` in the same directory.
 2. In After Effects choose **File > Scripts > Run Script File...**.
@@ -99,9 +99,11 @@ Automated Node/host-shaped tests protect contract and adapter behavior but are n
 
 The remaining broader release-target Blender → package → AE campaign belongs to S12 and release readiness, not to this installation guide.
 
-## Release boundary
+## Evidence and release-status boundary
 
-The native evidence above does **not** authorize publication of v0.2.4. Stable v0.2.3 remains published and immutable; v0.2.4 development starts with fail-closed release authorization and requires its own exact-candidate validation before any future release.
+The native evidence above is bounded to the named hosts and workflows. It does not establish blanket compatibility, representative-user usability, or broad production readiness.
+
+This installation guide intentionally does not encode whether a particular tag is current, authorized, or published. For the exact identity and publication state of a release, use the release's adjacent `release-metadata.json` and `SHA256SUMS.txt` assets together with the corresponding GitHub Release page. For engineering validation scope and limitations, use `../../docs/RELEASE_READINESS.md`.
 
 See:
 
