@@ -86,7 +86,7 @@ class ReleaseHygieneTests(unittest.TestCase):
 
     def test_version_constant_mismatch_is_rejected(self):
         source = self.builder.BLENDER_ROOT / "version.py"
-        source.write_text(source.read_text().replace("VERSION = (0, 2, 4)", "VERSION = (0, 2, 2)"))
+        source.write_text(source.read_text().replace("VERSION = (0, 2, 5)", "VERSION = (0, 2, 2)"))
         with self.assertRaises(ValueError):
             self.builder.build("v0.2.5", self.output)
         self.assertFalse(self.output.exists())
