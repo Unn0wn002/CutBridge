@@ -54,7 +54,7 @@ def test_blender_manifest_is_hardened_and_version_synced():
     assert manifest["schema_version"] == "1.0.0"
     assert manifest["id"] == "cutbridge"
     assert manifest["type"] == "add-on"
-    assert manifest["version"] == _version_from_source() == "0.2.4"
+    assert manifest["version"] == _version_from_source() == "0.2.5"
     assert manifest["blender_version_min"] == "4.2.0"
     assert "Animation" in manifest["tags"]
     assert "files" in manifest["permissions"]
@@ -93,15 +93,15 @@ def test_production_update_index_url_is_exact_https_distribution_endpoint():
     assert "raw.githubusercontent.com" not in endpoint
 
 
-def test_release_authorization_matches_v024_stable_tuple():
+def test_development_release_authorization_is_fail_closed():
     authorization = json.loads(
         (ROOT / "release-authorization.json").read_text(encoding="utf-8")
     )
     assert authorization == {
-        "approved": True,
-        "tag": "v0.2.4",
-        "channel": "stable",
-        "prerelease": False,
+        "approved": False,
+        "tag": None,
+        "channel": None,
+        "prerelease": None,
     }
 
 
@@ -349,7 +349,13 @@ def test_release_builder_produces_expected_artifacts(tmp_path):
         assert archive.read("revision_manager.js") == (ROOT / "apps/after-effects/revision_manager.js").read_bytes()
         assert archive.read("qc_plus.js") == (ROOT / "apps/after-effects/qc_plus.js").read_bytes()
         assert archive.read("localization.js") == (ROOT / "apps/after-effects/localization.js").read_bytes()
-        assert archive.read("INSTALL.md") == (ROOT / "apps/after-effects/INSTALL.md").read_bytes()
+        archived_install = archive.read("INSTALL.md").decode("utf-8")
+        assert archived_install.encode("utf-8") == (ROOT / "apps/after-effects/INSTALL.md").read_bytes()
+        assert not re.search(r"v\\d+\\.\\d+\\.\\d+\\s+development", archived_install, flags=re.IGNORECASE)
+        assert "does **not** authorize publication of" not in archived_install
+        assert "remains published and immutable" not in archived_install
+        assert "release-metadata.json" in archived_install
+        assert "GitHub Release page" in archived_install
         assert archive.read("LICENSE") == (ROOT / "LICENSE").read_bytes()
 
     checksum_lines = checksum_file.read_text(encoding="utf-8").splitlines()
