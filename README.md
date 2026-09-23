@@ -6,7 +6,7 @@ It standardizes cut metadata, render-pass packaging, versioning, `cutbridge.json
 
 CutBridge is designed for Japanese animation and content-production workflows, with a Japanese-first UI and deterministic English fallback. This is an implementation/design statement rather than a representative-user usability claim: S14B target-user validation remains NOT_EXECUTED. CutBridge is **not** a renderer, toon shader, animation generator, general scene exporter, or asset manager. Its job is to make the Blender → compositing handoff more repeatable, inspectable, and safer.
 
-**v0.2.4 — unreleased development baseline.** Stable v0.2.3 remains published and immutable. No v0.2.4 release is authorized or published.
+**v0.2.4 — promoted / release-authorized stable candidate; not yet tagged or published.** Stable v0.2.3 remains published and immutable. The exact v0.2.4 tuple is authorized as `v0.2.4` / `stable` / non-prerelease, but publication remains blocked until release-tag eligibility passes on the exact authorized current `main`.
 
 ## What CutBridge does
 
@@ -57,7 +57,7 @@ Stable v0.2.3 was published from protected `main` at `1fd2f67935600b06ef9d5301d9
 - Blender repository: `https://unn0wn002.github.io/cutbridge-distribution/blender/index.json`;
 - distribution commit: `635c1384af2649d4ce49705cce41f98826a861cc`.
 
-The v0.2.4 development baseline starts from that released `main` history so it can reconcile safely into protected `develop`. `release-authorization.json` is restored to fail-closed. The manual update checker uses the verified production notification index; automatic startup update scheduling remains disabled after Issue #82.
+The v0.2.4 line was promoted through protected `develop` → `main` after exact-head CI and bounded native candidate validation. `release-authorization.json` now authorizes only the exact stable tuple `v0.2.4` / `stable` / `prerelease: false`; there is still no v0.2.4 tag, GitHub Release, or production distribution entry. The manual update checker uses the verified production notification index; automatic startup update scheduling remains disabled after Issue #82.
 
 The exact S13F native-tested source was:
 
