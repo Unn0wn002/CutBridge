@@ -36,10 +36,15 @@ There is no separate `test-regression` command; regression coverage is part of t
 
 ## Developer and verifier handoff
 
-- Developer implements on its isolated feature/fix/bootstrap branch and reports the exact commit SHA, changed paths, commands, and outputs.
-- Verifier independently inspects that exact commit and its full diff, using a separate checkout/worktree. It runs the relevant tests itself, checks repository integrity and release safeguards, and reports evidence or BLOCKED. Never accept the Developer's claim as verification.
-- Developer and Verifier must not edit the same worktree concurrently. For a local verifier worktree, from the repository root use `git worktree add --detach <sibling-verifier-path> <exact-commit-sha>`. Remove a worktree only after its work is finished and its changes are accounted for.
-- If verification finds a defect, return the finding and evidence to Developer for repair; then verify the new exact commit independently.
+- Keep Developer and experiment work in separate worktrees branched from the fetched `origin/develop` tip; for example, `git worktree add -b feature/<slug> ../CutBridge-<slug> origin/develop` (use `fix/<slug>` for bug repairs). Do not let agents edit the same worktree concurrently. Verifier receives the immutable snapshot below, never Developer's live worktree.
+- Developer works on an isolated `feature/*` or `fix/*` branch from the fetched `develop` tip and reports the candidate branch, exact commit SHA (or `UNCOMMITTED SNAPSHOT`), working-tree state, changed paths, commands, and outputs.
+- Do not give Verifier Developer's live mutable checkout. Main creates a fresh verification snapshot from the exact candidate in a separate temporary directory. Exclude `.git`, credentials, unrelated user files, and caches unless a test requires them. Include the candidate diff against its recorded base as review input.
+- Before Verifier runs, record `manifest-before.sha256` for all source and test inputs. Designate only `verification-output/` (or an explicitly listed equivalent) for writable reports and test output. Verifier reads and tests the snapshot without editing source, tests, or project instructions.
+- Verifier independently inspects the supplied candidate diff, runs the relevant project checks, inspects outputs, and checks release safeguards. Do not accept Developer's claim as verification.
+- After Verifier completes, regenerate the source/test manifest. Any difference outside explicitly writable output paths makes the verification `INVALID`; create a new snapshot before any rerun.
+- Verifier returns exactly one verdict: `PASS`, `FAIL`, `INSUFFICIENT EVIDENCE`, or `WORKSPACE_NOT_ACCESSIBLE`. A `PASS` records candidate SHA/snapshot ID, tests and results, and source-integrity comparison. A `FAIL` records the test, expected and actual result, reproduction evidence, and relevant logs.
+- If verification finds a defect, send its exact evidence to Developer for repair, then create a new snapshot and repeat independent verification. Never reuse a verifier snapshot after it has been modified.
+- This snapshot-and-manifest procedure detects unexpected source changes but is not an OS-level read-only sandbox; do not claim hard filesystem enforcement.
 - The Computer Operator is used only when a required GUI action cannot be verified through an API, CLI, logs, or observable project state. Never invent host results or screenshots.
 
 This bootstrap adds instructions only. It does not authorize product changes, branch promotion, merge, release, or publication.
