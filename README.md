@@ -340,8 +340,18 @@ S14 target-user evidence must come from real representative participants. CI, lo
 
 See [`docs/S14_JP_USER_VALIDATION.md`](docs/S14_JP_USER_VALIDATION.md).
 
+## Development and verification
+
+Supported targets are Blender 4.2.0 minimum, with 4.2 / 4.5 / 5.2 LTS targets (automated runtime: Blender 5.2.1), and After Effects 2024–2026. Native evidence is limited to the exact versions and scenarios in [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md).
+
+Use [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) for Python setup, static checks, the full pytest suite, Blender runtime checks, and the local packaging simulation. CI runs `static-validation` and `blender-52-rna-runtime`; it does not replace Blender GUI or After Effects runtime verification. Follow [`docs/RELEASE_CHECKLIST.md`](docs/RELEASE_CHECKLIST.md) for required host and release gates.
+
+OpenClaw role, branch, and Developer ↔ Verifier handoff rules are in [`AGENTS.md`](AGENTS.md).
+
 ## Documentation
 
+- [Development and verification commands](docs/CONTRIBUTING.md)
+- [OpenClaw agent instructions and handoff rules](AGENTS.md)
 - [English Quick Start](docs/QUICK_START.md)
 - [日本語 Quick Start](docs/QUICK_START_JA.md)
 - [After Effects Installation](apps/after-effects/INSTALL.md)
