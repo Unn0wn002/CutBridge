@@ -80,7 +80,7 @@ Native owner verification on Windows 11 + Blender 5.2.1 LTS passed:
 - explicit invalid Line/Shadow fail-closed checks;
 - panel non-mutation check.
 
-Blender 4.2 and 4.5 were **not** natively verified for this repair and must remain UNVERIFIED.
+Focused Windows host probes on Blender 4.2.23 LTS (build hash `d0cbe84903e8`) and Blender 4.5.14 LTS (build hash `62c1db4208e8`) passed the legacy `Scene.use_nodes` compositor state-capture/restore path at develop commit `84a6f26bac593831eb75bf81c1b65212c12b59d8`. The reproducible probe is `tests/blender_legacy_compositor_probe.py`. This evidence covers that narrow state path only; broader Blender 4.2/4.5 workflow behavior remains UNVERIFIED.
 
 #### Issue #83 — post-build PACKAGE_EXISTS guidance
 
