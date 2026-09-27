@@ -16,8 +16,9 @@ cp apps/after-effects/CutBridge.jsx "$TMPDIR/CutBridge.js"
 node --check "$TMPDIR/CutBridge.js"
 VERSION="$(python - <<'PY'
 import tomllib
+import sys
 with open('apps/blender/cutbridge/blender_manifest.toml', 'rb') as fh:
-    print(tomllib.load(fh)['version'])
+    sys.stdout.write(tomllib.load(fh)['version'])
 PY
 )"
 python tools/build_release.py --tag "v${VERSION}" --output dist-ci
@@ -28,12 +29,24 @@ test -f dist-ci/release-metadata.json
 (cd dist-ci && tr -d '\r' < SHA256SUMS.txt | sha256sum --check)
 ```
 
-PowerShell equivalent (set `$env:TEMP` to the desired temporary directory first):
+PowerShell equivalent for the complete validation (use an empty `dist-ci` directory):
 
 ```powershell
 $jsCheck = Join-Path $env:TEMP 'CutBridge.js'
 Copy-Item apps/after-effects/CutBridge.jsx $jsCheck
 node --check $jsCheck
+$version = python -c "import tomllib; print(tomllib.load(open('apps/blender/cutbridge/blender_manifest.toml','rb'))['version'], end='')"
+$dist = 'dist-ci'
+if (Test-Path $dist) { throw "Use a fresh output directory: $dist" }
+python tools/build_release.py --tag "v$version" --output $dist
+foreach ($name in @("CutBridge-Blender-v$version.zip", "CutBridge-AfterEffects-v$version.zip", 'SHA256SUMS.txt', 'release-metadata.json')) {
+    if (-not (Test-Path (Join-Path $dist $name))) { throw "Missing release artifact: $name" }
+}
+foreach ($line in Get-Content (Join-Path $dist 'SHA256SUMS.txt')) {
+    if ($line -notmatch '^([a-f0-9]{64})  (.+)$') { throw "Invalid checksum line: $line" }
+    $actual = (Get-FileHash (Join-Path $dist $Matches[2]) -Algorithm SHA256).Hash.ToLowerInvariant()
+    if ($actual -ne $Matches[1]) { throw "Checksum mismatch: $($Matches[2])" }
+}
 ```
 
 The packaging simulation reads the Blender manifest version, as CI does, so the tag and artifact checks stay aligned with the current source version. Its checksum check accepts CRLF line endings from Windows Python while still validating the artifact bytes. Use a fresh `dist-ci` output directory for each run.

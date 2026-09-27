@@ -350,8 +350,11 @@ def test_release_builder_produces_expected_artifacts(tmp_path):
         assert archive.read("qc_plus.js") == (ROOT / "apps/after-effects/qc_plus.js").read_bytes()
         assert archive.read("localization.js") == (ROOT / "apps/after-effects/localization.js").read_bytes()
         archived_install = archive.read("INSTALL.md").decode("utf-8")
-        assert archived_install.encode("utf-8") == (ROOT / "apps/after-effects/INSTALL.md").read_bytes()
-        assert not re.search(r"v\\d+\\.\\d+\\.\\d+\\s+development", archived_install, flags=re.IGNORECASE)
+        assert "https://github.com/Unn0wn002/CutBridge/blob/" + tag + "/docs/RELEASE_READINESS.md" in archived_install
+        assert "{{RELEASE_TAG}}" not in archived_install
+        stale_release_claim = re.compile(r"v\d+\.\d+\.\d+\s+development", flags=re.IGNORECASE)
+        assert stale_release_claim.search("CutBridge v0.2.6 development build")
+        assert not stale_release_claim.search(archived_install)
         assert "does **not** authorize publication of" not in archived_install
         assert "remains published and immutable" not in archived_install
         assert "release-metadata.json" in archived_install
