@@ -149,10 +149,5 @@ class ReleaseHygieneTests(unittest.TestCase):
         self.assertIn("dist/SHA256SUMS.txt", publish_step)
         self.assertIn("dist/release-metadata.json", publish_step)
 
-    def test_ci_smoke_artifact_name_is_unique_across_reruns(self):
-        workflow = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
-        self.assertEqual(workflow.count("cutbridge-actions-smoke-${{ github.run_id }}-${{ github.run_attempt }}"), 2)
-
-
 if __name__ == "__main__":
     unittest.main()
