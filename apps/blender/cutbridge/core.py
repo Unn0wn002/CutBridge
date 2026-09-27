@@ -342,6 +342,11 @@ def _find_output_socket(render_layers_node, pass_name: str):
 def _capture_render_mapping_state(scene, layer, pass_names: Iterable[str]) -> dict:
     """Capture every non-node setting CutBridge may mutate during mapping."""
     pass_names = tuple(pass_names)
+    legacy_use_nodes = None
+    if not hasattr(scene, "compositing_node_group"):
+        # Blender 4.x only. Reading Scene.use_nodes on Blender 5.x is deprecated
+        # and always returns True, so do not touch it on the modern path.
+        legacy_use_nodes = getattr(scene, "use_nodes", None)
     layer_flags = {}
     for pass_name in pass_names:
         enable_attr = PASS_MAPPINGS[pass_name]["enable_attr"]
@@ -351,7 +356,7 @@ def _capture_render_mapping_state(scene, layer, pass_names: Iterable[str]) -> di
     return {
         "compositor_tree": getattr(scene, "compositing_node_group", None),
         "use_compositing": getattr(scene.render, "use_compositing", None),
-        "use_nodes": getattr(scene, "use_nodes", None),
+        "legacy_use_nodes": legacy_use_nodes,
         "use_freestyle": getattr(scene.render, "use_freestyle", None),
         "layer_flags": layer_flags,
     }
@@ -370,8 +375,8 @@ def _restore_render_mapping_state(scene, layer, state: dict, created_tree=None) 
 
     if state["use_compositing"] is not None:
         scene.render.use_compositing = state["use_compositing"]
-    if state["use_nodes"] is not None and hasattr(scene, "use_nodes"):
-        scene.use_nodes = state["use_nodes"]
+    if state["legacy_use_nodes"] is not None:
+        scene.use_nodes = state["legacy_use_nodes"]
 
     if hasattr(scene, "compositing_node_group") and scene.compositing_node_group is not state["compositor_tree"]:
         scene.compositing_node_group = state["compositor_tree"]

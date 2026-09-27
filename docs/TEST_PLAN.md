@@ -19,7 +19,7 @@ Latest post-merge evidence on that SHA:
 - deterministic release simulation/checksum verification: PASS;
 - S13 native-host-shaped revision regression: PASS.
 
-The Blender suite still emits `Scene.use_nodes` deprecation warnings relevant to Blender 6.0. Pinned Actions also emit Node-runtime deprecation warnings; see `TECHNICAL_DEBT.md`.
+The recorded v0.2.4 Blender suite emitted 72 deprecation warnings. The current v0.2.5 follow-up avoids `Scene.use_nodes` access on the modern compositor path and updates pinned workflow actions to Node 24; exact-candidate CI must confirm the new regression and artifact round-trip checks. Blender 5.3/6.0 compositor-effect support remains unverified; see `TECHNICAL_DEBT.md`.
 
 ## 1. Core automated gates
 
