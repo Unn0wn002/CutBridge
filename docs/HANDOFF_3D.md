@@ -155,7 +155,7 @@ This evidence validates the tested S10C subset in the named host. It does not ce
 
 ## Release boundary
 
-S10C validation does not authorize publication. v0.2.3 remains unreleased; release governance issue #18 remains open; `release-authorization.json` must remain fail-closed until a deliberate release-candidate process reaches the authorization stage.
+S10C validation does not authorize a future publication. v0.2.4 is published on GitHub, while production distribution remains on v0.2.3 because Issue #99 is open. Governance Issue #18 is closed; `release-authorization.json` remains fail-closed until a deliberate release-candidate process reaches the authorization stage.
 
 See also:
 
