@@ -351,7 +351,7 @@ def test_release_builder_produces_expected_artifacts(tmp_path):
         assert archive.read("localization.js") == (ROOT / "apps/after-effects/localization.js").read_bytes()
         archived_install = archive.read("INSTALL.md").decode("utf-8")
         assert "https://github.com/Unn0wn002/CutBridge/blob/" + tag + "/docs/RELEASE_READINESS.md" in archived_install
-        assert "{{RELEASE_TAG}}" not in archived_install
+        assert "blob/develop/docs/RELEASE_READINESS.md" not in archived_install
         stale_release_claim = re.compile(r"v\d+\.\d+\.\d+\s+development", flags=re.IGNORECASE)
         assert stale_release_claim.search("CutBridge v0.2.6 development build")
         assert not stale_release_claim.search(archived_install)
@@ -375,3 +375,28 @@ def test_release_builder_produces_expected_artifacts(tmp_path):
     assert metadata["blender_version_min"] == "4.2.0"
     assert metadata["artifacts"]["blender"]["sha256"] == recorded_checksums[blender_zip.name]
     assert metadata["artifacts"]["after_effects"]["sha256"] == recorded_checksums[ae_zip.name]
+
+
+@pytest.mark.parametrize("preexisting_output", [False, True])
+def test_release_builder_rejects_bad_install_link_before_writing_outputs(
+    tmp_path, monkeypatch, preexisting_output
+):
+    builder = _load_module("cutbridge_build_release_preflight_test", ROOT / "tools" / "build_release.py")
+    install = tmp_path / "INSTALL.md"
+    install.write_text("guide without the release link", encoding="utf-8")
+    monkeypatch.setattr(builder, "AE_INSTALL", install)
+    output = tmp_path / "dist"
+    version = _version_from_source()
+    existing_blender_zip = output / f"CutBridge-Blender-v{version}.zip"
+    if preexisting_output:
+        output.mkdir()
+        existing_blender_zip.write_bytes(b"preserve existing artifact")
+
+    with pytest.raises(RuntimeError, match="missing its release-readiness link"):
+        builder.build(f"v{version}", output)
+
+    if preexisting_output:
+        assert existing_blender_zip.read_bytes() == b"preserve existing artifact"
+        assert list(output.iterdir()) == [existing_blender_zip]
+    else:
+        assert not output.exists()

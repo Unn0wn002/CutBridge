@@ -127,7 +127,18 @@ def _write_blender_zip(path: Path) -> None:
         _write_entry(archive, ROOT / "LICENSE", "LICENSE")
 
 
-def _write_ae_zip(path: Path, release_tag: str) -> None:
+def _render_ae_install(release_tag: str) -> bytes:
+    install_text = AE_INSTALL.read_text(encoding="utf-8")
+    source_link = "https://github.com/Unn0wn002/CutBridge/blob/develop/docs/RELEASE_READINESS.md"
+    if source_link not in install_text:
+        raise RuntimeError("After Effects installation guide is missing its release-readiness link")
+    return install_text.replace(
+        source_link,
+        f"https://github.com/Unn0wn002/CutBridge/blob/{release_tag}/docs/RELEASE_READINESS.md",
+    ).encode("utf-8")
+
+
+def _write_ae_zip(path: Path, install: bytes) -> None:
     if (
         not AE_SCRIPT.is_file()
         or not AE_REVISION.is_file()
@@ -136,10 +147,6 @@ def _write_ae_zip(path: Path, release_tag: str) -> None:
         or not AE_INSTALL.is_file()
     ):
         raise RuntimeError("Missing After Effects scripts, localization sidecar, or installation guide required for release")
-    install_text = AE_INSTALL.read_text(encoding="utf-8")
-    if "{{RELEASE_TAG}}" not in install_text:
-        raise RuntimeError("After Effects installation guide is missing the release-tag link placeholder")
-    install = install_text.replace("{{RELEASE_TAG}}", release_tag).encode("utf-8")
     with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
         _write_entry(archive, AE_SCRIPT, "CutBridge.jsx")
         _write_entry(archive, AE_REVISION, "revision_manager.js")
@@ -166,6 +173,8 @@ def build(tag: str, output_dir: Path) -> dict:
             "Release source must include LICENSE, CutBridge.jsx, revision_manager.js, "
             "qc_plus.js, localization.js and INSTALL.md"
         )
+    # Validate and render every package-specific source before creating output.
+    ae_install = _render_ae_install(tag)
     blender_name = f"CutBridge-Blender-{tag}.zip"
     ae_name = f"CutBridge-AfterEffects-{tag}.zip"
     output_dir = output_dir.resolve()
@@ -182,7 +191,7 @@ def build(tag: str, output_dir: Path) -> dict:
     ae_zip = output_dir / ae_name
 
     _write_blender_zip(blender_zip)
-    _write_ae_zip(ae_zip, tag)
+    _write_ae_zip(ae_zip, ae_install)
 
     checksums = {
         blender_name: _sha256(blender_zip),
