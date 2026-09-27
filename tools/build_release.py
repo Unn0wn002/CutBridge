@@ -94,12 +94,12 @@ def _validate_source_version(version: str) -> None:
         raise ValueError("CutBridge.jsx PRODUCT_VERSION does not match the release version")
 
 
-def _write_entry(archive: zipfile.ZipFile, source: Path, name: str) -> None:
+def _write_entry(archive: zipfile.ZipFile, source: Path, name: str, content: bytes | None = None) -> None:
     # Checkout times and OS permissions must not change release checksums.
     info = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
     info.create_system = 3
     info.external_attr = 0o100644 << 16
-    archive.writestr(info, source.read_bytes(), compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
+    archive.writestr(info, source.read_bytes() if content is None else content, compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
 
 
 def _include_blender_file(path: Path) -> bool:
@@ -127,7 +127,7 @@ def _write_blender_zip(path: Path) -> None:
         _write_entry(archive, ROOT / "LICENSE", "LICENSE")
 
 
-def _write_ae_zip(path: Path) -> None:
+def _write_ae_zip(path: Path, release_tag: str) -> None:
     if (
         not AE_SCRIPT.is_file()
         or not AE_REVISION.is_file()
@@ -136,12 +136,16 @@ def _write_ae_zip(path: Path) -> None:
         or not AE_INSTALL.is_file()
     ):
         raise RuntimeError("Missing After Effects scripts, localization sidecar, or installation guide required for release")
+    install_text = AE_INSTALL.read_text(encoding="utf-8")
+    if "{{RELEASE_TAG}}" not in install_text:
+        raise RuntimeError("After Effects installation guide is missing the release-tag link placeholder")
+    install = install_text.replace("{{RELEASE_TAG}}", release_tag).encode("utf-8")
     with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
         _write_entry(archive, AE_SCRIPT, "CutBridge.jsx")
         _write_entry(archive, AE_REVISION, "revision_manager.js")
         _write_entry(archive, AE_QC_PLUS, "qc_plus.js")
         _write_entry(archive, AE_LOCALIZATION, "localization.js")
-        _write_entry(archive, AE_INSTALL, "INSTALL.md")
+        _write_entry(archive, AE_INSTALL, "INSTALL.md", content=install)
         _write_entry(archive, ROOT / "LICENSE", "LICENSE")
 
 
@@ -178,7 +182,7 @@ def build(tag: str, output_dir: Path) -> dict:
     ae_zip = output_dir / ae_name
 
     _write_blender_zip(blender_zip)
-    _write_ae_zip(ae_zip)
+    _write_ae_zip(ae_zip, tag)
 
     checksums = {
         blender_name: _sha256(blender_zip),
