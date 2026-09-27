@@ -12,45 +12,42 @@ S12/S13 closeout reference points:
 - production distribution: intentionally remains on v0.2.3 until a corrected post-v0.2.4 release is published and verified;
 - publication governance issue #18: CLOSED / COMPLETED; Issue #99 is the separate release-hygiene/distribution hold.
 
-## Priority A — Blender 6.0 compositor API migration
+## Priority A — Blender 5.3/6.0 compositor API migration
 
 ### Current evidence
 
-The latest exact-head Blender 5.2.1 runtime suite on the v0.2.4 integration baseline passes **307 tests + 2 subtests** and emits **72 deprecation warnings**. The principal known source remains `Scene.use_nodes` usage in render-mapping state capture/rollback.
+The historical v0.2.4 exact-head Blender 5.2.1 runtime suite passed **307 tests + 2 subtests** and emitted **72 deprecation warnings**. The v0.2.5 follow-up now reads and restores `Scene.use_nodes` only on the Blender 4.x compatibility path; a regression check covers state capture/rollback on the modern compositor path.
 
-Blender reports that `Scene.use_nodes` is expected to be removed in Blender 6.0.
+Blender's 5.0 API notes deprecate `Scene.use_nodes`, and its 5.3 API notes also deprecate `Scene.compositing_node_group` in favor of `Scene.compositor_effects`. Blender 5.3 introduces a scene compositor effects stack. The installed authoritative runtime remains Blender 5.2.1; the new stack does not yet have a stable supported runtime in this project.
 
 ### Risk
 
-CutBridge currently supports and tests Blender 5.2.1 successfully, so this is not a present Blender 5.2.1 failure. Leaving the deprecated API in the transactional mapping/rollback path may create a Blender 6.x compatibility failure or force a rushed migration later.
+The change removes deprecated `Scene.use_nodes` access from the currently supported modern path without breaking the 4.x compatibility path. It does not migrate compositor ownership to `Scene.compositor_effects`, so Blender 5.3/6.0 support is not established.
 
 ### Required work
 
-- [ ] Inspect the actual Blender 6.x compositor API contract before editing.
-- [ ] Replace deprecated `Scene.use_nodes` dependence with the supported equivalent while preserving transactional mapping semantics.
-- [ ] Add regression coverage proving prior valid mapping and artist nodes survive failed replacement attempts.
-- [ ] Run the existing Blender 5.2.1 suite to prevent backward regression.
-- [ ] Add authoritative Blender 6.x runtime coverage only after an explicit compatibility-target decision.
-- [ ] Do not claim Blender 6.x support merely because the warning disappears.
+- [ ] On a stable Blender 5.3 runtime, inspect `Scene.compositor_effects` and the scene-effect node-group contract.
+- [ ] Migrate the output mapping transaction to the effect stack while preserving artist effects and rollback behavior.
+- [ ] Keep Blender 4.2, 4.5, and 5.2 compatibility covered; test Blender 5.3 and Blender 6 only when authoritative runtimes are available.
+- [ ] Update supported-version claims only after real-host coverage passes.
+- [ ] Do not claim Blender 5.3/6.0 support from warning removal or static checks alone.
 
-## Priority A — GitHub Actions runtime migration
+## RESOLVED IN SOURCE — GitHub Actions Node 24 migration
 
 ### Current evidence
 
-Current CI passes, but GitHub warns that pinned revisions of actions such as checkout/setup-node/setup-python target deprecated Node 20 action runtimes and are being forced to execute on Node 24.
+The workflows now pin official Node 24 action revisions: checkout `3d3c42e5...` (v7.0.1), setup-node `82076278...` (v7.0.0), setup-python `5fda3b95...` (v7.0.0), upload-artifact `043fb46d...` (v7.0.1), download-artifact `3e5f45b2...` (v8.0.1), and action-gh-release `e598afbe...` (v3.0.3). CI includes an upload/download round-trip check. All action refs remain pinned to full commit SHAs, and checkout keeps `persist-credentials: false`.
 
 ### Risk
 
-CutBridge intentionally pins release-sensitive actions for supply-chain/reproducibility safety. Relying indefinitely on GitHub's compatibility override weakens confidence that the pinned action/runtime combination will remain supported.
+The pinned actions require a current GitHub Actions runner with Node 24 support. The release-only publish path is not executed by ordinary CI; it remains subject to the next explicitly authorized release workflow.
 
 ### Required work
 
-- [ ] Identify current official action revisions that natively support the supported GitHub Actions runtime.
-- [ ] Review upstream action release notes/security changes before changing pins.
-- [ ] Update pins deliberately rather than switching to floating major tags.
-- [ ] Verify `persist-credentials: false` and release-isolation assumptions remain intact.
-- [ ] Run complete CI and release simulation after pin updates.
-- [ ] Record exact new SHAs and validation evidence.
+- [x] Identify and review current official Node 24 action revisions.
+- [x] Pin full SHAs, preserving `persist-credentials: false` and release authorization boundaries.
+- [ ] Pass complete CI and the artifact round-trip check on the exact follow-up commit.
+- [ ] Exercise the release-only artifact/publish actions during the next explicitly authorized release.
 
 ## RESOLVED — `main` / `develop` release-promotion reconciliation
 

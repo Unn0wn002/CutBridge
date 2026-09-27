@@ -7,10 +7,13 @@ All notable CutBridge changes are tracked here.
 ### Fixed
 - Made the packaged After Effects `INSTALL.md` release-state-neutral after Issue #99 found stale pre-publication wording in the immutable v0.2.4 AE ZIP.
 - Added source-level and built-ZIP regression coverage so future AE release packages cannot silently restore version-specific development/publication claims.
+- Avoided deprecated `Scene.use_nodes` reads and writes on Blender's modern compositor path while retaining the Blender 4.x compatibility path.
+- Added regression coverage for compositor state capture and rollback without deprecated-property access.
 
 ### Changed
 - Reconciled the published v0.2.4 `main` history with the protected development line after PR #100.
 - Bumped the Blender manifest/version module and After Effects product identity to 0.2.5 for the next patch-development baseline.
+- Updated pinned GitHub Actions to official Node 24-compatible revisions and added an artifact upload/download smoke check.
 
 ### Safety
 - Restored `release-authorization.json` to the fail-closed development tuple; v0.2.5 is not authorized for publication.

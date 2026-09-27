@@ -192,8 +192,8 @@ Production endpoint deployment is no longer pending. Future distribution work co
 
 Current priority debt:
 
-1. Blender 6.0 migration away from deprecated `Scene.use_nodes`;
-2. refresh pinned GitHub Actions revisions whose underlying action runtimes still emit Node 20 deprecation warnings;
+1. migrate the compositor mapping to Blender 5.3's scene effects stack when a stable runtime is available;
+2. verify the pinned Node 24 GitHub Actions migration on exact-candidate CI;
 3. prevent session-status tests from freezing historical state as current state;
 4. preserve exact-candidate release governance and verification for subsequent releases;
 5. maintain a durable native-evidence trail.
