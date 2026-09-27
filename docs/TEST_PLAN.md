@@ -19,7 +19,7 @@ Latest post-merge evidence on that SHA:
 - deterministic release simulation/checksum verification: PASS;
 - S13 native-host-shaped revision regression: PASS.
 
-The recorded v0.2.4 Blender suite emitted 72 deprecation warnings. The current v0.2.5 follow-up avoids `Scene.use_nodes` access on the modern compositor path and updates pinned workflow actions to Node 24; exact-candidate CI must confirm the new regression and artifact round-trip checks. Blender 5.3/6.0 compositor-effect support remains unverified; see `TECHNICAL_DEBT.md`.
+The recorded v0.2.4 Blender suite emitted 72 deprecation warnings. The v0.2.5 follow-up avoids `Scene.use_nodes` access on the modern compositor path and updates pinned workflow actions to Node 24; exact-head CI passed the new regression and artifact round-trip checks on PR #104 and the subsequent PR #105 cleanup. Blender 5.3/6.0 compositor-effect support remains unverified; see `TECHNICAL_DEBT.md`.
 
 ## 1. Core automated gates
 

@@ -46,7 +46,7 @@ The pinned actions require a current GitHub Actions runner with Node 24 support.
 
 - [x] Identify and review current official Node 24 action revisions.
 - [x] Pin full SHAs, preserving `persist-credentials: false` and release authorization boundaries.
-- [ ] Pass complete CI and the artifact round-trip check on the exact follow-up commit.
+- [x] Pass complete CI and the artifact round-trip check on exact PR #104 / PR #105 heads (`36300656935`, `36301681204`) and their merge commits.
 - [ ] Exercise the release-only artifact/publish actions during the next explicitly authorized release.
 
 ## RESOLVED — `main` / `develop` release-promotion reconciliation

@@ -196,7 +196,7 @@ The v0.2.5 development boundary is fail-closed:
 2. use product version 0.2.5 across Blender/After Effects packaging identity;
 3. keep `release-authorization.json` unapproved;
 4. keep automatic startup update scheduling disabled;
-5. require exact-head CI on the reconciled protected-development baseline before candidate freeze;
+5. exact-head and post-merge CI passed for the reconciled baseline through PR #104 and follow-up PR #105;
 6. do not authorize/tag/publish v0.2.5 or update production distribution without later explicit gates.
 
 ## Non-blocking post-v0.2.3 work
@@ -205,4 +205,4 @@ Issue #80 was intentionally outside the v0.2.3 release scope and is now complete
 
 ## Recommended immediate phase
 
-The post-v0.2.4 ancestry/version reconciliation is integrated through PR #104 with green exact-head CI. Current-facing documentation follow-ups are tracked separately before an exact v0.2.5 candidate freeze and deterministic packaging. Native rerun scope may be bounded to the actual delta because runtime logic is unchanged by Issue #99. Keep release authorization false and production distribution on v0.2.3 until the later v0.2.5 publication path is explicitly authorized and verified. S14B remains NOT_EXECUTED and is only required if broader Japanese target-user usability claims are desired.
+The post-v0.2.4 ancestry/version reconciliation is integrated through PR #104, and current-facing documentation follow-ups through PR #105; exact-head and post-merge CI passed. The next step is an exact v0.2.5 candidate freeze with deterministic packaging and scoped native validation. Native rerun scope may be bounded to the actual delta because runtime logic is unchanged by Issue #99. Keep release authorization false and production distribution on v0.2.3 until the later v0.2.5 publication path is explicitly authorized and verified. S14B remains NOT_EXECUTED and is only required if broader Japanese target-user usability claims are desired.
