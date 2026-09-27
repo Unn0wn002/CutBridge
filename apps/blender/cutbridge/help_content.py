@@ -62,13 +62,13 @@ HELP_CONTENT = {
     },
     "sequence_format": {
         "EN": ("Sequence Format", (
-            ("What is this?", "The image-sequence format used by the current v0.2.4 package architecture."),
+            ("What is this?", "The image-sequence format used by CutBridge packages."),
             ("Current behavior", "The global format remains the compatibility fallback. Manual mode can optionally override the format for each enabled pass."),
             ("Recommended", "PNG is practical for Beauty/Line/Shadow; OpenEXR is recommended for accurate Depth data."),
             ("Compatibility", "Older manifests and presets without per-pass format fields continue to use the global format deterministically."),
         )),
         "JA": ("連番形式", (
-            ("これは何？", "現在のv0.2.4パッケージ構成で使用する画像連番形式です。"),
+            ("これは何？", "CutBridgeパッケージで使用する画像連番形式です。"),
             ("現在の動作", "全体形式は互換性用のフォールバックとして残り、手動モードでは有効な各パスを個別形式へ上書きできます。"),
             ("推奨", "Beauty/Line/ShadowはPNG、正確なDepthが必要な場合はOpenEXRを推奨します。"),
             ("互換性", "パスごとの形式フィールドがない旧manifest/プリセットは、従来どおり全体形式を決定的に使用します。"),

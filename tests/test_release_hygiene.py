@@ -149,6 +149,5 @@ class ReleaseHygieneTests(unittest.TestCase):
         self.assertIn("dist/SHA256SUMS.txt", publish_step)
         self.assertIn("dist/release-metadata.json", publish_step)
 
-
 if __name__ == "__main__":
     unittest.main()

@@ -103,7 +103,7 @@ The remaining broader release-target Blender → package → AE campaign belongs
 
 The native evidence above is bounded to the named hosts and workflows. It does not establish blanket compatibility, representative-user usability, or broad production readiness.
 
-This installation guide intentionally does not encode whether a particular tag is current, authorized, or published. For the exact identity and publication state of a release, use the release's adjacent `release-metadata.json` and `SHA256SUMS.txt` assets together with the corresponding GitHub Release page. For engineering validation scope and limitations, use `../../docs/RELEASE_READINESS.md`.
+This installation guide intentionally does not encode whether a particular tag is current, authorized, or published. For the exact identity and publication state of a release, use the release's adjacent `release-metadata.json` and `SHA256SUMS.txt` assets together with the corresponding [GitHub Release page](https://github.com/Unn0wn002/CutBridge/releases). For engineering validation scope and limitations, see the [CutBridge release-readiness record](https://github.com/Unn0wn002/CutBridge/blob/develop/docs/RELEASE_READINESS.md).
 
 See:
 
@@ -111,7 +111,7 @@ See:
 - `../../docs/QUICK_START_JA.md`
 - `../../docs/HANDOFF_3D.md`
 - `../../docs/COMPATIBILITY.md`
-- `../../docs/RELEASE_READINESS.md`
+- [Release readiness](https://github.com/Unn0wn002/CutBridge/blob/develop/docs/RELEASE_READINESS.md)
 - `../../docs/TEST_PLAN.md`
 - `../../docs/COMPLETION_STATUS.md`
 - `../../docs/ROADMAP.md`
