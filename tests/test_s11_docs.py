@@ -148,7 +148,7 @@ def test_after_effects_install_guide_is_release_state_neutral():
     assert "release-metadata.json" in text
     assert "SHA256SUMS.txt" in text
     assert "GitHub Release page" in text
-    assert "https://github.com/Unn0wn002/CutBridge/blob/{{RELEASE_TAG}}/docs/RELEASE_READINESS.md" in text
+    assert "https://github.com/Unn0wn002/CutBridge/blob/develop/docs/RELEASE_READINESS.md" in text
     assert "../../docs/RELEASE_READINESS.md" not in text
     assert "intentionally does not encode whether a particular tag is current, authorized, or published" in text
 
