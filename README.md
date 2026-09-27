@@ -346,12 +346,12 @@ Supported targets are Blender 4.2.0 minimum, with 4.2 / 4.5 / 5.2 LTS targets (a
 
 Use [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) for Python setup, static checks, the full pytest suite, Blender runtime checks, and the local packaging simulation. CI runs `static-validation` and `blender-52-rna-runtime`; it does not replace Blender GUI or After Effects runtime verification. Follow [`docs/RELEASE_CHECKLIST.md`](docs/RELEASE_CHECKLIST.md) for required host and release gates.
 
-OpenClaw role, branch, and Developer ↔ Verifier handoff rules are in [`AGENTS.md`](AGENTS.md).
+Project safety, branch, and verification rules are in [`AGENTS.md`](AGENTS.md).
 
 ## Documentation
 
 - [Development and verification commands](docs/CONTRIBUTING.md)
-- [OpenClaw agent instructions and handoff rules](AGENTS.md)
+- [Project instructions and verification rules](AGENTS.md)
 - [English Quick Start](docs/QUICK_START.md)
 - [日本語 Quick Start](docs/QUICK_START_JA.md)
 - [After Effects Installation](apps/after-effects/INSTALL.md)
@@ -367,3 +367,4 @@ OpenClaw role, branch, and Developer ↔ Verifier handoff rules are in [`AGENTS.
 ## License
 
 CutBridge uses **GPL-3.0-or-later**. The full GPL v3 text is included in [`LICENSE`](LICENSE) and in release packaging.
+
