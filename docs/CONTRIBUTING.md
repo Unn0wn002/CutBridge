@@ -29,16 +29,31 @@ test -f dist-ci/release-metadata.json
 (cd dist-ci && tr -d '\r' < SHA256SUMS.txt | sha256sum --check)
 ```
 
-PowerShell equivalent for the complete validation (use an empty `dist-ci` directory):
+PowerShell equivalent for the complete validation (Python 3.13, Node.js, and an empty `dist-ci` directory):
 
 ```powershell
+$out = Join-Path (Get-Location).Path 'verification-output'
+New-Item -ItemType Directory -Force "$out\pycache", "$out\tmp" | Out-Null
+$env:PYTHONPYCACHEPREFIX = "$out\pycache"
+$env:TEMP = "$out\tmp"; $env:TMP = $env:TEMP; $env:TMPDIR = $env:TEMP
+python -m pip install pytest jsonschema bpy==5.2.1
+if ($LASTEXITCODE -ne 0) { throw 'Dependency installation failed' }
+python -m compileall -q apps tools tests
+if ($LASTEXITCODE -ne 0) { throw 'Python compilation failed' }
+python -m pytest -q -p no:cacheprovider
+if ($LASTEXITCODE -ne 0) { throw 'Pytest failed' }
+python tests/test_blender_runtime_52.py
+if ($LASTEXITCODE -ne 0) { throw 'Blender RNA runtime checks failed' }
 $jsCheck = Join-Path $env:TEMP 'CutBridge.js'
 Copy-Item apps/after-effects/CutBridge.jsx $jsCheck
 node --check $jsCheck
+if ($LASTEXITCODE -ne 0) { throw 'After Effects JavaScript syntax check failed' }
 $version = python -c "import tomllib; print(tomllib.load(open('apps/blender/cutbridge/blender_manifest.toml','rb'))['version'], end='')"
+if ($LASTEXITCODE -ne 0) { throw 'Version lookup failed' }
 $dist = 'dist-ci'
 if (Test-Path $dist) { throw "Use a fresh output directory: $dist" }
 python tools/build_release.py --tag "v$version" --output $dist
+if ($LASTEXITCODE -ne 0) { throw 'Release packaging simulation failed' }
 foreach ($name in @("CutBridge-Blender-v$version.zip", "CutBridge-AfterEffects-v$version.zip", 'SHA256SUMS.txt', 'release-metadata.json')) {
     if (-not (Test-Path (Join-Path $dist $name))) { throw "Missing release artifact: $name" }
 }
@@ -66,3 +81,4 @@ A missing dependency is BLOCKED, not a pass or a reason to skip authoritative te
 Use an empty output directory, or one containing only the four artifacts of the same version. The builder refuses unrelated files, directories, symlink artifacts, and source overlap. Use a new directory for a different version. Fixed ZIP timestamps and permissions make identical source bytes reproducible with the same Python/zlib toolchain; do not assume compressed bytes match across different toolchain versions.
 
 Keep versions, tests and docs synchronized. Never commit generated ZIPs, local cut packages, client assets, credentials, or footage. Retain branch history according to [BRANCHING.md](BRANCHING.md).
+
