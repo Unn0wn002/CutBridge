@@ -13,9 +13,21 @@ python -m pytest -q
 python tests/test_blender_runtime_52.py
 cp apps/after-effects/CutBridge.jsx /tmp/CutBridge.js
 node --check /tmp/CutBridge.js
-python tools/build_release.py --tag v0.2.4 --output dist-ci
-(cd dist-ci && sha256sum --check SHA256SUMS.txt)
+VERSION="$(python - <<'PY'
+import tomllib
+with open('apps/blender/cutbridge/blender_manifest.toml', 'rb') as fh:
+    print(tomllib.load(fh)['version'])
+PY
+)"
+python tools/build_release.py --tag "v${VERSION}" --output dist-ci
+test -f "dist-ci/CutBridge-Blender-v${VERSION}.zip"
+test -f "dist-ci/CutBridge-AfterEffects-v${VERSION}.zip"
+test -f dist-ci/SHA256SUMS.txt
+test -f dist-ci/release-metadata.json
+(cd dist-ci && tr -d '\r' < SHA256SUMS.txt | sha256sum --check)
 ```
+
+The packaging simulation reads the Blender manifest version, as CI does, so the tag and artifact checks stay aligned with the current source version. Its checksum check accepts CRLF line endings from Windows Python while still validating the artifact bytes. Use a fresh `dist-ci` output directory for each run.
 
 The standalone RNA script must run separately: pytest imports it but does not execute its two lifecycle cycles. CI runs both the full pytest suite and this script. Node validates JavaScript syntax only; it does not exercise AE APIs or prove ExtendScript runtime compatibility.
 
