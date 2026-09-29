@@ -84,21 +84,24 @@ def test_evidence_summary_preserves_sha_bound_native_evidence_and_limitations():
     assert "NOT RELEASE READY" in text
 
 
-def test_quick_starts_track_s13_and_point_to_s14():
+def test_quick_starts_track_current_release_state_and_point_to_s14():
     en = _read("docs/QUICK_START.md")
     ja = _read("docs/QUICK_START_JA.md")
 
-    assert "development workflow through S13" in en
-    assert "S13F" in en
-    assert "S14 — Japanese Target-User Validation & Release Preparation" in en
-    assert "S12 — End-to-End Blender → package → After Effects validation harness" not in en
-    assert "S12_S13_EVIDENCE_SUMMARY.md" in en
+    for text in (en, ja):
+        assert "v0.2.4" in text and "v0.2.5" in text
+        assert "v0.2.3" in text and "Issue #99" in text
+        assert "Issue #18" in text
+        assert "S14B" in text and "NOT_EXECUTED" in text
+        assert "S13F" in text
+        assert "S14 — Japanese Target-User Validation & Release Preparation" in text
+        assert "S12_S13_EVIDENCE_SUMMARY.md" in text
 
-    assert "S13 までの v0.2.3 未リリース開発版" in ja
-    assert "S13F" in ja
-    assert "S14 — Japanese Target-User Validation & Release Preparation" in ja
-    assert "S12 — Blender → package → After Effects End-to-End Validation Harness" not in ja
-    assert "S12_S13_EVIDENCE_SUMMARY.md" in ja
+    assert "GitHub release" in en and "公開・検証済みの GitHub Release" in ja
+    assert "production distribution" in en and "本番配布" in ja
+    assert "fail-closed" in en and "Fail-Closed" in ja
+    assert "no representative-user validation" in en
+    assert "代表ユーザーによる検証" in ja
 
 
 def test_technical_debt_uses_current_release_baseline_and_evidence_limits():
