@@ -1,6 +1,6 @@
 # CutBridge Quick Start
 
-This guide describes the **v0.2.3 unreleased development workflow through S13**.
+This guide describes the current **v0.2.5 unreleased development workflow**. The published and verified GitHub release is v0.2.4; v0.2.3 remains the production distribution while Issue #99's v0.2.4 distribution hold is unresolved. v0.2.5 is development only and its release authorization remains fail-closed. Issue #18 is completed/closed. S14B remains **NOT_EXECUTED**; no representative-user validation or broad Japanese production-usability claim is made.
 
 CutBridge connects one Blender animation cut to After Effects through deterministic render-output mapping, a versioned package, `cutbridge.json`, managed AE project state, QC+, compatible source-only revision updates, Japanese-first UX, data-only Studio Presets, and the bounded optional 3D Camera/Null handoff validated through the S10–S13 real-host campaign.
 
@@ -18,7 +18,7 @@ Studio Preset authoring reference: [STUDIO_PRESETS.md](STUDIO_PRESETS.md).
 
 S1–S8 established the deterministic handoff, ownership/revision/QC contracts, and Japanese-first UI. S9 added validated declarative Studio Presets. S10A defined the Camera/Null coordinate, timing, and projection contract; S10B added the optional evaluated-world Blender producer; S10C added bounded managed After Effects Camera/3D Null reconstruction and passed native AE projection-parity validation. S11 completed QA/docs/release-readiness work. S12 executed the broader release-target real-host campaign, and S13 repaired the native revision defects found by that campaign. The final S13F native-tested source passed V001→V002→V003 and was integrated intact through PR #68.
 
-This is development/native evidence, not stable-release authorization. There is no GitHub Release and `release-authorization.json` remains fail-closed. Repository governance issue #18 still blocks publication. See [RELEASE_READINESS.md](RELEASE_READINESS.md) and [S12_S13_EVIDENCE_SUMMARY.md](S12_S13_EVIDENCE_SUMMARY.md).
+This is development/native evidence, not stable-release authorization. v0.2.4 is the published and verified GitHub release; v0.2.5 is unreleased development and `release-authorization.json` remains fail-closed. Issue #18 is completed/closed. Production distribution remains on v0.2.3 while Issue #99's v0.2.4 distribution hold remains unresolved. S14B remains **NOT_EXECUTED**. These facts do not establish representative Japanese-user validation or broad production usability. See [RELEASE_READINESS.md](RELEASE_READINESS.md) and [S12_S13_EVIDENCE_SUMMARY.md](S12_S13_EVIDENCE_SUMMARY.md).
 
 ## 1. Install the Blender extension
 
@@ -255,7 +255,7 @@ Locale switching must not alter:
 
 ## 13. Development and release boundary
 
-Do not publish or label v0.2.3 as stable merely because CI, S12, or S13 gates pass.
+Do not treat v0.2.5 development, CI, or prior native evidence as release authorization. The published GitHub release is v0.2.4, while production distribution remains v0.2.3 pending resolution of Issue #99. `release-authorization.json` remains fail-closed. Issue #18 is completed/closed; S14B remains NOT_EXECUTED.
 
 Before an RC/stable release, CutBridge still requires repository-level release governance in issue #18, Japanese target-user evidence appropriate to broad usability claims, an explicitly frozen release candidate, deliberate promotion to `main`, authoritative CI on the exact promoted tree, exact release authorization, real tag-triggered publication, downloaded-asset checksum verification, and production update/distribution verification.
 
