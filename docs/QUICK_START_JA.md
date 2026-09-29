@@ -1,6 +1,6 @@
 # CutBridge クイックスタート（日本語）
 
-このガイドは、**S13 までの v0.2.3 未リリース開発版**を対象にしています。
+このガイドは、現在の **v0.2.5 未リリース開発版**を対象にしています。公開・検証済みの GitHub Release は v0.2.4 です。Issue #99 による v0.2.4 の配布保留が未解決のため、本番配布は v0.2.3 のままです。v0.2.5 は開発版のみで、リリース承認は Fail-Closed です。Issue #18 は完了・クローズ済みです。S14B は **NOT_EXECUTED** であり、代表ユーザーによる検証や、日本語での本番利用性全般が実証されたとは主張しません。
 
 CutBridge は Blender のアニメーションカットを After Effects へ受け渡すための制作パイプラインツールです。カット情報、レンダーパス、バージョン、`cutbridge.json`、AE 側の管理対象コンポ／フッテージ／レイヤー、QC、互換 Revision、日本語優先 UI、データ専用 Studio Preset、そして S10〜S13 で実ホスト検証された限定的な Camera / 3D Null Handoff を一貫したルールで扱います。
 
@@ -18,7 +18,7 @@ Studio Preset 詳細: [STUDIO_PRESETS.md](STUDIO_PRESETS.md)
 
 S1〜S8 で決定的な Blender→AE Handoff、Ownership / Revision / QC、日本語優先 UI を構築しました。S9 で宣言型 Studio Preset を追加し、S10A で Camera / Null の座標・Timing・Projection 契約を確定、S10B で Blender Evaluated-World Producer を追加、S10C で After Effects の Managed Camera / 3D Null 再構築を実装し Native Projection Parity Gate を通過しました。S11 で QA / Documentation / Release Readiness を整備し、S12 で Release-Target の実ホスト End-to-End Campaign を実行しました。S12 で見つかった Native Revision Defect は S13 で修正され、最終 S13F Candidate は V001→V002→V003 を実 AE で通過し、PR #68 で同一 SHA のまま統合されました。
 
-これは開発／Native 検証であり Stable / RC 公開許可ではありません。GitHub Release は存在せず、`release-authorization.json` は Fail-Closed のままです。Repository Governance issue #18 も公開を Block しています。詳細は [RELEASE_READINESS.md](RELEASE_READINESS.md) と [S12_S13_EVIDENCE_SUMMARY.md](S12_S13_EVIDENCE_SUMMARY.md) を参照してください。
+これは開発／Native 検証であり Stable / RC 公開許可ではありません。公開・検証済みの GitHub Release は v0.2.4 です。v0.2.5 は未リリース開発版で、`release-authorization.json` は Fail-Closed のままです。Issue #18 は完了・クローズ済みです。Issue #99 による v0.2.4 の配布保留が未解決のため、本番配布は v0.2.3 のままです。S14B は **NOT_EXECUTED** です。これらの状態は、代表ユーザー検証や日本語での本番利用性全般を実証するものではありません。詳細は [RELEASE_READINESS.md](RELEASE_READINESS.md) と [S12_S13_EVIDENCE_SUMMARY.md](S12_S13_EVIDENCE_SUMMARY.md) を参照してください。
 
 ## 1. Blender 版 CutBridge をインストール
 
@@ -234,9 +234,9 @@ Preset の Version 表示が `R0012` のように変わっても、Revision Comp
 
 ## 13. Release Boundary
 
-v0.2.3 は未リリースです。CI / S12 / S13 PASS だけを理由に Stable / RC を公開しません。
+v0.2.4 は公開・検証済みの GitHub Release ですが、Issue #99 による配布保留は未解決です。本番配布は v0.2.3 のままです。v0.2.5 は未リリース開発版で、リリース承認は Fail-Closed です。Issue #18 は完了・クローズ済み、S14B は NOT_EXECUTED です。CI / S12 / S13 PASS だけを理由に Stable / RC を公開しません。
 
-公開前には issue #18 の Repository-Level Release Governance、日本の Target User に対する Claim に適した S14 Evidence、明示的に Freeze した Release Candidate、`main` への意図的 Promotion、Promoted Tree の Authoritative CI、Exact Authorization、実 Tag Release、Downloaded Asset Verification、Production Update / Distribution Verification が必要です。
+Issue #18 の Repository-Level Governance は完了しています。今後の RC / Stable Release でも、適用される Governance Control、必要な Claim に限った日本の Target User Evidence、Exact Candidate の Freeze と検証、`main` への意図的 Promotion と Exact Authorization、Tag Release、公開 Asset の Checksum 検証、Production Update / Distribution 検証が必要です。
 
 Canonical Checklist: [RELEASE_READINESS.md](RELEASE_READINESS.md)
 

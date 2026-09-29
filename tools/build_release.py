@@ -94,12 +94,12 @@ def _validate_source_version(version: str) -> None:
         raise ValueError("CutBridge.jsx PRODUCT_VERSION does not match the release version")
 
 
-def _write_entry(archive: zipfile.ZipFile, source: Path, name: str) -> None:
+def _write_entry(archive: zipfile.ZipFile, source: Path, name: str, content: bytes | None = None) -> None:
     # Checkout times and OS permissions must not change release checksums.
     info = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
     info.create_system = 3
     info.external_attr = 0o100644 << 16
-    archive.writestr(info, source.read_bytes(), compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
+    archive.writestr(info, source.read_bytes() if content is None else content, compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
 
 
 def _include_blender_file(path: Path) -> bool:
@@ -127,7 +127,18 @@ def _write_blender_zip(path: Path) -> None:
         _write_entry(archive, ROOT / "LICENSE", "LICENSE")
 
 
-def _write_ae_zip(path: Path) -> None:
+def _render_ae_install(release_tag: str) -> bytes:
+    install_text = AE_INSTALL.read_text(encoding="utf-8")
+    source_link = "https://github.com/Unn0wn002/CutBridge/blob/develop/docs/RELEASE_READINESS.md"
+    if source_link not in install_text:
+        raise RuntimeError("After Effects installation guide is missing its release-readiness link")
+    return install_text.replace(
+        source_link,
+        f"https://github.com/Unn0wn002/CutBridge/blob/{release_tag}/docs/RELEASE_READINESS.md",
+    ).encode("utf-8")
+
+
+def _write_ae_zip(path: Path, install: bytes) -> None:
     if (
         not AE_SCRIPT.is_file()
         or not AE_REVISION.is_file()
@@ -141,7 +152,7 @@ def _write_ae_zip(path: Path) -> None:
         _write_entry(archive, AE_REVISION, "revision_manager.js")
         _write_entry(archive, AE_QC_PLUS, "qc_plus.js")
         _write_entry(archive, AE_LOCALIZATION, "localization.js")
-        _write_entry(archive, AE_INSTALL, "INSTALL.md")
+        _write_entry(archive, AE_INSTALL, "INSTALL.md", content=install)
         _write_entry(archive, ROOT / "LICENSE", "LICENSE")
 
 
@@ -162,6 +173,8 @@ def build(tag: str, output_dir: Path) -> dict:
             "Release source must include LICENSE, CutBridge.jsx, revision_manager.js, "
             "qc_plus.js, localization.js and INSTALL.md"
         )
+    # Validate and render every package-specific source before creating output.
+    ae_install = _render_ae_install(tag)
     blender_name = f"CutBridge-Blender-{tag}.zip"
     ae_name = f"CutBridge-AfterEffects-{tag}.zip"
     output_dir = output_dir.resolve()
@@ -178,7 +191,7 @@ def build(tag: str, output_dir: Path) -> dict:
     ae_zip = output_dir / ae_name
 
     _write_blender_zip(blender_zip)
-    _write_ae_zip(ae_zip)
+    _write_ae_zip(ae_zip, ae_install)
 
     checksums = {
         blender_name: _sha256(blender_zip),

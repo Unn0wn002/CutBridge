@@ -54,7 +54,7 @@ def test_blender_manifest_is_hardened_and_version_synced():
     assert manifest["schema_version"] == "1.0.0"
     assert manifest["id"] == "cutbridge"
     assert manifest["type"] == "add-on"
-    assert manifest["version"] == _version_from_source() == "0.2.4"
+    assert manifest["version"] == _version_from_source() == "0.2.5"
     assert manifest["blender_version_min"] == "4.2.0"
     assert "Animation" in manifest["tags"]
     assert "files" in manifest["permissions"]
@@ -93,15 +93,15 @@ def test_production_update_index_url_is_exact_https_distribution_endpoint():
     assert "raw.githubusercontent.com" not in endpoint
 
 
-def test_release_authorization_matches_v024_stable_tuple():
+def test_development_release_authorization_is_fail_closed():
     authorization = json.loads(
         (ROOT / "release-authorization.json").read_text(encoding="utf-8")
     )
     assert authorization == {
-        "approved": True,
-        "tag": "v0.2.4",
-        "channel": "stable",
-        "prerelease": False,
+        "approved": False,
+        "tag": None,
+        "channel": None,
+        "prerelease": None,
     }
 
 
@@ -349,7 +349,16 @@ def test_release_builder_produces_expected_artifacts(tmp_path):
         assert archive.read("revision_manager.js") == (ROOT / "apps/after-effects/revision_manager.js").read_bytes()
         assert archive.read("qc_plus.js") == (ROOT / "apps/after-effects/qc_plus.js").read_bytes()
         assert archive.read("localization.js") == (ROOT / "apps/after-effects/localization.js").read_bytes()
-        assert archive.read("INSTALL.md") == (ROOT / "apps/after-effects/INSTALL.md").read_bytes()
+        archived_install = archive.read("INSTALL.md").decode("utf-8")
+        assert "https://github.com/Unn0wn002/CutBridge/blob/" + tag + "/docs/RELEASE_READINESS.md" in archived_install
+        assert "blob/develop/docs/RELEASE_READINESS.md" not in archived_install
+        stale_release_claim = re.compile(r"v\d+\.\d+\.\d+\s+development", flags=re.IGNORECASE)
+        assert stale_release_claim.search("CutBridge v0.2.6 development build")
+        assert not stale_release_claim.search(archived_install)
+        assert "does **not** authorize publication of" not in archived_install
+        assert "remains published and immutable" not in archived_install
+        assert "release-metadata.json" in archived_install
+        assert "GitHub Release page" in archived_install
         assert archive.read("LICENSE") == (ROOT / "LICENSE").read_bytes()
 
     checksum_lines = checksum_file.read_text(encoding="utf-8").splitlines()
@@ -366,3 +375,28 @@ def test_release_builder_produces_expected_artifacts(tmp_path):
     assert metadata["blender_version_min"] == "4.2.0"
     assert metadata["artifacts"]["blender"]["sha256"] == recorded_checksums[blender_zip.name]
     assert metadata["artifacts"]["after_effects"]["sha256"] == recorded_checksums[ae_zip.name]
+
+
+@pytest.mark.parametrize("preexisting_output", [False, True])
+def test_release_builder_rejects_bad_install_link_before_writing_outputs(
+    tmp_path, monkeypatch, preexisting_output
+):
+    builder = _load_module("cutbridge_build_release_preflight_test", ROOT / "tools" / "build_release.py")
+    install = tmp_path / "INSTALL.md"
+    install.write_text("guide without the release link", encoding="utf-8")
+    monkeypatch.setattr(builder, "AE_INSTALL", install)
+    output = tmp_path / "dist"
+    version = _version_from_source()
+    existing_blender_zip = output / f"CutBridge-Blender-v{version}.zip"
+    if preexisting_output:
+        output.mkdir()
+        existing_blender_zip.write_bytes(b"preserve existing artifact")
+
+    with pytest.raises(RuntimeError, match="missing its release-readiness link"):
+        builder.build(f"v{version}", output)
+
+    if preexisting_output:
+        assert existing_blender_zip.read_bytes() == b"preserve existing artifact"
+        assert list(output.iterdir()) == [existing_blender_zip]
+    else:
+        assert not output.exists()

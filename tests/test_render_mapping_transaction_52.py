@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import pathlib
 import sys
+import warnings
 
 import bpy
 import pytest
@@ -14,6 +15,8 @@ sys.path.insert(0, str(BLENDER_APP))
 
 import cutbridge  # noqa: E402
 from cutbridge.core import (  # noqa: E402
+    _capture_render_mapping_state,
+    _restore_render_mapping_state,
     clear_managed_render_outputs,
     configure_render_outputs,
 )
@@ -129,3 +132,15 @@ def test_failed_later_pass_preserves_previous_mapping_and_render_flags(configure
     assert scene.render.use_freestyle == before_scene_freestyle
     assert view_layer.use_freestyle == before_layer_freestyle
     assert scene.render.use_compositing == before_use_compositing
+
+
+def test_modern_compositor_state_does_not_read_deprecated_use_nodes(configured_scene):
+    scene, _settings, view_layer, _tmp_path = configured_scene
+
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        state = _capture_render_mapping_state(scene, view_layer, ("BEAUTY",))
+        _restore_render_mapping_state(scene, view_layer, state)
+
+    assert state["legacy_use_nodes"] is None
+    assert not any("Scene.use_nodes" in str(item.message) for item in caught)
