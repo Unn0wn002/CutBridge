@@ -257,7 +257,7 @@ Locale switching must not alter:
 
 Do not treat v0.2.5 development, CI, or prior native evidence as release authorization. The published GitHub release is v0.2.4, while production distribution remains v0.2.3 pending resolution of Issue #99. `release-authorization.json` remains fail-closed. Issue #18 is completed/closed; S14B remains NOT_EXECUTED.
 
-Before an RC/stable release, CutBridge still requires repository-level release governance in issue #18, Japanese target-user evidence appropriate to broad usability claims, an explicitly frozen release candidate, deliberate promotion to `main`, authoritative CI on the exact promoted tree, exact release authorization, real tag-triggered publication, downloaded-asset checksum verification, and production update/distribution verification.
+Issue #18's repository-level governance work is completed. A future RC/stable release must continue to satisfy the applicable repository governance controls, use Japanese target-user evidence only for claims that require it, freeze and verify the exact candidate, obtain deliberate promotion to `main` and exact release authorization, complete tag-triggered publication, verify downloaded asset checksums, and verify production update/distribution.
 
 Use [RELEASE_READINESS.md](RELEASE_READINESS.md) as the canonical release checklist.
 

@@ -236,7 +236,7 @@ Preset の Version 表示が `R0012` のように変わっても、Revision Comp
 
 v0.2.4 は公開・検証済みの GitHub Release ですが、Issue #99 による配布保留は未解決です。本番配布は v0.2.3 のままです。v0.2.5 は未リリース開発版で、リリース承認は Fail-Closed です。Issue #18 は完了・クローズ済み、S14B は NOT_EXECUTED です。CI / S12 / S13 PASS だけを理由に Stable / RC を公開しません。
 
-公開前には issue #18 の Repository-Level Release Governance、日本の Target User に対する Claim に適した S14 Evidence、明示的に Freeze した Release Candidate、`main` への意図的 Promotion、Promoted Tree の Authoritative CI、Exact Authorization、実 Tag Release、Downloaded Asset Verification、Production Update / Distribution Verification が必要です。
+Issue #18 の Repository-Level Governance は完了しています。今後の RC / Stable Release でも、適用される Governance Control、必要な Claim に限った日本の Target User Evidence、Exact Candidate の Freeze と検証、`main` への意図的 Promotion と Exact Authorization、Tag Release、公開 Asset の Checksum 検証、Production Update / Distribution 検証が必要です。
 
 Canonical Checklist: [RELEASE_READINESS.md](RELEASE_READINESS.md)
 

@@ -9,6 +9,7 @@ Prepare Python 3.13, Node.js 22, `pytest`, `jsonschema`, and the official Blende
 ### Bash
 
 ```bash
+set -euo pipefail
 OUT="$PWD/verification-output"
 mkdir -p "$OUT/pycache" "$OUT/tmp"
 export PYTHONPYCACHEPREFIX="$OUT/pycache"
@@ -19,12 +20,18 @@ python -m pytest -q -p no:cacheprovider
 python tests/test_blender_runtime_52.py
 
 for file in CutBridge.jsx revision_manager.js qc_plus.js localization.js; do
-  cp "apps/after-effects/$file" "$TMPDIR/$file"
-  node --check "$TMPDIR/$file"
+  node_file="$file"
+  if [[ "$file" == CutBridge.jsx ]]; then node_file=CutBridge.js; fi
+  cp "apps/after-effects/$file" "$TMPDIR/$node_file"
+  node --check "$TMPDIR/$node_file"
 done
 
 VERSION="$(python -c "import tomllib; print(tomllib.load(open('apps/blender/cutbridge/blender_manifest.toml','rb'))['version'], end='')")"
 DIST="$OUT/dist-ci"
+if [[ -e "$DIST" ]]; then
+  printf 'Use a fresh output directory: %s\n' "$DIST" >&2
+  exit 1
+fi
 python tools/build_release.py --tag "v${VERSION}" --output "$DIST"
 test -f "$DIST/CutBridge-Blender-v${VERSION}.zip"
 test -f "$DIST/CutBridge-AfterEffects-v${VERSION}.zip"
@@ -36,12 +43,15 @@ import sys, zipfile
 with zipfile.ZipFile(sys.argv[1]) as archive:
     names = set(archive.namelist())
     required = {'CutBridge.jsx', 'revision_manager.js', 'qc_plus.js', 'localization.js', 'INSTALL.md', 'LICENSE'}
-    assert required <= names, f'missing AE package files: {sorted(required - names)}'
+    missing = required - names
+    if missing:
+        raise SystemExit(f'missing AE package files: {sorted(missing)}')
     install = archive.read('INSTALL.md').decode('utf-8')
-    assert 'development build' not in install.lower()
-    assert 'unpublished' not in install.lower()
-    assert 'RELEASE_TAG' not in install
-    assert f'/blob/v{sys.argv[2]}/docs/RELEASE_READINESS.md' in install
+    expected_link = f'/blob/v{sys.argv[2]}/docs/RELEASE_READINESS.md'
+    if 'development build' in install.lower() or 'unpublished' in install.lower():
+        raise SystemExit('stale release-state wording in packaged INSTALL.md')
+    if 'RELEASE_TAG' in install or expected_link not in install:
+        raise SystemExit(f'packaged readiness link is not pinned to {expected_link}')
 PY
 ```
 
@@ -61,7 +71,8 @@ python tests/test_blender_runtime_52.py
 if ($LASTEXITCODE -ne 0) { throw 'Blender RNA runtime checks failed' }
 
 foreach ($file in @('CutBridge.jsx', 'revision_manager.js', 'qc_plus.js', 'localization.js')) {
-    $jsCheck = Join-Path $env:TEMP $file
+    $nodeFile = if ($file -eq 'CutBridge.jsx') { 'CutBridge.js' } else { $file }
+    $jsCheck = Join-Path $env:TEMP $nodeFile
     Copy-Item (Join-Path 'apps/after-effects' $file) $jsCheck
     node --check $jsCheck
     if ($LASTEXITCODE -ne 0) { throw "After Effects syntax check failed: $file" }
@@ -87,19 +98,22 @@ import sys, zipfile
 with zipfile.ZipFile(sys.argv[1]) as archive:
     names = set(archive.namelist())
     required = {'CutBridge.jsx', 'revision_manager.js', 'qc_plus.js', 'localization.js', 'INSTALL.md', 'LICENSE'}
-    assert required <= names, f'missing AE package files: {sorted(required - names)}'
+    missing = required - names
+    if missing:
+        raise SystemExit(f'missing AE package files: {sorted(missing)}')
     install = archive.read('INSTALL.md').decode('utf-8')
-    assert 'development build' not in install.lower()
-    assert 'unpublished' not in install.lower()
-    assert 'RELEASE_TAG' not in install
-    assert f'/blob/v{sys.argv[2]}/docs/RELEASE_READINESS.md' in install
+    expected_link = f'/blob/v{sys.argv[2]}/docs/RELEASE_READINESS.md'
+    if 'development build' in install.lower() or 'unpublished' in install.lower():
+        raise SystemExit('stale release-state wording in packaged INSTALL.md')
+    if 'RELEASE_TAG' in install or expected_link not in install:
+        raise SystemExit(f'packaged readiness link is not pinned to {expected_link}')
 '@ | python - $aeZip $version
 if ($LASTEXITCODE -ne 0) { throw 'After Effects archive inspection failed' }
 ```
 
 The package check resolves the product version from `apps/blender/cutbridge/blender_manifest.toml`. Node checks JavaScript syntax only; it does not exercise AE APIs or prove ExtendScript runtime compatibility. Keep focused regression suites required by changed files and canonical CI in the verification run. The standalone Blender RNA script is required because pytest imports it but does not execute its lifecycle cycles.
 
-For machines without Blender, Python 3.11+ can run static and release tests with `pytest` and `jsonschema`. This is partial evidence only; it does not replace the required Blender runtime check. A missing dependency is BLOCKED, not a pass or a reason to skip authoritative checks.
+For machines without Blender, Python 3.11+ can run static and release tests with `pytest` and `jsonschema`. This is partial evidence only; it does not replace the required Blender runtime check. A missing dependency maps to **INSUFFICIENT EVIDENCE**, not a pass or a reason to skip authoritative checks.
 
 ## Release output and source safety
 
