@@ -97,7 +97,7 @@ def test_quick_starts_track_current_release_state_and_point_to_s14():
         assert "S14 — Japanese Target-User Validation & Release Preparation" in text
         assert "S12_S13_EVIDENCE_SUMMARY.md" in text
 
-    assert "GitHub Release" in en and "公開・検証済みの GitHub Release" in ja
+    assert "GitHub release" in en and "公開・検証済みの GitHub Release" in ja
     assert "production distribution" in en and "本番配布" in ja
     assert "fail-closed" in en and "Fail-Closed" in ja
     assert "no representative-user validation" in en
