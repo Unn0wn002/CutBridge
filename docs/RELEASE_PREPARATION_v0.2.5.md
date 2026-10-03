@@ -35,6 +35,10 @@ The workflow also retains an unpublished distribution preview: manifest-derived 
 
 ### Recorded automated candidate evidence
 
+Latest preparation candidate `0c1938aeca7815393cdcd131bb9c3cb1a3215bca`: [isolated run 37135550749](https://github.com/Unn0wn002/CutBridge/actions/runs/37135550749) and [normal CI 37135550709](https://github.com/Unn0wn002/CutBridge/actions/runs/37135550709) passed. The offline distribution-preview checks passed, and the downloaded staged Blender entry independently matches the installed Blender 5.2.2 official generator. Package hashes remain identical to the earlier candidate below. The installed Blender CLI also accepts the ZIP, and the downloaded AE guide is release-neutral with its readiness link pinned to `v0.2.5`.
+
+The [structured preparation record](RELEASE_PREPARATION_v0.2.5.json) records candidate/image identities, hashes, scope, and missing release gates. [Durable automated logs and source manifests](evidence/v0.2.5/0c1938a/checks.log) retain the isolated result in the repository; the archived diff and production-index input match their snapshot manifest hashes. This is automated evidence, not a native S12 PASS record.
+
 Candidate `4f2688625980c4cb0905ee498d42c50ed0069ac6`, [isolated run 37135012123](https://github.com/Unn0wn002/CutBridge/actions/runs/37135012123): **PASS** for the isolated automated scope. Full suite: **312 tests + 2 subtests**, Blender 5.2.1 RNA lifecycle, AE Node/syntax checks, and deterministic repeated packaging passed. Source manifests are identical. [Normal CI 37135012125](https://github.com/Unn0wn002/CutBridge/actions/runs/37135012125) passed both required jobs on the same head. Subsequent preparation changes affect only orchestration/evidence/docs; retain their fresh CI separately from this SHA-bound result.
 
 | Candidate artifact | SHA-256 |

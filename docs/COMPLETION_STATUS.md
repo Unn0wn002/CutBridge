@@ -1,6 +1,6 @@
 # CutBridge Completion Status
 
-## Current state — 23 September 2026
+## Current state — 3 October 2026
 
 Release preparation update — 3 October 2026: the independent v0.2.4 artifact audit confirms the Issue #99 distribution hold. v0.2.5 preparation and remaining exact-candidate gates are recorded in [RELEASE_PREPARATION_v0.2.5.md](RELEASE_PREPARATION_v0.2.5.md). Production, release authorization, and published artifacts are unchanged.
 

@@ -1,0 +1,79 @@
+{
+  "record_type": "release_preparation",
+  "record_date": "2026-10-03",
+  "product_version": "0.2.5",
+  "release_readiness_verdict": "INSUFFICIENT EVIDENCE",
+  "candidate_sha": "0c1938aeca7815393cdcd131bb9c3cb1a3215bca",
+  "base_sha": "8cc5a4fe19e97c2f83105b888f96ccf1b423e8fd",
+  "automated_verification": {
+    "verdict": "PASS",
+    "isolated_run": "https://github.com/Unn0wn002/CutBridge/actions/runs/37135550749",
+    "ci_run": "https://github.com/Unn0wn002/CutBridge/actions/runs/37135550709",
+    "tests_passed": 312,
+    "subtests_passed": 2,
+    "blender_rna_runtime": "5.2.1",
+    "node_suites": "PASS",
+    "python_and_js_syntax": "PASS",
+    "repeated_package_bytes": "IDENTICAL",
+    "source_manifests": "IDENTICAL",
+    "source_manifest_sha256": "6541d95e5a068f5ebc129cea118b1990c7a3a3ca1c0d881f429ea5ef15bf2d74",
+    "image_id": "sha256:671bc81517da91e50aa4c335363ac75ea889156107f0ee61fb12a1894c3aaaad",
+    "network": "none",
+    "source_mount": "read-only",
+    "root_filesystem": "read-only",
+    "user": "1000:1000",
+    "owner_credentials": "not mounted or passed"
+  },
+  "candidate_artifacts": {
+    "blender": {
+      "filename": "CutBridge-Blender-v0.2.5.zip",
+      "sha256": "b221a759208cfd81e22218db20709f0341a4dc931ab7f0c623f74e6bc87986f6"
+    },
+    "after_effects": {
+      "filename": "CutBridge-AfterEffects-v0.2.5.zip",
+      "sha256": "c15b4fb6ce4891a84f205b0658a5b9bbdb8874828a99140aacdd620a9439ec6e"
+    }
+  },
+  "independent_artifact_checks": {
+    "downloaded_candidate_hashes": "PASS",
+    "ae_guide_and_sidecars": "PASS",
+    "blender_package_validator": "PASS; installed Blender 5.2.2 CLI; no GUI/runtime test",
+    "preview_blender_index": "MATCHES official Blender 5.2.2 server-generate entry",
+    "preview_notification_schema": "PASS",
+    "v023_to_v025_selection": "PASS",
+    "no_downgrade": "PASS",
+    "previous_notification_entries": "PRESERVED",
+    "preview_publication": "NOT_EXECUTED"
+  },
+  "v024_audit": {
+    "tag_sha": "a393e409d19445c4090460b7e7b4716779161fa4",
+    "release_run": "https://github.com/Unn0wn002/CutBridge/actions/runs/35843821702",
+    "blender_sha256": "3819b6178cac31b6613d475aeaf84faeaee99b97add94eca6375f1c408f487c2",
+    "after_effects_sha256": "e249d6f83c95b7eded472c8bd473c5034e8ab500fa28945b460f150518a6f73b",
+    "sha256sums_file_sha256": "8fb929650292105effaf39bbcb26427dc056a6cf64f435dd65e65a53083c24ac",
+    "release_metadata_sha256": "6266daa58d12071d64b64e8f21777eb88e9a1f0577277c4650880295325dc0ee",
+    "archive_integrity_versions_licenses": "PASS",
+    "ae_install_guide": "CONFIRMED Issue #99 stale publication wording",
+    "published_files": "UNCHANGED",
+    "distribution_hold": "PRESERVED"
+  },
+  "production": {
+    "version": "0.2.3",
+    "distribution_commit": "635c1384af2649d4ce49705cce41f98826a861cc",
+    "notification_index": "https://unn0wn002.github.io/cutbridge-distribution/cutbridge/release-index.json",
+    "blender_index": "https://unn0wn002.github.io/cutbridge-distribution/blender/index.json",
+    "modified": false
+  },
+  "remaining_gates": [
+    "Exact-candidate native Blender GUI workflow",
+    "Exact-candidate native AE install/Build/QC/revision/persistence",
+    "Protected promotion and exact tuple authorization",
+    "Tag eligibility and authorized v0.2.5 publication",
+    "Independent published-download verification",
+    "Additive production deployment and live sync/install/update checks"
+  ],
+  "native_v025_evidence": "NOT_EXECUTED",
+  "s14b": "NOT_EXECUTED",
+  "startup_update_scheduling": "DISABLED",
+  "release_authorization_approved": false
+}
