@@ -4,6 +4,10 @@ All notable CutBridge changes are tracked here.
 
 ## [0.2.5] - Unreleased
 
+### Release preparation
+- Added offline container verification using the existing full test, RNA, AE, and packaging commands, with immutable source manifests and downloadable candidate/evidence artifacts.
+- Recorded the independent v0.2.4 download audit and confirmed Issue #99 distribution hold; preparation targets corrected v0.2.5 without changing published releases or production distribution.
+
 ### Fixed
 - Made the packaged After Effects `INSTALL.md` release-state-neutral after Issue #99 found stale pre-publication wording in the immutable v0.2.4 AE ZIP.
 - Added source-level and built-ZIP regression coverage so future AE release packages cannot silently restore version-specific development/publication claims.

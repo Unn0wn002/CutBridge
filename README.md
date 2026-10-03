@@ -49,6 +49,8 @@ CutBridge currently provides:
 
 ## Current development status
 
+The [v0.2.5 release-preparation record](docs/RELEASE_PREPARATION_v0.2.5.md) tracks the independent v0.2.4 audit, preserved distribution hold, candidate verification, and remaining release gates.
+
 Engineering/native-host validation is complete through **S13**. **S14A**, the Japanese target-user validation protocol and fail-closed evidence tooling, is integrated. The v0.2.3 release-facing Japanese claim scope was deliberately narrowed instead of claiming S14B completion. **S14B remains NOT_EXECUTED** and is reserved for a future release or claim that needs representative Japanese target-user usability evidence.
 
 GitHub Release v0.2.4 was published from protected `main` at `a393e409d19445c4090460b7e7b4716779161fa4`; tag `v0.2.4` points to that exact commit. Its published assets were independently verified. The separate production distribution intentionally remains on verified v0.2.3 while Issue #99 is carried forward through the v0.2.5 patch line:

@@ -1,5 +1,7 @@
 # CutBridge Release Readiness
 
+Preparation update — 3 October 2026: see [the v0.2.5 preparation record](RELEASE_PREPARATION_v0.2.5.md) for the independent v0.2.4 download audit, confirmed distribution hold, isolated candidate verification, and remaining native/publication/delivery gates.
+
 Status: **v0.2.4 PUBLISHED / VERIFIED ON GITHUB; PRODUCTION DISTRIBUTION HELD; v0.2.5 DEVELOPMENT / NOT AUTHORIZED**
 
 This is the canonical release-readiness record. It preserves historical v0.2.3/v0.2.4 evidence while distinguishing the published-but-not-distributed v0.2.4 state from the current v0.2.5 development boundary. Green product CI and successful native validation are necessary, but neither alone authorizes a future publication; the exact release tuple and current-main eligibility gate remain separate controls.

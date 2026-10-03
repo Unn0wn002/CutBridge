@@ -2,6 +2,8 @@
 
 ## Current state — 23 September 2026
 
+Release preparation update — 3 October 2026: the independent v0.2.4 artifact audit confirms the Issue #99 distribution hold. v0.2.5 preparation and remaining exact-candidate gates are recorded in [RELEASE_PREPARATION_v0.2.5.md](RELEASE_PREPARATION_v0.2.5.md). Production, release authorization, and published artifacts are unchanged.
+
 CutBridge v0.2.4 is **PUBLISHED / VERIFIED ON GITHUB** at exact main/tag SHA `a393e409d19445c4090460b7e7b4716779161fa4`. Production distribution remains intentionally on v0.2.3 because Issue #99 found stale pre-publication wording in the immutable v0.2.4 AE package. v0.2.5 is the **UNRELEASED / NOT AUTHORIZED** patch-development baseline carrying the source fix. S14B representative-user validation remains NOT_EXECUTED and is not claimed as complete.
 
 - **Integrated product/validation sessions:** S1–S13.

@@ -1,0 +1,163 @@
+name: Isolated candidate verification
+
+on:
+  push:
+    branches: ['feature/**', 'fix/**']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  isolated-candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Prepare dependencies without candidate inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir "$RUNNER_TEMP/cutbridge-image"
+          cat > "$RUNNER_TEMP/cutbridge-image/Dockerfile" <<'DOCKERFILE'
+          FROM node:22-bookworm-slim AS node
+          FROM python:3.13-bookworm
+          COPY --from=node /usr/local/bin/node /usr/local/bin/node
+          RUN apt-get update && apt-get install -y --no-install-recommends \
+              libgl1 libegl1 libxrender1 libxi6 libxfixes3 libxkbcommon0 \
+              libsm6 libice6 libwayland-client0 && rm -rf /var/lib/apt/lists/*
+          RUN python -m pip install --no-cache-dir pytest jsonschema bpy==5.2.1
+          DOCKERFILE
+          docker build --pull -t cutbridge-verifier "$RUNNER_TEMP/cutbridge-image"
+      - name: Prepare exact immutable snapshot
+        shell: bash
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          SNAPSHOT="$RUNNER_TEMP/cutbridge-snapshot"
+          mkdir "$SNAPSHOT"
+          git archive HEAD | tar -x -C "$SNAPSHOT"
+          git diff "${BASE_SHA:-origin/develop}" HEAD > "$SNAPSHOT/candidate.diff"
+          mkdir -p "$SNAPSHOT/verification-output"/{pycache,tmp,home}
+          git rev-parse HEAD > "$SNAPSHOT/verification-output/candidate-sha.txt"
+          docker image inspect cutbridge-verifier > "$SNAPSHOT/verification-output/image.json"
+          (
+            cd "$SNAPSHOT"
+            find . -path './verification-output' -prune -o -type f -print0 |
+              sort -z | xargs -0 sha256sum > verification-output/manifest-before.sha256
+          )
+          sudo chown -R 1000:1000 "$SNAPSHOT/verification-output"
+      - name: Run canonical checks in offline read-only container
+        shell: bash
+        run: |
+          set -euo pipefail
+          SNAPSHOT="$RUNNER_TEMP/cutbridge-snapshot"
+          docker create --name cutbridge-candidate --network none --read-only \
+            --user 1000:1000 --cap-drop ALL --security-opt no-new-privileges \
+            --pids-limit 512 --memory 6g --cpus 2 \
+            --mount "type=bind,src=$SNAPSHOT,dst=/candidate,readonly" \
+            --mount "type=bind,src=$SNAPSHOT/verification-output,dst=/candidate/verification-output" \
+            --workdir /candidate \
+            --env HOME=/candidate/verification-output/home \
+            --env PYTHONPYCACHEPREFIX=/candidate/verification-output/pycache \
+            --env TEMP=/candidate/verification-output/tmp \
+            --env TMP=/candidate/verification-output/tmp \
+            --env TMPDIR=/candidate/verification-output/tmp \
+            cutbridge-verifier bash -c '
+              set -euo pipefail
+              OUT="$PWD/verification-output"
+              python - <<"PY"
+          import os, socket
+          from pathlib import Path
+          assert not any(os.environ.get(key) for key in ("GH_TOKEN", "GITHUB_TOKEN", "SSH_AUTH_SOCK", "ACTIONS_RUNTIME_TOKEN"))
+          assert not Path("/var/run/docker.sock").exists()
+          assert not Path("/candidate/.git").exists()
+          try:
+              Path("/candidate/write-probe").write_text("unexpected")
+          except OSError:
+              pass
+          else:
+              raise SystemExit("candidate mount is writable")
+          with socket.socket() as probe:
+              probe.settimeout(1)
+              try:
+                  probe.connect(("1.1.1.1", 443))
+              except OSError:
+                  pass
+              else:
+                  raise SystemExit("network is accessible")
+          print("Isolation probes passed: offline, read-only source, no credential environment or engine socket")
+          PY
+              python -m compileall -q apps tools tests
+              python -m pytest -q -p no:cacheprovider --junitxml="$OUT/pytest.xml"
+              python tests/test_blender_runtime_52.py
+              for file in CutBridge.jsx revision_manager.js qc_plus.js localization.js; do
+                node_file="$file"
+                if [[ "$file" == CutBridge.jsx ]]; then node_file=CutBridge.js; fi
+                cp "apps/after-effects/$file" "$TMPDIR/$node_file"
+                node --check "$TMPDIR/$node_file"
+              done
+              for check in ae_s6_revision_checks ae_s6_optional_pass_lifecycle_checks ae_s6_extend_script_binding_checks ae_s7_qc_plus_checks ae_s7_native_qc_binding_checks ae_s8_localization_checks ae_s8_native_ui_binding_checks ae_s10c_reconstruction_checks ae_s13_revision_3d_tag_migration_checks; do
+                node "tests/$check.cjs"
+              done
+              VERSION="$(python -c "import tomllib; print(tomllib.load(open(\"apps/blender/cutbridge/blender_manifest.toml\", \"rb\"))[\"version\"], end=\"\")")"
+              python tools/build_release.py --tag "v${VERSION}" --output "$OUT/dist-ci"
+              python tools/build_release.py --tag "v${VERSION}" --output "$OUT/dist-repeat"
+              (cd "$OUT/dist-ci" && sha256sum --check SHA256SUMS.txt)
+              for artifact in "$OUT/dist-ci/"*; do
+                cmp "$artifact" "$OUT/dist-repeat/$(basename "$artifact")"
+              done
+              echo "Canonical checks and deterministic repeated packaging passed"
+            '
+          docker inspect cutbridge-candidate > "$SNAPSHOT/verification-output/isolation.json"
+          jq -e '.[0] |
+            .HostConfig.NetworkMode == "none" and
+            .HostConfig.ReadonlyRootfs == true and
+            .Config.User == "1000:1000" and
+            .HostConfig.CapDrop == ["ALL"] and
+            (.HostConfig.SecurityOpt | index("no-new-privileges") != null) and
+            (.Mounts | length == 2) and
+            (.Mounts | any(.Destination == "/candidate" and .RW == false)) and
+            (.Mounts | any(.Destination == "/candidate/verification-output" and .RW == true))' \
+            "$SNAPSHOT/verification-output/isolation.json"
+          set +e
+          docker start --attach cutbridge-candidate 2>&1 | tee "$SNAPSHOT/verification-output/checks.log"
+          START_EXIT=${PIPESTATUS[0]}
+          set -e
+          CHECK_EXIT="$(docker inspect --format '{{.State.ExitCode}}' cutbridge-candidate)"
+          if [[ "$START_EXIT" -ne 0 && "$CHECK_EXIT" -eq 0 ]]; then CHECK_EXIT="$START_EXIT"; fi
+          (
+            cd "$SNAPSHOT"
+            find . -path './verification-output' -prune -o -type f -print0 |
+              sort -z | xargs -0 sha256sum > verification-output/manifest-after.sha256
+          )
+          if ! cmp "$SNAPSHOT/verification-output/manifest-before.sha256" "$SNAPSHOT/verification-output/manifest-after.sha256"; then
+            echo INVALID > "$SNAPSHOT/verification-output/verdict.txt"
+            exit 1
+          fi
+          if [[ "$CHECK_EXIT" -ne 0 ]]; then
+            echo FAIL > "$SNAPSHOT/verification-output/verdict.txt"
+            exit "$CHECK_EXIT"
+          fi
+          echo PASS > "$SNAPSHOT/verification-output/verdict.txt"
+      - name: Retain candidate packages and verification evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: cutbridge-candidate-${{ github.sha }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/cutbridge-snapshot/verification-output/candidate-sha.txt
+            ${{ runner.temp }}/cutbridge-snapshot/verification-output/image.json
+            ${{ runner.temp }}/cutbridge-snapshot/verification-output/isolation.json
+            ${{ runner.temp }}/cutbridge-snapshot/verification-output/manifest-*.sha256
+            ${{ runner.temp }}/cutbridge-snapshot/verification-output/checks.log
+            ${{ runner.temp }}/cutbridge-snapshot/verification-output/pytest.xml
+            ${{ runner.temp }}/cutbridge-snapshot/verification-output/verdict.txt
+            ${{ runner.temp }}/cutbridge-snapshot/verification-output/dist-ci/*
+          if-no-files-found: error
+          retention-days: 30
