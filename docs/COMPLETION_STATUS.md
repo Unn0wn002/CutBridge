@@ -1,6 +1,8 @@
 # CutBridge Completion Status
 
-## Current state — 3 October 2026
+## Current state — 4 October 2026
+
+The revised v0.2.5 candidate passed 313 tests + 2 subtests and a partial scripted native Blender 5.2.2 campaign. It corrects stale Camera/3D Null handoff wording. Native AE execution and remaining interactive/delivery gates are still pending; see the linked preparation record for exact SHA-bound evidence.
 
 Release preparation update — 3 October 2026: the independent v0.2.4 artifact audit confirms the Issue #99 distribution hold. v0.2.5 preparation and remaining exact-candidate gates are recorded in [RELEASE_PREPARATION_v0.2.5.md](RELEASE_PREPARATION_v0.2.5.md). Production, release authorization, and published artifacts are unchanged.
 

@@ -1,23 +1,23 @@
 {
   "record_type": "release_preparation",
-  "record_date": "2026-10-03",
+  "record_date": "2026-10-04",
   "product_version": "0.2.5",
   "release_readiness_verdict": "INSUFFICIENT EVIDENCE",
-  "candidate_sha": "0c1938aeca7815393cdcd131bb9c3cb1a3215bca",
+  "candidate_sha": "604714d93627a870326a75564eba0af46e5ee957",
   "base_sha": "8cc5a4fe19e97c2f83105b888f96ccf1b423e8fd",
   "automated_verification": {
     "verdict": "PASS",
-    "isolated_run": "https://github.com/Unn0wn002/CutBridge/actions/runs/37135550749",
-    "ci_run": "https://github.com/Unn0wn002/CutBridge/actions/runs/37135550709",
-    "tests_passed": 312,
+    "isolated_run": "https://github.com/Unn0wn002/CutBridge/actions/runs/37137778152",
+    "ci_run": "https://github.com/Unn0wn002/CutBridge/actions/runs/37137778139",
+    "tests_passed": 313,
     "subtests_passed": 2,
     "blender_rna_runtime": "5.2.1",
     "node_suites": "PASS",
     "python_and_js_syntax": "PASS",
     "repeated_package_bytes": "IDENTICAL",
     "source_manifests": "IDENTICAL",
-    "source_manifest_sha256": "6541d95e5a068f5ebc129cea118b1990c7a3a3ca1c0d881f429ea5ef15bf2d74",
-    "image_id": "sha256:671bc81517da91e50aa4c335363ac75ea889156107f0ee61fb12a1894c3aaaad",
+    "source_manifest_sha256": "106e905b9bfa474c51fcf756a86cc79bc4624e49e77e4f44d725830d107ed259",
+    "image_id": "sha256:1b344daeba841c43e682b0e56f5107185cbf28d32dca15696fa077c8814b1a33",
     "network": "none",
     "source_mount": "read-only",
     "root_filesystem": "read-only",
@@ -27,7 +27,7 @@
   "candidate_artifacts": {
     "blender": {
       "filename": "CutBridge-Blender-v0.2.5.zip",
-      "sha256": "b221a759208cfd81e22218db20709f0341a4dc931ab7f0c623f74e6bc87986f6"
+      "sha256": "3a53f7af8420909e5ed300440df115dffef2ba1dd196688c7c99789a8a48aa48"
     },
     "after_effects": {
       "filename": "CutBridge-AfterEffects-v0.2.5.zip",
@@ -37,7 +37,7 @@
   "independent_artifact_checks": {
     "downloaded_candidate_hashes": "PASS",
     "ae_guide_and_sidecars": "PASS",
-    "blender_package_validator": "PASS; installed Blender 5.2.2 CLI; no GUI/runtime test",
+    "blender_package_validator": "Previous b221a759 candidate PASS; revised candidate validated by canonical isolated builder",
     "preview_blender_index": "MATCHES official Blender 5.2.2 server-generate entry",
     "preview_notification_schema": "PASS",
     "v023_to_v025_selection": "PASS",
@@ -72,7 +72,21 @@
     "Independent published-download verification",
     "Additive production deployment and live sync/install/update checks"
   ],
-  "native_v025_evidence": "NOT_EXECUTED",
+  "native_v025_evidence": {
+    "package_revisions": 3,
+    "evidence_path": "evidence/v0.2.5/604714d-native-blender/",
+    "blender_host": "5.2.2 LTS",
+    "extension_manager_install": "NOT_EXECUTED",
+    "rendered_outputs": 36,
+    "gui_visual_inspection": "NOT_EXECUTED",
+    "input_manifest_sha256": "8cf0c87121ab32bd0b916b1c7d6dad2cf8963d86cf7dc2497cbc11f55fd6b385",
+    "candidate_sha": "604714d93627a870326a75564eba0af46e5ee957",
+    "ae_execution": "NOT_EXECUTED",
+    "scripted_gui_scope": "PASS",
+    "input_manifests": "IDENTICAL",
+    "normal_exit_code": 0,
+    "ae_host_availability": "INSUFFICIENT EVIDENCE"
+  },
   "s14b": "NOT_EXECUTED",
   "startup_update_scheduling": "DISABLED",
   "release_authorization_approved": false
