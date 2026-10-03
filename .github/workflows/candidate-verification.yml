@@ -152,6 +152,7 @@ jobs:
           (preview / "cutbridge/release-index.json").write_text(json.dumps(index, indent=2) + "\n")
           with zipfile.ZipFile(out / "dist-ci" / archive["filename"]) as package:
               manifest = tomllib.loads(package.read("blender_manifest.toml").decode())
+          manifest.pop("build", None)
           manifest.update(archive_url="./" + archive["filename"], archive_size=(out / "dist-ci" / archive["filename"]).stat().st_size, archive_hash="sha256:" + archive["sha256"])
           (preview / "blender/index.json").write_text(json.dumps({"version": "v1", "blocklist": [], "data": [manifest]}, indent=2) + "\n")
           shutil.copyfile(out / "dist-ci" / archive["filename"], preview / "blender" / archive["filename"])
