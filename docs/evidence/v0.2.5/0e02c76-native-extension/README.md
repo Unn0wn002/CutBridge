@@ -1,0 +1,13 @@
+# Native extension installation and rollback evidence
+
+Exact candidate: `0e02c76be8b205e5be01578d944b6d39bdeef156`. Blender ZIP SHA-256: `3a53f7af8420909e5ed300440df115dffef2ba1dd196688c7c99789a8a48aa48`, unchanged from the native-tested runtime candidate 604714d.
+
+Blender **5.2.2 LTS** passed official extension CLI `repo-add` and `install-file --enable`, saved isolated preferences, and loaded `bl_ext.cutbridge_candidate.cutbridge` in a new native GUI process. Panel RNA registration and disabled startup scheduling passed. This verifies installation through Blender's extension machinery; visual inspection of the installation dialog and panel remains unexecuted.
+
+The scripted native campaign again built V001/V002/V003, rendered 36 real mixed PNG/OpenEXR outputs, preserved artist nodes and package identities, and blocked same-version overwrite. A temporary test seam made the later LINE output socket unavailable: configuration raised the expected error, then restored the previous compositor tree, node names, output paths/item names/formats, links, render/Freestyle flags, and artist node. This is an explicitly **fault-injected** native transaction check, not a claim of a naturally missing LINE socket in this GUI host.
+
+The offline Windows Sandbox exposed only read-only inputs/application binaries and writable verification output. The launcher rechecked absent owner home/credential environment, read-only inputs, and disabled network. Before/after input manifests are identical (SHA-256 `a8091e81e9df52c8ccbc4bb47ebcbab342d8500b6043824967f689308e324738`). Blender exited normally with code 0.
+
+Dependency preparation was separate from candidate execution. The fresh VM installed Microsoft's signed Visual C++ x64 runtime **14.51.36247.0**, exit 0, before installing CutBridge. Installer SHA-256: `843068991daaa1f73ad9f6239bce4d0f6a07a51f18c37ea2a867e9beca71295c`; signature verified as valid Microsoft Corporation before launch. Source: [Microsoft's supported runtime downloads](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist/). An earlier dependency-free probe showed bundled Python exit `0xC0000135`; after preparation, Python exited 0 and extension installation succeeded. Earlier unsuccessful harness/dependency attempts are not product-failure evidence.
+
+Native scripted scope: PASS. Overall release readiness: **INSUFFICIENT EVIDENCE**. Visual UI inspection, live/manual delivery checks, native AE workflow, representative Japanese artist validation, protected promotion/authorization, publication, and deployment remain pending. Generated project/media files, runtime installer, and release ZIP are not committed.

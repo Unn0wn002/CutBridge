@@ -3,3 +3,5 @@
 604714d-native-blender/** -text
 604714d/** -text
 ae-availability-probe/** -text
+0e02c76-native-extension/** -text
+ae-runtime-probe/** -text

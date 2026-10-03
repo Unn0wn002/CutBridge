@@ -58,8 +58,12 @@ The [fresh 604714d native campaign](evidence/v0.2.5/604714d-native-blender/READM
 
 ## Remaining release gates
 
+Additional [native extension/rollback evidence at 0e02c76](evidence/v0.2.5/0e02c76-native-extension/README.md) passes official CLI installation, enablement, saved preferences, fresh native GUI loading, panel RNA registration, and fault-injected mapping rollback in Blender 5.2.2. The package hashes are unchanged from 604714d. This reduces the remaining Blender scope to applicable visual/manual checks and live delivery; it does not satisfy AE or publication gates.
+
+The [AE availability retry with signed runtime dependencies](evidence/v0.2.5/ae-runtime-probe/README.md) timed out after 90 seconds without executing its version script. Input integrity and isolation passed, but no candidate AE runtime was executed. The cause remains undetermined. A functioning licensed isolated AE host is required to complete the existing S12 gates.
+
 1. Review and integrate this preparation through protected `develop` after exact-head CI. Record the immutable candidate SHA and package hashes from the isolated verification bundle before native testing; rebuild only if source or toolchain changes.
-2. Complete the applicable native Blender 5.2 campaign with the exact candidate ZIP, including interactive render, output mapping rollback/artist-node preservation, package safety, manual update behavior, and normal clean exit. Validate the changed modern compositor path. Existing 4.2/4.5 focused probes remain limited to their recorded scope.
+2. Complete the remaining applicable Blender visual/manual checks, including panel/install-dialog inspection and manual update behavior. Scripted native render, fault-injected mapping rollback/artist-node preservation, package safety, and normal clean exit are recorded for the exact package hash above. Existing 4.2/4.5 focused probes remain limited to their recorded scope.
 3. Install the exact AE candidate's four adjacent runtime files, inspect its corrected guide, then run the existing Build/QC, V001→V002→V003, artist-state preservation, negative-package, and save/close/reopen gates. Record host versions and artifact hashes using the existing S12 evidence protocol; do not manufacture representative-user evidence.
 4. Promote the tested candidate through the existing protected-branch process. Explicitly authorize only the exact current-main `v0.2.5` / `stable` / non-prerelease tuple after all required evidence is complete. Require release-tag eligibility before creating the tag.
 5. Independently download and verify the published v0.2.5 ZIPs, checksums, metadata, versions, licenses, AE sidecars, and corrected guide before distribution. Any failure keeps distribution held.
