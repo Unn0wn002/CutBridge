@@ -49,9 +49,12 @@ jobs:
           (
             cd "$SNAPSHOT"
             find . -path './verification-output' -prune -o -type f -print0 |
-              sort -z | xargs -0 sha256sum > verification-output/manifest-before.sha256
+              sort -z | xargs -0 sha256sum > "$RUNNER_TEMP/manifest-before.sha256"
           )
-          sudo chown -R 1000:1000 "$SNAPSHOT/verification-output"
+          cp "$RUNNER_TEMP/manifest-before.sha256" "$SNAPSHOT/verification-output/"
+          sudo chown -R 1000:1000 "$SNAPSHOT/verification-output/pycache" \
+            "$SNAPSHOT/verification-output/tmp" "$SNAPSHOT/verification-output/home"
+          chmod 1777 "$SNAPSHOT/verification-output"
       - name: Run canonical checks in offline read-only container
         shell: bash
         run: |
@@ -134,9 +137,10 @@ jobs:
           (
             cd "$SNAPSHOT"
             find . -path './verification-output' -prune -o -type f -print0 |
-              sort -z | xargs -0 sha256sum > verification-output/manifest-after.sha256
+              sort -z | xargs -0 sha256sum > "$RUNNER_TEMP/manifest-after.sha256"
           )
-          if ! cmp "$SNAPSHOT/verification-output/manifest-before.sha256" "$SNAPSHOT/verification-output/manifest-after.sha256"; then
+          cp "$RUNNER_TEMP/manifest-after.sha256" "$SNAPSHOT/verification-output/"
+          if ! cmp "$RUNNER_TEMP/manifest-before.sha256" "$RUNNER_TEMP/manifest-after.sha256"; then
             echo INVALID > "$SNAPSHOT/verification-output/verdict.txt"
             exit 1
           fi
