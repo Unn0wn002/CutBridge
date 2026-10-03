@@ -31,6 +31,19 @@ The `Isolated candidate verification` workflow runs the existing project checks 
 
 It runs full pytest, Blender 5.2.1 RNA lifecycle, Python compilation, existing AE Node suites and syntax checks, then invokes the canonical release builder twice. Candidate artifacts must match byte-for-byte. Artifacts are retained for 30 days; download and preserve the evidence bundle in durable release storage before expiry.
 
+The workflow also retains an unpublished distribution preview: manifest-derived Blender index, notification index, versioned candidate files, and release page. It snapshots the live production notification index before offline execution, preserves its existing entries, and verifies v0.2.3 update selection and no downgrade against the staged candidate entry. The preview is partial and must never replace the production tree or bypass published-download verification.
+
+### Recorded automated candidate evidence
+
+Candidate `4f2688625980c4cb0905ee498d42c50ed0069ac6`, [isolated run 37135012123](https://github.com/Unn0wn002/CutBridge/actions/runs/37135012123): **PASS** for the isolated automated scope. Full suite: **312 tests + 2 subtests**, Blender 5.2.1 RNA lifecycle, AE Node/syntax checks, and deterministic repeated packaging passed. Source manifests are identical. [Normal CI 37135012125](https://github.com/Unn0wn002/CutBridge/actions/runs/37135012125) passed both required jobs on the same head. Subsequent preparation changes affect only orchestration/evidence/docs; retain their fresh CI separately from this SHA-bound result.
+
+| Candidate artifact | SHA-256 |
+| --- | --- |
+| Blender ZIP | `b221a759208cfd81e22218db20709f0341a4dc931ab7f0c623f74e6bc87986f6` |
+| After Effects ZIP | `c15b4fb6ce4891a84f205b0658a5b9bbdb8874828a99140aacdd620a9439ec6e` |
+
+These are unpublished candidate hashes. Exact-artifact native Blender/AE testing, protected promotion, release authorization, publication, and deployed delivery remain unexecuted for v0.2.5. Overall release-readiness verdict: **INSUFFICIENT EVIDENCE** until those gates are satisfied.
+
 Candidate packages are verification artifacts, not published releases. Green isolated checks and normal CI do not authorize tagging or replace native-host evidence.
 
 ## Remaining release gates

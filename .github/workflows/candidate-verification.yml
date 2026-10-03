@@ -43,6 +43,9 @@ jobs:
           mkdir "$SNAPSHOT"
           git archive HEAD | tar -x -C "$SNAPSHOT"
           git diff "${BASE_SHA:-origin/develop}" HEAD > "$SNAPSHOT/candidate.diff"
+          curl --fail --silent --show-error --proto '=https' \
+            https://unn0wn002.github.io/cutbridge-distribution/cutbridge/release-index.json \
+            --output "$SNAPSHOT/production-release-index.json"
           mkdir -p "$SNAPSHOT/verification-output"/{pycache,tmp,home}
           git rev-parse HEAD > "$SNAPSHOT/verification-output/candidate-sha.txt"
           docker image inspect cutbridge-verifier > "$SNAPSHOT/verification-output/image.json"
@@ -115,6 +118,48 @@ jobs:
               for artifact in "$OUT/dist-ci/"*; do
                 cmp "$artifact" "$OUT/dist-repeat/$(basename "$artifact")"
               done
+              python - <<"DISTRIBUTION_PY"
+          import importlib.util, json, shutil, tomllib, zipfile
+          from pathlib import Path
+          import jsonschema
+          out = Path("verification-output")
+          metadata = json.loads((out / "dist-ci/release-metadata.json").read_text())
+          index = json.loads(Path("production-release-index.json").read_text())
+          before = list(index["releases"])
+          version = metadata["version"]
+          base = "https://unn0wn002.github.io/cutbridge-distribution"
+          archive = metadata["artifacts"]["blender"]
+          filename = archive["filename"]
+          entry = {"version": version, "channel": "stable", "blender_version_min": metadata["blender_version_min"], "release_page_url": f"{base}/releases/v{version}/", "download_url": f"{base}/releases/v{version}/{filename}", "sha256": archive["sha256"]}
+          assert not any(item["version"] == version for item in before), "candidate is already advertised"
+          index["releases"] = [entry, *before]
+          index.pop("generated_at", None)
+          jsonschema.validate(index, json.loads(Path("packages/update/release-index.schema.json").read_text()))
+          spec = importlib.util.spec_from_file_location("updates", "apps/blender/cutbridge/updates.py")
+          updates = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(updates)
+          for current in ("0.2.3", version, "99.0.0"):
+              selected = updates.select_latest_compatible(index, current_version=current, blender_version=(5, 2, 1), platform_name="windows-x64")
+              assert (selected["version"] if selected else None) == (version if current == "0.2.3" else None)
+          assert index["releases"][1:] == before
+          preview = out / "distribution-preview"
+          (preview / "cutbridge").mkdir(parents=True)
+          (preview / "blender").mkdir()
+          release = preview / "releases" / f"v{version}"
+          release.mkdir(parents=True)
+          for artifact in (out / "dist-ci").iterdir():
+              shutil.copyfile(artifact, release / artifact.name)
+          (preview / "cutbridge/release-index.json").write_text(json.dumps(index, indent=2) + "\n")
+          with zipfile.ZipFile(out / "dist-ci" / archive["filename"]) as package:
+              manifest = tomllib.loads(package.read("blender_manifest.toml").decode())
+          manifest.update(archive_url="./" + archive["filename"], archive_size=(out / "dist-ci" / archive["filename"]).stat().st_size, archive_hash="sha256:" + archive["sha256"])
+          (preview / "blender/index.json").write_text(json.dumps({"version": "v1", "blocklist": [], "data": [manifest]}, indent=2) + "\n")
+          shutil.copyfile(out / "dist-ci" / archive["filename"], preview / "blender" / archive["filename"])
+          links = "".join(f"<li><a href=\"{artifact.name}\">{artifact.name}</a></li>" for artifact in sorted(release.iterdir()))
+          (release / "index.html").write_text(f"<!doctype html><html lang=\"en\"><meta charset=\"utf-8\"><title>CutBridge v{version} candidate</title><h1>CutBridge v{version} candidate</h1><p>Unpublished preview. Release authorization and published-download verification are required before distribution.</p><ul>{links}</ul></html>")
+          (preview / "DO_NOT_PUBLISH.txt").write_text("Unpublished candidate artifacts. Verify the authorized published release before mirroring. Preserve the production v0.2.3 tree; do not replace it with this partial preview.\n")
+          print("Distribution preview: schema, preserved prior entries, v0.2.3 update selection and no downgrade passed; NOT PUBLISHED")
+          DISTRIBUTION_PY
               echo "Canonical checks and deterministic repeated packaging passed"
             '
           docker inspect cutbridge-candidate > "$SNAPSHOT/verification-output/isolation.json"
@@ -163,5 +208,6 @@ jobs:
             ${{ runner.temp }}/cutbridge-snapshot/verification-output/pytest.xml
             ${{ runner.temp }}/cutbridge-snapshot/verification-output/verdict.txt
             ${{ runner.temp }}/cutbridge-snapshot/verification-output/dist-ci/*
+            ${{ runner.temp }}/cutbridge-snapshot/verification-output/distribution-preview/**
           if-no-files-found: error
           retention-days: 30
