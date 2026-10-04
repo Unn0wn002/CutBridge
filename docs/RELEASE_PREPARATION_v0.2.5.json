@@ -103,7 +103,7 @@
   },
   "native_ae_candidate_campaign": {
     "verdict": "FAIL",
-    "candidate_hashes_above": "PRE-REPAIR; do not use to certify repair",
+    "candidate_hashes_above": "Historical pre-repair hashes are in historical_candidate_artifacts; candidate_artifacts identifies the current repaired build",
     "candidate_sha": "7d80a42cdbd3727db490ce17d6f43f0163737293",
     "blocker": "Required-to-optional revision after panel/project reload: invalid object and incomplete rollback",
     "host": "26.5x89",
