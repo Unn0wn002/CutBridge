@@ -1,5 +1,7 @@
 # Native extension installation and rollback evidence
 
+**Integrity re-audit: INVALID.** The retained log shows default main-render images written to `C:\tmp`, outside the approved verification-output directory. Original behavioral reports and logs are preserved, but their PASS labels must not be used as valid verification. See the fresh bounded-output rerun in `../fef1023-native-ui/`.
+
 Exact candidate: `0e02c76be8b205e5be01578d944b6d39bdeef156`. Blender ZIP SHA-256: `3a53f7af8420909e5ed300440df115dffef2ba1dd196688c7c99789a8a48aa48`, unchanged from the native-tested runtime candidate 604714d.
 
 Blender **5.2.2 LTS** passed official extension CLI `repo-add` and `install-file --enable`, saved isolated preferences, and loaded `bl_ext.cutbridge_candidate.cutbridge` in a new native GUI process. Panel RNA registration and disabled startup scheduling passed. This verifies installation through Blender's extension machinery; visual inspection of the installation dialog and panel remains unexecuted.

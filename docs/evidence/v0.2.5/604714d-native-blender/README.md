@@ -1,5 +1,7 @@
 # Revised native Blender evidence: 604714d
 
+**Integrity re-audit: INVALID.** The retained log shows default main-render images written to `C:\tmp`, outside the approved verification-output directory. Original behavioral reports and logs are preserved, but their PASS labels must not be used as valid verification. See the fresh bounded-output rerun in `../fef1023-native-ui/`.
+
 Candidate: `604714d93627a870326a75564eba0af46e5ee957`. Blender ZIP SHA-256: `3a53f7af8420909e5ed300440df115dffef2ba1dd196688c7c99789a8a48aa48`.
 
 The fresh scripted campaign passed in **Blender 5.2.2 LTS**, using its native GUI event loop inside offline Windows Sandbox. Candidate source and application binaries were read-only; writable outputs were separate; owner home/credentials and network were unavailable. Before/after input manifests are identical. The launcher rechecked isolation and Blender exited normally with code 0.

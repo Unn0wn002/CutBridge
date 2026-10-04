@@ -74,21 +74,32 @@
   ],
   "native_v025_evidence": {
     "package_revisions": 3,
-    "evidence_path": "evidence/v0.2.5/0e02c76-native-extension/",
+    "evidence_path": "evidence/v0.2.5/fef1023-native-ui/",
     "blender_host": "5.2.2 LTS",
     "extension_manager_install": "PASS: official CLI install-file, enable, save preferences, fresh GUI load",
     "rendered_outputs": 36,
-    "gui_visual_inspection": "NOT_EXECUTED",
-    "input_manifest_sha256": "a8091e81e9df52c8ccbc4bb47ebcbab342d8500b6043824967f689308e324738",
-    "candidate_sha": "0e02c76be8b205e5be01578d944b6d39bdeef156",
+    "gui_visual_inspection": "PASS: actual English/Japanese N-panel screenshots; installer dialog and button clicks NOT_EXECUTED",
+    "input_manifest_sha256": "24277858360c933d775206e0371f2b9e9b0b38f55cdf06b5f7bbde9a8948064c",
+    "candidate_sha": "fef102366a9e4b363455f8738b516d57a535ff76",
     "ae_execution": "NOT_EXECUTED",
     "scripted_gui_scope": "PASS",
     "input_manifests": "IDENTICAL",
     "normal_exit_code": 0,
-    "ae_host_availability": "INSUFFICIENT EVIDENCE: initial probe did not execute; signed-runtime retry timed out at 90 seconds without script execution",
+    "ae_host_availability": "INSUFFICIENT EVIDENCE: software graphics visual probe observed Mocha plugin, missing-class and invalid-type startup warnings; version script never executed",
     "native_fault_injection_mapping_rollback": "PASS"
   },
   "s14b": "NOT_EXECUTED",
   "startup_update_scheduling": "DISABLED",
-  "release_authorization_approved": false
+  "release_authorization_approved": false,
+  "superseded_native_evidence": {
+    "verdict": "INVALID",
+    "rerun": "Fresh snapshot redirects scene.render.filepath into approved output/tmp",
+    "original_records": "PRESERVED; do not reuse original PASS labels",
+    "campaigns": [
+      "3f323e1-native-blender",
+      "604714d-native-blender",
+      "0e02c76-native-extension"
+    ],
+    "reason": "Unexpected default main-render output at C:/tmp outside designated verification-output"
+  }
 }

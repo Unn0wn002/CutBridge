@@ -1,5 +1,7 @@
 # Native Blender evidence: 3f323e1
 
+**Integrity re-audit: INVALID.** The retained log shows default main-render images written to `C:\tmp`, outside the approved verification-output directory. Original behavioral reports and logs are preserved, but their PASS labels must not be used as valid verification. See the fresh bounded-output rerun in `../fef1023-native-ui/`.
+
 Candidate: `3f323e1ed8c38a44affb432420f6428bb6d57677`. Blender ZIP SHA-256: `b221a759208cfd81e22218db20709f0341a4dc931ab7f0c623f74e6bc87986f6`.
 
 The scripted native scope passed in Blender **5.2.2 LTS**, with its GUI event loop active, inside an offline Windows Sandbox. Read-only candidate inputs and application binaries were mapped separately from writable evidence. Owner home and credentials were absent; network and input-write probes failed as expected. Input manifests before and after are identical (SHA-256 `e2e7047a66394443e17646b8df0dc8790909eef762992c0de5637ae944b18aa9`). Blender exited normally with code 0.

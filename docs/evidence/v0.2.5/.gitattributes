@@ -5,3 +5,5 @@
 ae-availability-probe/** -text
 0e02c76-native-extension/** -text
 ae-runtime-probe/** -text
+ae-software-graphics-probe/** -text
+fef1023-native-ui/** -text
