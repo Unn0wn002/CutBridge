@@ -1,5 +1,9 @@
 # CutBridge Roadmap
 
+Native AE 26.5x89 testing found and repaired cached-object defects in revision reload and optional-layer QC. The latest candidate passes the recorded Build/QC, V001→V002→V003, status-change, optional-content and project-reopen checks. Release readiness remains INSUFFICIENT EVIDENCE pending the remaining native/review/delivery gates; authorization stays false. See [native evidence](evidence/v0.2.5/049c095-native-ae/README.md).
+
+The next bounded release-preparation work is tracked in [RELEASE_PREPARATION_v0.2.5.md](RELEASE_PREPARATION_v0.2.5.md). It preserves the Issue #99 v0.2.4 hold and targets corrected v0.2.5 delivery after exact-candidate validation and authorization.
+
 Status reconciled through the v0.2.4 GitHub publication and Issue #99 remediation path. v0.2.4 is published and independently verified on GitHub at `a393e409d19445c4090460b7e7b4716779161fa4`; production distribution remains on v0.2.3 because the immutable v0.2.4 AE package contains stale release-state wording. v0.2.5 is the active unreleased patch-development baseline with fail-closed authorization. Session numbers describe bounded product work and do not guarantee public release numbers.
 
 ## Completed foundation — S1–S9

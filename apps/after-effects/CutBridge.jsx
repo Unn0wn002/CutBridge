@@ -695,6 +695,8 @@ if (typeof module !== "undefined" && module.exports) {
 
     function liveProjectItem(target) {
         if (!target || !app.project) return false;
+        // Native AE handles can throw even during equality after deletion.
+        if (typeof isValid === "function" && !isValid(target)) return false;
         for (var i = 1; i <= app.project.numItems; i++) if (app.project.item(i) === target) return true;
         return false;
     }
@@ -835,6 +837,7 @@ if (typeof module !== "undefined" && module.exports) {
     }
     function liveProjectLayer(target) {
         if (!target || !app.project) return false;
+        if (typeof isValid === "function" && !isValid(target)) return false;
         for (var p = 1; p <= app.project.numItems; p++) {
             var owner = app.project.item(p);
             if (!(owner instanceof CompItem)) continue;
@@ -1214,6 +1217,7 @@ if (typeof module !== "undefined" && module.exports) {
             } catch (e) { return false; }
         }
         return {
+            getManagedState: function() { return {comp: comp, layers: state.layers}; },
             listManagedLayers: function() {
                 var records = [];
                 for (var i = 0; i < current.passes.length; i++) {
@@ -1279,7 +1283,14 @@ if (typeof module !== "undefined" && module.exports) {
             },
             removeImportedReplacement: function(item) {
                 if (!item || !liveProjectItem(item) || typeof item.remove !== "function") return false;
+                var removedId = item.id;
                 item.remove();
+                // Native AE invalidates the removed handle, including comparisons.
+                // Verify absence by the ID captured while the item was still live.
+                if (typeof removedId === "number") {
+                    for (var i = 1; i <= app.project.numItems; i++) if (app.project.item(i).id === removedId) return false;
+                    return true;
+                }
                 return !liveProjectItem(item);
             },
             commitRevision: function(oldManifest, newManifest, replacements) {

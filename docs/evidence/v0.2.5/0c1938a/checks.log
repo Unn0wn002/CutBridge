@@ -1,0 +1,116 @@
+Isolation probes passed: offline, read-only source, no credential environment or engine socket
+........................................................................ [ 23%]
+........................................................................ [ 46%]
+........................................................................ [ 69%]
+...................................................................... [ 91%]
+..........................                                               [100%]
+312 passed, 2 subtests passed in 7.87s
+bpy version: 5.2.1 LTS
+CutBridge Blender 5.2 RNA registration: PASS
+PASS producer-style V001/V002/V003 names can differ for the same cut
+PASS all tuple fields reject drift despite equal package_name
+PASS delimiter tuples and ownership keys cannot collide
+PASS canonical revision token helper rejects malformed values
+PASS duplicate candidate numbers cannot select by input order
+PASS malformed manifests fail closed through the existing AE contract
+PASS malformed, duplicate and unsafe passes fail closed
+PASS prototype pass names remain valid
+PASS media changes follow conservative source-only compatibility policy
+PASS all validation and rollback callbacks are mandatory
+PASS successful source-only transaction preserves mock layer properties and ordering
+PASS warnings require explicit confirmation even if public ticket is modified
+PASS forged tickets and caller changes cannot redirect a plan
+PASS live host ownership rejects forged records, tag/type/container/source and tuple drift
+PASS duplicate or missing required live layers block
+PASS ownership is checked again after planning and before importing
+PASS tag drift during import blocks all source swaps and removes staged imports
+PASS validation failure cleans the failing import as well as earlier staged imports
+PASS import allocation then throw is cleaned via mandatory tracking
+PASS multi-action mutate-then-throw restores every attempted layer
+PASS silent swap failure is detected and restored
+PASS restore failure retains all replacements and prevents retry
+PASS cleanup failure is explicit and cleanup continues for remaining imports
+PASS commit failure rolls back all swapped sources and staged replacements
+PASS unprintable removal errors cannot interrupt cleanup or bypass poisoning
+PASS unprintable restore and original errors preserve subsequent recovery attempts
+PASS malformed schema coercion cannot abort valid candidate discovery
+PASS removed optional pass blocks source-only revision before mutation
+PASS missing optional layer promoted to required blocks
+PASS browser/ExtendScript-style loading fails closed without the contract
+S6 revision checks: PASS (30 groups; native AE MANUAL NOT EXECUTED)
+S6 native-host lifecycle: PASS (V001→V002→V003 + Build/QC + reload + stale/orphan-layer/root collisions; real AE MANUAL NOT EXECUTED)
+S6 optional-pass lifecycle: PASS (pass removal blocked before mutation; original project remains coherent; real AE MANUAL NOT EXECUTED)
+S6 ExtendScript binding/pass-set guard: PASS
+S7 QC+ diagnostic engine: PASS (severity/codes/remediation/determinism/sequence/comp/ownership/host/revision)
+PASS: 45 S5 AE import/comp reliability groups (Node mocks; AE GUI not executed)
+S7 native QC+ binding: PASS (sidecar binding, stable codes, comp/ownership diagnostics, warning remediation, non-mutation)
+PASS Japanese is the first-class default with deterministic English fallback
+PASS primary panel labels are locale-aware and not slash-combined
+PASS missing keys and invalid locale fall back safely
+PASS locale state changes without touching workflow data
+PASS Japanese error wrapper preserves canonical English support detail
+PASS revision reasons are Japanese-first while canonical text survives
+PASS QC localization preserves stable CBQ code and canonical English message
+PASS QC headline and remediation marker remain support-readable
+S8 After Effects localization engine: PASS
+S8/beta.2 native ScriptUI binding: PASS (dockable hierarchy, EN/JA descriptions, contextual help, non-mutation)
+PASS validateManifest passes for valid handoff_3d
+PASS validateHandoff3D rejects unsupported schema or version
+PASS validateHandoff3D rejects non-perspective cameras
+PASS validateHandoff3D rejects non-EMPTY null objects
+PASS validateHandoff3D rejects non-finite coordinates
+PASS managedTag generates distinct camera and null tags
+ALERTS: [ 'CutBridge: comp built\nC001_COMP\n1920x1080 @ 24 fps' ]
+ALERTS: [
+  'CutBridge: comp built\nC001_COMP\n1920x1080 @ 24 fps',
+  'CutBridge: comp reused safely\nC001_COMP\n1920x1080 @ 24 fps'
+]
+PASS buildComp creates managed camera and nulls with correct keyframes and ordering
+PASS buildComp fails closed if unmanaged camera or null collides by name
+
+S10C Reconstruction Checks: ALL 8 TEST GROUPS PASSED
+S13 AE 3D revision migration: PASS (verified indexed camera POI + V001→V002→V003 tags + baked samples + QC clean; real AE retest still required)
+{
+  "schema_version": 1,
+  "version": "0.2.5",
+  "product_version": "0.2.5",
+  "tag": "v0.2.5",
+  "channel": "stable",
+  "prerelease": false,
+  "blender_version_min": "4.2.0",
+  "artifacts": {
+    "blender": {
+      "filename": "CutBridge-Blender-v0.2.5.zip",
+      "sha256": "b221a759208cfd81e22218db20709f0341a4dc931ab7f0c623f74e6bc87986f6"
+    },
+    "after_effects": {
+      "filename": "CutBridge-AfterEffects-v0.2.5.zip",
+      "sha256": "c15b4fb6ce4891a84f205b0658a5b9bbdb8874828a99140aacdd620a9439ec6e"
+    }
+  },
+  "distribution_note": "Mirror release artifacts and a generated update index to a distribution endpoint that is separate from the source repository"
+}
+{
+  "schema_version": 1,
+  "version": "0.2.5",
+  "product_version": "0.2.5",
+  "tag": "v0.2.5",
+  "channel": "stable",
+  "prerelease": false,
+  "blender_version_min": "4.2.0",
+  "artifacts": {
+    "blender": {
+      "filename": "CutBridge-Blender-v0.2.5.zip",
+      "sha256": "b221a759208cfd81e22218db20709f0341a4dc931ab7f0c623f74e6bc87986f6"
+    },
+    "after_effects": {
+      "filename": "CutBridge-AfterEffects-v0.2.5.zip",
+      "sha256": "c15b4fb6ce4891a84f205b0658a5b9bbdb8874828a99140aacdd620a9439ec6e"
+    }
+  },
+  "distribution_note": "Mirror release artifacts and a generated update index to a distribution endpoint that is separate from the source repository"
+}
+CutBridge-AfterEffects-v0.2.5.zip: OK
+CutBridge-Blender-v0.2.5.zip: OK
+Distribution preview: schema, preserved prior entries, v0.2.3 update selection and no downgrade passed; NOT PUBLISHED
+Canonical checks and deterministic repeated packaging passed

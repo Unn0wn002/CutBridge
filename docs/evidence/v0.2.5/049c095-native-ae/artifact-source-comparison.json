@@ -1,0 +1,29 @@
+{
+  "runtime": [
+    {
+      "file": "CutBridge.jsx",
+      "zip_extracted_sha256": "ca8f7049fad8c0b93b3753ce520852d4b0c2f6d120e2c75a01f9aa2fc3743082",
+      "source_sha256": "1d37e5bff9e5144fb4d905b894eba450f3ab6b4e8e83120329785c2019d8fb99",
+      "identical": false
+    },
+    {
+      "file": "revision_manager.js",
+      "zip_extracted_sha256": "ca9df1b6678eeaa1bebf03a5ba8e35253f0a9984a8891d0f00cc01bbc222a097",
+      "source_sha256": "e48772375161333e6c0b57f170a568aac25f7678ee8031713db828e88afae88f",
+      "identical": false
+    },
+    {
+      "file": "qc_plus.js",
+      "zip_extracted_sha256": "054b8f0a2239c28020f758dab19049c1e4a8d74170c16a42e2aa8d4eee222cb8",
+      "source_sha256": "2d114b5d358015ac4877123947b5b4598b2916f67a3bd59e5fd274530590e298",
+      "identical": false
+    },
+    {
+      "file": "localization.js",
+      "zip_extracted_sha256": "413f6cd969e928bbc6c55efb5125003d62f314ba4b7424c29ed4dfe32cff5b0e",
+      "source_sha256": "335439bd8f40124638136c1ee734da0b01c868d939f47b98f6f49010b4459cdf",
+      "identical": false
+    }
+  ],
+  "ae_zip_sha256": "ae9bfb9c2aa36c6764b324ac74ef85cc5022071b04bb7b7695e64a3651f70366"
+}
