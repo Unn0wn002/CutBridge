@@ -1,5 +1,7 @@
 # CutBridge Release Readiness
 
+The AE 26.5x89 native candidate campaign found an invalid-object/rollback failure after panel/project reload. The fix requires a fresh candidate build and native retest; release authorization remains false. See [native evidence](evidence/v0.2.5/7d80a42-native-ae/README.md).
+
 Preparation update — 3 October 2026: see [the v0.2.5 preparation record](RELEASE_PREPARATION_v0.2.5.md) for the independent v0.2.4 download audit, confirmed distribution hold, isolated candidate verification, and remaining native/publication/delivery gates.
 
 Status: **v0.2.4 PUBLISHED / VERIFIED ON GITHUB; PRODUCTION DISTRIBUTION HELD; v0.2.5 DEVELOPMENT / NOT AUTHORIZED**

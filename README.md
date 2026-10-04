@@ -1,5 +1,7 @@
 # CutBridge
 
+The AE 26.5x89 native candidate campaign found an invalid-object/rollback failure after panel/project reload. The fix requires a fresh candidate build and native retest; release authorization remains false. See [native evidence](docs/evidence/v0.2.5/7d80a42-native-ae/README.md).
+
 **CutBridge is a Blender → After Effects production handoff tool for animation cuts.**
 
 It standardizes cut metadata, render-pass packaging, versioning, `cutbridge.json` handoff, After Effects project setup, QC, controlled revision handling, Japanese-first workflow UX, Studio Presets, and an optional bounded Camera/3D Null handoff.

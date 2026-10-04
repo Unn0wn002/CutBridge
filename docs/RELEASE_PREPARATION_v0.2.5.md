@@ -2,6 +2,8 @@
 
 Status: **PREPARING / NOT AUTHORIZED**. Production remains on v0.2.3. Do not mirror the immutable v0.2.4 packages: their AE installation guide has the confirmed Issue #99 documentation defect.
 
+The [installed AE 26.5x89 native campaign](evidence/v0.2.5/7d80a42-native-ae/README.md) now executes the exact candidate successfully for V001 Build/QC, V002/V003 revisions, Camera/Null samples, artist preservation, Unicode paths, project reopen, and four ownership-negative cases. Its overall verdict is **FAIL**: required-to-optional DEPTH revision after panel/project reload reports invalid native objects and incomplete rollback. Repairs bind 3D migration to the executing adapter's current state and verify removed footage by captured item ID. Those repairs require fresh isolated CI, new artifact hashes, and native retesting; the previously recorded hashes below identify the pre-repair packages and cannot certify the repair.
+
 ## Candidate identity
 
 - Preparation base: protected `develop` at `8cc5a4fe19e97c2f83105b888f96ccf1b423e8fd`.

@@ -7,6 +7,7 @@ All notable CutBridge changes are tracked here.
 ### Release preparation
 - Added offline container verification using the existing full test, RNA, AE, and packaging commands, with immutable source manifests and downloadable candidate/evidence artifacts.
 - Recorded the independent v0.2.4 download audit and confirmed Issue #99 distribution hold; preparation targets corrected v0.2.5 without changing published releases or production distribution.
+- Native AE 26.5x89 testing found invalid cached project state during a required-to-optional revision after panel reload. Bind 3D revision state to the active adapter and verify removed footage by its captured ID. Fresh candidate/native retesting is pending; the observed failure is archived and keeps release preparation blocked.
 
 ### Fixed
 - Made the packaged After Effects `INSTALL.md` release-state-neutral after Issue #99 found stale pre-publication wording in the immutable v0.2.4 AE ZIP.

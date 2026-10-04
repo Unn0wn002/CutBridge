@@ -472,14 +472,16 @@
         if (record.kind === "camera") applyCameraSamples(record.layer, data);
         else applyNullSamples(record.layer, data);
     }
-    function migrateHandoff3D(current, candidate) {
+    function migrateHandoff3D(current, candidate, managedState) {
         if (!current.handoff_3d && !candidate.handoff_3d) return;
         var topologyErrors = handoffTopologyErrors(current, candidate);
         if (topologyErrors.length) throw new Error(topologyErrors.join("; "));
-        if (typeof Contract.getState !== "function" || typeof Contract.managedTag !== "function") {
+        if ((!managedState && typeof Contract.getState !== "function") || typeof Contract.managedTag !== "function") {
             throw new Error("CutBridge managed-state access is unavailable for 3D revision migration.");
         }
-        var state = Contract.getState(), comp = state && state.comp, records = [], i;
+        // A cached ExtendScript manager can outlive the panel/project that loaded
+        // its contract. Use the executing adapter's live state after panel reload.
+        var state = managedState || Contract.getState(), comp = state && state.comp, records = [], i;
         if (!state || !comp || !state.layers) throw new Error("CutBridge managed comp state is unavailable for 3D revision migration.");
         if (current.handoff_3d.camera) {
             var currentCamera = current.handoff_3d.camera, candidateCamera = candidate.handoff_3d.camera;
@@ -545,6 +547,7 @@
             if (!adapter || typeof adapter[methods[i]] !== "function") throw new Error("Required adapter callback: " + methods[i]);
             host[methods[i]] = adapter[methods[i]];
         }
+        if (typeof adapter.getManagedState === "function") host.getManagedState = adapter.getManagedState;
         function available() {
             if (busy) throw new Error("Revision executor is busy.");
             if (poisoned) throw new Error("Rollback incomplete; recover the project before creating a new executor.");
@@ -619,7 +622,8 @@
                     if (host.readSource(action.layer) !== replacements[j]) throw new Error("Source swap verification failed.");
                 }
                 host.commitRevision(snapshot(plan.current), snapshot(plan.candidate), replacements);
-                migrateHandoff3D(plan.current, plan.candidate);
+                migrateHandoff3D(plan.current, plan.candidate,
+                    typeof host.getManagedState === "function" ? host.getManagedState() : null);
                 return {status: "applied", replaced: attempted.length};
             } catch (error) {
                 if (error && error.handoffRollbackFailures && error.handoffRollbackFailures.length) {
