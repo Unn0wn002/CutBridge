@@ -1,0 +1,74 @@
+[
+    {
+        "exit_code":  0,
+        "suite":  "ae_contract_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "suite":  "ae_package_identity_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "suite":  "ae_qc_managed_layer_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "suite":  "ae_s10c_reconstruction_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "suite":  "ae_s13_revision_3d_tag_migration_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "suite":  "ae_s5_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "suite":  "ae_s5_managed_layer_guard.cjs"
+    },
+    {
+        "exit_code":  0,
+        "suite":  "ae_s5_partial_retry_order.cjs"
+    },
+    {
+        "exit_code":  0,
+        "suite":  "ae_s6_extend_script_binding_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "suite":  "ae_s6_native_host_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "suite":  "ae_s6_optional_pass_lifecycle_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "suite":  "ae_s6_revision_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "suite":  "ae_s6_revision_ownership_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "suite":  "ae_s6_root_structure_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "suite":  "ae_s7_native_qc_binding_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "suite":  "ae_s7_qc_plus_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "suite":  "ae_s8_localization_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "suite":  "ae_s8_native_ui_binding_checks.cjs"
+    }
+]

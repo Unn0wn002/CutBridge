@@ -1,0 +1,34 @@
+[
+  {
+    "input": "input",
+    "identical": true
+  },
+  {
+    "input": "zip-native-input",
+    "identical": true
+  },
+  {
+    "input": "optional-input",
+    "identical": true
+  },
+  {
+    "input": "native-input/optional.jsx",
+    "identical": true
+  },
+  {
+    "input": "inspect-input/inspect.jsx",
+    "identical": true
+  },
+  {
+    "input": "optional-r2-input/optional-source.jsx",
+    "identical": true
+  },
+  {
+    "input": "reopen-input/reopen.jsx",
+    "identical": true
+  },
+  {
+    "input": "final-input/final.jsx",
+    "identical": true
+  }
+]

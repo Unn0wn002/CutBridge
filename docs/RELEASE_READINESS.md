@@ -1,6 +1,6 @@
 # CutBridge Release Readiness
 
-The AE 26.5x89 native candidate campaign found an invalid-object/rollback failure after panel/project reload. The fix requires a fresh candidate build and native retest; release authorization remains false. See [native evidence](evidence/v0.2.5/7d80a42-native-ae/README.md).
+Native AE 26.5x89 testing found and repaired cached-object defects in revision reload and optional-layer QC. The latest candidate passes the recorded Build/QC, V001→V002→V003, status-change, optional-content and project-reopen checks. Release readiness remains INSUFFICIENT EVIDENCE pending the remaining native/review/delivery gates; authorization stays false. See [native evidence](evidence/v0.2.5/049c095-native-ae/README.md).
 
 Preparation update — 3 October 2026: see [the v0.2.5 preparation record](RELEASE_PREPARATION_v0.2.5.md) for the independent v0.2.4 download audit, confirmed distribution hold, isolated candidate verification, and remaining native/publication/delivery gates.
 

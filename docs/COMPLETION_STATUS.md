@@ -1,10 +1,10 @@
 # CutBridge Completion Status
 
-The AE 26.5x89 native candidate campaign found an invalid-object/rollback failure after panel/project reload. The fix requires a fresh candidate build and native retest; release authorization remains false. See [native evidence](evidence/v0.2.5/7d80a42-native-ae/README.md).
+Native AE 26.5x89 testing found and repaired cached-object defects in revision reload and optional-layer QC. The latest candidate passes the recorded Build/QC, V001→V002→V003, status-change, optional-content and project-reopen checks. Release readiness remains INSUFFICIENT EVIDENCE pending the remaining native/review/delivery gates; authorization stays false. See [native evidence](evidence/v0.2.5/049c095-native-ae/README.md).
 
 ## Current state — 4 October 2026
 
-The revised v0.2.5 candidate passed 313 tests + 2 subtests and a partial scripted native Blender 5.2.2 campaign. It corrects stale Camera/3D Null handoff wording. Native AE execution and remaining interactive/delivery gates are still pending; see the linked preparation record for exact SHA-bound evidence.
+The revised v0.2.5 candidate passed 313 tests + 2 subtests and a partial scripted native Blender 5.2.2 campaign. It corrects stale Camera/3D Null handoff wording. Native AE 26.5x89 execution now covers the recorded positive/revision/optional-content/persistence scope; remaining installation, negative/preservation sign-off, review and delivery gates are still pending; see the linked preparation record for exact SHA-bound evidence.
 
 Release preparation update — 3 October 2026: the independent v0.2.4 artifact audit confirms the Issue #99 distribution hold. v0.2.5 preparation and remaining exact-candidate gates are recorded in [RELEASE_PREPARATION_v0.2.5.md](RELEASE_PREPARATION_v0.2.5.md). Production, release authorization, and published artifacts are unchanged.
 

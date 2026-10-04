@@ -3,26 +3,24 @@
   "record_date": "2026-10-04",
   "product_version": "0.2.5",
   "release_readiness_verdict": "INSUFFICIENT EVIDENCE",
-  "candidate_sha": "604714d93627a870326a75564eba0af46e5ee957",
+  "candidate_sha": "049c095258f9fc2dd89cbf8f1d7b2b3114d80296",
   "base_sha": "8cc5a4fe19e97c2f83105b888f96ccf1b423e8fd",
   "automated_verification": {
     "verdict": "PASS",
-    "isolated_run": "https://github.com/Unn0wn002/CutBridge/actions/runs/37137778152",
-    "ci_run": "https://github.com/Unn0wn002/CutBridge/actions/runs/37137778139",
+    "isolated_run": "https://github.com/Unn0wn002/CutBridge/actions/runs/37180451235",
+    "ci_run": "https://github.com/Unn0wn002/CutBridge/actions/runs/37180451191",
     "tests_passed": 313,
     "subtests_passed": 2,
     "blender_rna_runtime": "5.2.1",
-    "node_suites": "PASS",
-    "python_and_js_syntax": "PASS",
-    "repeated_package_bytes": "IDENTICAL",
+    "local_offline_ae_node_suites_passed": 18,
     "source_manifests": "IDENTICAL",
-    "source_manifest_sha256": "106e905b9bfa474c51fcf756a86cc79bc4624e49e77e4f44d725830d107ed259",
-    "image_id": "sha256:1b344daeba841c43e682b0e56f5107185cbf28d32dca15696fa077c8814b1a33",
+    "repeated_package_bytes": "IDENTICAL",
+    "evidence_path": "evidence/v0.2.5/049c095-native-ae/ci/",
     "network": "none",
     "source_mount": "read-only",
-    "root_filesystem": "read-only",
-    "user": "1000:1000",
-    "owner_credentials": "not mounted or passed"
+    "owner_credentials": "not mounted or passed",
+    "image_id": "sha256:e51f75673dc9886cca3a8ec6e2fe1d502973048523367afc5d76663bcd3e7045",
+    "source_manifest_sha256": "770536f1162c1e82e7154b8e493e1ee6dc10eb62ef6ada1053fafdf86a148e06"
   },
   "candidate_artifacts": {
     "blender": {
@@ -31,7 +29,7 @@
     },
     "after_effects": {
       "filename": "CutBridge-AfterEffects-v0.2.5.zip",
-      "sha256": "c15b4fb6ce4891a84f205b0658a5b9bbdb8874828a99140aacdd620a9439ec6e"
+      "sha256": "ae9bfb9c2aa36c6764b324ac74ef85cc5022071b04bb7b7695e64a3651f70366"
     }
   },
   "independent_artifact_checks": {
@@ -65,8 +63,9 @@
     "modified": false
   },
   "remaining_gates": [
-    "Exact-candidate native Blender GUI workflow",
-    "Exact-candidate native AE install/Build/QC/revision/persistence",
+    "Complete native Blender installer/button/manual-update checks",
+    "Complete AE installation, preservation and remaining negative sign-off",
+    "Independent release review and representative Japanese artist validation",
     "Protected promotion and exact tuple authorization",
     "Tag eligibility and authorized v0.2.5 publication",
     "Independent published-download verification",
@@ -81,7 +80,7 @@
     "gui_visual_inspection": "PASS: actual English/Japanese N-panel screenshots; installer dialog and button clicks NOT_EXECUTED",
     "input_manifest_sha256": "24277858360c933d775206e0371f2b9e9b0b38f55cdf06b5f7bbde9a8948064c",
     "candidate_sha": "fef102366a9e4b363455f8738b516d57a535ff76",
-    "ae_execution": "EXECUTED: separate campaign verdict FAIL; see native_ae_candidate_campaign",
+    "ae_execution": "EXECUTED: current scoped results in native_ae_repaired_campaign; historical FAIL retained",
     "scripted_gui_scope": "PASS",
     "input_manifests": "IDENTICAL",
     "normal_exit_code": 0,
@@ -109,6 +108,52 @@
     "blocker": "Required-to-optional revision after panel/project reload: invalid object and incomplete rollback",
     "host": "26.5x89",
     "evidence_path": "evidence/v0.2.5/7d80a42-native-ae/",
-    "repair_verification": "PENDING: fresh CI/artifacts/native retest"
+    "repair_verification": "Verified for recorded scope in 049c095; original FAIL preserved"
+  },
+  "historical_automated_verification": {
+    "verdict": "PASS",
+    "isolated_run": "https://github.com/Unn0wn002/CutBridge/actions/runs/37137778152",
+    "ci_run": "https://github.com/Unn0wn002/CutBridge/actions/runs/37137778139",
+    "tests_passed": 313,
+    "subtests_passed": 2,
+    "blender_rna_runtime": "5.2.1",
+    "node_suites": "PASS",
+    "python_and_js_syntax": "PASS",
+    "repeated_package_bytes": "IDENTICAL",
+    "source_manifests": "IDENTICAL",
+    "source_manifest_sha256": "106e905b9bfa474c51fcf756a86cc79bc4624e49e77e4f44d725830d107ed259",
+    "image_id": "sha256:1b344daeba841c43e682b0e56f5107185cbf28d32dca15696fa077c8814b1a33",
+    "network": "none",
+    "source_mount": "read-only",
+    "root_filesystem": "read-only",
+    "user": "1000:1000",
+    "owner_credentials": "not mounted or passed"
+  },
+  "historical_candidate_artifacts": {
+    "blender": {
+      "filename": "CutBridge-Blender-v0.2.5.zip",
+      "sha256": "3a53f7af8420909e5ed300440df115dffef2ba1dd196688c7c99789a8a48aa48"
+    },
+    "after_effects": {
+      "filename": "CutBridge-AfterEffects-v0.2.5.zip",
+      "sha256": "c15b4fb6ce4891a84f205b0658a5b9bbdb8874828a99140aacdd620a9439ec6e"
+    }
+  },
+  "native_ae_repaired_campaign": {
+    "candidate_sha": "049c095258f9fc2dd89cbf8f1d7b2b3114d80296",
+    "release_readiness_verdict": "INSUFFICIENT EVIDENCE",
+    "host": "26.5x89",
+    "evidence_path": "evidence/v0.2.5/049c095-native-ae/",
+    "build_qc_revision_chain": "PASS",
+    "camera_null_samples": "PASS",
+    "inspected_artist_state": "UNCHANGED: scope documented",
+    "status_change_after_reload": "PASS",
+    "optional_deleted_layer": "WARNING_ONLY",
+    "optional_missing_sequence": "WARNING_SKIP_ONLY",
+    "same_process_reopen": "PASS",
+    "normal_process_exit": "NOT_VERIFIED",
+    "input_integrity": "IDENTICAL",
+    "exhaustive_preservation_and_remaining_negative_signoff": "PENDING",
+    "japanese_representative_users": "NOT_EXECUTED"
   }
 }
