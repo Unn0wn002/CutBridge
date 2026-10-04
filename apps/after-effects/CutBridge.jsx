@@ -695,6 +695,8 @@ if (typeof module !== "undefined" && module.exports) {
 
     function liveProjectItem(target) {
         if (!target || !app.project) return false;
+        // Native AE handles can throw even during equality after deletion.
+        if (typeof isValid === "function" && !isValid(target)) return false;
         for (var i = 1; i <= app.project.numItems; i++) if (app.project.item(i) === target) return true;
         return false;
     }
@@ -835,6 +837,7 @@ if (typeof module !== "undefined" && module.exports) {
     }
     function liveProjectLayer(target) {
         if (!target || !app.project) return false;
+        if (typeof isValid === "function" && !isValid(target)) return false;
         for (var p = 1; p <= app.project.numItems; p++) {
             var owner = app.project.item(p);
             if (!(owner instanceof CompItem)) continue;
