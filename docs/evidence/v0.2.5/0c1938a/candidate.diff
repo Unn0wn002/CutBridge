@@ -1,0 +1,350 @@
+diff --git a/.github/workflows/candidate-verification.yml b/.github/workflows/candidate-verification.yml
+new file mode 100644
+index 0000000..b59b769
+--- /dev/null
++++ b/.github/workflows/candidate-verification.yml
+@@ -0,0 +1,214 @@
++name: Isolated candidate verification
++
++on:
++  push:
++    branches: ['feature/**', 'fix/**']
++  pull_request:
++  workflow_dispatch:
++
++permissions:
++  contents: read
++
++jobs:
++  isolated-candidate:
++    runs-on: ubuntu-latest
++    timeout-minutes: 20
++    steps:
++      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
++        with:
++          persist-credentials: false
++          fetch-depth: 0
++      - name: Prepare dependencies without candidate inputs
++        shell: bash
++        run: |
++          set -euo pipefail
++          mkdir "$RUNNER_TEMP/cutbridge-image"
++          cat > "$RUNNER_TEMP/cutbridge-image/Dockerfile" <<'DOCKERFILE'
++          FROM node:22-bookworm-slim AS node
++          FROM python:3.13-bookworm
++          COPY --from=node /usr/local/bin/node /usr/local/bin/node
++          RUN apt-get update && apt-get install -y --no-install-recommends \
++              libgl1 libegl1 libxrender1 libxi6 libxfixes3 libxkbcommon0 \
++              libsm6 libice6 libwayland-client0 && rm -rf /var/lib/apt/lists/*
++          RUN python -m pip install --no-cache-dir pytest jsonschema bpy==5.2.1
++          DOCKERFILE
++          docker build --pull -t cutbridge-verifier "$RUNNER_TEMP/cutbridge-image"
++      - name: Prepare exact immutable snapshot
++        shell: bash
++        env:
++          BASE_SHA: ${{ github.event.pull_request.base.sha }}
++        run: |
++          set -euo pipefail
++          SNAPSHOT="$RUNNER_TEMP/cutbridge-snapshot"
++          mkdir "$SNAPSHOT"
++          git archive HEAD | tar -x -C "$SNAPSHOT"
++          git diff "${BASE_SHA:-origin/develop}" HEAD > "$SNAPSHOT/candidate.diff"
++          curl --fail --silent --show-error --proto '=https' \
++            https://unn0wn002.github.io/cutbridge-distribution/cutbridge/release-index.json \
++            --output "$SNAPSHOT/production-release-index.json"
++          mkdir -p "$SNAPSHOT/verification-output"/{pycache,tmp,home}
++          git rev-parse HEAD > "$SNAPSHOT/verification-output/candidate-sha.txt"
++          docker image inspect cutbridge-verifier > "$SNAPSHOT/verification-output/image.json"
++          (
++            cd "$SNAPSHOT"
++            find . -path './verification-output' -prune -o -type f -print0 |
++              sort -z | xargs -0 sha256sum > "$RUNNER_TEMP/manifest-before.sha256"
++          )
++          cp "$RUNNER_TEMP/manifest-before.sha256" "$SNAPSHOT/verification-output/"
++          sudo chown -R 1000:1000 "$SNAPSHOT/verification-output/pycache" \
++            "$SNAPSHOT/verification-output/tmp" "$SNAPSHOT/verification-output/home"
++          chmod 1777 "$SNAPSHOT/verification-output"
++      - name: Run canonical checks in offline read-only container
++        shell: bash
++        run: |
++          set -euo pipefail
++          SNAPSHOT="$RUNNER_TEMP/cutbridge-snapshot"
++          docker create --name cutbridge-candidate --network none --read-only \
++            --user 1000:1000 --cap-drop ALL --security-opt no-new-privileges \
++            --pids-limit 512 --memory 6g --cpus 2 \
++            --mount "type=bind,src=$SNAPSHOT,dst=/candidate,readonly" \
++            --mount "type=bind,src=$SNAPSHOT/verification-output,dst=/candidate/verification-output" \
++            --workdir /candidate \
++            --env HOME=/candidate/verification-output/home \
++            --env PYTHONPYCACHEPREFIX=/candidate/verification-output/pycache \
++            --env TEMP=/candidate/verification-output/tmp \
++            --env TMP=/candidate/verification-output/tmp \
++            --env TMPDIR=/candidate/verification-output/tmp \
++            cutbridge-verifier bash -c '
++              set -euo pipefail
++              OUT="$PWD/verification-output"
++              python - <<"PY"
++          import os, socket
++          from pathlib import Path
++          assert not any(os.environ.get(key) for key in ("GH_TOKEN", "GITHUB_TOKEN", "SSH_AUTH_SOCK", "ACTIONS_RUNTIME_TOKEN"))
++          assert not Path("/var/run/docker.sock").exists()
++          assert not Path("/candidate/.git").exists()
++          try:
++              Path("/candidate/write-probe").write_text("unexpected")
++          except OSError:
++              pass
++          else:
++              raise SystemExit("candidate mount is writable")
++          with socket.socket() as probe:
++              probe.settimeout(1)
++              try:
++                  probe.connect(("1.1.1.1", 443))
++              except OSError:
++                  pass
++              else:
++                  raise SystemExit("network is accessible")
++          print("Isolation probes passed: offline, read-only source, no credential environment or engine socket")
++          PY
++              python -m compileall -q apps tools tests
++              python -m pytest -q -p no:cacheprovider --junitxml="$OUT/pytest.xml"
++              python tests/test_blender_runtime_52.py
++              for file in CutBridge.jsx revision_manager.js qc_plus.js localization.js; do
++                node_file="$file"
++                if [[ "$file" == CutBridge.jsx ]]; then node_file=CutBridge.js; fi
++                cp "apps/after-effects/$file" "$TMPDIR/$node_file"
++                node --check "$TMPDIR/$node_file"
++              done
++              for check in ae_s6_revision_checks ae_s6_optional_pass_lifecycle_checks ae_s6_extend_script_binding_checks ae_s7_qc_plus_checks ae_s7_native_qc_binding_checks ae_s8_localization_checks ae_s8_native_ui_binding_checks ae_s10c_reconstruction_checks ae_s13_revision_3d_tag_migration_checks; do
++                node "tests/$check.cjs"
++              done
++              VERSION="$(python -c "import tomllib; print(tomllib.load(open(\"apps/blender/cutbridge/blender_manifest.toml\", \"rb\"))[\"version\"], end=\"\")")"
++              python tools/build_release.py --tag "v${VERSION}" --output "$OUT/dist-ci"
++              python tools/build_release.py --tag "v${VERSION}" --output "$OUT/dist-repeat"
++              (cd "$OUT/dist-ci" && sha256sum --check SHA256SUMS.txt)
++              for artifact in "$OUT/dist-ci/"*; do
++                cmp "$artifact" "$OUT/dist-repeat/$(basename "$artifact")"
++              done
++              python - <<"DISTRIBUTION_PY"
++          import importlib.util, json, shutil, tomllib, zipfile
++          from pathlib import Path
++          import jsonschema
++          out = Path("verification-output")
++          metadata = json.loads((out / "dist-ci/release-metadata.json").read_text())
++          index = json.loads(Path("production-release-index.json").read_text())
++          before = list(index["releases"])
++          version = metadata["version"]
++          base = "https://unn0wn002.github.io/cutbridge-distribution"
++          archive = metadata["artifacts"]["blender"]
++          filename = archive["filename"]
++          entry = {"version": version, "channel": "stable", "blender_version_min": metadata["blender_version_min"], "release_page_url": f"{base}/releases/v{version}/", "download_url": f"{base}/releases/v{version}/{filename}", "sha256": archive["sha256"]}
++          assert not any(item["version"] == version for item in before), "candidate is already advertised"
++          index["releases"] = [entry, *before]
++          index.pop("generated_at", None)
++          jsonschema.validate(index, json.loads(Path("packages/update/release-index.schema.json").read_text()))
++          spec = importlib.util.spec_from_file_location("updates", "apps/blender/cutbridge/updates.py")
++          updates = importlib.util.module_from_spec(spec)
++          spec.loader.exec_module(updates)
++          for current in ("0.2.3", version, "99.0.0"):
++              selected = updates.select_latest_compatible(index, current_version=current, blender_version=(5, 2, 1), platform_name="windows-x64")
++              assert (selected["version"] if selected else None) == (version if current == "0.2.3" else None)
++          assert index["releases"][1:] == before
++          preview = out / "distribution-preview"
++          (preview / "cutbridge").mkdir(parents=True)
++          (preview / "blender").mkdir()
++          release = preview / "releases" / f"v{version}"
++          release.mkdir(parents=True)
++          for artifact in (out / "dist-ci").iterdir():
++              shutil.copyfile(artifact, release / artifact.name)
++          (preview / "cutbridge/release-index.json").write_text(json.dumps(index, indent=2) + "\n")
++          with zipfile.ZipFile(out / "dist-ci" / archive["filename"]) as package:
++              manifest = tomllib.loads(package.read("blender_manifest.toml").decode())
++          manifest.pop("build", None)
++          manifest.update(archive_url="./" + archive["filename"], archive_size=(out / "dist-ci" / archive["filename"]).stat().st_size, archive_hash="sha256:" + archive["sha256"])
++          (preview / "blender/index.json").write_text(json.dumps({"version": "v1", "blocklist": [], "data": [manifest]}, indent=2) + "\n")
++          shutil.copyfile(out / "dist-ci" / archive["filename"], preview / "blender" / archive["filename"])
++          links = "".join(f"<li><a href=\"{artifact.name}\">{artifact.name}</a></li>" for artifact in sorted(release.iterdir()))
++          (release / "index.html").write_text(f"<!doctype html><html lang=\"en\"><meta charset=\"utf-8\"><title>CutBridge v{version} candidate</title><h1>CutBridge v{version} candidate</h1><p>Unpublished preview. Release authorization and published-download verification are required before distribution.</p><ul>{links}</ul></html>")
++          (preview / "DO_NOT_PUBLISH.txt").write_text("Unpublished candidate artifacts. Verify the authorized published release before mirroring. Preserve the production v0.2.3 tree; do not replace it with this partial preview.\n")
++          print("Distribution preview: schema, preserved prior entries, v0.2.3 update selection and no downgrade passed; NOT PUBLISHED")
++          DISTRIBUTION_PY
++              echo "Canonical checks and deterministic repeated packaging passed"
++            '
++          docker inspect cutbridge-candidate > "$SNAPSHOT/verification-output/isolation.json"
++          jq -e '.[0] |
++            .HostConfig.NetworkMode == "none" and
++            .HostConfig.ReadonlyRootfs == true and
++            .Config.User == "1000:1000" and
++            .HostConfig.CapDrop == ["ALL"] and
++            (.HostConfig.SecurityOpt | index("no-new-privileges") != null) and
++            (.Mounts | length == 2) and
++            (.Mounts | any(.Destination == "/candidate" and .RW == false)) and
++            (.Mounts | any(.Destination == "/candidate/verification-output" and .RW == true))' \
++            "$SNAPSHOT/verification-output/isolation.json"
++          set +e
++          docker start --attach cutbridge-candidate 2>&1 | tee "$SNAPSHOT/verification-output/checks.log"
++          START_EXIT=${PIPESTATUS[0]}
++          set -e
++          CHECK_EXIT="$(docker inspect --format '{{.State.ExitCode}}' cutbridge-candidate)"
++          if [[ "$START_EXIT" -ne 0 && "$CHECK_EXIT" -eq 0 ]]; then CHECK_EXIT="$START_EXIT"; fi
++          (
++            cd "$SNAPSHOT"
++            find . -path './verification-output' -prune -o -type f -print0 |
++              sort -z | xargs -0 sha256sum > "$RUNNER_TEMP/manifest-after.sha256"
++          )
++          cp "$RUNNER_TEMP/manifest-after.sha256" "$SNAPSHOT/verification-output/"
++          if ! cmp "$RUNNER_TEMP/manifest-before.sha256" "$RUNNER_TEMP/manifest-after.sha256"; then
++            echo INVALID > "$SNAPSHOT/verification-output/verdict.txt"
++            exit 1
++          fi
++          if [[ "$CHECK_EXIT" -ne 0 ]]; then
++            echo FAIL > "$SNAPSHOT/verification-output/verdict.txt"
++            exit "$CHECK_EXIT"
++          fi
++          echo PASS > "$SNAPSHOT/verification-output/verdict.txt"
++      - name: Retain candidate packages and verification evidence
++        if: always()
++        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
++        with:
++          name: cutbridge-candidate-${{ github.sha }}-${{ github.run_attempt }}
++          path: |
++            ${{ runner.temp }}/cutbridge-snapshot/verification-output/candidate-sha.txt
++            ${{ runner.temp }}/cutbridge-snapshot/verification-output/image.json
++            ${{ runner.temp }}/cutbridge-snapshot/verification-output/isolation.json
++            ${{ runner.temp }}/cutbridge-snapshot/verification-output/manifest-*.sha256
++            ${{ runner.temp }}/cutbridge-snapshot/verification-output/checks.log
++            ${{ runner.temp }}/cutbridge-snapshot/verification-output/pytest.xml
++            ${{ runner.temp }}/cutbridge-snapshot/verification-output/verdict.txt
++            ${{ runner.temp }}/cutbridge-snapshot/verification-output/dist-ci/*
++            ${{ runner.temp }}/cutbridge-snapshot/verification-output/distribution-preview/**
++          if-no-files-found: error
++          retention-days: 30
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index e3cf0b9..4ca5ada 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -4,6 +4,10 @@ All notable CutBridge changes are tracked here.
+ 
+ ## [0.2.5] - Unreleased
+ 
++### Release preparation
++- Added offline container verification using the existing full test, RNA, AE, and packaging commands, with immutable source manifests and downloadable candidate/evidence artifacts.
++- Recorded the independent v0.2.4 download audit and confirmed Issue #99 distribution hold; preparation targets corrected v0.2.5 without changing published releases or production distribution.
++
+ ### Fixed
+ - Made the packaged After Effects `INSTALL.md` release-state-neutral after Issue #99 found stale pre-publication wording in the immutable v0.2.4 AE ZIP.
+ - Added source-level and built-ZIP regression coverage so future AE release packages cannot silently restore version-specific development/publication claims.
+diff --git a/README.md b/README.md
+index 2fa3c10..d3cbd88 100644
+--- a/README.md
++++ b/README.md
+@@ -49,6 +49,8 @@ CutBridge currently provides:
+ 
+ ## Current development status
+ 
++The [v0.2.5 release-preparation record](docs/RELEASE_PREPARATION_v0.2.5.md) tracks the independent v0.2.4 audit, preserved distribution hold, candidate verification, and remaining release gates.
++
+ Engineering/native-host validation is complete through **S13**. **S14A**, the Japanese target-user validation protocol and fail-closed evidence tooling, is integrated. The v0.2.3 release-facing Japanese claim scope was deliberately narrowed instead of claiming S14B completion. **S14B remains NOT_EXECUTED** and is reserved for a future release or claim that needs representative Japanese target-user usability evidence.
+ 
+ GitHub Release v0.2.4 was published from protected `main` at `a393e409d19445c4090460b7e7b4716779161fa4`; tag `v0.2.4` points to that exact commit. Its published assets were independently verified. The separate production distribution intentionally remains on verified v0.2.3 while Issue #99 is carried forward through the v0.2.5 patch line:
+diff --git a/docs/COMPLETION_STATUS.md b/docs/COMPLETION_STATUS.md
+index 250d283..08be23a 100644
+--- a/docs/COMPLETION_STATUS.md
++++ b/docs/COMPLETION_STATUS.md
+@@ -2,6 +2,8 @@
+ 
+ ## Current state — 23 September 2026
+ 
++Release preparation update — 3 October 2026: the independent v0.2.4 artifact audit confirms the Issue #99 distribution hold. v0.2.5 preparation and remaining exact-candidate gates are recorded in [RELEASE_PREPARATION_v0.2.5.md](RELEASE_PREPARATION_v0.2.5.md). Production, release authorization, and published artifacts are unchanged.
++
+ CutBridge v0.2.4 is **PUBLISHED / VERIFIED ON GITHUB** at exact main/tag SHA `a393e409d19445c4090460b7e7b4716779161fa4`. Production distribution remains intentionally on v0.2.3 because Issue #99 found stale pre-publication wording in the immutable v0.2.4 AE package. v0.2.5 is the **UNRELEASED / NOT AUTHORIZED** patch-development baseline carrying the source fix. S14B representative-user validation remains NOT_EXECUTED and is not claimed as complete.
+ 
+ - **Integrated product/validation sessions:** S1–S13.
+diff --git a/docs/RELEASE_PREPARATION_v0.2.5.md b/docs/RELEASE_PREPARATION_v0.2.5.md
+new file mode 100644
+index 0000000..b37436b
+--- /dev/null
++++ b/docs/RELEASE_PREPARATION_v0.2.5.md
+@@ -0,0 +1,59 @@
++# CutBridge v0.2.5 release preparation
++
++Status: **PREPARING / NOT AUTHORIZED**. Production remains on v0.2.3. Do not mirror the immutable v0.2.4 packages: their AE installation guide has the confirmed Issue #99 documentation defect.
++
++## Candidate identity
++
++- Preparation base: protected `develop` at `8cc5a4fe19e97c2f83105b888f96ccf1b423e8fd`.
++- Published v0.2.4: immutable tag/main SHA `a393e409d19445c4090460b7e7b4716779161fa4`; release workflow [35843821702](https://github.com/Unn0wn002/CutBridge/actions/runs/35843821702).
++- v0.2.5 already includes the Issue #99 source fix, packaged-guide regression checks, version synchronization, modern compositor state-capture repair, and refreshed action pins. This preparation does not change runtime code or schemas.
++- Existing exact-base CI: [36528627741](https://github.com/Unn0wn002/CutBridge/actions/runs/36528627741). Native evidence from earlier candidates remains historical; it is not reassigned to v0.2.5.
++- Release authorization stays `approved: false`, with null tag/channel/prerelease. Startup update scheduling stays disabled. S14B remains `NOT_EXECUTED`.
++
++## Independent v0.2.4 audit — 3 October 2026
++
++Both published ZIPs and metadata were downloaded independently. ZIP integrity, source-version identity, required runtime files, GPL license bytes against the release commit, and hashes pass. The downloaded Blender ZIP also passes the installed Blender 5.2.2 CLI package validator. These checks establish package validity; they do not establish a GUI workflow or AE native success.
++
++| Artifact | SHA-256 |
++| --- | --- |
++| Blender ZIP | `3819b6178cac31b6613d475aeaf84faeaee99b97add94eca6375f1c408f487c2` |
++| After Effects ZIP | `e249d6f83c95b7eded472c8bd473c5034e8ab500fa28945b460f150518a6f73b` |
++| SHA256SUMS.txt | `8fb929650292105effaf39bbcb26427dc056a6cf64f435dd65e65a53083c24ac` |
++| release-metadata.json | `6266daa58d12071d64b64e8f21777eb88e9a1f0577277c4650880295325dc0ee` |
++
++The AE `INSTALL.md` still calls v0.2.4 a development package and says its evidence does not authorize publication. This confirms [Issue #99](https://github.com/Unn0wn002/CutBridge/issues/99). [PR #100](https://github.com/Unn0wn002/CutBridge/pull/100) fixed source documentation; [PR #101](https://github.com/Unn0wn002/CutBridge/pull/101) carried it into the v0.2.5 development line. The existing published v0.2.4 files are not modified.
++
++Production notification and Blender indexes were rechecked: they advertise only v0.2.3 at distribution commit `635c1384af2649d4ce49705cce41f98826a861cc`. A local v0.2.4 mirror was prepared before discovering the hold, but was not committed, pushed, or deployed. It must not be used for publication.
++
++## Isolated candidate verification
++
++The `Isolated candidate verification` workflow runs the existing project checks on a `git archive` snapshot without `.git` or owner credentials. Dependencies are prepared before candidate execution. The container has no network, a read-only root filesystem and source mount, an unprivileged user, dropped capabilities, and only the designated verification-output mount writable. The run records image identity, container settings, candidate SHA, source manifests before/after, logs, pytest results, and its verdict.
++
++It runs full pytest, Blender 5.2.1 RNA lifecycle, Python compilation, existing AE Node suites and syntax checks, then invokes the canonical release builder twice. Candidate artifacts must match byte-for-byte. Artifacts are retained for 30 days; download and preserve the evidence bundle in durable release storage before expiry.
++
++The workflow also retains an unpublished distribution preview: manifest-derived Blender index, notification index, versioned candidate files, and release page. It snapshots the live production notification index before offline execution, preserves its existing entries, and verifies v0.2.3 update selection and no downgrade against the staged candidate entry. The preview is partial and must never replace the production tree or bypass published-download verification.
++
++### Recorded automated candidate evidence
++
++Candidate `4f2688625980c4cb0905ee498d42c50ed0069ac6`, [isolated run 37135012123](https://github.com/Unn0wn002/CutBridge/actions/runs/37135012123): **PASS** for the isolated automated scope. Full suite: **312 tests + 2 subtests**, Blender 5.2.1 RNA lifecycle, AE Node/syntax checks, and deterministic repeated packaging passed. Source manifests are identical. [Normal CI 37135012125](https://github.com/Unn0wn002/CutBridge/actions/runs/37135012125) passed both required jobs on the same head. Subsequent preparation changes affect only orchestration/evidence/docs; retain their fresh CI separately from this SHA-bound result.
++
++| Candidate artifact | SHA-256 |
++| --- | --- |
++| Blender ZIP | `b221a759208cfd81e22218db20709f0341a4dc931ab7f0c623f74e6bc87986f6` |
++| After Effects ZIP | `c15b4fb6ce4891a84f205b0658a5b9bbdb8874828a99140aacdd620a9439ec6e` |
++
++These are unpublished candidate hashes. Exact-artifact native Blender/AE testing, protected promotion, release authorization, publication, and deployed delivery remain unexecuted for v0.2.5. Overall release-readiness verdict: **INSUFFICIENT EVIDENCE** until those gates are satisfied.
++
++Candidate packages are verification artifacts, not published releases. Green isolated checks and normal CI do not authorize tagging or replace native-host evidence.
++
++## Remaining release gates
++
++1. Review and integrate this preparation through protected `develop` after exact-head CI. Record the immutable candidate SHA and package hashes from the isolated verification bundle before native testing; rebuild only if source or toolchain changes.
++2. Complete the applicable native Blender 5.2 campaign with the exact candidate ZIP, including interactive render, output mapping rollback/artist-node preservation, package safety, manual update behavior, and normal clean exit. Validate the changed modern compositor path. Existing 4.2/4.5 focused probes remain limited to their recorded scope.
++3. Install the exact AE candidate's four adjacent runtime files, inspect its corrected guide, then run the existing Build/QC, V001→V002→V003, artist-state preservation, negative-package, and save/close/reopen gates. Record host versions and artifact hashes using the existing S12 evidence protocol; do not manufacture representative-user evidence.
++4. Promote the tested candidate through the existing protected-branch process. Explicitly authorize only the exact current-main `v0.2.5` / `stable` / non-prerelease tuple after all required evidence is complete. Require release-tag eligibility before creating the tag.
++5. Independently download and verify the published v0.2.5 ZIPs, checksums, metadata, versions, licenses, AE sidecars, and corrected guide before distribution. Any failure keeps distribution held.
++6. Add verified v0.2.5 files and its release page to the separate distribution repository; preserve v0.2.3. Add a stable notification entry and generate the Blender repository index with official Blender tooling. Do not add v0.2.4 as an intermediate advertised release.
++7. After deployment, verify public hashes, both indexes, repository sync/install, manual v0.2.3→v0.2.5 update selection, no downgrade, and unchanged startup scheduling. Record the distribution commit and delivery results before resolving Issue #99.
++
++Use [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md) and [S12_E2E_VALIDATION.md](S12_E2E_VALIDATION.md) for the existing host/evidence procedures. Preparation completion is distinct from release and production-delivery completion.
+diff --git a/docs/RELEASE_READINESS.md b/docs/RELEASE_READINESS.md
+index 28eaa29..65ca872 100644
+--- a/docs/RELEASE_READINESS.md
++++ b/docs/RELEASE_READINESS.md
+@@ -1,5 +1,7 @@
+ # CutBridge Release Readiness
+ 
++Preparation update — 3 October 2026: see [the v0.2.5 preparation record](RELEASE_PREPARATION_v0.2.5.md) for the independent v0.2.4 download audit, confirmed distribution hold, isolated candidate verification, and remaining native/publication/delivery gates.
++
+ Status: **v0.2.4 PUBLISHED / VERIFIED ON GITHUB; PRODUCTION DISTRIBUTION HELD; v0.2.5 DEVELOPMENT / NOT AUTHORIZED**
+ 
+ This is the canonical release-readiness record. It preserves historical v0.2.3/v0.2.4 evidence while distinguishing the published-but-not-distributed v0.2.4 state from the current v0.2.5 development boundary. Green product CI and successful native validation are necessary, but neither alone authorizes a future publication; the exact release tuple and current-main eligibility gate remain separate controls.
+diff --git a/docs/ROADMAP.md b/docs/ROADMAP.md
+index 8be39ea..a41fc06 100644
+--- a/docs/ROADMAP.md
++++ b/docs/ROADMAP.md
+@@ -1,5 +1,7 @@
+ # CutBridge Roadmap
+ 
++The next bounded release-preparation work is tracked in [RELEASE_PREPARATION_v0.2.5.md](RELEASE_PREPARATION_v0.2.5.md). It preserves the Issue #99 v0.2.4 hold and targets corrected v0.2.5 delivery after exact-candidate validation and authorization.
++
+ Status reconciled through the v0.2.4 GitHub publication and Issue #99 remediation path. v0.2.4 is published and independently verified on GitHub at `a393e409d19445c4090460b7e7b4716779161fa4`; production distribution remains on v0.2.3 because the immutable v0.2.4 AE package contains stale release-state wording. v0.2.5 is the active unreleased patch-development baseline with fail-closed authorization. Session numbers describe bounded product work and do not guarantee public release numbers.
+ 
+ ## Completed foundation — S1–S9

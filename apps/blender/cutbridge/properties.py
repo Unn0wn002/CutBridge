@@ -88,7 +88,7 @@ class CUTBRIDGE_PG_Settings(bpy.types.PropertyGroup):
     # a normal user-facing workflow until native AE reconstruction is validated.
     handoff_3d_enabled: BoolProperty(
         name="3D Handoff Data",
-        description="Write experimental producer-only camera/null samples into cutbridge.json. Current AE import does not create camera/null layers",
+        description="Write supported perspective Camera and marked Empty samples into cutbridge.json for AE Camera/3D Null reconstruction; exact-host Build and QC verification is required",
         default=False,
     )
     handoff_3d_pixels_per_blender_unit: FloatProperty(

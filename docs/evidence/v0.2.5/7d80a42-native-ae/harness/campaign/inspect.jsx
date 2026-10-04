@@ -1,0 +1,3 @@
+$.evalFile(new File('C:/CutBridgeCampaign/common.jsx'));
+var cbS=CutBridgeContract.getState(),cbV=cbS.manifest.version,cbR={status:'IN_PROGRESS',version:cbV,host:app.version,temp:$.getenv('TEMP')};
+try{cbR.layers=cbSnapshot();cbR.handoff=cbHandoff(cbS.manifest);cbR.qc=CutBridgeContract.runQC();cbR.status='PASS';for(var cbI=0;cbI<cbR.handoff.length;cbI++)if(!cbR.handoff[cbI].passed)cbR.status='FAIL';if(cbR.qc.report.summary.ERROR)cbR.status='FAIL';app.project.save(new File('C:/CutBridgeEvidence/r2/native025-artist-V00'+cbV+'.aep'));}catch(cbE){cbR.status='FAIL';cbR.error=String(cbE);}cbSave('revision-V00'+cbV,cbR);

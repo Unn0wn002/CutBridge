@@ -169,8 +169,8 @@ def handoff_3d_issues(context) -> list[dict]:
         {
             "level": "WARNING",
             "code": "HANDOFF_PRODUCER_ONLY",
-            "message": "3D handoff producer data is enabled; the current After Effects importer does not create camera/null layers yet.",
-            "fix": "Use this data for S10 validation only until native AE reconstruction is approved.",
+            "message": "3D handoff is enabled for supported perspective Camera and marked Empty samples; After Effects can reconstruct these as Camera and 3D Null layers.",
+            "fix": "Use only supported camera/marker settings and verify reconstruction with Build and QC in the exact After Effects host being used.",
         }
     ]
 

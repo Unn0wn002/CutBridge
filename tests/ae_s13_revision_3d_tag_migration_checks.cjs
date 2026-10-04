@@ -51,7 +51,7 @@ function frameFiles(version) {
 
 function makeHost() {
     const controls = [], alerts = [], confirms = [], projectItems = [], dialogQueue = [];
-    const diskFiles = new Set([...frameFiles(1), ...frameFiles(2), ...frameFiles(3)]);
+    const diskFiles = new Set([...frameFiles(1), ...frameFiles(2), ...frameFiles(3), ...frameFiles(4)]);
     const normalize = value => path.posix.normalize(String(value).replaceAll("\\", "/"));
 
     function Folder(value) {
@@ -311,6 +311,20 @@ assert.equal(comp.numLayers, 3, "revision chaining must not duplicate managed 3D
 host.click("Run QC");
 assert.match(host.alerts.at(-1), /CutBridge QC — PASS/, "V003 QC must have zero stale managed tags");
 assert.ok(!host.alerts.some(x => /stale or foreign CutBridge-managed tag/i.test(x)), "no stale-tag diagnostic may remain after migration");
+
+// A native manager survives panel/project reloads in $.global. Its originally
+// captured contract can refer to a closed project's invalid comp. The current
+// adapter must supply the active comp/state rather than dereference that handle.
+Contract.getState = () => { throw new ReferenceError("Object is invalid: retired panel/project state"); };
+const v4 = manifest(4);
+v4.passes[0].required = false;
+host.queue(v4); host.click("Update Revision");
+assert.equal(camera.comment, Contract.managedTag("camera", v4, "S13_Camera"));
+assert.equal(nullLayer.comment, Contract.managedTag("null", v4, "S13_Null"));
+assert.equal(beauty.comment, Contract.managedTag("layer", v4, "BEAUTY"));
+assert.deepEqual(Array.from(camera.position.keys.at(-1).value), [1002, 540, -1000]);
+assert.match(host.confirms.at(-1), /Required\/optional status changed/);
+assert.doesNotMatch(host.alerts.at(-1), /Revision failed|ROLLBACK INCOMPLETE/);
 
 assert.match(revisionSource, /transform\.property\(1\)/, "revision manager must resolve Camera POI by numeric Transform property index");
 assert.doesNotMatch(revisionSource, /transform\.property\("ADBE Anchor Point"\)/, "revision manager must never query Camera Anchor Point by name in native revision context");

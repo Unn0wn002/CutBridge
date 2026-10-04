@@ -1,5 +1,7 @@
 # CutBridge
 
+The AE 26.5x89 native candidate campaign found an invalid-object/rollback failure after panel/project reload. The fix requires a fresh candidate build and native retest; release authorization remains false. See [native evidence](docs/evidence/v0.2.5/7d80a42-native-ae/README.md).
+
 **CutBridge is a Blender → After Effects production handoff tool for animation cuts.**
 
 It standardizes cut metadata, render-pass packaging, versioning, `cutbridge.json` handoff, After Effects project setup, QC, controlled revision handling, Japanese-first workflow UX, Studio Presets, and an optional bounded Camera/3D Null handoff.
@@ -48,6 +50,8 @@ CutBridge currently provides:
 - optional bounded Blender Camera / Empty → AE Camera / 3D Null handoff.
 
 ## Current development status
+
+The [v0.2.5 release-preparation record](docs/RELEASE_PREPARATION_v0.2.5.md) tracks the independent v0.2.4 audit, preserved distribution hold, candidate verification, and remaining release gates.
 
 Engineering/native-host validation is complete through **S13**. **S14A**, the Japanese target-user validation protocol and fail-closed evidence tooling, is integrated. The v0.2.3 release-facing Japanese claim scope was deliberately narrowed instead of claiming S14B completion. **S14B remains NOT_EXECUTED** and is reserved for a future release or claim that needs representative Japanese target-user usability evidence.
 

@@ -1,6 +1,12 @@
 # CutBridge Completion Status
 
-## Current state — 23 September 2026
+The AE 26.5x89 native candidate campaign found an invalid-object/rollback failure after panel/project reload. The fix requires a fresh candidate build and native retest; release authorization remains false. See [native evidence](evidence/v0.2.5/7d80a42-native-ae/README.md).
+
+## Current state — 4 October 2026
+
+The revised v0.2.5 candidate passed 313 tests + 2 subtests and a partial scripted native Blender 5.2.2 campaign. It corrects stale Camera/3D Null handoff wording. Native AE execution and remaining interactive/delivery gates are still pending; see the linked preparation record for exact SHA-bound evidence.
+
+Release preparation update — 3 October 2026: the independent v0.2.4 artifact audit confirms the Issue #99 distribution hold. v0.2.5 preparation and remaining exact-candidate gates are recorded in [RELEASE_PREPARATION_v0.2.5.md](RELEASE_PREPARATION_v0.2.5.md). Production, release authorization, and published artifacts are unchanged.
 
 CutBridge v0.2.4 is **PUBLISHED / VERIFIED ON GITHUB** at exact main/tag SHA `a393e409d19445c4090460b7e7b4716779161fa4`. Production distribution remains intentionally on v0.2.3 because Issue #99 found stale pre-publication wording in the immutable v0.2.4 AE package. v0.2.5 is the **UNRELEASED / NOT AUTHORIZED** patch-development baseline carrying the source fix. S14B representative-user validation remains NOT_EXECUTED and is not claimed as complete.
 

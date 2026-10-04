@@ -1,0 +1,10 @@
+# Retain downloaded/native evidence bytes without checkout newline conversion.
+3f323e1-native-blender/** -text
+604714d-native-blender/** -text
+604714d/** -text
+ae-availability-probe/** -text
+0e02c76-native-extension/** -text
+ae-runtime-probe/** -text
+ae-software-graphics-probe/** -text
+fef1023-native-ui/** -text
+7d80a42-native-ae/** -text

@@ -1,0 +1,62 @@
+{
+  "published_or_distributed": false,
+  "passing_scope": [
+    "Native exact ZIP runtime load",
+    "V001 Build and QC",
+    "Native camera/null sample values",
+    "Repeat Build idempotence",
+    "V002 and V003 native UI revisions and QC",
+    "Artist edit preservation across both revisions",
+    "Unicode input paths",
+    "Save/project-close/reopen and Build/QC in same process",
+    "Deleted/de-tagged required layers fail QC",
+    "Missing/duplicate managed folders fail Build/QC without inspected mutations"
+  ],
+  "candidate_sha": "7d80a42cdbd3727db490ce17d6f43f0163737293",
+  "unexecuted": [
+    "Remaining optional lifecycle and pass-set/timing revision cases",
+    "Full AE process restart",
+    "AE dockable-panel installation",
+    "Representative Japanese artist validation"
+  ],
+  "input_integrity": [
+    {
+      "snapshot": "candidate-input-r2",
+      "identical": true
+    },
+    {
+      "snapshot": "campaign",
+      "identical": true
+    },
+    {
+      "snapshot": "campaign-r2",
+      "identical": true
+    },
+    {
+      "snapshot": "campaign-r3",
+      "identical": true
+    },
+    {
+      "snapshot": "closeout-campaign",
+      "identical": true
+    },
+    {
+      "snapshot": "closeout-campaign-r2",
+      "identical": true
+    },
+    {
+      "snapshot": "revision-cases",
+      "identical": true
+    }
+  ],
+  "isolation": "User-installed Windows Sandbox; candidate read-only; evidence writable; network adapters disabled; owner home and token environment absent",
+  "verdict": "FAIL",
+  "artifact_sha256": "c15b4fb6ce4891a84f205b0658a5b9bbdb8874828a99140aacdd620a9439ec6e",
+  "limitations": [
+    "Native AE hardware compatibility warnings: GPU driver and RAM",
+    "Japanese ScriptUI labels visible; native alert/file-dialog Japanese glyphs render as boxes in this Sandbox",
+    "First inherited-TEMP probe INVALID; two setup harness errors excluded; raw records preserved"
+  ],
+  "failed_gate": "Required-to-optional DEPTH revision after project/panel reload: Object is invalid; ROLLBACK INCOMPLETE",
+  "host": "After Effects 26.5x89"
+}
