@@ -21,7 +21,7 @@ These headless checks establish specific API/contract behavior but do not by the
 
 The S8 native Blender gate passed on Blender 5.2.1 LTS for the tested Japanese/English N-panel, narrow-panel layout, Validate Cut, and Build Package workflow.
 
-Current bounded native Blender evidence is **5.2.2**, build `d13f752e3b9c`, for the exact/equivalent package recorded at tested code SHA `5293cd46a819debfe8ecf41f740c4e94806dd89c`. The scripted GUI-event-loop V001–V003/36-output, preservation, negative/rollback and fresh-process reopen scope passed with actual exits 0; visual installation/panel/manual-update checks remain excluded. See [current preparation](RELEASE_PREPARATION_v0.2.5.md) for SHA-256 and equivalence boundaries. This is separate from the official `bpy 5.2.1` automated runtime.
+Current bounded native Blender evidence is **5.2.2**, build `d13f752e3b9c`, for the exact/equivalent ZIP accompanying tested code SHA `a44792099b3b5f5b7a2f69a41061268fe59586b3`. The scripted GUI-event-loop V001–V003/36-output, preservation, negative/rollback and fresh-process reopen scope passed with actual exits 0; visual installation/panel/manual-update checks remain excluded. A separate visual attempt failed official-validator startup with `0xc0e90002` before candidate execution, so it adds no visual acceptance or candidate-failure evidence. See [current preparation](RELEASE_PREPARATION_v0.2.5.md) for SHA-256 and equivalence boundaries. The official `bpy 5.2.1` automated runtime passed **395 tests + 2 subtests**, no skips, in the independently trusted Linux run; it remains separate from native Blender 5.2.2 evidence.
 
 S10B evaluated-world camera/Empty producer behavior is covered authoritatively by the official Blender 5.2.1 automated runtime/package suite. The broader release-target end-to-end campaign remains a separate release gate.
 
@@ -65,7 +65,7 @@ These automated tests establish regression behavior and guard intended native ad
 
 ## Native After Effects evidence
 
-The v0.2.5 Blender `fef1023` and AE `049c095` campaigns preserve useful host observations, but their retained records do not establish the required offline/mount/credential isolation configuration. Their release-gate verdict is **INSUFFICIENT EVIDENCE**; historical PASS observations must not be applied to the current candidate. See [release preparation](RELEASE_PREPARATION_v0.2.5.md). The current native AE campaign is **PENDING**; current exact-candidate AE installation, preservation, rollback and reopen acceptance is not claimed here.
+The v0.2.5 Blender `fef1023` and AE `049c095` campaigns preserve useful host observations, but their retained records do not establish the required offline/mount/credential isolation configuration. Their release-gate verdict is **INSUFFICIENT EVIDENCE**; historical PASS observations must not be applied to the current candidate. Current AE acceptance is **BLOCKED / INSUFFICIENT EVIDENCE**: the corrected harness did not execute, AE startup exited `0xc0e90002` with vGPU Enable and Disable, and fresh preflight observed an `rpds` DLL blocked by Application Control. Causation is not established and policy was not changed. [Retained assessment](evidence/20261016-release-completion/native-ae/assessment.json) accepts zero current candidate native assertions. Current exact-package AE installation, preservation, rollback and reopen acceptance remains unexecuted; Node/CI success does not certify this native scope.
 
 ### S6 / S7 / S8 evidence
 
