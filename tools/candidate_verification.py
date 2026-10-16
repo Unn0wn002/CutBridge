@@ -399,7 +399,8 @@ def main():
                "started_at_unix": int(time.time()), "commands": []}
 
     def command(argv, log_name, timeout=900):
-        records["commands"].append(argv)
+        # Callers reuse argument lists; retain the command at invocation time.
+        records["commands"].append(list(argv))
         with (evidence / log_name).open("wb") as log:
             result = subprocess.run(argv, stdout=log, stderr=subprocess.STDOUT, timeout=timeout)
         if result.returncode:
