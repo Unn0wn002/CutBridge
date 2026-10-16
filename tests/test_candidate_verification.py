@@ -1,6 +1,7 @@
 """Verifier integrity regressions; no Docker, network, credentials or real Git."""
 import hashlib
 import importlib.util
+import io
 import json
 import os
 from pathlib import Path
@@ -402,6 +403,72 @@ def test_extra_repeated_package_output_cannot_satisfy_four_artifact_contract(tmp
     (directory / "unreviewed-extra").write_bytes(b"extra")
     with pytest.raises(verifier.CandidateFailure, match="exactly four"):
         verifier.validate_packages(directory, version)
+
+
+@pytest.mark.parametrize("data", [b'not valid toml !!!', b'version = "\xff"', b'version = "not-a-version"'])
+def test_candidate_manifest_decode_failures_are_candidate_failures(tmp_path, data):
+    manifest = tmp_path / "blender_manifest.toml"
+    manifest.write_bytes(data)
+    with pytest.raises(verifier.CandidateFailure):
+        verifier.candidate_version(manifest)
+
+
+@pytest.mark.parametrize("data", [b"{malformed JSON", b"\xff"])
+def test_candidate_metadata_decode_failures_are_candidate_failures(tmp_path, data):
+    directory = tmp_path / "packages"
+    version = valid_packages(directory)
+    (directory / "release-metadata.json").write_bytes(data)
+    with pytest.raises(verifier.CandidateFailure, match="metadata|UTF-8"):
+        verifier.validate_packages(directory, version)
+
+
+def test_successful_docker_command_with_malformed_trusted_json_is_infrastructure_failure(tmp_path, monkeypatch):
+    root, trusted, candidate, develop = tmp_path / "attempt", "a" * 40, "b" * 40, "c" * 40
+    monkeypatch.setattr(sys, "argv", ["candidate_verification.py", "--trusted-sha", trusted,
+        "--candidate-sha", candidate, "--develop-sha", develop, "--root", str(root)])
+
+    def fake_git(repo, *args):
+        if args == ("rev-parse", "HEAD"):
+            return (trusted + "\n").encode()
+        if args[0:2] == ("cat-file", "-t"):
+            return b"commit\n"
+        if args[0] == "merge-base":
+            return ("d" * 40 + "\n").encode()
+        if args[0] == "diff":
+            return b"retained review diff"
+        pytest.fail(f"unexpected Git operation: {args}")
+
+    def snapshot(repo, sha, destination):
+        manifest = destination / "apps/blender/cutbridge/blender_manifest.toml"
+        manifest.parent.mkdir(parents=True)
+        data = b'version = "0.2.5"\n'
+        manifest.write_bytes(data)
+        return [{"path": "apps/blender/cutbridge/blender_manifest.toml", "mode": "100644",
+                 "oid": "e" * 40, "size": len(data), "sha256": verifier.digest(data)}]
+
+    class IndexResponse(io.BytesIO):
+        def geturl(self):
+            return verifier.INDEX_URL
+
+    calls = []
+
+    def successful_command(argv, **kwargs):
+        calls.append(argv)
+        if argv[:3] == ["docker", "image", "inspect"]:
+            kwargs["stdout"].write(b"malformed successful Docker output")
+        return SimpleNamespace(returncode=0)
+
+    monkeypatch.setattr(verifier, "git", fake_git)
+    monkeypatch.setattr(verifier, "prepare_snapshot", snapshot)
+    monkeypatch.setattr(verifier, "verify_snapshot", lambda *args: [])
+    monkeypatch.setattr(verifier.urllib.request, "urlopen", lambda *args, **kwargs: IndexResponse(b'{"releases": []}'))
+    monkeypatch.setattr(verifier.subprocess, "run", successful_command)
+    assert verifier.main() == 1
+    result = json.loads((root / "evidence/verification.json").read_text())
+    assert result["verdict"] == "INSUFFICIENT EVIDENCE"
+    assert "JSONDecodeError" in result["reason"]
+    assert any(argv[:3] == ["docker", "image", "inspect"] for argv in calls)
+    assert not any(argv[:2] == ["docker", "create"] for argv in calls)
 
 
 @pytest.mark.parametrize("same_candidate,wrong_checkout", [(True, False), (False, True)])
