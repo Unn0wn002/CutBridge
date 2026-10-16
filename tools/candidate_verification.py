@@ -50,6 +50,25 @@ def json_bytes(value):
     return (json.dumps(value, indent=2, sort_keys=True) + "\n").encode()
 
 
+def candidate_text(path):
+    try:
+        return path.read_text(encoding="utf-8")
+    except UnicodeError as error:
+        raise CandidateFailure(f"candidate text is not valid UTF-8: {path.name}") from error
+
+
+def candidate_version(path):
+    if not path.is_file():
+        raise CandidateFailure("candidate Blender manifest is missing")
+    try:
+        version = tomllib.loads(candidate_text(path)).get("version")
+    except tomllib.TOMLDecodeError as error:
+        raise CandidateFailure("candidate Blender manifest is malformed TOML") from error
+    if not isinstance(version, str) or not re.fullmatch(r"\d+\.\d+\.\d+", version):
+        raise CandidateFailure("candidate version is not stable semver")
+    return version
+
+
 def safe_path(name):
     """Reject traversal, Git internals, reserved mount paths and OS aliases."""
     if not name or "\\" in name or ":" in name or any(ord(c) < 32 or ord(c) == 127 for c in name):
@@ -187,7 +206,7 @@ def compare_packages(first, second):
     return left
 
 
-def validate_archive(path):
+def _validate_archive(path):
     """Reject archive links/unsafe names before reading any member contents."""
     with zipfile.ZipFile(path) as archive:
         names, aliases, total = set(), {}, 0
@@ -220,12 +239,20 @@ def validate_archive(path):
             raise CandidateFailure("archive member CRC mismatch")
 
 
+def validate_archive(path):
+    """Decode failures here concern candidate package bytes, never Docker JSON."""
+    try:
+        return _validate_archive(path)
+    except (zipfile.BadZipFile, UnicodeError, NotImplementedError, RuntimeError) as error:
+        raise CandidateFailure(f"candidate archive cannot be decoded: {path.name}: {error}") from error
+
+
 def validate_packages(root, version):
     names = {f"CutBridge-Blender-v{version}.zip", f"CutBridge-AfterEffects-v{version}.zip", "SHA256SUMS.txt", "release-metadata.json"}
     if {item["path"] for item in regular_inventory(root)} != names:
         raise CandidateFailure("package directory must contain exactly four release artifacts")
     zips, checksums = names - {"SHA256SUMS.txt", "release-metadata.json"}, {}
-    for line in (root / "SHA256SUMS.txt").read_text().splitlines():
+    for line in candidate_text(root / "SHA256SUMS.txt").splitlines():
         match = re.fullmatch(r"([a-f0-9]{64})  (.+)", line)
         if not match or match[2] not in zips or match[2] in checksums:
             raise CandidateFailure("invalid, duplicate, or unexpected checksum entry")
@@ -234,7 +261,10 @@ def validate_packages(root, version):
         raise CandidateFailure("incomplete or incorrect package checksums")
     for name in zips:
         validate_archive(root / name)
-    metadata = json.loads((root / "release-metadata.json").read_text())
+    try:
+        metadata = json.loads(candidate_text(root / "release-metadata.json"))
+    except json.JSONDecodeError as error:
+        raise CandidateFailure("candidate release metadata is malformed JSON") from error
     if not isinstance(metadata, dict) or not isinstance(metadata.get("artifacts"), dict):
         raise CandidateFailure("release metadata must contain an artifact object")
     if metadata.get("version") != version or metadata.get("tag") != "v" + version:
@@ -249,7 +279,10 @@ def validate_packages(root, version):
         info = archive.getinfo("INSTALL.md")
         if info.file_size > 1024 * 1024:
             raise CandidateFailure("oversized packaged installation instructions")
-        install = archive.read(info).decode("utf-8")
+        try:
+            install = archive.read(info).decode("utf-8")
+        except UnicodeError as error:
+            raise CandidateFailure("packaged INSTALL.md is not valid UTF-8") from error
         if any(word in install.lower() for word in ("development build", "unpublished")) or "RELEASE_TAG" in install or f"/blob/v{version}/docs/RELEASE_READINESS.md" not in install:
             raise CandidateFailure("packaged INSTALL.md has stale wording or unpinned readiness link")
 
@@ -377,13 +410,15 @@ def main():
         (inputs / "production-release-index.json").write_bytes(index)
         (evidence / "production-release-index.json").write_bytes(index)
         records["production_index_sha256"] = digest(index)
+        try:
+            index_data = json.loads(index)
+        except (ValueError, UnicodeError) as error:
+            raise RuntimeError("retained production index is not valid JSON") from error
+        if not isinstance(index_data, dict) or not isinstance(index_data.get("releases"), list):
+            raise RuntimeError("retained production index has an invalid release-list shape")
         records["snapshot_id"] = digest(json_bytes(inventory) + review + index + json_bytes({k: records[k] for k in ("candidate_sha", "develop_sha", "merge_base_sha")}))
         manifest_path = snapshot / "apps/blender/cutbridge/blender_manifest.toml"
-        if not manifest_path.is_file():
-            raise CandidateFailure("candidate Blender manifest is missing")
-        version = tomllib.loads(manifest_path.read_text()).get("version")
-        if not isinstance(version, str) or not re.fullmatch(r"\d+\.\d+\.\d+", version):
-            raise CandidateFailure("candidate version is not stable semver")
+        version = candidate_version(manifest_path)
         preparation = root / "image-preparation"
         preparation.mkdir()
         (preparation / "Dockerfile").write_text(DOCKERFILE)
@@ -486,7 +521,7 @@ def main():
         (evidence / "staged-output-inventory.json").write_bytes(json_bytes(staged))
     except IntegrityError as error:
         verdict, reason = "INVALID", str(error)
-    except (CandidateFailure, zipfile.BadZipFile, UnicodeError, json.JSONDecodeError, tomllib.TOMLDecodeError) as error:
+    except (CandidateFailure, zipfile.BadZipFile) as error:
         verdict, reason = "FAIL", str(error)
     except Exception as error:
         verdict, reason = "INSUFFICIENT EVIDENCE", f"{type(error).__name__}: {error}"
