@@ -5,6 +5,8 @@ import json
 import os
 from pathlib import Path
 import sys
+import stat
+import zipfile
 
 import pytest
 
@@ -88,6 +90,13 @@ def test_corrupt_blob_object_is_not_accepted(tmp_path, monkeypatch):
                         git_tree(("100644", "blob", "a" * 40, "file")) if args[0] == "ls-tree" else b"corrupt")
     with pytest.raises(verifier.IntegrityError, match="blob hash"):
         verifier.prepare_snapshot(ROOT, "f" * 40, tmp_path / "snapshot")
+
+
+def test_non_utf8_git_path_encoding_is_integrity_failure(monkeypatch):
+    monkeypatch.setattr(verifier, "git", lambda *args:
+                        b"100644 blob " + b"a" * 40 + b"\tbad-\xff\0")
+    with pytest.raises(verifier.IntegrityError, match="encoding"):
+        verifier.tree_entries(ROOT, "f" * 40)
 
 
 def test_inventory_includes_cache_names_outside_designated_output(tmp_path):
@@ -305,6 +314,60 @@ def test_packaged_checksum_inventory_cannot_omit_an_artifact(tmp_path):
     (tmp_path / "release-metadata.json").write_text("{}")
     with pytest.raises(verifier.CandidateFailure, match="incomplete"):
         verifier.validate_packages(tmp_path, version)
+
+
+def write_zip(path, entries):
+    with zipfile.ZipFile(path, "w") as archive:
+        for name, data, mode in entries:
+            info = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
+            info.create_system = 3
+            info.external_attr = mode << 16
+            archive.writestr(info, data)
+
+
+@pytest.mark.parametrize("mode", [stat.S_IFLNK | 0o777, stat.S_IFIFO | 0o644, stat.S_IFREG | 0o777])
+def test_zip_member_links_specials_and_unexpected_modes_are_rejected(tmp_path, mode):
+    archive = tmp_path / "candidate.zip"
+    write_zip(archive, [("member", b"outside", mode)])
+    with pytest.raises(verifier.CandidateFailure, match="canonical regular"):
+        verifier.validate_archive(archive)
+
+
+def valid_packages(directory):
+    version = "0.2.5"
+    directory.mkdir()
+    blender = directory / "CutBridge-Blender-v0.2.5.zip"
+    ae = directory / "CutBridge-AfterEffects-v0.2.5.zip"
+    write_zip(blender, [("blender_manifest.toml", b'version = "0.2.5"', stat.S_IFREG | 0o644)])
+    write_zip(ae, [(name, (b"See /blob/v0.2.5/docs/RELEASE_READINESS.md" if name == "INSTALL.md" else b"runtime"), stat.S_IFREG | 0o644)
+                   for name in ("CutBridge.jsx", "revision_manager.js", "qc_plus.js", "localization.js", "INSTALL.md", "LICENSE")])
+    hashes = {path.name: verifier.digest(path.read_bytes()) for path in (blender, ae)}
+    (directory / "SHA256SUMS.txt").write_text("".join(f"{value}  {name}\n" for name, value in sorted(hashes.items())))
+    (directory / "release-metadata.json").write_text(json.dumps({
+        "version": version, "tag": "v" + version,
+        "artifacts": {"blender": {"filename": blender.name, "sha256": hashes[blender.name]},
+                      "after_effects": {"filename": ae.name, "sha256": hashes[ae.name]}}}))
+    return version
+
+
+def test_valid_package_inventory_checksums_metadata_and_install_are_verified(tmp_path):
+    directory = tmp_path / "packages"
+    version = valid_packages(directory)
+    verifier.validate_packages(directory, version)
+    metadata_path = directory / "release-metadata.json"
+    metadata = json.loads(metadata_path.read_text())
+    metadata["artifacts"]["after_effects"]["sha256"] = "0" * 64
+    metadata_path.write_text(json.dumps(metadata))
+    with pytest.raises(verifier.CandidateFailure, match="metadata artifact"):
+        verifier.validate_packages(directory, version)
+
+
+def test_extra_repeated_package_output_cannot_satisfy_four_artifact_contract(tmp_path):
+    directory = tmp_path / "packages"
+    version = valid_packages(directory)
+    (directory / "unreviewed-extra").write_bytes(b"extra")
+    with pytest.raises(verifier.CandidateFailure, match="exactly four"):
+        verifier.validate_packages(directory, version)
 
 
 @pytest.mark.parametrize("same_candidate,wrong_checkout", [(True, False), (False, True)])

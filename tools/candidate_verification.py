@@ -76,8 +76,11 @@ def tree_entries(repo, sha):
         if not raw:
             continue
         header, raw_name = raw.split(b"\t", 1)
-        mode, kind, oid = header.decode("ascii").split()
-        name = safe_path(raw_name.decode("utf-8", errors="strict"))
+        try:
+            mode, kind, oid = header.decode("ascii").split()
+            name = safe_path(raw_name.decode("utf-8", errors="strict"))
+        except UnicodeError as error:
+            raise IntegrityError("unsupported Git path/header encoding") from error
         if mode not in ("100644", "100755") or kind != "blob":
             raise IntegrityError(f"unsupported Git type/mode for {name}: {mode} {kind}")
         parts = name.split("/")
@@ -181,6 +184,30 @@ def compare_packages(first, second):
     return left
 
 
+def validate_archive(path):
+    """Reject archive links/unsafe names before reading any member contents."""
+    with zipfile.ZipFile(path) as archive:
+        names, total = set(), 0
+        entries = archive.infolist()
+        if not entries or len(entries) > MAX_FILES:
+            raise CandidateFailure("empty or oversized archive inventory")
+        for entry in entries:
+            safe_path(entry.filename)
+            if entry.filename in names:
+                raise CandidateFailure("duplicate archive member")
+            names.add(entry.filename)
+            mode = entry.external_attr >> 16
+            if entry.create_system != 3 or mode != stat.S_IFREG | 0o644:
+                raise CandidateFailure("archive member is not a canonical regular file (links forbidden)")
+            if entry.date_time != (1980, 1, 1, 0, 0, 0) or entry.flag_bits & 1:
+                raise CandidateFailure("noncanonical timestamp or encrypted archive member")
+            total += entry.file_size
+            if entry.file_size > MAX_FILE_BYTES or total > MAX_BYTES:
+                raise CandidateFailure("archive uncompressed size limit exceeded")
+        if archive.testzip() is not None:
+            raise CandidateFailure("archive member CRC mismatch")
+
+
 def validate_packages(root, version):
     names = {f"CutBridge-Blender-v{version}.zip", f"CutBridge-AfterEffects-v{version}.zip", "SHA256SUMS.txt", "release-metadata.json"}
     if {item["path"] for item in regular_inventory(root)} != names:
@@ -193,6 +220,8 @@ def validate_packages(root, version):
         checksums[match[2]] = match[1]
     if set(checksums) != zips or any(digest((root / name).read_bytes()) != value for name, value in checksums.items()):
         raise CandidateFailure("incomplete or incorrect package checksums")
+    for name in zips:
+        validate_archive(root / name)
     metadata = json.loads((root / "release-metadata.json").read_text())
     if not isinstance(metadata, dict) or not isinstance(metadata.get("artifacts"), dict):
         raise CandidateFailure("release metadata must contain an artifact object")
