@@ -351,6 +351,35 @@ def stage_outputs(output, evidence):
     return staged
 
 
+def retain_package_outputs(output, evidence, version, *, verify_packages):
+    """Keep safe reproduction artifacts even when comparison/validation fails."""
+    failure = None
+    try:
+        for name in ("dist-ci", "dist-repeat"):
+            if os.path.lexists(output / name):
+                inventory = regular_inventory(output / name)
+                (evidence / (name + "-inventory.json")).write_bytes(json_bytes(inventory))
+        if verify_packages:
+            if not (output / "dist-ci").exists() or not (output / "dist-repeat").exists():
+                raise CandidateFailure("completed build did not create both required package directories")
+            repeated = compare_packages(output / "dist-ci", output / "dist-repeat")
+            (evidence / "repeated-package-inventory.json").write_bytes(json_bytes(repeated))
+            validate_packages(output / "dist-ci", version)
+    except (CandidateFailure, IntegrityError, zipfile.BadZipFile) as error:
+        failure = error
+        (evidence / "package-verification-failure.json").write_bytes(json_bytes({
+            "verdict": "INVALID" if isinstance(error, IntegrityError) else "FAIL",
+            "reason": str(error),
+        }))
+    # Staging still validates all output types/paths; an unsafe staging input
+    # raises IntegrityError and must remain INVALID even after a package FAIL.
+    staged = stage_outputs(output, evidence)
+    (evidence / "staged-output-inventory.json").write_bytes(json_bytes(staged))
+    if failure is not None:
+        raise failure
+    return staged
+
+
 def manifest_bytes(inventory):
     return "".join(f"{entry['sha256']}  {entry['path']}\n" for entry in inventory if entry.get("type", "file") == "file").encode()
 
@@ -511,14 +540,7 @@ def main():
         if combined_before != combined_after:
             raise IntegrityError("candidate/verification/orchestration inputs changed during execution")
         records["integrity_comparison"] = "identical exact paths/types/modes/bytes"
-        if verdict == "PASS":
-            if not (output / "dist-ci").exists() or not (output / "dist-repeat").exists():
-                raise CandidateFailure("completed build did not create both required package directories")
-            repeated = compare_packages(output / "dist-ci", output / "dist-repeat")
-            (evidence / "repeated-package-inventory.json").write_bytes(json_bytes(repeated))
-            validate_packages(output / "dist-ci", version)
-        staged = stage_outputs(output, evidence)
-        (evidence / "staged-output-inventory.json").write_bytes(json_bytes(staged))
+        retain_package_outputs(output, evidence, version, verify_packages=verdict == "PASS")
     except IntegrityError as error:
         verdict, reason = "INVALID", str(error)
     except (CandidateFailure, zipfile.BadZipFile) as error:
