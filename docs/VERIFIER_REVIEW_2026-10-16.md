@@ -113,3 +113,38 @@ The template uses contents-read permission, pinned actions, fixed branch/pins,
 unpersisted checkout credentials, and host-owned artifact staging. It records
 the actual bootstrap SHA and runner build without dumping secret-bearing context.
 Neither this report nor the template has been pushed or executed by this reviewer.
+
+## Follow-up binding and current execution boundary
+
+Root integrated the retention fix into candidate
+`931b4752d0dbb2df915f73d65591604486c1f1d6`. A direct Git comparison confirms that
+its helper, command wrapper, manual workflow and verifier regression tests have
+identical blobs to original reviewed helper commit
+`a6ee2445f81906c024fd5b9e1689faac017f198a`. This establishes code equivalence for
+those paths; it does not establish execution of the new retention tests.
+
+Read and reviewed the literal-filled bootstrap staged in the parent's separate
+`CutBridge-bootstrap` worktree at `.github/workflows/reviewed-release-verification.yml`.
+Its SHA-256 is
+`fa2758a79b106ae44a51b043a0566bced50bf7fafe1b111fb42d7787943d8f82`.
+It pins trust to the original `a6ee2445f81906c024fd5b9e1689faac017f198a`, candidate
+to `931b4752d0dbb2df915f73d65591604486c1f1d6`, and develop to the recorded `8cc5a4f…`.
+Only that workflow was staged and the bootstrap branch HEAD was the trust commit.
+No static gating issue was found in this exact literal-filled file: branch guard,
+separate fixed pins, read-only permission, pinned actions, unpersisted checkout
+credentials, helper invocation, host-owned upload and separately retained actual
+bootstrap/run/runner identity match the reviewed design. Before accepting a run,
+confirm its actual head/workflow SHA equals the exact reviewed bootstrap commit.
+Any changed file, ref or pin requires renewed review. Static acceptance of this
+file is not a verifier PASS or protected-release authorization.
+
+The fresh Windows Sandbox `r4` snapshot is bound to candidate `931b475…`, with
+385 inputs and the recorded merge-base. Its dependency preparation/preflight
+failed before candidate execution: importing `rpds` raised an Application Control
+policy DLL-block error. The retained verdict is **INSUFFICIENT EVIDENCE**, not a
+candidate FAIL. The parent also reports current native AE startup blocked with
+status `0xc0e90002`; no native result is inferred. Existing valid `5293cd4…`
+automated evidence remains scoped to that earlier candidate and tested inputs.
+No authorization, application-control policy, protection, or isolation control
+was changed to bypass these blockers. The reviewed Linux bootstrap is the next
+independently executable route; its actual container run and upload remain pending.
