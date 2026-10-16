@@ -352,6 +352,21 @@ def test_zip_member_links_specials_and_unexpected_modes_are_rejected(tmp_path, m
         verifier.validate_archive(archive)
 
 
+@pytest.mark.parametrize("names", [
+    ("Pkg/module.py", "pkg/module.py"),
+    ("Pkg/one.py", "pkg/two.py"),
+    ("a", "a/b"),
+    ("a/b", "a"),
+    ("A", "a/b"),
+    ("a/b", "A"),
+])
+def test_zip_casefold_aliases_and_file_directory_conflicts_are_rejected(tmp_path, names):
+    archive = tmp_path / "candidate.zip"
+    write_zip(archive, [(name, b"module", stat.S_IFREG | 0o644) for name in names])
+    with pytest.raises(verifier.CandidateFailure, match="conflict|collide"):
+        verifier.validate_archive(archive)
+
+
 def valid_packages(directory):
     version = "0.2.5"
     directory.mkdir()

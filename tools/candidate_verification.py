@@ -190,7 +190,7 @@ def compare_packages(first, second):
 def validate_archive(path):
     """Reject archive links/unsafe names before reading any member contents."""
     with zipfile.ZipFile(path) as archive:
-        names, total = set(), 0
+        names, aliases, total = set(), {}, 0
         entries = archive.infolist()
         if not entries or len(entries) > MAX_FILES:
             raise CandidateFailure("empty or oversized archive inventory")
@@ -198,6 +198,15 @@ def validate_archive(path):
             safe_path(entry.filename)
             if entry.filename in names:
                 raise CandidateFailure("duplicate archive member")
+            parts = entry.filename.split("/")
+            if entry.filename in aliases or any("/".join(parts[:i]) in names for i in range(1, len(parts))):
+                raise CandidateFailure("archive file/directory path conflict")
+            for i in range(1, len(parts) + 1):
+                prefix = "/".join(parts[:i])
+                alias = prefix.casefold()
+                if alias in aliases and aliases[alias] != prefix:
+                    raise CandidateFailure("archive paths collide on a supported case-insensitive filesystem")
+                aliases[alias] = prefix
             names.add(entry.filename)
             mode = entry.external_attr >> 16
             if entry.create_system != 3 or mode != stat.S_IFREG | 0o644:
