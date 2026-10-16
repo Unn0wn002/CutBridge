@@ -2,13 +2,13 @@
 
 Working target: **22 October 2026**. The official submission deadline and evaluator-specific delivery requirements remain **unconfirmed**. This checklist prepares a reviewable v0.2.5 packet and demonstration using the existing [release checklist](RELEASE_CHECKLIST.md), [verification commands](CONTRIBUTING.md) and [S12 host procedure](S12_E2E_VALIDATION.md); it adds no parallel test command or publication path.
 
-Current assessment, 16 October 2026: **INSUFFICIENT EVIDENCE**. Historical native observations at `fef1023` and `049c095` have incomplete isolation provenance and cannot close current gates. S14B is NOT_EXECUTED. Product/source fixes, documentation, reproducible packages and a truthful limitations statement can be prepared independently while required hosts or dependencies are unavailable.
+Current assessment, 16 October 2026: **INSUFFICIENT EVIDENCE**. Exact code `5293cd46a819debfe8ecf41f740c4e94806dd89c` has isolated Windows automated and ordinary Linux CI evidence plus bounded native Blender 5.2.2 scripted V001–V003/render/preservation/rollback/fresh-process-reopen results. Current native AE is **PENDING**. Trusted Linux verifier execution/review, applicable visual/manual checks and scope acceptance remain open; see [current preparation](RELEASE_PREPARATION_v0.2.5.md) for counts, exact hashes and exclusions. Historical `fef1023`/`049c095` isolation provenance is still incomplete. S14B is NOT_EXECUTED.
 
 ## Readiness decisions
 
 | Decision | Evidence required | Current boundary |
 | --- | --- | --- |
-| Submission packet | Exact candidate and trusted verifier identities; required automated/native evidence for demonstrated scope; reproducible ZIPs/checksums/metadata; installation instructions; limitations and demo | Pending current verification and native acceptance. Unconfirmed deadline/delivery rules remain explicit. Unpublished candidate files are labeled as such. |
+| Submission packet | Exact candidate and trusted verifier identities; required automated/native evidence for demonstrated scope; reproducible ZIPs/checksums/metadata; installation instructions; limitations and demo | Current scoped automated/Blender results recorded; AE, trusted Linux verifier/review and applicable manual acceptance pending. Unconfirmed deadline/delivery rules remain explicit. Candidate files remain unpublished. |
 | Public release | All applicable release gates, independent review, protected promotion, explicit owner authorization for exact current-main/tag/channel/prerelease, guarded publication and independently verified downloads | Not authorized. `release-authorization.json` stays false. |
 | Production distribution | Approved published artifacts, independent download verification, official Blender index generation and deployed install/update/no-downgrade checks | Held on v0.2.3. Published v0.2.4 remains immutable and is not mirrored because of Issue #99. |
 
@@ -28,7 +28,7 @@ Historical evidence may only be reused for demonstrated equivalence: compare exa
 
 ## Native execution sheet
 
-Use synthetic/disposable copies. Every row starts pending; record evidence path, exact inputs and observed result when executed. Retain screenshots where they establish UI behavior and scalar/state logs for API-checkable outcomes. A checklist or prerecorded historical demo is not execution evidence.
+Use synthetic/disposable copies. The table defines execution requirements; it does not mark every check complete. Record exact inputs/scope and evidence for each executed check, distinguishing the current scripted Blender results from pending visual/manual and AE work. Retain screenshots where they establish UI behavior and scalar/state logs for API-checkable outcomes. A checklist or prerecorded historical demo is not execution evidence.
 
 | Check | Required observation |
 | --- | --- |

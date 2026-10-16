@@ -1,6 +1,6 @@
 # CutBridge
 
-v0.2.5 remains **INSUFFICIENT EVIDENCE** for submission and public release. Historical AE 26.5x89 observations informed cached-object repairs, but the retained Blender/AE campaigns do not establish the required isolation policy and cannot close current native gates. Current runtime and package changes require exact-candidate verification. See [release preparation](docs/RELEASE_PREPARATION_v0.2.5.md) and the [submission/demo checklist](docs/SUBMISSION_DEMO_CHECKLIST.md). The working target is **22 October 2026**; the official submission deadline is unconfirmed.
+v0.2.5 remains **INSUFFICIENT EVIDENCE** for submission and public release. Current exact-code automated checks and bounded native Blender 5.2.2 scripted checks passed, including V001–V003 renders, preservation, rollback and fresh-process reopen. Current native AE acceptance is **PENDING**; trusted Linux verifier/review and applicable visual installation/UI/manual-update gates remain open. See [release preparation](docs/RELEASE_PREPARATION_v0.2.5.md) for exact SHA/hashes/scope and the [submission/demo checklist](docs/SUBMISSION_DEMO_CHECKLIST.md). The working target is **22 October 2026**; the official submission deadline is unconfirmed.
 
 **CutBridge is a Blender → After Effects production handoff tool for animation cuts.**
 

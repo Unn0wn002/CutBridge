@@ -4,6 +4,28 @@ Status: **PREPARING / NOT AUTHORIZED**. Production remains on v0.2.3. Do not mir
 
 Current assessment — **16 October 2026: INSUFFICIENT EVIDENCE** for submission and public release. The working target is **22 October 2026**; the official submission deadline remains unconfirmed. Use [the submission/demo checklist](SUBMISSION_DEMO_CHECKLIST.md) to prepare the exact-candidate review packet and remaining native checks. S14B stays NOT_EXECUTED and broader representative-user claims remain excluded.
 
+## Current candidate verification — 16 October 2026
+
+Integration branch: `fix/current-release-completion-20261016`. Exact tested code SHA: **`5293cd46a819debfe8ecf41f740c4e94806dd89c`**. Keep later documentation/evidence commits distinct from this tested identity. Changes address verifier trust/inventory/staging/evidence weaknesses, failed-import captured-ID cleanup and invalid-native-handle regressions, and the actual Camera/Null reconstruction/QC claim boundary.
+
+| Verification scope | Recorded result |
+| --- | --- |
+| Offline read-only Windows Sandbox automated run | **390 passed, 2 skipped + 2 subtests**; official `bpy 5.2.1`; **18 AE Node suites**; repeated builds produced identical complete four-asset outputs. The two skips remain recorded. |
+| Ordinary Linux CI on exact code SHA | [38875347991](https://github.com/Unn0wn002/CutBridge/actions/runs/38875347991) **SUCCESS**, **392 passed + 2 subtests**, no skips. This does not replace the pending independently trusted Linux verifier run. |
+| Native Blender 5.2.2, build `d13f752e3b9c` | Bounded scripted GUI-event-loop scope passed: V001→V002→V003, **36** mixed PNG/OpenEXR pass outputs, value-level Camera/marked Empty metadata checks, artist/compositor preservation, overwrite and mismatch rejection, injected rollback, save/reopen and fresh-process persistence. Both actual process exits were **0**. Visual/manual installation/UI/update acceptance is excluded. |
+| Current native AE campaign | **PENDING — running; no current native AE PASS is recorded here.** Replace this placeholder only with actual SHA/hash/host/scope-bound results. |
+
+| Current unpublished artifact | SHA-256 |
+| --- | --- |
+| Blender ZIP | `864131a58a1c56e4364c3e435ef1433fbda415515be7292770212bfdc4c31bfe` |
+| After Effects ZIP | `427a36ba8638e88940b18f9daa34537c7e41ad939f3b81fddb50a3812d691268` |
+
+Exact Blender ZIP bytes match between `c234d1f42d7cdff10170289c0cbd35b4a007d8c6` and `5293cd46a819debfe8ecf41f740c4e94806dd89c`. That demonstrated artifact equivalence permits only the recorded unchanged-package native Blender scope to accompany the tested code SHA. It does not transfer unrelated host/UI coverage or native AE acceptance. Retain the equivalence comparison, native fixture/harness/package hashes, actual host build and process exits with the evidence bundle.
+
+Remaining submission gates are the current AE result, independent exact-candidate/verifier review, authorized default-branch registration and execution of the trusted Linux workflow, applicable visual install/panel/manual-update checks and explicit scope acceptance. Preserve generated packages/checksums/metadata outside Git and retain the reviewable demo packet. Public release additionally requires protected promotion, explicit exact release authorization, guarded publication, downloaded-asset verification and separate distribution approval. No current result changes the v0.2.3 production boundary or S14B NOT_EXECUTED status.
+
+## Historical preparation records
+
 The [historical installed AE 26.5x89 campaign](evidence/v0.2.5/049c095-native-ae/README.md) records observations at `049c095258f9fc2dd89cbf8f1d7b2b3114d80296`: ZIP Build/QC, V001→V002→V003, inspected artist state, Camera/Null samples, status-change confirmation, optional-content warnings and same-process reopen. These observations informed fixes, but the retained record does not establish the required Sandbox configuration, disabled network state, complete read-only mounts/credential boundary and all temporary-path settings. The same provenance gap applies to the Blender `fef1023` campaign. Their release-gate verdict is **INSUFFICIENT EVIDENCE**; preserve historical reports without promoting observed PASS statements into current native acceptance. Restoring network after a run does not prove it was disabled during candidate execution. Current code changes require fresh exact-candidate tests.
 
 Historical exact-commit CI at `049c095`: [isolated 37180451235](https://github.com/Unn0wn002/CutBridge/actions/runs/37180451235), [normal CI 37180451191](https://github.com/Unn0wn002/CutBridge/actions/runs/37180451191) report **313 tests + 2 subtests**, Blender RNA 5.2.1, syntax, repeated packaging, input integrity and unpublished distribution-preview checks. An 18-suite AE Node run was also reported. These remain historical results subject to the current verifier review; green CI is not complete readiness. Historical unpublished hashes, not current candidate identity:
@@ -69,7 +91,9 @@ Candidate packages are verification artifacts, not published releases. Green iso
 
 The [bounded-output fef1023 campaign](evidence/v0.2.5/fef1023-native-ui/README.md) records Blender **5.2.2 LTS** observations including V001/V002/V003 and 36 mixed PNG/OpenEXR outputs, wording/screenshots, preservation, overwrite refusal, extension enablement, injected mapping rollback and exit code 0. It is **INSUFFICIENT EVIDENCE** for the native release gate because the retained execution policy/mount/offline/credential records are incomplete and `TMPDIR` was not set. Matching manifests alone do not establish sandbox isolation. The Camera/Empty assertion checks that `handoff_3d` is present; it does not validate actual camera/marked-Empty channel values and cannot support the earlier producer-PASS claim. Retain these observations, and repeat the applicable checks with complete boundary records and value-level assertions.
 
-## Remaining release gates
+## Historical remaining-gate list — 4 October 2026
+
+This preserved list describes the earlier preparation checkpoint. Use the current candidate section above for completed scope and active blockers; do not repeat or close a gate solely from this historical list.
 
 Earlier [extension/rollback evidence at 0e02c76](evidence/v0.2.5/0e02c76-native-extension/README.md) remains INVALID because of unbounded main-render output. The later fef1023 observations do not close the gate because of the provenance gaps above. No current native PASS is established by those campaigns.
 

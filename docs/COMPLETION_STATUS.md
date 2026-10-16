@@ -1,22 +1,33 @@
 # CutBridge Completion Status
 
+Current verdict — **INSUFFICIENT EVIDENCE**. Current automated checks and the bounded native Blender campaign passed for the scope below; native AE acceptance, remaining visual/manual checks and independent trusted-verifier/review gates are incomplete. Submission readiness and public-release readiness remain separate. Release authorization stays false; production distribution stays on v0.2.3.
+
 ## Current checkpoint — 16 October 2026
 
-**Verdict: INSUFFICIENT EVIDENCE.** Submission readiness is pending current isolated automated/native verification and acceptance of the demonstrated scope. Public-release readiness additionally requires independent review, protected promotion, explicit exact-tuple authorization, publication/download verification and additive distribution checks. Working target: **22 October 2026**; official submission deadline remains unconfirmed. S14B remains **NOT_EXECUTED**.
+Working target: **22 October 2026**. The official submission deadline remains unconfirmed.
 
-- Branch: `fix/current-release-completion-20261016`, started from fetched `develop` `8cc5a4fe19e97c2f83105b888f96ccf1b423e8fd`. PR #112 head `35fb9b9aede318624eea80d46b1dea3462ec4747` was integrated locally; neither PR #112 nor promotion PR #103 was merged remotely. Product/verifier checkpoint before the evidence documentation commit: `77bec9b` (full verified snapshot identity is retained with each run).
-- Implemented: trusted explicit-pin verifier orchestration; exact Git blob/path/type inventories without archive transformations; true merge-base; retained diff/index/snapshot inputs; safe stopped-process staging/upload; full repeated-package inventory/bytes comparison; archive/checksum/metadata validation; infrastructure classification. Added direct failed-import captured-ID/invalid-handle adapter regressions. Narrowed Camera/Null and QC claims without expanding 3D. Added [submission/demo/native checklist](SUBMISSION_DEMO_CHECKLIST.md).
-- Reviews: [22 PR #112 threads triaged](evidence/20261016-release-completion/REVIEW_TRIAGE.md). PR #103's 14 resolved findings are superseded by current fixes. Restored the historical `0c1938a` diff by reproducing its exact recorded SHA-256 from named Git commits; retained raw evidence bytes are protected against newline conversion.
-- Verification in progress: externally reviewed orchestration uses a fresh Windows Sandbox with retained `Networking=Disable`, read-only inputs, absent owner home/credential environment and no active adapters. Dependencies were prepared separately. Initial missing-DLL attempts executed no candidate commands. The first executable snapshot ran the official Blender 5.2.1 RNA lifecycle and all 18 AE Node suites successfully; full pytest exposed a Windows shared-folder symlink capability limitation, and the wrapper's version lookup quoting failed before packaging. These are infrastructure limitations, not a candidate PASS. A fresh current snapshot is required after repairs.
-- Historical `fef1023` Blender and `049c095` AE observations cannot close current native gates: execution-time isolation/mount/credential policy was not retained. Original reports remain preserved. Independent validator/index claims without retained transcripts remain unsubstantiated. No historical result is reassigned to the changed package bytes.
-- Blockers: exact current automated evidence; native installation/cross-host workflow, V001–V003, exhaustive preservation, negatives/rollback and fresh-process reopen; trusted Linux verifier end-to-end execution/independent review; authenticated CLI/remote CI availability. Current host/runtime shortages must be recorded as INSUFFICIENT EVIDENCE. No participant evidence is invented.
-- Next action: finish fresh immutable-snapshot checks and reproducible packaging, retain hashes/logs and exact host/builds, then run available native hosts using those artifacts. Complete all independent preparation before requesting any protected release action.
+- Integration branch: `fix/current-release-completion-20261016`.
+- Exact tested code SHA: `5293cd46a819debfe8ecf41f740c4e94806dd89c`. Documentation/evidence closeout commits must retain this tested identity and demonstrate any permitted equivalence rather than reassigning results to an untested head.
+- Changes: captured-ID cleanup after failed import and invalid-native-handle regression coverage; narrowed Camera Position/Point of Interest/Zoom and Null Position/Scale claims; exact snapshot/inventory, trusted orchestration, safe staging, repeated-package and verification-result safeguards; installation/limitations and submission/demo checklist.
+- Isolated Windows automated scope: offline Windows Sandbox, read-only candidate inputs, **390 passed, 2 skipped + 2 subtests**, official `bpy 5.2.1`, all **18 AE Node suites**, and two package builds with all four output assets identical. Preserve the two skips; this is not a no-skip Windows claim.
+- Ordinary Linux CI: [run 38875347991](https://github.com/Unn0wn002/CutBridge/actions/runs/38875347991) **SUCCESS**, **392 passed + 2 subtests**, no skips, on the exact tested code SHA. This is ordinary CI evidence; independent trusted Linux verifier execution remains a separate gate.
+- Native Blender **5.2.2**, build `d13f752e3b9c`: bounded scripted GUI-event-loop campaign passed V001→V002→V003, **36** mixed-format four-pass outputs, value-level Camera/marked Empty serialization checks, artist/compositor preservation, overwrite/contract-mismatch rejection, injected mapping rollback and fresh-process reopen. Both actual Blender process exits were **0**. Exact Blender ZIP bytes are equivalent between `c234d1f42d7cdff10170289c0cbd35b4a007d8c6` and the tested SHA; this supports only the recorded equivalent-input scope. Visual panel/install-dialog/button-click and manual update checks remain unexecuted.
+- Native AE: **PENDING — current campaign still running; no current native AE PASS is claimed.** The historical `049c095` observations do not substitute for current exact-input acceptance.
 
-Release authorization remains false. Published v0.2.4 stays immutable with Issue #99 distribution hold; production remains v0.2.3. Startup update scheduling remains disabled.
+| Current unpublished artifact | SHA-256 |
+| --- | --- |
+| Blender ZIP | `864131a58a1c56e4364c3e435ef1433fbda415515be7292770212bfdc4c31bfe` |
+| After Effects ZIP | `427a36ba8638e88940b18f9daa34537c7e41ad939f3b81fddb50a3812d691268` |
+
+Submission blockers: complete and retain the current AE campaign; obtain independent review of exact code/verifier inputs; complete the trusted Linux workflow's authorized default-branch registration and exact-candidate execution; finish applicable visual installation/UI/manual-update checks and explicit demonstrated-scope acceptance. The review packet and [demo checklist](SUBMISSION_DEMO_CHECKLIST.md) can be prepared without publication. S14B remains **NOT_EXECUTED** and no representative Japanese-user usability claim is made.
+
+Next action: retain the current AE report and actual process/reopen results, classify any host/infrastructure failure honestly, and close only the checks that actually executed. Then run the reviewed trusted Linux verifier through the authorized workflow path and record independent scope acceptance. Protected promotion, exact release authorization, publication, published-download verification and production distribution require their separate explicit authorization and gates.
+
+The historical records below are preserved. The `fef1023` and `049c095` native campaigns lack retained isolation-policy evidence and remain INSUFFICIENT EVIDENCE for release gates; their original observed PASS statements are not current acceptance. The fresh Blender campaign above supersedes only the matching scripted Blender scope.
 
 ## Historical checkpoint — 4 October 2026
 
-The following earlier narrative records reported results on its original SHAs. The current assessment above and [release preparation](RELEASE_PREPARATION_v0.2.5.md) limit their applicability; reported native PASS observations with missing isolation provenance are INSUFFICIENT EVIDENCE for release acceptance.
+The revised v0.2.5 candidate passed 313 tests + 2 subtests and a partial scripted native Blender 5.2.2 campaign. It corrects stale Camera/3D Null handoff wording. Native AE 26.5x89 execution now covers the recorded positive/revision/optional-content/persistence scope; remaining installation, negative/preservation sign-off, review and delivery gates are still pending; see the linked preparation record for exact SHA-bound evidence.
 
 Release preparation update — 3 October 2026: the independent v0.2.4 artifact audit confirms the Issue #99 distribution hold. v0.2.5 preparation and remaining exact-candidate gates are recorded in [RELEASE_PREPARATION_v0.2.5.md](RELEASE_PREPARATION_v0.2.5.md). Production, release authorization, and published artifacts are unchanged.
 
@@ -138,7 +149,7 @@ Recorded exact-candidate evidence includes:
 
 The focused rerun used Blender's own normal quit operator. It establishes clean technical shutdown, not evidence that a user literally clicked the menu item. Blender 4.2/4.5 and S14B remain unverified by this campaign.
 
-## Latest authoritative automated evidence
+## Historical authoritative automated evidence — v0.2.4
 
 Authoritative promotion evidence is green: exact promotion-head PR CI `35511056270` attempt 2 passed on `501f9bd6b6c69cf8859f96f0fd6441afc48c0b50`, and post-promotion `main` CI `35513361337` passed on `049081f0fe3d3e74d77db807910c2e0fff56fe73`.
 
@@ -223,4 +234,4 @@ Issue #80 was intentionally outside the v0.2.3 release scope and is now complete
 
 ## Recommended immediate phase
 
-The post-v0.2.4 ancestry/version reconciliation is integrated through PR #104, and current-facing documentation follow-ups through PR #105; exact-head and post-merge CI passed. Before freezing v0.2.5, native validation must cover the Issue #99 package-documentation fix and the compositor state-capture/rollback change in `core.py`. The latter has a Blender 4.x-only `Scene.use_nodes` path that is not exercised by the Blender 5.2.1 automated runtime, so include real Blender 4.2/4.5 target-host coverage as well as the current 5.2 path and exact After Effects package checks. Keep release authorization false and production distribution on v0.2.3 until the exact-candidate evidence and later v0.2.5 publication gates are complete. S14B remains NOT_EXECUTED and is only required if broader Japanese target-user usability claims are desired.
+Use the 16 October checkpoint above as the active plan: retain and classify the current native AE result, complete independent exact-candidate/verifier review and the trusted Linux execution path, then finish applicable visual installation/UI/manual-update and explicit scope acceptance. The current scripted Blender 5.2.2 result does not certify the full 4.2/4.5 workflow; historical focused legacy `Scene.use_nodes` probes retain only their recorded scope. Keep release authorization false and production distribution on v0.2.3 until the separately authorized release/delivery gates are complete. S14B remains NOT_EXECUTED and becomes required only before broader representative Japanese-user usability claims.
