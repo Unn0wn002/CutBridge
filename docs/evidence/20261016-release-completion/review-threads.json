@@ -1,0 +1,1180 @@
+{
+  "retrieved_date": "2026-10-16",
+  "source": "Authenticated GitHub connector; gh auth status unavailable (not logged in), no authorization changes.",
+  "reviews": [
+    {
+      "pr": 103,
+      "threads": [
+        {
+          "id": "PRRT_kwDOUL_85s6mXiJ1",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "tests/test_static.py",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": null,
+          "original_line": 354,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Unn0wn002",
+            "name": "Unn0wn002",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/129099303?u=df8a1d7570cc70eaee0177b72fe03d5492c09feb&v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s71OSZj",
+              "database_id": 4114163299,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Use single escapes in the release-state regex**\n\nBecause this is a raw string, the doubled backslashes make the regex search for literal backslash sequences rather than digits, dots, and whitespace. A future packaged guide containing `v0.2.6 development build` would therefore pass this assertion and evade the source test's three exact-phrase checks, leaving the regression guard for Issue #99 ineffective; use single regex escapes.\n\nAGENTS.md reference: [AGENTS.md:L33-L33](https://github.com/Unn0wn002/CutBridge/blob/4117f4610125f9ac1d1647faa4a9821fc73a3433/AGENTS.md#L33-L33)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-09-27T05:06:55Z",
+              "updated_at": "2026-09-27T05:06:55Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6mXiJ4",
+          "is_resolved": true,
+          "is_outdated": false,
+          "path": "apps/blender/cutbridge/version.py",
+          "line": 6,
+          "diff_side": "RIGHT",
+          "start_line": 6,
+          "start_diff_side": null,
+          "original_line": 6,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Unn0wn002",
+            "name": "Unn0wn002",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/129099303?u=df8a1d7570cc70eaee0177b72fe03d5492c09feb&v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s71OSZm",
+              "database_id": 4114163302,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove the stale version from packaged Blender help**\n\nWith the product version now set to 0.2.5, the Blender Sequence Format popup still describes the “current v0.2.4 package architecture” in both languages at `help_content.py:65` and `help_content.py:71`. That module is bundled into the Blender ZIP, so every 0.2.5 installation displays stale product identity; update those strings or make the description version-neutral.\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-09-27T05:06:55Z",
+              "updated_at": "2026-09-27T05:06:55Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6mXiJ7",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "README.md",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": null,
+          "original_line": 9,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Unn0wn002",
+            "name": "Unn0wn002",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/129099303?u=df8a1d7570cc70eaee0177b72fe03d5492c09feb&v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s71OSZp",
+              "database_id": 4114163305,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reconcile current-status docs with the published release**\n\nThis new baseline identifies v0.2.4 as published and v0.2.5 as active, but current-facing sections elsewhere still assert the obsolete state: `docs/VERSIONING.md:49` calls v0.2.4 the active unreleased baseline, `docs/COMPATIBILITY.md:106-113` says v0.2.3 remains unreleased, and `docs/HANDOFF_3D.md:156-158` says Issue #18 remains open. Because the README links these documents as current guidance, users and contributors receive contradictory release and governance instructions; reconcile these sections or explicitly mark them as historical snapshots.\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-09-27T05:06:55Z",
+              "updated_at": "2026-09-27T05:06:55Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6mXiJ9",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "docs/CONTRIBUTING.md",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": null,
+          "original_line": 20,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Unn0wn002",
+            "name": "Unn0wn002",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/129099303?u=df8a1d7570cc70eaee0177b72fe03d5492c09feb&v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s71OSZs",
+              "database_id": 4114163308,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Strip CR from the captured manifest version**\n\nWhen this Bash block is run on Windows with native Python—the CRLF case the checksum command explicitly accommodates—`print()` emits a CRLF-terminated version, while Bash command substitution removes the LF but leaves `\\r` in `VERSION`. `build_release.py` strips the tag only for parsing but later uses the original argument in artifact filenames, so the packaging simulation attempts to create control-character filenames and fails before checksum verification; normalize the captured version or emit it without a newline.\n\nAGENTS.md reference: [AGENTS.md:L28-L28](https://github.com/Unn0wn002/CutBridge/blob/4117f4610125f9ac1d1647faa4a9821fc73a3433/AGENTS.md#L28-L28)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-09-27T05:06:55Z",
+              "updated_at": "2026-09-27T05:06:55Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6mYEOC",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "apps/after-effects/INSTALL.md",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": null,
+          "original_line": 106,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Unn0wn002",
+            "name": "Unn0wn002",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/129099303?u=df8a1d7570cc70eaee0177b72fe03d5492c09feb&v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s71PG0j",
+              "database_id": 4114378019,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Link packaged guidance to an available document**\n\nWhen users read this guide from the distributed After Effects ZIP, `../../docs/RELEASE_READINESS.md` does not exist: the package builder places only the four runtime files, `INSTALL.md`, and `LICENSE` in the archive (also enforced by `tests/test_static.py`). The new release-status guidance therefore directs package users to an inaccessible validation record; use a stable repository/GitHub URL or include the referenced documentation in the package.\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-09-27T06:46:21Z",
+              "updated_at": "2026-09-27T06:46:21Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6mYEOD",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": ".github/workflows/ci.yml",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": null,
+          "original_line": 79,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Unn0wn002",
+            "name": "Unn0wn002",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/129099303?u=df8a1d7570cc70eaee0177b72fe03d5492c09feb&v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s71PG0m",
+              "database_id": 4114378022,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Include the run attempt in the smoke artifact name**\n\nWhen this CI workflow is rerun, `github.run_id` remains unchanged, while current `upload-artifact` versions create immutable artifacts and reject another upload using an existing name ([GitHub context reference](https://docs.github.com/en/actions/reference/workflows-and-actions/contexts#github-context), [upload-artifact documentation](https://github.com/actions/upload-artifact/blob/043fb46d1a93c77aae656e7c1c64a875d1fc6a0a/README.md)). Consequently, rerunning all jobs—or rerunning this job after a failure below the upload step—can hit an artifact-name conflict before the round-trip check; include `${{ github.run_attempt }}` in both the upload and download names, or explicitly use the action's overwrite behavior.\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-09-27T06:46:21Z",
+              "updated_at": "2026-09-27T06:46:21Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6mYPQ5",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "apps/after-effects/INSTALL.md",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": null,
+          "original_line": 106,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Unn0wn002",
+            "name": "Unn0wn002",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/129099303?u=df8a1d7570cc70eaee0177b72fe03d5492c09feb&v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s71PYgY",
+              "database_id": 4114450456,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Pin packaged evidence links to the release**\n\nWhen this guide is shipped inside an immutable release ZIP, the `blob/develop` target continues moving, so users can later be directed to validation scope and host evidence for a different source snapshot. Fresh evidence relative to the prior comment is that the replacement URL explicitly targets the mutable `develop` branch; link to the package's tag/commit or include the corresponding readiness record instead.\n\nAGENTS.md reference: [AGENTS.md:L9-L9](https://github.com/Unn0wn002/CutBridge/blob/8de80b2ad18ec1f2e936884cbd0a730e72bd2306/AGENTS.md#L9-L9)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-09-27T07:12:51Z",
+              "updated_at": "2026-09-27T07:12:52Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6mYPQ8",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "docs/CONTRIBUTING.md",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": "RIGHT",
+          "original_line": 36,
+          "original_start_line": 33,
+          "resolved_by": {
+            "login": "Unn0wn002",
+            "name": "Unn0wn002",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/129099303?u=df8a1d7570cc70eaee0177b72fe03d5492c09feb&v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s71PYgb",
+              "database_id": 4114450459,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Include package validation in the PowerShell equivalent**\n\nFor contributors validating on native Windows PowerShell, this purported equivalent only performs the JavaScript syntax check and omits version resolution, package construction, expected-artifact checks, and checksum verification from the Bash block. As a result, following the documented PowerShell path does not execute the required build/package validation; provide equivalent PowerShell commands for the remainder or label this block narrowly and point Windows users to a complete supported path.\n\nAGENTS.md reference: [AGENTS.md:L24-L28](https://github.com/Unn0wn002/CutBridge/blob/8de80b2ad18ec1f2e936884cbd0a730e72bd2306/AGENTS.md#L24-L28)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-09-27T07:12:51Z",
+              "updated_at": "2026-09-27T07:12:52Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6mYk1W",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "apps/after-effects/INSTALL.md",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": null,
+          "original_line": 106,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Unn0wn002",
+            "name": "Unn0wn002",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/129099303?u=df8a1d7570cc70eaee0177b72fe03d5492c09feb&v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s71P6uP",
+              "database_id": 4114590607,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Render the release link in the checked-in guide**\n\nWhen this guide is opened directly from the repository—as encouraged by the README—the package builder has not replaced `{{RELEASE_TAG}}`, so both new readiness links point to a GitHub URL containing the literal placeholder and return no release record. Preserve the tag-pinned URL in built ZIPs while providing a valid link for readers of the checked-in `INSTALL.md`.\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-09-27T08:04:53Z",
+              "updated_at": "2026-09-27T08:04:53Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6mYk1Z",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "tools/build_release.py",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": "RIGHT",
+          "original_line": 185,
+          "original_start_line": 184,
+          "resolved_by": {
+            "login": "Unn0wn002",
+            "name": "Unn0wn002",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/129099303?u=df8a1d7570cc70eaee0177b72fe03d5492c09feb&v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s71P6uU",
+              "database_id": 4114590612,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Validate the install template before writing artifacts**\n\nWhen `INSTALL.md` is missing or corrupts the new `{{RELEASE_TAG}}` placeholder, `build()` writes or overwrites the Blender ZIP first and only then raises from `_write_ae_zip`. This leaves a partial release directory—and can replace an existing expected Blender artifact—even though template validation failed, unlike the other source preflight checks that reject the build before touching output; validate and render the template before either archive is written.\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-09-27T08:04:53Z",
+              "updated_at": "2026-09-27T08:04:53Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6mYk1b",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "docs/COMPLETION_STATUS.md",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": null,
+          "original_line": 208,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Unn0wn002",
+            "name": "Unn0wn002",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/129099303?u=df8a1d7570cc70eaee0177b72fe03d5492c09feb&v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s71P6uX",
+              "database_id": 4114590615,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Include the compositor change in native rerun scope**\n\nThis guidance permits a bounded native rerun on the premise that runtime logic is unchanged, but the same commit changes compositor state capture/rollback in `core.py`, including the Blender 4.x-only `Scene.use_nodes` path, while the added regression runs only on Blender 5.2.1's modern path. Following this recommendation can therefore freeze v0.2.5 without exercising the changed 4.2/4.5 compatibility behavior; the native scope must account for that runtime delta rather than only Issue #99.\n\nAGENTS.md reference: [AGENTS.md:L29-L31](https://github.com/Unn0wn002/CutBridge/blob/532fd84109c6a90841fd4857045c70208692f17e/AGENTS.md#L29-L31)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-09-27T08:04:53Z",
+              "updated_at": "2026-09-27T08:04:53Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6mYrlq",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "docs/CONTRIBUTING.md",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": null,
+          "original_line": 32,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Unn0wn002",
+            "name": "Unn0wn002",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/129099303?u=df8a1d7570cc70eaee0177b72fe03d5492c09feb&v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s71QFNl",
+              "database_id": 4114633573,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Include required tests in the PowerShell validation**\n\nWhen a Windows contributor follows this block as the advertised “complete validation,” it runs only the JavaScript syntax and packaging checks, omitting dependency setup, `compileall`, the complete pytest suite, and the standalone Blender runtime check. Fresh evidence after the earlier PowerShell comment is that packaging was added, but these required validation stages are still absent, so the documented Windows path can miss Python or Blender regressions while appearing complete.\n\nAGENTS.md reference: [AGENTS.md:L24-L28](https://github.com/Unn0wn002/CutBridge/blob/f563939a67c738e7372ea2332b305385f9355ccf/AGENTS.md#L24-L28)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-09-27T08:21:39Z",
+              "updated_at": "2026-09-27T08:21:39Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6mZrAZ",
+          "is_resolved": true,
+          "is_outdated": false,
+          "path": "README.md",
+          "line": 9,
+          "diff_side": "RIGHT",
+          "start_line": 9,
+          "start_diff_side": null,
+          "original_line": 9,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Unn0wn002",
+            "name": "Unn0wn002",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/129099303?u=df8a1d7570cc70eaee0177b72fe03d5492c09feb&v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s71Rl1M",
+              "database_id": 4115029324,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reconcile the linked quick starts with the release state**\n\nFresh evidence after the earlier documentation finding is that this final tree now advertises v0.2.5 as the current development baseline here, while the English and Japanese quick starts linked from `README.md` still say v0.2.3 is unreleased, no GitHub Release exists, and Issue #18 blocks publication (`docs/QUICK_START.md:3-21` and `docs/QUICK_START_JA.md:3-21`). Readers following the designated detailed guides therefore receive release instructions that directly contradict the new baseline; update those guides or clearly mark them as historical snapshots.\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-09-27T10:44:34Z",
+              "updated_at": "2026-09-27T10:44:35Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6mZrAd",
+          "is_resolved": true,
+          "is_outdated": true,
+          "path": "docs/CONTRIBUTING.md",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": null,
+          "original_line": 24,
+          "original_start_line": null,
+          "resolved_by": {
+            "login": "Unn0wn002",
+            "name": "Unn0wn002",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/129099303?u=df8a1d7570cc70eaee0177b72fe03d5492c09feb&v=4",
+            "id": null
+          },
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s71Rl1R",
+              "database_id": 4115029329,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Route validation artifacts to verification-output**\n\nWhen an agent follows this advertised complete Bash validation inside the required immutable snapshot, packaging writes `dist-ci` outside the sole designated writable `verification-output/` directory; the same block also runs `compileall` without `PYTHONPYCACHEPREFIX` and pytest without disabling its cache, so it can generate files among the manifested inputs. The PowerShell block likewise builds into `dist-ci`. A compliant run will therefore be classified `INVALID`; initialize the prescribed output/temp environment for both shells, disable pytest caching, and place package artifacts under `verification-output/`.\n\nAGENTS.md reference: [AGENTS.md:L59-L60](https://github.com/Unn0wn002/CutBridge/blob/84a6f26bac593831eb75bf81c1b65212c12b59d8/AGENTS.md#L59-L60)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-09-27T10:44:35Z",
+              "updated_at": "2026-09-27T10:44:35Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pr": 112,
+      "threads": [
+        {
+          "id": "PRRT_kwDOUL_85s6opXZD",
+          "is_resolved": false,
+          "is_outdated": false,
+          "path": ".github/workflows/candidate-verification.yml",
+          "line": 5,
+          "diff_side": "RIGHT",
+          "start_line": 3,
+          "start_diff_side": "RIGHT",
+          "original_line": 5,
+          "original_start_line": 3,
+          "resolved_by": null,
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s74yMVe",
+              "database_id": 4173907294,
+              "body": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Keep verifier orchestration outside candidate-controlled refs**\n\nOn the `push` path for `feature/**` and `fix/**`, GitHub executes this workflow from the candidate revision itself, so that revision can replace the pre-container dependency, snapshot, or execution steps and manufacture a PASS while running directly on the networked runner. The container restrictions therefore do not establish an independent security boundary; run trusted orchestration from a protected revision and provide the candidate SHA/snapshot only as input.\n\nAGENTS.md reference: [AGENTS.md:L69-L72](https://github.com/Unn0wn002/CutBridge/blob/3f323e1ed8c38a44affb432420f6428bb6d57677/AGENTS.md#L69-L72)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-03T16:22:17Z",
+              "updated_at": "2026-10-03T16:22:18Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6opXZF",
+          "is_resolved": false,
+          "is_outdated": false,
+          "path": "docs/evidence/v0.2.5/0c1938a/manifest-before.sha256",
+          "line": 37,
+          "diff_side": "RIGHT",
+          "start_line": 37,
+          "start_diff_side": null,
+          "original_line": 37,
+          "original_start_line": null,
+          "resolved_by": null,
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s74yMVg",
+              "database_id": 4173907296,
+              "body": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Preserve the candidate diff bytes recorded by the manifest**\n\nHashing the committed `candidate.diff` produces `bdffd213…`, but this manifest records `a0d6b22d…`; the embedded diff was normalized from CRLF-containing output to LF when committed. Consequently, the durable evidence bundle cannot pass its own manifest verification or prove that the archived diff is the one reviewed during the recorded run, despite the preparation document claiming that it matches. Store the diff without text normalization or regenerate the evidence and manifest from the bytes that will actually be retained.\n\nAGENTS.md reference: [AGENTS.md:L41-L42](https://github.com/Unn0wn002/CutBridge/blob/3f323e1ed8c38a44affb432420f6428bb6d57677/AGENTS.md#L41-L42)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-03T16:22:17Z",
+              "updated_at": "2026-10-03T16:22:18Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6opXZJ",
+          "is_resolved": false,
+          "is_outdated": false,
+          "path": ".github/workflows/candidate-verification.yml",
+          "line": 195,
+          "diff_side": "RIGHT",
+          "start_line": 193,
+          "start_diff_side": "RIGHT",
+          "original_line": 195,
+          "original_start_line": 193,
+          "resolved_by": null,
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s74yMVm",
+              "database_id": 4173907302,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Distinguish unavailable verification from candidate failures**\n\nWhen `docker start` fails for runner or container-infrastructure reasons, `START_EXIT` is copied into `CHECK_EXIT`, the unchanged-manifest path reaches this branch, and the workflow records `FAIL`. The same classification is used when a required runtime or shared library is unavailable inside the image, even though no genuine candidate behavior failure was established. Inspect the failure category and record `INSUFFICIENT EVIDENCE` for technical unavailability instead of conflating it with a test failure.\n\nAGENTS.md reference: [AGENTS.md:L63-L63](https://github.com/Unn0wn002/CutBridge/blob/3f323e1ed8c38a44affb432420f6428bb6d57677/AGENTS.md#L63-L63)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-03T16:22:17Z",
+              "updated_at": "2026-10-03T16:22:18Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6opXZN",
+          "is_resolved": false,
+          "is_outdated": false,
+          "path": "docs/RELEASE_PREPARATION_v0.2.5.json",
+          "line": 39,
+          "diff_side": "RIGHT",
+          "start_line": 38,
+          "start_diff_side": "RIGHT",
+          "original_line": 41,
+          "original_start_line": 38,
+          "resolved_by": null,
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s74yMVp",
+              "database_id": 4173907305,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Attach evidence for the independent PASS claims**\n\nThese fields claim that downloaded artifacts passed Blender 5.2.2 validation and that the preview matches the official `server-generate` result, but a repo-wide search finds no command transcript, validator output, generated index, or downloaded-artifact log supporting those checks; the committed `checks.log` contains only the workflow's separately constructed offline preview check. A result label in this JSON is not enough to audit or reproduce the claimed independent verification, so retain the corresponding inputs, commands, and outputs before recording these checks as PASS/MATCHES.\n\nAGENTS.md reference: [AGENTS.md:L33-L33](https://github.com/Unn0wn002/CutBridge/blob/3f323e1ed8c38a44affb432420f6428bb6d57677/AGENTS.md#L33-L33)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-03T16:22:18Z",
+              "updated_at": "2026-10-03T16:22:18Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6opXZP",
+          "is_resolved": false,
+          "is_outdated": false,
+          "path": ".github/workflows/candidate-verification.yml",
+          "line": 212,
+          "diff_side": "RIGHT",
+          "start_line": 211,
+          "start_diff_side": "RIGHT",
+          "original_line": 212,
+          "original_start_line": 211,
+          "resolved_by": null,
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s74yMVs",
+              "database_id": 4173907308,
+              "body": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Reject symlinks before uploading candidate-owned outputs**\n\nThe container user owns `dist-ci` and `distribution-preview`, but these globs are uploaded without a trusted regular-file or symlink check. Candidate code can therefore leave an absolute symlink such as `dist-ci/leak -> /proc/self/environ`; the pinned action dereferences uploaded symlinks, as demonstrated by [its own absolute-symlink integration test](https://github.com/actions/upload-artifact/blob/043fb46d1a93c77aae656e7c1c64a875d1fc6a0a/.github/workflows/test.yml), so the target is resolved in the host upload-action process and can place Actions runtime credentials in the downloadable artifact. Copy only validated regular files into a trusted staging directory using no-follow semantics before upload.\n\nAGENTS.md reference: [AGENTS.md:L71-L72](https://github.com/Unn0wn002/CutBridge/blob/3f323e1ed8c38a44affb432420f6428bb6d57677/AGENTS.md#L71-L72)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-03T16:22:18Z",
+              "updated_at": "2026-10-03T16:22:18Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6oplPP",
+          "is_resolved": false,
+          "is_outdated": true,
+          "path": "docs/RELEASE_PREPARATION_v0.2.5.md",
+          "line": null,
+          "diff_side": "RIGHT",
+          "start_line": null,
+          "start_diff_side": null,
+          "original_line": 9,
+          "original_start_line": null,
+          "resolved_by": null,
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s74yh-N",
+              "database_id": 4173995917,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Regenerate evidence after changing packaged runtime files**\n\nThe reviewed tree differs from the recorded `0c1938a...` candidate in `handoff_3d.py`, `help_content.py`, and `properties.py`, all of which are recursively included in the Blender ZIP by `tools/build_release.py`; therefore the recorded candidate hashes cannot describe this tree despite the statement that the preparation does not change runtime code. If these hashes are used for the remaining release gates, native testing and publication will refer to a different package, so rebuild and record exact-head evidence after these runtime wording changes.\n\nAGENTS.md reference: [AGENTS.md:L39-L39](https://github.com/Unn0wn002/CutBridge/blob/604714d93627a870326a75564eba0af46e5ee957/AGENTS.md#L39-L39)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-03T16:48:45Z",
+              "updated_at": "2026-10-03T16:48:45Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6oplPT",
+          "is_resolved": false,
+          "is_outdated": false,
+          "path": ".github/workflows/candidate-verification.yml",
+          "line": 55,
+          "diff_side": "RIGHT",
+          "start_line": 54,
+          "start_diff_side": "RIGHT",
+          "original_line": 55,
+          "original_start_line": 54,
+          "resolved_by": null,
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s74yh-R",
+              "database_id": 4173995921,
+              "body": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Reject symlinks before declaring the snapshot immutable**\n\nFor a candidate containing a committed symlink, `find ... -type f` omits the link from both manifests, while later Python/build operations follow it. A link under the packaged Blender tree can point into writable `verification-output` or elsewhere in the container, allowing unhashed bytes to enter the tested package while the before/after manifests remain identical and the workflow records PASS; reject symlinks or explicitly hash their type and target before execution.\n\nAGENTS.md reference: [AGENTS.md:L41-L42](https://github.com/Unn0wn002/CutBridge/blob/604714d93627a870326a75564eba0af46e5ee957/AGENTS.md#L41-L42)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-03T16:48:45Z",
+              "updated_at": "2026-10-03T16:48:45Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6oplPV",
+          "is_resolved": false,
+          "is_outdated": false,
+          "path": ".github/workflows/candidate-verification.yml",
+          "line": 45,
+          "diff_side": "RIGHT",
+          "start_line": 45,
+          "start_diff_side": null,
+          "original_line": 45,
+          "original_start_line": null,
+          "resolved_by": null,
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s74yh-a",
+              "database_id": 4173995930,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Diff push candidates from their merge base**\n\nWhen a `feature/**` or `fix/**` branch is behind `develop`, this two-endpoint diff compares the candidate tree with the latest `origin/develop` tree rather than with the branch's actual fork point. The resulting review input includes inverse upstream-only changes and can obscure same-path candidate edits, so it is not the candidate diff the manifest purports to preserve; resolve and record the merge-base SHA before generating the push-path diff.\n\nAGENTS.md reference: [AGENTS.md:L41-L42](https://github.com/Unn0wn002/CutBridge/blob/604714d93627a870326a75564eba0af46e5ee957/AGENTS.md#L41-L42)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-03T16:48:45Z",
+              "updated_at": "2026-10-03T16:48:45Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6oplPa",
+          "is_resolved": false,
+          "is_outdated": false,
+          "path": ".github/workflows/candidate-verification.yml",
+          "line": 120,
+          "diff_side": "RIGHT",
+          "start_line": 118,
+          "start_diff_side": "RIGHT",
+          "original_line": 120,
+          "original_start_line": 118,
+          "resolved_by": null,
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s74yh-h",
+              "database_id": 4173995937,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Compare both packaging output inventories**\n\nIf the second packaging invocation nondeterministically emits an additional file, this loop still succeeds because it enumerates only `dist-ci` and never checks for entries that exist solely in `dist-repeat`. The workflow can therefore report that repeated package bytes are identical while the output directory inventories differ; compare the complete directory trees or verify both filename sets before the per-file byte comparison.\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-03T16:48:45Z",
+              "updated_at": "2026-10-03T16:48:45Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6oqRXR",
+          "is_resolved": false,
+          "is_outdated": false,
+          "path": "docs/evidence/v0.2.5/604714d-native-blender/blender-stdout.log",
+          "line": 5,
+          "diff_side": "RIGHT",
+          "start_line": 5,
+          "start_diff_side": null,
+          "original_line": 5,
+          "original_start_line": null,
+          "resolved_by": null,
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s74zoPI",
+              "database_id": 4174283720,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Invalidate runs that write outside verification-output**\n\nDuring the revised native campaign, Blender wrote combined render files to `C:\\tmp` (also repeated for later frames) even though the launcher designated `C:\\Evidence\\verification-output\\tmp` as the only temporary area. These files were outside the approved writable output tree and were not covered by the before/after input manifests, so this run must be classified as `INVALID` rather than retained as a scripted native PASS; set Blender's render filepath inside `verification-output` and rerun from a fresh snapshot.\n\nAGENTS.md reference: [AGENTS.md:L75-L75](https://github.com/Unn0wn002/CutBridge/blob/0e02c76be8b205e5be01578d944b6d39bdeef156/AGENTS.md#L75-L75)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-03T18:15:12Z",
+              "updated_at": "2026-10-03T18:15:12Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6oqRXS",
+          "is_resolved": false,
+          "is_outdated": false,
+          "path": ".github/workflows/candidate-verification.yml",
+          "line": 204,
+          "diff_side": "RIGHT",
+          "start_line": 203,
+          "start_diff_side": "RIGHT",
+          "original_line": 204,
+          "original_start_line": 203,
+          "resolved_by": null,
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s74zoPJ",
+              "database_id": 4174283721,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Retain the hashed snapshot inputs with the evidence**\n\nFor the new 604714d run, this upload allowlist retains only `verification-output`, while the hashed `candidate.diff` and `production-release-index.json` remain at the snapshot root and are discarded; the committed 604714d evidence likewise contains only their hashes. Consequently, someone downloading the advertised evidence bundle cannot inspect the exact review diff or live-index input used by the offline preview, especially after the production index changes, so include both snapshot inputs in the retained artifact.\n\nAGENTS.md reference: [AGENTS.md:L41-L42](https://github.com/Unn0wn002/CutBridge/blob/0e02c76be8b205e5be01578d944b6d39bdeef156/AGENTS.md#L41-L42)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-03T18:15:12Z",
+              "updated_at": "2026-10-03T18:15:12Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6oqRXV",
+          "is_resolved": false,
+          "is_outdated": false,
+          "path": "docs/evidence/v0.2.5/604714d-native-blender/native_blender.py",
+          "line": 106,
+          "diff_side": "RIGHT",
+          "start_line": 106,
+          "start_diff_side": null,
+          "original_line": 106,
+          "original_start_line": null,
+          "resolved_by": null,
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s74zoPO",
+              "database_id": 4174283726,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Verify camera and null payloads before recording native PASS**\n\nIf `build_package` emits any truthy `handoff_3d` object while omitting or corrupting its camera or marked-null data, this assertion still passes and the harness later records `camera_empty_producer='PASS'` unconditionally. The retained native report therefore does not substantiate its claim that Camera/marked Empty metadata was produced; inspect the camera and null names, types, and samples in `cutbridge.json` before setting that result to PASS.\n\nAGENTS.md reference: [AGENTS.md:L33-L33](https://github.com/Unn0wn002/CutBridge/blob/0e02c76be8b205e5be01578d944b6d39bdeef156/AGENTS.md#L33-L33)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-03T18:15:12Z",
+              "updated_at": "2026-10-03T18:15:12Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6oqRXX",
+          "is_resolved": false,
+          "is_outdated": false,
+          "path": "apps/blender/cutbridge/help_content.py",
+          "line": 158,
+          "diff_side": "RIGHT",
+          "start_line": 158,
+          "start_diff_side": null,
+          "original_line": 158,
+          "original_start_line": null,
+          "resolved_by": null,
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s74zoPR",
+              "database_id": 4174283729,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Limit reconstruction claims until orientation is applied**\n\nFor a rolled camera or a rotated marked Empty, Blender accepts the setup and serializes `up`/`basis`, but the AE consumer's `applyCameraSamples` sets only position, point of interest, and zoom, while `applyNullSamples` sets only position and scale. The new copy therefore labels transform samples reconstructible even though these supported inputs silently lose camera roll and Empty rotation; either apply the serialized orientation, reject such transforms, or explicitly scope the user-facing claim to the channels that are actually consumed.\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-03T18:15:12Z",
+              "updated_at": "2026-10-03T18:15:12Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6oqbBk",
+          "is_resolved": false,
+          "is_outdated": false,
+          "path": "docs/evidence/v0.2.5/0e02c76-native-extension/blender-stdout.log",
+          "line": 5,
+          "diff_side": "RIGHT",
+          "start_line": 5,
+          "start_diff_side": null,
+          "original_line": 5,
+          "original_start_line": null,
+          "resolved_by": null,
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s74z3bB",
+              "database_id": 4174345921,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Invalidate the fresh run for writes outside the evidence tree**\n\nThe fresh `0e02c76` extension campaign repeats the earlier integrity violation: Blender writes combined renders to `C:\\tmp` even though the launcher designates `C:\\Evidence\\verification-output\\tmp` as the approved temporary area. Because these outputs are outside the designated writable tree and outside the input manifests, this run cannot support the PASS claims in the release-preparation record; classify it as `INVALID`, redirect `scene.render.filepath`, and rerun from a fresh snapshot.\n\nAGENTS.md reference: [AGENTS.md:L75-L75](https://github.com/Unn0wn002/CutBridge/blob/fef102366a9e4b363455f8738b516d57a535ff76/AGENTS.md#L75-L75)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-03T18:35:35Z",
+              "updated_at": "2026-10-03T18:35:35Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6oqbBl",
+          "is_resolved": false,
+          "is_outdated": false,
+          "path": "docs/evidence/v0.2.5/0e02c76-native-extension/launch.ps1",
+          "line": 11,
+          "diff_side": "RIGHT",
+          "start_line": 9,
+          "start_diff_side": "RIGHT",
+          "original_line": 11,
+          "original_start_line": 9,
+          "resolved_by": null,
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s74z3bE",
+              "database_id": 4174345924,
+              "body": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Prove network isolation beyond one blocked endpoint**\n\nWhen outbound access remains available through another destination, protocol, or route while `1.1.1.1:443` is blocked, this single connection probe passes and the campaign records the sandbox as offline. The retained evidence contains no Windows Sandbox configuration or other network-policy record, so the native PASS cannot establish the required no-network execution boundary; retain and verify the sandbox's network-disable settings rather than inferring isolation from one unreachable address.\n\nAGENTS.md reference: [AGENTS.md:L72-L72](https://github.com/Unn0wn002/CutBridge/blob/fef102366a9e4b363455f8738b516d57a535ff76/AGENTS.md#L72-L72)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-03T18:35:35Z",
+              "updated_at": "2026-10-03T18:35:35Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6oqbBn",
+          "is_resolved": false,
+          "is_outdated": false,
+          "path": "apps/blender/cutbridge/handoff_3d.py",
+          "line": 173,
+          "diff_side": "RIGHT",
+          "start_line": 173,
+          "start_diff_side": null,
+          "original_line": 173,
+          "original_start_line": null,
+          "resolved_by": null,
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s74z3bK",
+              "database_id": 4174345930,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Do not direct users to QC for unimplemented 3D checks**\n\nWhen a managed Camera or 3D Null is deleted or its baked properties are altered after Build, `runQC()` validates the handoff manifest and ordinary pass footage/layers but never calls `findManagedCamera` or `findManagedNull` and never compares their sampled properties; matching camera/null tags are merely excluded from the stale-tag count. QC can therefore return a clean result without verifying the reconstruction this guidance tells users to verify, so either add camera/null existence and sample checks to QC or direct users to an inspection that actually covers them.\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-03T18:35:35Z",
+              "updated_at": "2026-10-03T18:35:35Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6ouEsI",
+          "is_resolved": false,
+          "is_outdated": false,
+          "path": "docs/evidence/v0.2.5/fef1023-native-ui/launch.ps1",
+          "line": 10,
+          "diff_side": "RIGHT",
+          "start_line": 10,
+          "start_diff_side": null,
+          "original_line": 10,
+          "original_start_line": null,
+          "resolved_by": null,
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s745hKO",
+              "database_id": 4175827598,
+              "body": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Prove network isolation for the superseding campaign**\n\nThe superseding fef1023 campaign still infers an offline sandbox from one failed TCP connection to `1.1.1.1:443`. When another destination, protocol, or route remains reachable, this probe passes and the release record treats the campaign as valid despite candidate execution having network access; the retained evidence also contains no Windows Sandbox configuration proving that networking was disabled. Retain and verify the sandbox network policy rather than relying on a single endpoint probe. This is fresh evidence because fef1023 is now designated as the valid replacement for the previously invalid campaigns.\n\nAGENTS.md reference: [AGENTS.md:L72-L72](https://github.com/Unn0wn002/CutBridge/blob/7d80a42cdbd3727db490ce17d6f43f0163737293/AGENTS.md#L72-L72)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-04T02:26:21Z",
+              "updated_at": "2026-10-04T02:26:22Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6ouEsL",
+          "is_resolved": false,
+          "is_outdated": false,
+          "path": "docs/evidence/v0.2.5/fef1023-native-ui/native_blender.py",
+          "line": 111,
+          "diff_side": "RIGHT",
+          "start_line": 110,
+          "start_diff_side": "RIGHT",
+          "original_line": 111,
+          "original_start_line": 110,
+          "resolved_by": null,
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s745hKT",
+              "database_id": 4175827603,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Validate camera and null payloads in the superseding run**\n\nThe fresh fef1023 harness only asserts that `handoff_3d` is truthy, so a regression that emits the wrapper object while omitting or corrupting its camera or marked-Empty data still reaches the unconditional `camera_empty_producer='PASS'` result. Inspect the camera and null names, types, sample counts, and values before recording that result. This is fresh evidence because the newly designated superseding harness repeats the incomplete assertion from the now-invalid earlier campaign.\n\nAGENTS.md reference: [AGENTS.md:L33-L33](https://github.com/Unn0wn002/CutBridge/blob/7d80a42cdbd3727db490ce17d6f43f0163737293/AGENTS.md#L33-L33)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-04T02:26:21Z",
+              "updated_at": "2026-10-04T02:26:22Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6ouEsO",
+          "is_resolved": false,
+          "is_outdated": false,
+          "path": "docs/evidence/v0.2.5/fef1023-native-ui/launch.ps1",
+          "line": 12,
+          "diff_side": "RIGHT",
+          "start_line": 12,
+          "start_diff_side": null,
+          "original_line": 12,
+          "original_start_line": null,
+          "resolved_by": null,
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s745hKX",
+              "database_id": 4175827607,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Redirect TMPDIR into the approved output tree**\n\nThe superseding launcher redirects `TEMP` and `TMP` but leaves `TMPDIR` unchanged. If the sandbox environment defines `TMPDIR`, Python or another candidate-controlled component can select that location and write temporary files outside `verification-output`; the retained evidence neither records that variable as absent nor manifests the rest of the sandbox filesystem, so such writes would not invalidate the reported PASS. Set `TMPDIR` to the approved temporary directory and rerun from a fresh snapshot.\n\nAGENTS.md reference: [AGENTS.md:L45-L50](https://github.com/Unn0wn002/CutBridge/blob/7d80a42cdbd3727db490ce17d6f43f0163737293/AGENTS.md#L45-L50)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-04T02:26:21Z",
+              "updated_at": "2026-10-04T02:26:22Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6ovI2I",
+          "is_resolved": false,
+          "is_outdated": false,
+          "path": ".github/workflows/candidate-verification.yml",
+          "line": 44,
+          "diff_side": "RIGHT",
+          "start_line": 44,
+          "start_diff_side": null,
+          "original_line": 44,
+          "original_start_line": null,
+          "resolved_by": null,
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s747Lni",
+              "database_id": 4176263650,
+              "body": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Reject candidate-controlled archive transformations**\n\nA candidate can add a root `.gitattributes` with `export-ignore` on failing tests—or `export-subst` on tested source—and this command will create a snapshot that differs from the candidate tree while the resulting manifest still verifies. As documented by `git-archive(1)`, paths marked `export-ignore` are omitted from archives, so the workflow can report PASS without running the complete committed suite. Reject these attributes or independently compare the archived path/byte inventory against the Git tree before execution.\n\nAGENTS.md reference: [AGENTS.md:L41-L42](https://github.com/Unn0wn002/CutBridge/blob/89b1dab3a82d6ddd2b1999c06de1d28e46fafc0d/AGENTS.md#L41-L42)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-04T05:23:58Z",
+              "updated_at": "2026-10-04T05:23:58Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6ovI2J",
+          "is_resolved": false,
+          "is_outdated": false,
+          "path": "apps/after-effects/CutBridge.jsx",
+          "line": 1292,
+          "diff_side": "RIGHT",
+          "start_line": 1286,
+          "start_diff_side": "RIGHT",
+          "original_line": 1289,
+          "original_start_line": 1283,
+          "resolved_by": null,
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s747Lnj",
+              "database_id": 4176263651,
+              "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Exercise captured-ID cleanup in the regression**\n\nThe new regression only performs a successful V004 revision, so it never invokes `removeImportedReplacement`; moreover, its mock `FootageItem` has no numeric `id`, meaning even a rollback would take the old fallback rather than this newly added branch. The exact fix for the reproducible native invalid-handle rollback defect therefore has no automated coverage while native retesting remains pending. Add a failure-after-import case whose mock invalidates the removed handle and verifies cleanup through a captured numeric ID.\n\nAGENTS.md reference: [AGENTS.md:L33-L33](https://github.com/Unn0wn002/CutBridge/blob/89b1dab3a82d6ddd2b1999c06de1d28e46fafc0d/AGENTS.md#L33-L33)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-04T05:23:58Z",
+              "updated_at": "2026-10-04T05:23:58Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        },
+        {
+          "id": "PRRT_kwDOUL_85s6owBNR",
+          "is_resolved": false,
+          "is_outdated": false,
+          "path": "docs/evidence/v0.2.5/049c095-native-ae/README.md",
+          "line": 5,
+          "diff_side": "RIGHT",
+          "start_line": 5,
+          "start_diff_side": null,
+          "original_line": 5,
+          "original_start_line": null,
+          "resolved_by": null,
+          "comments": [
+            {
+              "id": "PRRC_kwDOUL_85s748iGF",
+              "database_id": 4176617861,
+              "body": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Retain proof of the native sandbox boundary**\n\nThe newly designated 049c095 campaign claims network isolation, read-only inputs, and credential exclusion, but this evidence directory contains no Sandbox configuration, launcher/command transcript, disabled-adapter state, mount-permission record, or credential/environment record; `network-restored.json` only describes adapters after execution. Thus these native PASS results cannot establish that candidate-controlled AE scripts ran within the required boundary and should remain `INSUFFICIENT EVIDENCE` until the orchestration and settings are retained. This is fresh evidence because 049c095 is now the latest repair campaign superseding the previously reviewed native runs.\n\nAGENTS.md reference: [AGENTS.md:L72-L72](https://github.com/Unn0wn002/CutBridge/blob/35fb9b9aede318624eea80d46b1dea3462ec4747/AGENTS.md#L72-L72)\n\nUseful? React with 👍 / 👎.",
+              "created_at": "2026-10-04T07:44:54Z",
+              "updated_at": "2026-10-04T07:44:54Z",
+              "author": {
+                "login": "chatgpt-codex-connector",
+                "name": "chatgpt-codex-connector",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                "id": null
+              },
+              "viewer_did_author": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

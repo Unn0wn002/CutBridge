@@ -5,12 +5,13 @@ All notable CutBridge changes are tracked here.
 ## [0.2.5] - Unreleased
 
 ### Release preparation
-- Added offline container verification using the existing full test, RNA, AE, and packaging commands, with immutable source manifests and downloadable candidate/evidence artifacts.
+- Added opt-in offline container verification from an independently reviewed orchestration pin, exact Git input inventories, retained source/diff/index evidence, safe artifact staging, complete repeated-package comparison and separate infrastructure verdicts. Actual trusted workflow execution remains a required verification step.
 - Recorded the independent v0.2.4 download audit and confirmed Issue #99 distribution hold; preparation targets corrected v0.2.5 without changing published releases or production distribution.
-- Native AE 26.5x89 testing exposed and repaired cached-object failures in revision reload and optional-layer QC. The rebuilt candidate passes the recorded Build/QC, V001→V002→V003, status-change, optional-content and project-reopen checks; remaining native/review/delivery gates keep release readiness at INSUFFICIENT EVIDENCE. Historical failures are preserved in the preparation evidence.
+- Historical AE 26.5x89 observations informed cached-object repairs. Missing retained isolation provenance prevents those native observations from closing release gates; fresh exact-package native acceptance remains required. Historical failures and reports are preserved.
 
 ### Fixed
-- Bind AE 3D revision migration to the executing adapter's current project state, verify removed replacement footage by captured item ID, and reject deleted cached native handles before ownership membership comparisons. Added regression coverage and exact-ZIP native retests.
+- Bind AE 3D revision migration to the executing adapter's current project state, verify removed replacement footage by captured item ID, and reject deleted cached native handles before ownership membership comparisons. Direct adapter regressions now exercise failure after import, invalid handles, removal refusal, preservation and retry.
+- Scope Camera/Null guidance to implemented channels and direct sample inspection; do not imply orientation reconstruction or transform/projection QC.
 - Made the packaged After Effects `INSTALL.md` release-state-neutral after Issue #99 found stale pre-publication wording in the immutable v0.2.4 AE ZIP.
 - Added source-level and built-ZIP regression coverage so future AE release packages cannot silently restore version-specific development/publication claims.
 - Avoided deprecated `Scene.use_nodes` reads and writes on Blender's modern compositor path while retaining the Blender 4.x compatibility path.

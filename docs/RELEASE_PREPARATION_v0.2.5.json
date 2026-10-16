@@ -1,12 +1,14 @@
 {
   "record_type": "release_preparation",
-  "record_date": "2026-10-04",
+  "record_date": "2026-10-16",
   "product_version": "0.2.5",
   "release_readiness_verdict": "INSUFFICIENT EVIDENCE",
   "candidate_sha": "049c095258f9fc2dd89cbf8f1d7b2b3114d80296",
   "base_sha": "8cc5a4fe19e97c2f83105b888f96ccf1b423e8fd",
   "automated_verification": {
-    "verdict": "PASS",
+    "verdict": "INSUFFICIENT EVIDENCE",
+    "reported_historical_verdict": "PASS",
+    "current_assessment": "Historical candidate-controlled workflow does not establish independently trusted orchestration. Preserve reported counts and hashes as historical observations only; rerun exact current candidate with reviewed orchestration outside candidate refs.",
     "isolated_run": "https://github.com/Unn0wn002/CutBridge/actions/runs/37180451235",
     "ci_run": "https://github.com/Unn0wn002/CutBridge/actions/runs/37180451191",
     "tests_passed": 313,
@@ -33,10 +35,10 @@
     }
   },
   "independent_artifact_checks": {
-    "downloaded_candidate_hashes": "PASS",
-    "ae_guide_and_sidecars": "PASS",
-    "blender_package_validator": "Previous b221a759 candidate PASS; revised candidate validated by canonical isolated builder",
-    "preview_blender_index": "MATCHES official Blender 5.2.2 server-generate entry",
+    "downloaded_candidate_hashes": "Historical claim; current artifact verification must retain downloaded files and command outputs",
+    "ae_guide_and_sidecars": "Historical claim; repeat on current exact ZIP",
+    "blender_package_validator": "INSUFFICIENT EVIDENCE: independent validator input/transcript not retained",
+    "preview_blender_index": "INSUFFICIENT EVIDENCE: official server-generate input/output/transcript not retained",
     "preview_notification_schema": "PASS",
     "v023_to_v025_selection": "PASS",
     "no_downgrade": "PASS",
@@ -65,13 +67,15 @@
   "remaining_gates": [
     "Complete native Blender installer/button/manual-update checks",
     "Complete AE installation, preservation and remaining negative sign-off",
-    "Independent release review and representative Japanese artist validation",
+    "Independent exact-candidate release review; S14B remains NOT_EXECUTED and is required before broader representative-user claims",
     "Protected promotion and exact tuple authorization",
     "Tag eligibility and authorized v0.2.5 publication",
     "Independent published-download verification",
     "Additive production deployment and live sync/install/update checks"
   ],
   "native_v025_evidence": {
+    "current_verdict": "INSUFFICIENT EVIDENCE",
+    "reason": "fef1023 lacks retained Sandbox network/mount/credential policy; TMPDIR was not redirected and handoff payload assertion checked only a truthy wrapper. Recorded observations cannot close native release gates.",
     "package_revisions": 3,
     "evidence_path": "evidence/v0.2.5/fef1023-native-ui/",
     "blender_host": "5.2.2 LTS",
@@ -120,7 +124,7 @@
     "node_suites": "PASS",
     "python_and_js_syntax": "PASS",
     "repeated_package_bytes": "IDENTICAL",
-    "source_manifests": "IDENTICAL",
+    "source_manifests": "IDENTICAL (reported; independent orchestration trust not established)",
     "source_manifest_sha256": "106e905b9bfa474c51fcf756a86cc79bc4624e49e77e4f44d725830d107ed259",
     "image_id": "sha256:1b344daeba841c43e682b0e56f5107185cbf28d32dca15696fa077c8814b1a33",
     "network": "none",
@@ -142,6 +146,8 @@
   "native_ae_repaired_campaign": {
     "candidate_sha": "049c095258f9fc2dd89cbf8f1d7b2b3114d80296",
     "release_readiness_verdict": "INSUFFICIENT EVIDENCE",
+    "current_native_gate_verdict": "INSUFFICIENT EVIDENCE",
+    "reason": "049c095 has no retained execution-time sandbox/network/read-only mapping/credential configuration. network-restored.json describes post-execution adapters only. Keep observations historical and rerun with complete policy provenance.",
     "host": "26.5x89",
     "evidence_path": "evidence/v0.2.5/049c095-native-ae/",
     "build_qc_revision_chain": "PASS",
