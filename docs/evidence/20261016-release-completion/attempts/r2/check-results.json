@@ -1,0 +1,118 @@
+[
+    {
+        "exit_code":  0,
+        "name":  "compileall"
+    },
+    {
+        "exit_code":  1,
+        "name":  "pytest-full"
+    },
+    {
+        "exit_code":  0,
+        "name":  "blender-rna-5.2.1"
+    },
+    {
+        "exit_code":  0,
+        "name":  "syntax-CutBridge.jsx"
+    },
+    {
+        "exit_code":  0,
+        "name":  "syntax-revision_manager.js"
+    },
+    {
+        "exit_code":  0,
+        "name":  "syntax-qc_plus.js"
+    },
+    {
+        "exit_code":  0,
+        "name":  "syntax-localization.js"
+    },
+    {
+        "exit_code":  0,
+        "name":  "ae_contract_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "name":  "ae_package_identity_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "name":  "ae_qc_managed_layer_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "name":  "ae_s10c_reconstruction_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "name":  "ae_s13_revision_3d_tag_migration_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "name":  "ae_s5_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "name":  "ae_s5_managed_layer_guard.cjs"
+    },
+    {
+        "exit_code":  0,
+        "name":  "ae_s5_partial_retry_order.cjs"
+    },
+    {
+        "exit_code":  0,
+        "name":  "ae_s6_extend_script_binding_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "name":  "ae_s6_native_host_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "name":  "ae_s6_optional_pass_lifecycle_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "name":  "ae_s6_revision_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "name":  "ae_s6_revision_ownership_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "name":  "ae_s6_root_structure_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "name":  "ae_s7_native_qc_binding_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "name":  "ae_s7_qc_plus_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "name":  "ae_s8_localization_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "name":  "ae_s8_native_ui_binding_checks.cjs"
+    },
+    {
+        "exit_code":  0,
+        "name":  "package-first"
+    },
+    {
+        "exit_code":  0,
+        "name":  "package-repeat"
+    },
+    {
+        "exit_code":  0,
+        "name":  "artifact-inspection"
+    },
+    {
+        "exit_code":  0,
+        "name":  "distribution-preview"
+    }
+]

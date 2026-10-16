@@ -1,0 +1,33 @@
+{
+    "owner_home_visible":  false,
+    "vGPU":  "Enabled for native GUI; network disabled by retained policy",
+    "adapters":  [
+                     {
+                         "Name":  "Teredo Tunneling Pseudo-Interface",
+                         "Status":  "Not Present",
+                         "InterfaceDescription":  ""
+                     },
+                     {
+                         "Name":  "Microsoft IP-HTTPS Platform Interface",
+                         "Status":  "Not Present",
+                         "InterfaceDescription":  ""
+                     },
+                     {
+                         "Name":  "Ethernet (Kernel Debugger)",
+                         "Status":  "Not Present",
+                         "InterfaceDescription":  "Microsoft Kernel Debug Network Adapter"
+                     },
+                     {
+                         "Name":  "6to4 Adapter",
+                         "Status":  "Not Present",
+                         "InterfaceDescription":  ""
+                     }
+                 ],
+    "os":  "Microsoft Windows NT 10.0.26100.0",
+    "credential_environment_names":  [
+
+                                     ],
+    "inputs_writable":  false,
+    "timestamp_utc":  "2026-10-16T13:34:06.5038557Z",
+    "TMPDIR":  "C:\\Evidence\\verification-output\\tmp"
+}

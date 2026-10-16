@@ -1,0 +1,30 @@
+{
+  "artifact_zip_sha256": "53e9783c81da36c66eb5b9d3782244806d1b3023b1213eebd21fc354956d0e79",
+  "artifact_zip_bytes": 10313533,
+  "retained_zip": "C:\\Temp\\CutBridge-verification-20261016\\bootstrap-r2-evidence.zip",
+  "retained_extracted": "C:\\Temp\\CutBridge-verification-20261016\\remote-bootstrap-r2",
+  "verified_inner_checksums": 48,
+  "bootstrap": {
+    "BOOTSTRAP_REF": "refs/heads/fix/trusted-verifier-bootstrap-20261016",
+    "BOOTSTRAP_SHA": "8d1ecef5e2abb8c0b27f7951eb5a3eb75773afcc",
+    "CANDIDATE_COMMIT": "a44792099b3b5f5b7a2f69a41061268fe59586b3",
+    "DEVELOP_COMMIT": "8cc5a4fe19e97c2f83105b888f96ccf1b423e8fd",
+    "ImageOS": "ubuntu24",
+    "ImageVersion": "20261012.334.1",
+    "RUNNER_ARCH": "X64",
+    "RUNNER_OS": "Linux",
+    "RUN_ATTEMPT": "1",
+    "RUN_ID": "38910000382",
+    "TRUSTED_SHA": "a6ee2445f81906c024fd5b9e1689faac017f198a",
+    "WORKFLOW_REF": "Unn0wn002/CutBridge/.github/workflows/reviewed-release-verification.yml@refs/heads/fix/trusted-verifier-bootstrap-20261016",
+    "WORKFLOW_SHA": "8d1ecef5e2abb8c0b27f7951eb5a3eb75773afcc",
+    "machine": "x86_64",
+    "orchestration_python": "3.12.3",
+    "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+    "scope": "Reviewed bootstrap identity only; see verification.json for canonical-check verdict"
+  },
+  "verdict": "PASS",
+  "candidate_sha": "a44792099b3b5f5b7a2f69a41061268fe59586b3",
+  "source_archive_sha256": "c06056d882c1ffe4c012b49d3401678a1ee6ae4e3d314a1748638018bcd720ad",
+  "candidate_diff_sha256": "69f0a72f144ea7439242dff48304af3fdf9477b48529bf1829a91008ba786f1c"
+}

@@ -1,0 +1,9 @@
+{
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "input_records": 21,
+  "input_comparison": "IDENTICAL",
+  "candidate_sha": "931b4752d0dbb2df915f73d65591604486c1f1d6",
+  "candidate_commands_executed": false,
+  "reason": "Blender exited -1058471934 (0xc0e90002) during official validator startup, before visual candidate harness.",
+  "policy_or_authorization_changed": false
+}

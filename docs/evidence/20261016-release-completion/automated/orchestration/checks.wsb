@@ -1,0 +1,13 @@
+<Configuration>
+<Networking>Disable</Networking><ClipboardRedirection>Disable</ClipboardRedirection><PrinterRedirection>Disable</PrinterRedirection><AudioInput>Disable</AudioInput><VideoInput>Disable</VideoInput><VGpu>Disable</VGpu><MemoryInMB>8192</MemoryInMB>
+<MappedFolders>
+<MappedFolder><HostFolder>C:\Temp\CutBridge-verification-20261016\snapshot-r3</HostFolder><SandboxFolder>C:\Candidate</SandboxFolder><ReadOnly>true</ReadOnly></MappedFolder>
+<MappedFolder><HostFolder>C:\Temp\CutBridge-verification-20261016\snapshot-r3-review</HostFolder><SandboxFolder>C:\Review</SandboxFolder><ReadOnly>true</ReadOnly></MappedFolder>
+<MappedFolder><HostFolder>C:\Temp\CutBridge-verification-20261016\orchestration-r3</HostFolder><SandboxFolder>C:\Orchestration</SandboxFolder><ReadOnly>true</ReadOnly></MappedFolder>
+<MappedFolder><HostFolder>C:\Temp\CutBridge-verification-20261016\dependencies</HostFolder><SandboxFolder>C:\Deps</SandboxFolder><ReadOnly>true</ReadOnly></MappedFolder>
+<MappedFolder><HostFolder>C:\Temp\CutBridge-verification-20261016\python-runtime</HostFolder><SandboxFolder>C:\Python</SandboxFolder><ReadOnly>true</ReadOnly></MappedFolder>
+<MappedFolder><HostFolder>C:\Temp\CutBridge-verification-20261016\node22\node-v22.23.3-win-x64</HostFolder><SandboxFolder>C:\Node</SandboxFolder><ReadOnly>true</ReadOnly></MappedFolder>
+<MappedFolder><HostFolder>C:\Temp\CutBridge-verification-20261016\output-r3</HostFolder><SandboxFolder>C:\Evidence\verification-output</SandboxFolder><ReadOnly>false</ReadOnly></MappedFolder>
+<MappedFolder><HostFolder>C:\Temp\CutBridge-verification-20261016\runtime</HostFolder><SandboxFolder>C:\Runtime</SandboxFolder><ReadOnly>true</ReadOnly></MappedFolder></MappedFolders>
+<LogonCommand><Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\Orchestration\launch-checks.ps1</Command></LogonCommand>
+</Configuration>

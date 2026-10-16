@@ -1,0 +1,200 @@
+{
+  "tree": "ArtistCompositor025",
+  "nodes": [
+    {
+      "name": "ArtistRGB025",
+      "type": "CompositorNodeRGB",
+      "label": "Artist node must survive",
+      "location": [
+        -500.0,
+        400.0
+      ],
+      "mute": false,
+      "hide": false
+    },
+    {
+      "name": "ArtistReroute025",
+      "type": "NodeReroute",
+      "label": "",
+      "location": [
+        -200.0,
+        400.0
+      ],
+      "mute": false,
+      "hide": false
+    },
+    {
+      "name": "CUTBRIDGE_OUTPUT_BEAUTY",
+      "type": "CompositorNodeOutputFile",
+      "label": "CutBridge BEAUTY",
+      "location": [
+        80.0,
+        0.0
+      ],
+      "mute": false,
+      "hide": false,
+      "directory": "C:\\Evidence\\verification-output\\native-blender\\packages\\Native025_EP01_SC010_C001_T01_V003\\render\\beauty",
+      "file_name": "",
+      "media_type": "IMAGE",
+      "items": [
+        {
+          "name": "C001_BEAUTY_####",
+          "override_node_format": true,
+          "file_format": "PNG",
+          "media_type": "IMAGE"
+        }
+      ]
+    },
+    {
+      "name": "CUTBRIDGE_OUTPUT_DEPTH",
+      "type": "CompositorNodeOutputFile",
+      "label": "CutBridge DEPTH",
+      "location": [
+        80.0,
+        -660.0
+      ],
+      "mute": false,
+      "hide": false,
+      "directory": "C:\\Evidence\\verification-output\\native-blender\\packages\\Native025_EP01_SC010_C001_T01_V003\\render\\depth",
+      "file_name": "",
+      "media_type": "IMAGE",
+      "items": [
+        {
+          "name": "C001_DEPTH_####",
+          "override_node_format": true,
+          "file_format": "OPEN_EXR",
+          "media_type": "IMAGE"
+        }
+      ]
+    },
+    {
+      "name": "CUTBRIDGE_OUTPUT_LINE",
+      "type": "CompositorNodeOutputFile",
+      "label": "CutBridge LINE",
+      "location": [
+        80.0,
+        -220.0
+      ],
+      "mute": false,
+      "hide": false,
+      "directory": "C:\\Evidence\\verification-output\\native-blender\\packages\\Native025_EP01_SC010_C001_T01_V003\\render\\line",
+      "file_name": "",
+      "media_type": "IMAGE",
+      "items": [
+        {
+          "name": "C001_LINE_####",
+          "override_node_format": true,
+          "file_format": "PNG",
+          "media_type": "IMAGE"
+        }
+      ]
+    },
+    {
+      "name": "CUTBRIDGE_OUTPUT_SHADOW",
+      "type": "CompositorNodeOutputFile",
+      "label": "CutBridge SHADOW",
+      "location": [
+        80.0,
+        -440.0
+      ],
+      "mute": false,
+      "hide": false,
+      "directory": "C:\\Evidence\\verification-output\\native-blender\\packages\\Native025_EP01_SC010_C001_T01_V003\\render\\shadow",
+      "file_name": "",
+      "media_type": "IMAGE",
+      "items": [
+        {
+          "name": "C001_SHADOW_####",
+          "override_node_format": true,
+          "file_format": "PNG",
+          "media_type": "IMAGE"
+        }
+      ]
+    },
+    {
+      "name": "CUTBRIDGE_RENDER_LAYERS",
+      "type": "CompositorNodeRLayers",
+      "label": "CutBridge Render Source",
+      "location": [
+        -420.0,
+        0.0
+      ],
+      "mute": false,
+      "hide": false
+    }
+  ],
+  "links": [
+    [
+      "ArtistRGB025",
+      "Color",
+      "ArtistReroute025",
+      "Input"
+    ],
+    [
+      "CUTBRIDGE_RENDER_LAYERS",
+      "Depth",
+      "CUTBRIDGE_OUTPUT_DEPTH",
+      "C001_DEPTH_####"
+    ],
+    [
+      "CUTBRIDGE_RENDER_LAYERS",
+      "Freestyle",
+      "CUTBRIDGE_OUTPUT_LINE",
+      "C001_LINE_####"
+    ],
+    [
+      "CUTBRIDGE_RENDER_LAYERS",
+      "Image",
+      "CUTBRIDGE_OUTPUT_BEAUTY",
+      "C001_BEAUTY_####"
+    ],
+    [
+      "CUTBRIDGE_RENDER_LAYERS",
+      "Shadow",
+      "CUTBRIDGE_OUTPUT_SHADOW",
+      "C001_SHADOW_####"
+    ]
+  ],
+  "flags": {
+    "use_compositing": true,
+    "render_use_freestyle": true,
+    "layer_use_freestyle": true,
+    "use_pass_shadow": true,
+    "use_pass_z": true
+  },
+  "render_filepath": "C:\\Evidence\\verification-output\\native-blender\\main-render\\frame-",
+  "artist": {
+    "tree": "ArtistCompositor025",
+    "rgb": {
+      "name": "ArtistRGB025",
+      "label": "Artist node must survive",
+      "location": [
+        -500.0,
+        400.0
+      ],
+      "mute": false,
+      "value": [
+        0.125,
+        0.25,
+        0.5,
+        1.0
+      ],
+      "note": "Artist sentinel / preserved note"
+    },
+    "reroute": {
+      "name": "ArtistReroute025",
+      "location": [
+        -200.0,
+        400.0
+      ]
+    },
+    "links": [
+      [
+        "ArtistRGB025",
+        "Color",
+        "ArtistReroute025",
+        "Input"
+      ]
+    ]
+  }
+}

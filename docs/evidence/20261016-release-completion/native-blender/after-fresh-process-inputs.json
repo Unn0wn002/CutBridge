@@ -1,0 +1,10 @@
+[
+    {
+        "Path":  "C:\\Evidence\\verification-output\\native-blender\\native-blender.json",
+        "Hash":  "8F0914569CD56CFDBB9BD9500FF28B92D4469C4B6EF1D068D7A2BA9D008F0090"
+    },
+    {
+        "Path":  "C:\\Evidence\\verification-output\\native-blender\\fixtures\\reopen-V003.blend",
+        "Hash":  "75767C361C7C873A5B2E86810DBC359AAB99D14B84E1321B22F4F820B8DC2FDB"
+    }
+]

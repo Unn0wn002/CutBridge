@@ -1,0 +1,4 @@
+(D:\releases\dva\build\mb\projects\cc_libraries_cpp\src\ccLibraryProcess\ProcessInfoResolver.cpp @ 80)Error: [ProcessInfoResolver](2): Friday Fri Oct 16 15:49:37 2026: Failed to initialize IPCC-1
+[2026-10-16 15:49:49] [info] asio async_connect error: asio.system:10061 (No connection could be made because the target machine actively refused it.)
+[2026-10-16 15:49:49] [info] Error getting remote endpoint: asio.system:10057 (A request to send or receive data was disallowed because the socket is not connected and (when sending on a datagram socket using a sendto call) no address was supplied.)
+[2026-10-16 15:49:49] [error] handle_connect error: No connection could be made because the target machine actively refused it.

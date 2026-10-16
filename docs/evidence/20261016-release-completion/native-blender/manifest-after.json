@@ -1,0 +1,173 @@
+{
+  "captured_utc": "2026-10-16T08:38:16.352717+00:00",
+  "inventory": [
+    {
+      "root": "harness",
+      "path": "input-manifest.sha256",
+      "type": "file",
+      "bytes": 160,
+      "sha256": "3c981ec95d59ed001a958619c1a8c7f30077180a5d999c272eaecabf409f4c7a"
+    },
+    {
+      "root": "harness",
+      "path": "native_blender.py",
+      "type": "file",
+      "bytes": 30529,
+      "sha256": "037592c7bc7b7fb91273aec067a3b643f125e72ca31277249dcd97edb7c077dd"
+    },
+    {
+      "root": "harness",
+      "path": "README.md",
+      "type": "file",
+      "bytes": 3109,
+      "sha256": "c2d063dd4bf555b3e69921639bb14fcca84e17b53997ebd5068d1618e5ecb1fb"
+    },
+    {
+      "root": "harness",
+      "path": "reopen_blender.py",
+      "type": "file",
+      "bytes": 13177,
+      "sha256": "1dde1a1e1715fb413e5859832a5c875afe79e9dccdff13b7c085e9c98d82e01f"
+    },
+    {
+      "root": "harness",
+      "path": "reopen_blender.py.sha256",
+      "type": "file",
+      "bytes": 84,
+      "sha256": "68a2066f5dd637ee0be6a704b0a6fc2c30e6f8f7e429cd79f92eb8a9c1a0bc32"
+    },
+    {
+      "root": "orchestration",
+      "path": "launch-native-blender.ps1",
+      "type": "file",
+      "bytes": 5177,
+      "sha256": "30780a83b91198afe03b8321698c249ac95de2c06f587866c77ac99bf7df8d5d"
+    },
+    {
+      "root": "artifacts",
+      "path": "CutBridge-AfterEffects-v0.2.5.zip",
+      "type": "file",
+      "bytes": 59686,
+      "sha256": "427a36ba8638e88940b18f9daa34537c7e41ad939f3b81fddb50a3812d691268"
+    },
+    {
+      "root": "artifacts",
+      "path": "CutBridge-Blender-v0.2.5.zip",
+      "type": "file",
+      "bytes": 63682,
+      "sha256": "864131a58a1c56e4364c3e435ef1433fbda415515be7292770212bfdc4c31bfe"
+    },
+    {
+      "root": "artifacts",
+      "path": "release-metadata.json",
+      "type": "file",
+      "bytes": 694,
+      "sha256": "5b29b100062c1dea0fcb5c868e3b35f7e28aa58ce70b3d9f905e9a6c8e38f709"
+    },
+    {
+      "root": "artifacts",
+      "path": "SHA256SUMS.txt",
+      "type": "file",
+      "bytes": 197,
+      "sha256": "93f1d73022b85fc3ece4b71ca0500af73dd71fce95b47b3068948646ecd884dd"
+    },
+    {
+      "root": "review",
+      "path": "candidate.diff",
+      "type": "file",
+      "bytes": 7008195,
+      "sha256": "3fdddcff82000bc74bfcf35e916f1eb8b1a0a9a6291d7a2bf6ca151fda9d344b"
+    },
+    {
+      "root": "review",
+      "path": "candidate.json",
+      "type": "file",
+      "bytes": 311,
+      "sha256": "76993e7ed5801168037a0d06b16f66501f96750a3c350b482f5bffb8da4b16eb"
+    },
+    {
+      "root": "review",
+      "path": "manifest-before.json",
+      "type": "file",
+      "bytes": 103754,
+      "sha256": "5fd32038cd1b24e7166687218ce12efabe1e7db042a610a8f0b574fdf53e103e"
+    },
+    {
+      "root": "review",
+      "path": "production-release-index.json",
+      "type": "file",
+      "bytes": 493,
+      "sha256": "2b14d552e6bc54d393dfac81041e4d84dc42e0067753c3914639beac945a6367"
+    },
+    {
+      "root": "runtime",
+      "path": "concrt140.dll",
+      "type": "file",
+      "bytes": 321696,
+      "sha256": "b2faf3b85b23c840b654e57d5497a0ad31acd02fb01856cad4725a1715d5f78e"
+    },
+    {
+      "root": "runtime",
+      "path": "msvcp140.dll",
+      "type": "file",
+      "bytes": 553552,
+      "sha256": "def46aa6a8f72f27bafac0c43334419486a4d1dcdb6c479a8ef7034b3e1fa4cb"
+    },
+    {
+      "root": "runtime",
+      "path": "msvcp140_1.dll",
+      "type": "file",
+      "bytes": 35488,
+      "sha256": "2dd670f874562fbdca5b022df1943d70a57ba91fde559280e3a1daebe4db2380"
+    },
+    {
+      "root": "runtime",
+      "path": "msvcp140_2.dll",
+      "type": "file",
+      "bytes": 278608,
+      "sha256": "1d60da3ac2b06482912ca852fa7047436e6e474b4cfffa3bf77f4598cfbf454c"
+    },
+    {
+      "root": "runtime",
+      "path": "msvcp140_atomic_wait.dll",
+      "type": "file",
+      "bytes": 48800,
+      "sha256": "e7963645e0d1db08e300614d4c5fa7194bd8173e9ab7a5558859e6b232ed3241"
+    },
+    {
+      "root": "runtime",
+      "path": "msvcp140_codecvt_ids.dll",
+      "type": "file",
+      "bytes": 31392,
+      "sha256": "ae8d922b00cdd93e3ebecc37beb46c800f383ebdeb9f9e5b84e04a72428b6fb3"
+    },
+    {
+      "root": "runtime",
+      "path": "vcomp140.dll",
+      "type": "file",
+      "bytes": 213064,
+      "sha256": "31af29c03643f8396a6f26bcd601c6369d26493d7d78b714827ab2801bd284c7"
+    },
+    {
+      "root": "runtime",
+      "path": "vcruntime140.dll",
+      "type": "file",
+      "bytes": 123472,
+      "sha256": "184146852727a9db4eea06178716bec3cdbb1015c911f6b0f915b184ad7775b2"
+    },
+    {
+      "root": "runtime",
+      "path": "vcruntime140_1.dll",
+      "type": "file",
+      "bytes": 47264,
+      "sha256": "e6bfb3662ab4b1969a73441dbe35c96d51441b6bff8cf1fe7430bd5b246ca605"
+    },
+    {
+      "root": "policy",
+      "path": "native-blender-r2.wsb",
+      "type": "file",
+      "bytes": 2041,
+      "sha256": "6af1c8da5a6a1c42e3e2346861ea04263844307401d37151f1ce2eb4dbc43984"
+    }
+  ]
+}

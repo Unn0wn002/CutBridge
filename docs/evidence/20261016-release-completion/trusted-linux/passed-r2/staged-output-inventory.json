@@ -1,0 +1,127 @@
+[
+  {
+    "path": "pytest.xml",
+    "sha256": "5de2c0dd0ab68f830574a9217fcced5a9784e7742921bb481852cf36561ebbc4",
+    "size": 54020,
+    "type": "file"
+  },
+  {
+    "mode": 420,
+    "path": "dist-ci/CutBridge-AfterEffects-v0.2.5.zip",
+    "sha256": "427a36ba8638e88940b18f9daa34537c7e41ad939f3b81fddb50a3812d691268",
+    "size": 59686,
+    "type": "file"
+  },
+  {
+    "mode": 420,
+    "path": "dist-ci/CutBridge-Blender-v0.2.5.zip",
+    "sha256": "864131a58a1c56e4364c3e435ef1433fbda415515be7292770212bfdc4c31bfe",
+    "size": 63682,
+    "type": "file"
+  },
+  {
+    "mode": 420,
+    "path": "dist-ci/SHA256SUMS.txt",
+    "sha256": "d153d2ca56594f28ee4ed75d9b97859d4430a0950ad1385aaa6d32fedebbe4bb",
+    "size": 195,
+    "type": "file"
+  },
+  {
+    "mode": 420,
+    "path": "dist-ci/release-metadata.json",
+    "sha256": "a9e0d91202173cb9ad431a3f1b85ca0b8b8d4a416ad49a5e8e3c336e23a1722f",
+    "size": 674,
+    "type": "file"
+  },
+  {
+    "mode": 420,
+    "path": "dist-repeat/CutBridge-AfterEffects-v0.2.5.zip",
+    "sha256": "427a36ba8638e88940b18f9daa34537c7e41ad939f3b81fddb50a3812d691268",
+    "size": 59686,
+    "type": "file"
+  },
+  {
+    "mode": 420,
+    "path": "dist-repeat/CutBridge-Blender-v0.2.5.zip",
+    "sha256": "864131a58a1c56e4364c3e435ef1433fbda415515be7292770212bfdc4c31bfe",
+    "size": 63682,
+    "type": "file"
+  },
+  {
+    "mode": 420,
+    "path": "dist-repeat/SHA256SUMS.txt",
+    "sha256": "d153d2ca56594f28ee4ed75d9b97859d4430a0950ad1385aaa6d32fedebbe4bb",
+    "size": 195,
+    "type": "file"
+  },
+  {
+    "mode": 420,
+    "path": "dist-repeat/release-metadata.json",
+    "sha256": "a9e0d91202173cb9ad431a3f1b85ca0b8b8d4a416ad49a5e8e3c336e23a1722f",
+    "size": 674,
+    "type": "file"
+  },
+  {
+    "mode": 420,
+    "path": "distribution-preview/DO_NOT_PUBLISH.txt",
+    "sha256": "817c986e084a31600c862151ee75d52c2a8f97040d6ebc17f0b965abcc99b1c1",
+    "size": 163,
+    "type": "file"
+  },
+  {
+    "mode": 420,
+    "path": "distribution-preview/blender/CutBridge-Blender-v0.2.5.zip",
+    "sha256": "864131a58a1c56e4364c3e435ef1433fbda415515be7292770212bfdc4c31bfe",
+    "size": 63682,
+    "type": "file"
+  },
+  {
+    "mode": 420,
+    "path": "distribution-preview/blender/index.json",
+    "sha256": "b5de0df327528307cbd55b3e2e0b5961ab7c2c987bbf8dbbbdccfe7d429a89a5",
+    "size": 840,
+    "type": "file"
+  },
+  {
+    "mode": 420,
+    "path": "distribution-preview/cutbridge/release-index.json",
+    "sha256": "d541c94c5051faedbb6ae16a82f899c341b5ec1f02f94e9c6f9085f8be2d4d18",
+    "size": 856,
+    "type": "file"
+  },
+  {
+    "mode": 420,
+    "path": "distribution-preview/releases/v0.2.5/CutBridge-AfterEffects-v0.2.5.zip",
+    "sha256": "427a36ba8638e88940b18f9daa34537c7e41ad939f3b81fddb50a3812d691268",
+    "size": 59686,
+    "type": "file"
+  },
+  {
+    "mode": 420,
+    "path": "distribution-preview/releases/v0.2.5/CutBridge-Blender-v0.2.5.zip",
+    "sha256": "864131a58a1c56e4364c3e435ef1433fbda415515be7292770212bfdc4c31bfe",
+    "size": 63682,
+    "type": "file"
+  },
+  {
+    "mode": 420,
+    "path": "distribution-preview/releases/v0.2.5/SHA256SUMS.txt",
+    "sha256": "d153d2ca56594f28ee4ed75d9b97859d4430a0950ad1385aaa6d32fedebbe4bb",
+    "size": 195,
+    "type": "file"
+  },
+  {
+    "mode": 420,
+    "path": "distribution-preview/releases/v0.2.5/index.html",
+    "sha256": "d7ce98d1862610d793bb98519f543b17daac808c03844d391cc31cf7ce7b20dd",
+    "size": 550,
+    "type": "file"
+  },
+  {
+    "mode": 420,
+    "path": "distribution-preview/releases/v0.2.5/release-metadata.json",
+    "sha256": "a9e0d91202173cb9ad431a3f1b85ca0b8b8d4a416ad49a5e8e3c336e23a1722f",
+    "size": 674,
+    "type": "file"
+  }
+]

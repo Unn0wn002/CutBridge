@@ -1,0 +1,10 @@
+Required Python/Blender dependency preflight failed: 1
+At C:\Orchestration\launch-checks.ps1:23 char:40
++ ... de -ne 0) { throw "Required Python/Blender dependency preflight faile ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Required Python...light faile 
+   d: 1:String) [], RuntimeException
+    + FullyQualifiedErrorId : Required Python/Blender dependency preflight fai 
+   led: 1
+ 
+

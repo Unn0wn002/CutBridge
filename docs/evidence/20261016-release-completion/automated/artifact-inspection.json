@@ -1,0 +1,28 @@
+{
+  "repeated_complete_inventory_identical": true,
+  "artifacts": {
+    "CutBridge-AfterEffects-v0.2.5.zip": {
+      "type": "file",
+      "bytes": 59686,
+      "sha256": "427a36ba8638e88940b18f9daa34537c7e41ad939f3b81fddb50a3812d691268"
+    },
+    "CutBridge-Blender-v0.2.5.zip": {
+      "type": "file",
+      "bytes": 63682,
+      "sha256": "864131a58a1c56e4364c3e435ef1433fbda415515be7292770212bfdc4c31bfe"
+    },
+    "release-metadata.json": {
+      "type": "file",
+      "bytes": 694,
+      "sha256": "5b29b100062c1dea0fcb5c868e3b35f7e28aa58ce70b3d9f905e9a6c8e38f709"
+    },
+    "SHA256SUMS.txt": {
+      "type": "file",
+      "bytes": 197,
+      "sha256": "93f1d73022b85fc3ece4b71ca0500af73dd71fce95b47b3068948646ecd884dd"
+    }
+  },
+  "checksums_and_metadata": "PASS",
+  "ae_sidecars_guide_license": "PASS",
+  "zip_integrity": "PASS"
+}

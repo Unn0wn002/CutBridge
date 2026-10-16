@@ -1,0 +1,19 @@
+{
+  "BOOTSTRAP_REF": "refs/heads/fix/trusted-verifier-bootstrap-20261016",
+  "BOOTSTRAP_SHA": "e9f004bf7700b9f876cbc11841835ebcd234355f",
+  "CANDIDATE_COMMIT": "931b4752d0dbb2df915f73d65591604486c1f1d6",
+  "DEVELOP_COMMIT": "8cc5a4fe19e97c2f83105b888f96ccf1b423e8fd",
+  "ImageOS": "ubuntu24",
+  "ImageVersion": "20261012.334.1",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_OS": "Linux",
+  "RUN_ATTEMPT": "1",
+  "RUN_ID": "38909487938",
+  "TRUSTED_SHA": "a6ee2445f81906c024fd5b9e1689faac017f198a",
+  "WORKFLOW_REF": "Unn0wn002/CutBridge/.github/workflows/reviewed-release-verification.yml@refs/heads/fix/trusted-verifier-bootstrap-20261016",
+  "WORKFLOW_SHA": "e9f004bf7700b9f876cbc11841835ebcd234355f",
+  "machine": "x86_64",
+  "orchestration_python": "3.12.3",
+  "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+  "scope": "Reviewed bootstrap identity only; see verification.json for canonical-check verdict"
+}

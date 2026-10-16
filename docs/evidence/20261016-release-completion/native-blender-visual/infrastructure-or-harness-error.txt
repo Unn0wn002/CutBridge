@@ -1,0 +1,11 @@
+Native process nonzero exit: official-package-validator (-1058471934); inspect 
+logs before classifying candidate behavior
+At C:\Orchestration\launch-native-blender.ps1:29 char:39
++ ... Code -ne 0){throw "Native process nonzero exit: $name ($($cbProcess.E ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Native process ...didate beha 
+   vior:String) [], RuntimeException
+    + FullyQualifiedErrorId : Native process nonzero exit: official-package-va 
+   lidator (-1058471934); inspect logs before classifying candidate behavior
+ 
+

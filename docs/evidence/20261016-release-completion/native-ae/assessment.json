@@ -1,0 +1,69 @@
+{
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "candidate_sha": "5293cd46a819debfe8ecf41f740c4e94806dd89c",
+  "archive_sha256": "427a36ba8638e88940b18f9daa34537c7e41ad939f3b81fddb50a3812d691268",
+  "host_observed": "After Effects 26.5x89 / build 89; Windows Sandbox 10.0.26100",
+  "attempts": [
+    {
+      "attempt": 1,
+      "verdict": "INSUFFICIENT EVIDENCE",
+      "input_inventory_comparison": "IDENTICAL",
+      "reason": "Harness scope error (CutBridgeContract undefined at campaign line 4), zero native assertions. Raw FAIL label is not a genuine observed candidate failure. Later phases lacked saved V003. Normal exit not established."
+    },
+    {
+      "attempt": 2,
+      "verdict": "INSUFFICIENT EVIDENCE",
+      "input_inventory_comparison": "IDENTICAL",
+      "reason": "Interrupted/incomplete startup; only staged installation metadata; no native result."
+    },
+    {
+      "attempt": 3,
+      "verdict": "INSUFFICIENT EVIDENCE",
+      "input_inventory_comparison": "IDENTICAL",
+      "reason": "Console launcher produced no script report. Attempt 4 was stopped for diagnostic retry; no native normal exit claimed."
+    },
+    {
+      "attempt": 4,
+      "verdict": "INSUFFICIENT EVIDENCE",
+      "input_inventory_comparison": "IDENTICAL",
+      "reason": "Console launcher produced no script report. Attempt 4 was stopped for diagnostic retry; no native normal exit claimed."
+    },
+    {
+      "attempt": 5,
+      "verdict": "INSUFFICIENT EVIDENCE",
+      "input_inventory_comparison": "IDENTICAL",
+      "reason": "Actual AfterFX.exe exited -1058471934 (0xc0e90002) before any campaign script result. Sandbox application events retained, including a graphics watchdog report; causation not established.",
+      "vgpu_policy": "Enable",
+      "actual_native_exit": {
+        "exited": true,
+        "pid": 8700,
+        "method": "Observed actual AfterFX.exe; no force termination",
+        "exit_code": -1058471934
+      }
+    },
+    {
+      "attempt": 6,
+      "verdict": "INSUFFICIENT EVIDENCE",
+      "input_inventory_comparison": "IDENTICAL",
+      "reason": "Actual AfterFX.exe exited -1058471934 (0xc0e90002) before any campaign script result. Sandbox application events retained, including a graphics watchdog report; causation not established.",
+      "vgpu_policy": "Disable",
+      "actual_native_exit": {
+        "exited": true,
+        "pid": 8752,
+        "method": "Observed actual AfterFX.exe; no force termination",
+        "exit_code": -1058471934
+      }
+    }
+  ],
+  "candidate_native_assertions_observed": 0,
+  "required_unexecuted": [
+    "V001-V003 actual AE revisions and preservation",
+    "required/optional and ownership/contract negative cases",
+    "captured-ID native cleanup and invalid handles",
+    "source replacement rollback",
+    "saved project and fresh-process reopen",
+    "JP/EN visual and dockable installation"
+  ],
+  "next_action": "Use an independently approved offline, credential-free native environment in which AE initializes, then rerun the retained corrected harness against the exact ZIP and actual Blender packages. Do not weaken isolation, copy license/owner credentials or infer native acceptance from Node/CI.",
+  "S14B": "NOT_EXECUTED"
+}

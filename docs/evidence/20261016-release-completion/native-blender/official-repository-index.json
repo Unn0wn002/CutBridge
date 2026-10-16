@@ -1,0 +1,29 @@
+{
+  "version": "v1",
+  "blocklist": [],
+  "data": [
+    {
+      "schema_version": "1.0.0",
+      "id": "cutbridge",
+      "name": "CutBridge",
+      "tagline": "Anime cut handoff pipeline for Blender and After Effects",
+      "version": "0.2.5",
+      "type": "add-on",
+      "maintainer": "CutBridge Project",
+      "license": [
+        "SPDX:GPL-3.0-or-later"
+      ],
+      "blender_version_min": "4.2.0",
+      "permissions": {
+        "files": "Create cut packages and JSON manifests in user-selected folders",
+        "network": "Check the CutBridge release index for compatible updates"
+      },
+      "tags": [
+        "Animation"
+      ],
+      "archive_url": "./CutBridge-Blender-v0.2.5.zip",
+      "archive_size": 63682,
+      "archive_hash": "sha256:864131a58a1c56e4364c3e435ef1433fbda415515be7292770212bfdc4c31bfe"
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+<Configuration>
+  <Networking>Disable</Networking>
+  <ClipboardRedirection>Disable</ClipboardRedirection>
+  <PrinterRedirection>Disable</PrinterRedirection>
+  <AudioInput>Disable</AudioInput>
+  <VideoInput>Disable</VideoInput>
+  <VGpu>Enable</VGpu>
+  <MemoryInMB>8192</MemoryInMB>
+  <MappedFolders>
+    <MappedFolder>
+      <HostFolder>C:\Temp\CutBridge-verification-20261016\native-ae-input-r5</HostFolder>
+      <SandboxFolder>C:\NativeAEInput</SandboxFolder>
+      <ReadOnly>true</ReadOnly>
+    </MappedFolder>
+    <MappedFolder>
+      <HostFolder>C:\Program Files\Adobe\Adobe After Effects 2026\Support Files</HostFolder>
+      <SandboxFolder>C:\AfterEffects</SandboxFolder>
+      <ReadOnly>true</ReadOnly>
+    </MappedFolder>
+    <MappedFolder>
+      <HostFolder>C:\Temp\CutBridge-verification-20261016\runtime</HostFolder>
+      <SandboxFolder>C:\Runtime</SandboxFolder>
+      <ReadOnly>true</ReadOnly>
+    </MappedFolder>
+    <MappedFolder>
+      <HostFolder>C:\Temp\CutBridge-verification-20261016\orchestration-native-ae-r4</HostFolder>
+      <SandboxFolder>C:\Orchestration</SandboxFolder>
+      <ReadOnly>true</ReadOnly>
+    </MappedFolder>
+    <MappedFolder>
+      <HostFolder>C:\Temp\CutBridge-verification-20261016\snapshot-r3-review</HostFolder>
+      <SandboxFolder>C:\Review</SandboxFolder>
+      <ReadOnly>true</ReadOnly>
+    </MappedFolder>
+    <MappedFolder>
+      <HostFolder>C:\Temp\CutBridge-verification-20261016\ae-runtime-input</HostFolder>
+      <SandboxFolder>C:\AERuntime</SandboxFolder>
+      <ReadOnly>true</ReadOnly>
+    </MappedFolder>
+    <MappedFolder>
+      <HostFolder>C:\Temp\CutBridge-verification-20261016\output-native-blender-r2\native-blender</HostFolder>
+      <SandboxFolder>C:\Packages</SandboxFolder>
+      <ReadOnly>true</ReadOnly>
+    </MappedFolder>
+    <MappedFolder>
+      <HostFolder>C:\Temp\CutBridge-verification-20261016\output-native-ae-r4</HostFolder>
+      <SandboxFolder>C:\Evidence\verification-output</SandboxFolder>
+      <ReadOnly>false</ReadOnly>
+    </MappedFolder>
+  </MappedFolders>
+  <LogonCommand>
+    <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\Orchestration\launch-native-ae.ps1</Command>
+  </LogonCommand>
+</Configuration>

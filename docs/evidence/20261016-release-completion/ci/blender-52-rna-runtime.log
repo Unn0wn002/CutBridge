@@ -1,0 +1,305 @@
+﻿2026-10-16T08:41:22.8969791Z Current runner version: '2.337.0'
+2026-10-16T08:41:22.8996111Z ##[group]Runner Image Provisioner
+2026-10-16T08:41:22.8997129Z Hosted Compute Agent
+2026-10-16T08:41:22.8997804Z Version: 20261012.601
+2026-10-16T08:41:22.8998457Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+2026-10-16T08:41:22.8999266Z Build Date: 2026-10-12T17:48:21Z
+2026-10-16T08:41:22.8999978Z Worker ID: {66e70879-8997-4ff4-9ed0-03d80b0a2426}
+2026-10-16T08:41:22.9000690Z Region: northcentralus
+2026-10-16T08:41:22.9001711Z Cloud: Azure
+2026-10-16T08:41:22.9002292Z ##[endgroup]
+2026-10-16T08:41:22.9003816Z ##[group]Operating System
+2026-10-16T08:41:22.9004567Z Ubuntu
+2026-10-16T08:41:22.9005097Z 24.04.5
+2026-10-16T08:41:22.9005742Z LTS
+2026-10-16T08:41:22.9006300Z ##[endgroup]
+2026-10-16T08:41:22.9006912Z ##[group]Runner Image
+2026-10-16T08:41:22.9007545Z Image: ubuntu-24.04
+2026-10-16T08:41:22.9008132Z Version: 20261012.334.1
+2026-10-16T08:41:22.9009539Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-16T08:41:22.9011139Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+2026-10-16T08:41:22.9012460Z ##[endgroup]
+2026-10-16T08:41:22.9013662Z ##[group]GITHUB_TOKEN Permissions
+2026-10-16T08:41:22.9016142Z Contents: read
+2026-10-16T08:41:22.9016769Z Metadata: read
+2026-10-16T08:41:22.9017439Z ##[endgroup]
+2026-10-16T08:41:22.9019514Z Secret source: Actions
+2026-10-16T08:41:22.9020627Z Cache mode: write
+2026-10-16T08:41:22.9021850Z Prepare workflow directory
+2026-10-16T08:41:22.9363234Z Prepare all required actions
+2026-10-16T08:41:22.9413055Z Getting action download info
+2026-10-16T08:41:23.1888367Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-10-16T08:41:23.3069340Z Download action repository 'actions/setup-node@820762786026740c76f36085b0efc47a31fe5020' (SHA:820762786026740c76f36085b0efc47a31fe5020)
+2026-10-16T08:41:23.4779845Z Download action repository 'actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97' (SHA:5fda3b95a4ea91299a34e894583c3862153e4b97)
+2026-10-16T08:41:23.6641615Z Complete job name: blender-52-rna-runtime
+2026-10-16T08:41:23.7408272Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-10-16T08:41:23.7409288Z with:
+2026-10-16T08:41:23.7409736Z   persist-credentials: false
+2026-10-16T08:41:23.7410276Z   repository: Unn0wn002/CutBridge
+2026-10-16T08:41:23.7414493Z   token: ***
+2026-10-16T08:41:23.7414943Z   ssh-strict: true
+2026-10-16T08:41:23.7415382Z   ssh-user: git
+2026-10-16T08:41:23.7415805Z   clean: true
+2026-10-16T08:41:23.7416253Z   sparse-checkout-cone-mode: true
+2026-10-16T08:41:23.7416780Z   fetch-depth: 1
+2026-10-16T08:41:23.7417211Z   fetch-tags: false
+2026-10-16T08:41:23.7417657Z   show-progress: true
+2026-10-16T08:41:23.7418104Z   lfs: false
+2026-10-16T08:41:23.7418514Z   submodules: false
+2026-10-16T08:41:23.7418959Z   set-safe-directory: true
+2026-10-16T08:41:23.7419489Z   allow-unsafe-pr-checkout: false
+2026-10-16T08:41:23.7420202Z ##[endgroup]
+2026-10-16T08:41:23.8409953Z Syncing repository: Unn0wn002/CutBridge
+2026-10-16T08:41:23.8412854Z ##[group]Getting Git version info
+2026-10-16T08:41:23.8413969Z Working directory is '/home/runner/work/CutBridge/CutBridge'
+2026-10-16T08:41:23.8415573Z [command]/usr/bin/git version
+2026-10-16T08:41:23.8491766Z git version 2.55.0
+2026-10-16T08:41:23.8544115Z ##[endgroup]
+2026-10-16T08:41:23.8554935Z Temporarily overriding HOME='/home/runner/work/_temp/03c3f0fa-bee0-415d-8aed-8d163f34a48f' before making global git config changes
+2026-10-16T08:41:23.8557485Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-16T08:41:23.8561185Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/CutBridge/CutBridge
+2026-10-16T08:41:23.8611856Z Deleting the contents of '/home/runner/work/CutBridge/CutBridge'
+2026-10-16T08:41:23.8615563Z ##[group]Determining repository object format
+2026-10-16T08:41:23.8617905Z ##[endgroup]
+2026-10-16T08:41:23.8619075Z ##[group]Initializing the repository
+2026-10-16T08:41:23.8621446Z [command]/usr/bin/git init /home/runner/work/CutBridge/CutBridge
+2026-10-16T08:41:23.8742224Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-16T08:41:23.8743930Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-16T08:41:23.8745721Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-16T08:41:23.8752031Z hint: call:
+2026-10-16T08:41:23.8752707Z hint:
+2026-10-16T08:41:23.8753494Z hint: 	git config --global init.defaultBranch <name>
+2026-10-16T08:41:23.8754456Z hint:
+2026-10-16T08:41:23.8755344Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-16T08:41:23.8756826Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-16T08:41:23.8757925Z hint:
+2026-10-16T08:41:23.8758357Z hint: 	git branch -m <name>
+2026-10-16T08:41:23.8758870Z hint:
+2026-10-16T08:41:23.8759521Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-16T08:41:23.8760600Z Initialized empty Git repository in /home/runner/work/CutBridge/CutBridge/.git/
+2026-10-16T08:41:23.8763025Z [command]/usr/bin/git remote add origin https://github.com/Unn0wn002/CutBridge
+2026-10-16T08:41:23.8812846Z ##[endgroup]
+2026-10-16T08:41:23.8814113Z ##[group]Disabling automatic garbage collection
+2026-10-16T08:41:23.8816221Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-16T08:41:23.8851051Z ##[endgroup]
+2026-10-16T08:41:23.8852347Z ##[group]Setting up auth
+2026-10-16T08:41:23.8853179Z Removing SSH command configuration
+2026-10-16T08:41:23.8856602Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-16T08:41:23.8895047Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-16T08:41:23.9280526Z Removing HTTP extra header
+2026-10-16T08:41:23.9287513Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-16T08:41:23.9332956Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-16T08:41:23.9588324Z Removing includeIf entries pointing to credentials config files
+2026-10-16T08:41:23.9594483Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-16T08:41:23.9635987Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-16T08:41:23.9907834Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-a9e6e263-7dd0-4a30-a6c8-24620e2e3d78.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-16T08:41:23.9954541Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/CutBridge/CutBridge/.git.path /home/runner/work/_temp/git-credentials-a9e6e263-7dd0-4a30-a6c8-24620e2e3d78.config
+2026-10-16T08:41:23.9993039Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/CutBridge/CutBridge/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-a9e6e263-7dd0-4a30-a6c8-24620e2e3d78.config
+2026-10-16T08:41:24.0033917Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-a9e6e263-7dd0-4a30-a6c8-24620e2e3d78.config
+2026-10-16T08:41:24.0071740Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-a9e6e263-7dd0-4a30-a6c8-24620e2e3d78.config
+2026-10-16T08:41:24.0107024Z ##[endgroup]
+2026-10-16T08:41:24.0108170Z ##[group]Fetching the repository
+2026-10-16T08:41:24.0115390Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +5293cd46a819debfe8ecf41f740c4e94806dd89c:refs/remotes/origin/fix/current-release-completion-20261016
+2026-10-16T08:41:24.9221742Z From https://github.com/Unn0wn002/CutBridge
+2026-10-16T08:41:24.9223970Z  * [new ref]         5293cd46a819debfe8ecf41f740c4e94806dd89c -> origin/fix/current-release-completion-20261016
+2026-10-16T08:41:24.9242878Z [command]/usr/bin/git branch --list --remote origin/fix/current-release-completion-20261016
+2026-10-16T08:41:24.9272555Z   origin/fix/current-release-completion-20261016
+2026-10-16T08:41:24.9277041Z [command]/usr/bin/git rev-parse refs/remotes/origin/fix/current-release-completion-20261016
+2026-10-16T08:41:24.9306551Z 5293cd46a819debfe8ecf41f740c4e94806dd89c
+2026-10-16T08:41:24.9314791Z ##[endgroup]
+2026-10-16T08:41:24.9316513Z ##[group]Determining the checkout info
+2026-10-16T08:41:24.9317693Z ##[endgroup]
+2026-10-16T08:41:24.9323477Z [command]/usr/bin/git sparse-checkout disable
+2026-10-16T08:41:24.9394367Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-16T08:41:24.9435697Z ##[group]Checking out the ref
+2026-10-16T08:41:24.9441762Z [command]/usr/bin/git checkout --progress --force -B fix/current-release-completion-20261016 refs/remotes/origin/fix/current-release-completion-20261016
+2026-10-16T08:41:24.9967622Z Switched to a new branch 'fix/current-release-completion-20261016'
+2026-10-16T08:41:24.9972534Z branch 'fix/current-release-completion-20261016' set up to track 'origin/fix/current-release-completion-20261016'.
+2026-10-16T08:41:24.9980528Z ##[endgroup]
+2026-10-16T08:41:25.0035431Z [command]/usr/bin/git log -1 --format=%H
+2026-10-16T08:41:25.0068304Z 5293cd46a819debfe8ecf41f740c4e94806dd89c
+2026-10-16T08:41:25.0077297Z ##[group]Removing auth
+2026-10-16T08:41:25.0081476Z Removing SSH command configuration
+2026-10-16T08:41:25.0082818Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-16T08:41:25.0122399Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-16T08:41:25.0370443Z Removing HTTP extra header
+2026-10-16T08:41:25.0372524Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-16T08:41:25.0410175Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-16T08:41:25.0648360Z Removing includeIf entries pointing to credentials config files
+2026-10-16T08:41:25.0650993Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-16T08:41:25.0686290Z includeif.gitdir:/home/runner/work/CutBridge/CutBridge/.git.path
+2026-10-16T08:41:25.0688338Z includeif.gitdir:/home/runner/work/CutBridge/CutBridge/.git/worktrees/*.path
+2026-10-16T08:41:25.0690333Z includeif.gitdir:/github/workspace/.git.path
+2026-10-16T08:41:25.0691970Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-16T08:41:25.0695841Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/CutBridge/CutBridge/.git.path
+2026-10-16T08:41:25.0724499Z /home/runner/work/_temp/git-credentials-a9e6e263-7dd0-4a30-a6c8-24620e2e3d78.config
+2026-10-16T08:41:25.0735155Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/CutBridge/CutBridge/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-a9e6e263\-7dd0\-4a30\-a6c8\-24620e2e3d78\.config
+2026-10-16T08:41:25.0774416Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/CutBridge/CutBridge/.git/worktrees/*.path
+2026-10-16T08:41:25.0809669Z /home/runner/work/_temp/git-credentials-a9e6e263-7dd0-4a30-a6c8-24620e2e3d78.config
+2026-10-16T08:41:25.0818618Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/CutBridge/CutBridge/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-a9e6e263\-7dd0\-4a30\-a6c8\-24620e2e3d78\.config
+2026-10-16T08:41:25.0865258Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-10-16T08:41:25.0913488Z /github/runner_temp/git-credentials-a9e6e263-7dd0-4a30-a6c8-24620e2e3d78.config
+2026-10-16T08:41:25.0921175Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-a9e6e263\-7dd0\-4a30\-a6c8\-24620e2e3d78\.config
+2026-10-16T08:41:25.0980643Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-16T08:41:25.1011064Z /github/runner_temp/git-credentials-a9e6e263-7dd0-4a30-a6c8-24620e2e3d78.config
+2026-10-16T08:41:25.1023211Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-a9e6e263\-7dd0\-4a30\-a6c8\-24620e2e3d78\.config
+2026-10-16T08:41:25.1062447Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-16T08:41:25.1298146Z Removing credentials config '/home/runner/work/_temp/git-credentials-a9e6e263-7dd0-4a30-a6c8-24620e2e3d78.config'
+2026-10-16T08:41:25.1306004Z ##[endgroup]
+2026-10-16T08:41:25.1712674Z ##[group]Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+2026-10-16T08:41:25.1713866Z with:
+2026-10-16T08:41:25.1714373Z   node-version: 22
+2026-10-16T08:41:25.1714943Z   check-latest: false
+2026-10-16T08:41:25.1723562Z   token: ***
+2026-10-16T08:41:25.1724161Z   package-manager-cache: true
+2026-10-16T08:41:25.1724877Z ##[endgroup]
+2026-10-16T08:41:25.3094574Z Found in cache @ /opt/hostedtoolcache/node/22.23.3/x64
+2026-10-16T08:41:25.3099624Z ##[group]Environment details
+2026-10-16T08:41:25.7022356Z node: v22.23.3
+2026-10-16T08:41:25.7023197Z npm: 10.9.9
+2026-10-16T08:41:25.7023844Z yarn: 1.22.22
+2026-10-16T08:41:25.7025453Z ##[endgroup]
+2026-10-16T08:41:25.7248123Z ##[group]Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+2026-10-16T08:41:25.7249300Z with:
+2026-10-16T08:41:25.7250168Z   python-version: 3.13
+2026-10-16T08:41:25.7251067Z   check-latest: false
+2026-10-16T08:41:25.7254879Z   token: ***
+2026-10-16T08:41:25.7255782Z   update-environment: true
+2026-10-16T08:41:25.7256720Z   allow-prereleases: false
+2026-10-16T08:41:25.7257644Z   freethreaded: false
+2026-10-16T08:41:25.7258533Z ##[endgroup]
+2026-10-16T08:41:25.8443620Z ##[group]Installed versions
+2026-10-16T08:41:25.8540283Z Successfully set up CPython (3.13.16)
+2026-10-16T08:41:25.8542710Z ##[endgroup]
+2026-10-16T08:41:25.8741936Z ##[group]Run python -m pip install --disable-pip-version-check pytest jsonschema bpy==5.2.1
+2026-10-16T08:41:25.8744144Z [36;1mpython -m pip install --disable-pip-version-check pytest jsonschema bpy==5.2.1[0m
+2026-10-16T08:41:25.9047123Z shell: /usr/bin/bash -e {0}
+2026-10-16T08:41:25.9048037Z env:
+2026-10-16T08:41:25.9048902Z   pythonLocation: /opt/hostedtoolcache/Python/3.13.16/x64
+2026-10-16T08:41:25.9050057Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.13.16/x64/lib/pkgconfig
+2026-10-16T08:41:25.9051154Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.16/x64
+2026-10-16T08:41:25.9052368Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.16/x64
+2026-10-16T08:41:25.9053398Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.16/x64
+2026-10-16T08:41:25.9054434Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.13.16/x64/lib
+2026-10-16T08:41:25.9055372Z ##[endgroup]
+2026-10-16T08:41:26.7145975Z Collecting pytest
+2026-10-16T08:41:26.7673794Z   Downloading pytest-9.1.1-py3-none-any.whl.metadata (7.6 kB)
+2026-10-16T08:41:26.7912512Z Collecting jsonschema
+2026-10-16T08:41:26.7944499Z   Downloading jsonschema-4.26.0-py3-none-any.whl.metadata (7.6 kB)
+2026-10-16T08:41:26.8117782Z Collecting bpy==5.2.1
+2026-10-16T08:41:26.8156353Z   Downloading bpy-5.2.1-cp313-cp313-manylinux_2_28_x86_64.whl.metadata (2.0 kB)
+2026-10-16T08:41:26.8289658Z Collecting cattrs (from bpy==5.2.1)
+2026-10-16T08:41:26.8319935Z   Downloading cattrs-26.2.1-py3-none-any.whl.metadata (8.5 kB)
+2026-10-16T08:41:27.0216173Z Collecting cython (from bpy==5.2.1)
+2026-10-16T08:41:27.0256148Z   Downloading cython-3.3.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (28 kB)
+2026-10-16T08:41:27.1988606Z Collecting numpy<3.0,>=2.2 (from bpy==5.2.1)
+2026-10-16T08:41:27.2022216Z   Downloading numpy-2.5.4-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)
+2026-10-16T08:41:27.2237913Z Collecting requests (from bpy==5.2.1)
+2026-10-16T08:41:27.2269690Z   Downloading requests-2.34.2-py3-none-any.whl.metadata (4.8 kB)
+2026-10-16T08:41:27.2815880Z Collecting zstandard (from bpy==5.2.1)
+2026-10-16T08:41:27.2857978Z   Downloading zstandard-0.25.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (3.3 kB)
+2026-10-16T08:41:27.2966088Z Collecting iniconfig>=1.0.1 (from pytest)
+2026-10-16T08:41:27.2998986Z   Downloading iniconfig-2.3.1-py3-none-any.whl.metadata (2.8 kB)
+2026-10-16T08:41:27.3135464Z Collecting packaging>=22 (from pytest)
+2026-10-16T08:41:27.3166772Z   Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+2026-10-16T08:41:27.3302835Z Collecting pluggy<2,>=1.5 (from pytest)
+2026-10-16T08:41:27.3311559Z   Downloading pluggy-1.7.0-py3-none-any.whl.metadata (5.0 kB)
+2026-10-16T08:41:27.3466022Z Collecting pygments>=2.7.2 (from pytest)
+2026-10-16T08:41:27.3498774Z   Downloading pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+2026-10-16T08:41:27.3625575Z Collecting attrs>=22.2.0 (from jsonschema)
+2026-10-16T08:41:27.3658942Z   Downloading attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+2026-10-16T08:41:27.3775388Z Collecting jsonschema-specifications>=2023.03.6 (from jsonschema)
+2026-10-16T08:41:27.3814324Z   Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl.metadata (2.9 kB)
+2026-10-16T08:41:27.3986832Z Collecting referencing>=0.28.4 (from jsonschema)
+2026-10-16T08:41:27.4019526Z   Downloading referencing-0.37.0-py3-none-any.whl.metadata (2.8 kB)
+2026-10-16T08:41:27.6291709Z Collecting rpds-py>=0.25.0 (from jsonschema)
+2026-10-16T08:41:27.6329557Z   Downloading rpds_py-2026.9.1-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.1 kB)
+2026-10-16T08:41:27.6512859Z Collecting typing-extensions>=4.14.0 (from cattrs->bpy==5.2.1)
+2026-10-16T08:41:27.6543844Z   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+2026-10-16T08:41:27.7596852Z Collecting charset_normalizer<4,>=2 (from requests->bpy==5.2.1)
+2026-10-16T08:41:27.7633251Z   Downloading charset_normalizer-3.5.2-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (46 kB)
+2026-10-16T08:41:27.7783779Z Collecting idna<4,>=2.5 (from requests->bpy==5.2.1)
+2026-10-16T08:41:27.7815001Z   Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+2026-10-16T08:41:27.8000775Z Collecting urllib3<3,>=1.26 (from requests->bpy==5.2.1)
+2026-10-16T08:41:27.8030996Z   Downloading urllib3-2.8.0-py3-none-any.whl.metadata (7.4 kB)
+2026-10-16T08:41:27.8177875Z Collecting certifi>=2023.5.7 (from requests->bpy==5.2.1)
+2026-10-16T08:41:27.8208872Z   Downloading certifi-2026.7.22-py3-none-any.whl.metadata (2.5 kB)
+2026-10-16T08:41:27.8306520Z Downloading bpy-5.2.1-cp313-cp313-manylinux_2_28_x86_64.whl (401.7 MB)
+2026-10-16T08:41:31.0667872Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 401.7/401.7 MB 97.1 MB/s  0:00:03
+2026-10-16T08:41:31.0706394Z Downloading numpy-2.5.4-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.7 MB)
+2026-10-16T08:41:31.1277691Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 304.8 MB/s  0:00:00
+2026-10-16T08:41:31.1316084Z Downloading pytest-9.1.1-py3-none-any.whl (386 kB)
+2026-10-16T08:41:31.1377900Z Downloading pluggy-1.7.0-py3-none-any.whl (27 kB)
+2026-10-16T08:41:31.1425879Z Downloading jsonschema-4.26.0-py3-none-any.whl (90 kB)
+2026-10-16T08:41:31.1476561Z Downloading attrs-26.1.0-py3-none-any.whl (67 kB)
+2026-10-16T08:41:31.1524544Z Downloading iniconfig-2.3.1-py3-none-any.whl (7.6 kB)
+2026-10-16T08:41:31.1570914Z Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)
+2026-10-16T08:41:31.1618661Z Downloading packaging-26.3-py3-none-any.whl (129 kB)
+2026-10-16T08:41:31.1682893Z Downloading pygments-2.21.0-py3-none-any.whl (1.3 MB)
+2026-10-16T08:41:31.1747446Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 250.4 MB/s  0:00:00
+2026-10-16T08:41:31.1778300Z Downloading referencing-0.37.0-py3-none-any.whl (26 kB)
+2026-10-16T08:41:31.1824852Z Downloading rpds_py-2026.9.1-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (370 kB)
+2026-10-16T08:41:31.1885409Z Downloading cattrs-26.2.1-py3-none-any.whl (74 kB)
+2026-10-16T08:41:31.1934378Z Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+2026-10-16T08:41:31.2039154Z Downloading cython-3.3.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (3.4 MB)
+2026-10-16T08:41:31.2172968Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.4/3.4 MB 287.2 MB/s  0:00:00
+2026-10-16T08:41:31.2203761Z Downloading requests-2.34.2-py3-none-any.whl (73 kB)
+2026-10-16T08:41:31.2255486Z Downloading charset_normalizer-3.5.2-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (254 kB)
+2026-10-16T08:41:31.2317931Z Downloading idna-3.20-py3-none-any.whl (69 kB)
+2026-10-16T08:41:31.2374959Z Downloading urllib3-2.8.0-py3-none-any.whl (135 kB)
+2026-10-16T08:41:31.2425687Z Downloading certifi-2026.7.22-py3-none-any.whl (136 kB)
+2026-10-16T08:41:31.2478734Z Downloading zstandard-0.25.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.5 MB)
+2026-10-16T08:41:31.2667321Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.5/5.5 MB 326.0 MB/s  0:00:00
+2026-10-16T08:41:31.7362170Z Installing collected packages: zstandard, urllib3, typing-extensions, rpds-py, pygments, pluggy, packaging, numpy, iniconfig, idna, cython, charset_normalizer, certifi, attrs, requests, referencing, pytest, cattrs, jsonschema-specifications, bpy, jsonschema
+2026-10-16T08:41:42.5861000Z 
+2026-10-16T08:41:42.5888921Z Successfully installed attrs-26.1.0 bpy-5.2.1 cattrs-26.2.1 certifi-2026.7.22 charset_normalizer-3.5.2 cython-3.3.0 idna-3.20 iniconfig-2.3.1 jsonschema-4.26.0 jsonschema-specifications-2025.9.1 numpy-2.5.4 packaging-26.3 pluggy-1.7.0 pygments-2.21.0 pytest-9.1.1 referencing-0.37.0 requests-2.34.2 rpds-py-2026.9.1 typing-extensions-4.16.0 urllib3-2.8.0 zstandard-0.25.0
+2026-10-16T08:41:42.7078065Z ##[group]Run python tests/test_blender_runtime_52.py
+2026-10-16T08:41:42.7078532Z [36;1mpython tests/test_blender_runtime_52.py[0m
+2026-10-16T08:41:42.7151592Z shell: /usr/bin/bash -e {0}
+2026-10-16T08:41:42.7151861Z env:
+2026-10-16T08:41:42.7152146Z   pythonLocation: /opt/hostedtoolcache/Python/3.13.16/x64
+2026-10-16T08:41:42.7152587Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.13.16/x64/lib/pkgconfig
+2026-10-16T08:41:42.7153014Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.16/x64
+2026-10-16T08:41:42.7153401Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.16/x64
+2026-10-16T08:41:42.7153797Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.16/x64
+2026-10-16T08:41:42.7154171Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.13.16/x64/lib
+2026-10-16T08:41:42.7154498Z ##[endgroup]
+2026-10-16T08:41:43.8375047Z bpy version: 5.2.1 LTS
+2026-10-16T08:41:43.8375653Z CutBridge Blender 5.2 RNA registration: PASS
+2026-10-16T08:41:43.9292507Z ##[group]Run pytest -q
+2026-10-16T08:41:43.9292798Z [36;1mpytest -q[0m
+2026-10-16T08:41:43.9362033Z shell: /usr/bin/bash -e {0}
+2026-10-16T08:41:43.9362302Z env:
+2026-10-16T08:41:43.9362585Z   pythonLocation: /opt/hostedtoolcache/Python/3.13.16/x64
+2026-10-16T08:41:43.9363041Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.13.16/x64/lib/pkgconfig
+2026-10-16T08:41:43.9363474Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.16/x64
+2026-10-16T08:41:43.9363851Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.16/x64
+2026-10-16T08:41:43.9364248Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.16/x64
+2026-10-16T08:41:43.9364826Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.13.16/x64/lib
+2026-10-16T08:41:43.9365156Z ##[endgroup]
+2026-10-16T08:41:49.1192729Z ........................................................................ [ 18%]
+2026-10-16T08:41:49.9717090Z ........................................................................ [ 36%]
+2026-10-16T08:41:50.0388888Z ........................................................................ [ 55%]
+2026-10-16T08:41:50.2250953Z ........................................................................ [ 73%]
+2026-10-16T08:41:50.6443244Z ...................................................................... [ 91%]
+2026-10-16T08:41:50.8660589Z ..................................                                       [100%]
+2026-10-16T08:41:50.8661458Z 392 passed, 2 subtests passed in 6.60s
+2026-10-16T08:41:51.0086192Z Post job cleanup.
+2026-10-16T08:41:51.1428974Z Post job cleanup.
+2026-10-16T08:41:51.2985454Z Post job cleanup.
+2026-10-16T08:41:51.3892180Z [command]/usr/bin/git version
+2026-10-16T08:41:51.3947385Z git version 2.55.0
+2026-10-16T08:41:51.4023404Z Temporarily overriding HOME='/home/runner/work/_temp/75b223bd-ce6c-4b45-a531-d04e7570c83f' before making global git config changes
+2026-10-16T08:41:51.4024859Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-16T08:41:51.4026219Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/CutBridge/CutBridge
+2026-10-16T08:41:51.4028985Z Removing SSH command configuration
+2026-10-16T08:41:51.4036518Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-16T08:41:51.4076405Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-16T08:41:51.4349134Z Removing HTTP extra header
+2026-10-16T08:41:51.4374461Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-16T08:41:51.4415212Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-16T08:41:51.4676539Z Removing includeIf entries pointing to credentials config files
+2026-10-16T08:41:51.4692106Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-16T08:41:51.4736022Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-16T08:41:51.5145049Z Cleaning up orphan processes
+

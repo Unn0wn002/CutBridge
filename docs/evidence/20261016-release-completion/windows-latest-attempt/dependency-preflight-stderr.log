@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import sys,pytest,jsonschema,bpy; print(sys.version); print(bpy.app.version_string); assert bpy.app.version == (5,2,1)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Deps\jsonschema\__init__.py", line 13, in <module>
+    from jsonschema._format import FormatChecker
+  File "C:\Deps\jsonschema\_format.py", line 11, in <module>
+    from jsonschema.exceptions import FormatError
+  File "C:\Deps\jsonschema\exceptions.py", line 15, in <module>
+    from referencing.exceptions import Unresolvable as _Unresolvable
+  File "C:\Deps\referencing\__init__.py", line 5, in <module>
+    from referencing._core import Anchor, Registry, Resource, Specification
+  File "C:\Deps\referencing\_core.py", line 9, in <module>
+    from rpds import HashTrieMap, HashTrieSet, List
+  File "C:\Deps\rpds\__init__.py", line 1, in <module>
+    from .rpds import *
+ImportError: DLL load failed while importing rpds: An Application Control policy has blocked this file.
