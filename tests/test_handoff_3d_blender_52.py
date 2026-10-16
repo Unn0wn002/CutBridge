@@ -185,6 +185,18 @@ def test_parented_empty_is_baked_in_evaluated_world_space(configured_scene):
     assert sample["position"][0] == pytest.approx(1560.0)
 
 
+def test_supported_handoff_diagnostic_describes_existing_ae_consumer(configured_scene):
+    issues = handoff_3d_issues(bpy.context)
+
+    assert len(issues) == 1
+    assert issues[0]["level"] == "WARNING"
+    assert issues[0]["code"] == "HANDOFF_PRODUCER_ONLY"
+    assert "perspective Camera and marked Empty" in issues[0]["message"]
+    assert "can reconstruct" in issues[0]["message"]
+    assert "Build and QC" in issues[0]["fix"]
+    assert "exact After Effects host" in issues[0]["fix"]
+
+
 def test_unsupported_camera_shift_fails_closed(configured_scene):
     _, _, camera, _, _, _ = configured_scene
     camera.data.shift_x = 0.1

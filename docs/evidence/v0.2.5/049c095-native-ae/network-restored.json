@@ -1,0 +1,15 @@
+{
+    "ae_installed":  true,
+    "restored_original_adapters":  [
+                                       "Ethernet"
+                                   ],
+    "adapters":  [
+                     {
+                         "Name":  "Ethernet",
+                         "Status":  "Up"
+                     }
+                 ],
+    "candidate_execution_complete":  true,
+    "sandbox_preserved":  true,
+    "blender_installed":  true
+}

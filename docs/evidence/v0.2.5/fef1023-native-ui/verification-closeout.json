@@ -1,0 +1,29 @@
+{
+  "scripted_scope": "PASS",
+  "supersedes": "Earlier unbounded main-render native campaigns: INVALID",
+  "normal_exit_code": 0,
+  "source_manifests": "IDENTICAL",
+  "visual_scope": {
+    "representative_japanese_user": "NOT_EXECUTED",
+    "ja_panel": "PASS",
+    "en_panel": "PASS",
+    "identities_unchanged": "VISUALLY CONFIRMED",
+    "extension_install_dialog": "NOT_EXECUTED",
+    "validate_build_button_clicks": "NOT_EXECUTED; scripted operators passed"
+  },
+  "source_manifest_sha256": "24277858360c933d775206e0371f2b9e9b0b38f55cdf06b5f7bbde9a8948064c",
+  "render_output_paths": "ALL OBSERVED SAVED PATHS within C:/Evidence/verification-output",
+  "candidate_sha": "fef102366a9e4b363455f8738b516d57a535ff76",
+  "host": "Blender 5.2.2 LTS",
+  "blender_zip_sha256": "3a53f7af8420909e5ed300440df115dffef2ba1dd196688c7c99789a8a48aa48",
+  "verdict": "PASS",
+  "screenshots": {
+    "ja_sha256": "66b7ffc9428ec76fe867d3c163e1925283c73e8fdf3b4e693e9df9213785d14c",
+    "en_sha256": "cdc318bb66f85a0c91948577c5339b49c9d347a3e0f06562fe94b37b1221101a"
+  },
+  "installed_package_files_match_zip": {
+    "verdict": "PASS",
+    "file_count": 22,
+    "method": "Every archive file compared independently with installed output after native execution"
+  }
+}
