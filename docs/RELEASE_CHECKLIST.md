@@ -2,17 +2,21 @@
 
 Before tagging a CutBridge release:
 
+For the 22 October 2026 working submission target (official deadline unconfirmed), use [SUBMISSION_DEMO_CHECKLIST.md](SUBMISSION_DEMO_CHECKLIST.md) to assemble the review packet and native execution record. Submission readiness and public-release readiness are separate decisions; neither follows from green CI alone.
+
 - [ ] Review the live `main`/`develop` relationship and promote the verified candidate through a PR.
 - [ ] Run every command in [CONTRIBUTING.md](CONTRIBUTING.md); all authoritative tests and CI jobs pass on the exact candidate commit.
 - [ ] `version.py` (`__version__` and `VERSION`), `blender_manifest.toml`, `bl_info`, generated `cutbridge.json`, README, changelog and `CutBridge.jsx` `PRODUCT_VERSION` agree on the numeric product version.
 - [ ] Manifest schema compatibility is preserved or a schema change is intentional and supported by both apps.
 - [ ] Both versioned ZIPs contain the full LICENSE; no private client assets, credentials, or production data are included.
-- [ ] The After Effects ZIP contains `CutBridge.jsx`, `revision_manager.js`, `INSTALL.md`, and `LICENSE`; do not publish an AE artifact with the revision sidecar or two-file installation guidance missing.
+- [ ] The After Effects ZIP contains `CutBridge.jsx`, `revision_manager.js`, `qc_plus.js`, `localization.js`, `INSTALL.md`, and `LICENSE`; all four runtime files stay adjacent and the packaged guide links to the source tag's readiness record.
 - [ ] Recompute SHA-256 values and compare them with both `SHA256SUMS.txt` and `release-metadata.json`.
-- [ ] Repeat the build with the same toolchain; artifacts are identical despite source timestamp/permission changes.
+- [ ] Repeat the build with the same toolchain; complete output inventories and every output file (ZIPs, checksums and metadata) are identical despite source timestamp/permission changes. Retain both output inventories and hashes.
+- [ ] Retain independently trusted orchestration identity, exact candidate/base/merge-base, archive-to-Git inventory/byte/mode comparison, isolation policy/settings, all verification inputs, logs and unchanged before/after source manifests. Stage upload artifacts through trusted path/type validation. A missing dependency/host or unproven isolation boundary is INSUFFICIENT EVIDENCE; an integrity violation is INVALID.
 - [ ] Record Blender version, OS, GUI installation, panel, Validate Cut and Build Package results.
 - [ ] Record After Effects version and OS, installation/launch method, manifest import, comp setup, sequence import, QC, and revision-manager loading results.
 - [ ] In a real After Effects desktop host, perform V001 → V002 → V003 on a representative package and verify only CutBridge-managed sources/metadata change.
+- [ ] If optional 3D handoff is included, inspect Camera Position/Point of Interest/Zoom and Null Position/Scale against manifest samples, expected Camera/Null counts, ownership and repeat-Build behavior. QC+ does not verify these transforms or expected completeness. State that camera roll and Empty rotation are not reconstructed.
 - [ ] During the real revision test, verify effects, masks, transforms, parenting, timing, layer order, artist-added layers, unrelated footage/comps/folders, and artist/studio package-root notes are preserved.
 - [ ] Save the revised AE project, close/reopen it, reload CutBridge, then run Build Comp and QC again; record the result.
 - [ ] In a disposable real-AE copy, delete and separately de-tag a required managed layer while its managed footage and comp remain valid; QC must fail closed on managed-layer ownership/source instead of reporting PASS. Also verify an unambiguous complete optional managed layer can be absent with a warning, and an unavailable optional source sequence remains warning/skip only.
@@ -20,6 +24,7 @@ Before tagging a CutBridge release:
 - [ ] Exercise at least one incompatible geometry/timing revision (for example FPS/frame-range/pixel-aspect/resolution drift) and confirm fail-closed behavior.
 - [ ] Exercise candidate removal of an optional pass and confirm source-only revision blocks **before** confirmation, import, `replaceSource()`, or package/tag migration; verify the original package remains coherent for reload, Build and QC. Added-pass and required-pass-removal cases must also remain fail-closed.
 - [ ] Exercise a missing/duplicate deterministic managed-folder condition in a safe test project and confirm Build/revision/QC do not silently choose, recreate, or mutate ambiguous structure.
+- [ ] In disposable AE copies, inject a late import/validation failure and a source-replacement failure. Verify captured imported IDs are cleaned up, invalid native handles are rejected, prior sources/ownership/root notes and unrelated objects are preserved, and Build/QC/reload remain coherent after rollback. Retain the injection method and before/after state.
 - [ ] Complete a real Blender → package → After Effects smoke test. Do not replace it with headless or host-shaped evidence.
 - [ ] Update compatibility records and changelog release status with actual evidence.
 - [ ] Obtain the required independent review(s) for the exact release candidate and resolve all review findings before promotion/tagging.
@@ -32,7 +37,7 @@ Before tagging a CutBridge release:
 - [ ] For the intended Japanese-first market, complete the planned native-user/terminology validation appropriate to the release claim before describing the product as production-ready for Japanese animation/content teams.
 - [ ] Create the authorized tag only after all preceding gates are recorded.
 - [ ] Confirm the Release workflow publishes both ZIPs, checksums and metadata from the authorized `main` HEAD.
-- [ ] Download the published assets, verify the AE ZIP still contains both scripts plus `INSTALL.md` and `LICENSE`, and recompute checksums before distribution.
+- [ ] Download the published assets, verify the AE ZIP still contains all four runtime files plus `INSTALL.md` and `LICENSE`, and recompute checksums before distribution.
 - [ ] If the publication is an RC/beta/development GitHub prerelease, install/test the downloaded artifacts deliberately. Do not claim in-plugin beta distribution until a matching external index entry and publication path are deployed and verified.
 - [ ] Before any stable distribution, mirror only the deliberately approved stable artifacts/update metadata to the separate production distribution endpoint; never use source-repository hosting itself as the client update endpoint.
 

@@ -1,6 +1,6 @@
 # CutBridge
 
-Native AE 26.5x89 testing found and repaired cached-object defects in revision reload and optional-layer QC. The latest candidate passes the recorded Build/QC, V001→V002→V003, status-change, optional-content and project-reopen checks. Release readiness remains INSUFFICIENT EVIDENCE pending the remaining native/review/delivery gates; authorization stays false. See [native evidence](docs/evidence/v0.2.5/049c095-native-ae/README.md).
+v0.2.5 remains **INSUFFICIENT EVIDENCE** for submission and public release. Historical AE 26.5x89 observations informed cached-object repairs, but the retained Blender/AE campaigns do not establish the required isolation policy and cannot close current native gates. Current runtime and package changes require exact-candidate verification. See [release preparation](docs/RELEASE_PREPARATION_v0.2.5.md) and the [submission/demo checklist](docs/SUBMISSION_DEMO_CHECKLIST.md). The working target is **22 October 2026**; the official submission deadline is unconfirmed.
 
 **CutBridge is a Blender → After Effects production handoff tool for animation cuts.**
 
@@ -224,8 +224,9 @@ QC+ reports deterministic PASS / WARNING / ERROR diagnostics using stable `CBQ-*
 - comp resolution, pixel aspect, FPS, and duration;
 - managed footage/layer ownership;
 - source consistency;
-- Camera/Null state where applicable;
-- revision compatibility boundaries.
+- obsolete managed-version tags on existing layers, including Camera/Null layers.
+
+QC does not verify expected Camera/Null completeness, their transform values/keyframes, or projection parity. Revision compatibility is assessed by the revision workflow. Inspect the supported Camera Position/Point of Interest/Zoom and Null Position/Scale channels separately when demonstrating 3D handoff.
 
 QC is **diagnostic-only**. It does not silently repair ownership, replace sources, or mutate unrelated artist content.
 
@@ -275,6 +276,8 @@ AE time = (frame - frame_start) / fps
 ```
 
 Supported producer scope includes the active perspective camera and explicitly marked Blender Empties under the documented constraints.
+
+AE writes Camera Position, Point of Interest from the sampled forward vector, and Zoom; Nulls receive Position and supplied Scale. Serialized up/basis data is not applied to Orientation/rotation. Camera roll and Empty rotation are not reconstructed. The producer opt-in remains an engineering setting, outside the normal N-panel controls; see the [channel and QC boundary](docs/HANDOFF_3D.md#after-effects-reconstruction-boundary).
 
 CutBridge does **not** promise arbitrary geometry, lights, bones, rigs, hierarchy recreation, or full-scene synchronization.
 
@@ -364,6 +367,7 @@ Project safety, branch, and verification rules are in [`AGENTS.md`](AGENTS.md).
 - [Compatibility](docs/COMPATIBILITY.md)
 - [S14 Japanese Target-User Validation](docs/S14_JP_USER_VALIDATION.md)
 - [Release Readiness](docs/RELEASE_READINESS.md)
+- [Submission and demo checklist](docs/SUBMISSION_DEMO_CHECKLIST.md)
 - [Completion Status](docs/COMPLETION_STATUS.md)
 - [S12/S13 Evidence Summary](docs/S12_S13_EVIDENCE_SUMMARY.md)
 - [Technical Debt](docs/TECHNICAL_DEBT.md)

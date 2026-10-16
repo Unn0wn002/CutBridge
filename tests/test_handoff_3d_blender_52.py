@@ -193,7 +193,9 @@ def test_supported_handoff_diagnostic_describes_existing_ae_consumer(configured_
     assert issues[0]["code"] == "HANDOFF_PRODUCER_ONLY"
     assert "perspective Camera and marked Empty" in issues[0]["message"]
     assert "can reconstruct" in issues[0]["message"]
-    assert "Build and QC" in issues[0]["fix"]
+    assert "Camera Position/Point of Interest/Zoom and Null Position/Scale only" in issues[0]["message"]
+    assert "Camera roll and Empty rotation are not reconstructed" in issues[0]["fix"]
+    assert "QC does not inspect these transforms" in issues[0]["fix"]
     assert "exact After Effects host" in issues[0]["fix"]
 
 

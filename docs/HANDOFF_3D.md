@@ -1,6 +1,6 @@
 # CutBridge 3D Handoff — S10B Producer + S10C After Effects Reconstruction
 
-Status: **bounded cross-host workflow validated for the documented S10C subset**
+Status: **implemented channel subset; native evidence is historical and SHA-bound**
 
 CutBridge can optionally add a versioned `handoff_3d` block to `cutbridge.json`. S10B produces evaluated Blender world-space camera/Empty samples; S10C consumes the supported subset in After Effects to create or update CutBridge-managed camera and 3D Null layers.
 
@@ -126,11 +126,16 @@ These are CutBridge contract boundaries, not limitations of Blender or After Eff
 
 ## After Effects reconstruction boundary
 
-S10C validates the `handoff_3d` contract before project mutation. For the supported subset it can create/update:
+S10C validates the `handoff_3d` contract before project mutation. It creates one CutBridge-managed perspective camera and CutBridge-managed 3D Null layers for serialized Blender Empties. Build and compatible revision updates write only these channels:
 
-- one CutBridge-managed perspective camera;
-- CutBridge-managed 3D Null layers for serialized Blender Empties;
-- baked position/orientation/projection timing from the manifest.
+| Object | AE channels written | Manifest data used |
+| --- | --- | --- |
+| Camera | Position, Point of Interest, Zoom | `position`, `forward` (Point of Interest = position + forward × 1000), `ae_zoom`, `time` |
+| 3D Null | Position; Scale when supplied | `position`, `scale` × 100 percent, `time` |
+
+A single sample sets a static value; multiple samples are written at their recorded times. Camera `up` and the serialized basis vectors are not applied to AE Orientation or rotation channels. Camera roll and Empty rotation are therefore **not reconstructed**. Accepted producer data may contain those transforms; successful validation does not establish their rotational or projection parity in AE. Use the rendered sequences for the final image and restrict any 3D demonstration to the implemented channel subset. No arbitrary camera-orientation parity is claimed.
+
+QC+ validates the manifest contract and checks sequence, comp, managed render footage/layer and stale-tag state. Its stale-tag scan can detect a present Camera/Null with an obsolete managed tag. It does **not** verify that every expected Camera/Null exists, inspect their current Position/Point of Interest/Zoom/Scale values or keyframes, or measure projection/roll parity. A clean QC report is not Camera/Null transform acceptance; inspect the listed channels and projection fixture separately in the native host.
 
 Ownership remains identity-based rather than name-only. Repeated Build is idempotent, and same-name unmanaged artist camera/null collisions fail closed instead of being adopted or overwritten.
 
@@ -151,7 +156,7 @@ Recorded results:
 - unmanaged camera/null collision rejection: PASS;
 - project persistence: PASS.
 
-This evidence validates the tested S10C subset in the named host. It does not certify every After Effects version, operating system, Blender renderer, or arbitrary camera setup.
+These historical results validate only the recorded S10C fixture in the named host. The projection measurement is a separate native measurement, not a QC+ capability, and does not prove camera roll or Empty rotation support. Preserve the original candidate/fixture provenance in [S12/S13 evidence](S12_S13_EVIDENCE_SUMMARY.md); do not transfer a PASS to later runtime or package bytes without demonstrated equivalence and explicit scope. It does not certify every After Effects version, operating system, Blender renderer, or arbitrary camera setup.
 
 ## Release boundary
 

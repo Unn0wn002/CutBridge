@@ -55,13 +55,15 @@ Automated coverage includes:
 - **S4 contract coverage:** manifest/schema validation, frame semantics, required/optional passes, exact sequence coverage, path containment, Unicode filename handling in contract/host mocks, legacy data-only JSON parsing, and AE product-version synchronization.
 - **S5 reliability coverage:** deterministic managed comp/footage/layer ownership, repeated build and script-reload behavior, collision/drift rejection, cache rediscovery, managed-source/FPS validation, QC failure reporting, optional-pass behavior, and rollback of newly created managed objects.
 - **S6 revision coverage:** compatibility classification, opaque revision tickets, live ownership revalidation, stage-all/validate-all replacement import, native-adapter `AVLayer.replaceSource(..., false)` usage, source-swap rollback, V001→V002→V003 host-shaped lifecycle checks, historical-footage provenance, package-root note preservation, Build/QC after revision and reload, fail-closed handling of missing/duplicate deterministic package structure, pass-set rejection semantics, and managed-layer QC verification.
-- **S7 QC+ coverage:** deterministic `CBQ-*` diagnostics, native binding guards, warning/error remediation semantics, and revision-aware QC.
+- **S7 QC+ coverage:** deterministic `CBQ-*` diagnostics, native binding guards, sequence/comp/managed render ownership checks and warning/error remediation semantics. Revision compatibility is assessed by the revision workflow; a clean QC report does not certify 3D transforms.
 - **S8 localization coverage:** Japanese-first / English-fallback behavior, invalid/missing localization handling, persistence semantics, and native UI binding guards.
-- **S10C reconstruction coverage:** optional `handoff_3d` validation, managed camera/3D Null ownership, coordinate/projection transformation, FOV/Zoom parity, repeated-build isolation, collision rejection, and simulated projection parity.
+- **S10C reconstruction coverage:** optional `handoff_3d` validation, managed camera/3D Null ownership, Camera Position/Point of Interest/Zoom and Null Position/Scale, repeated-build isolation, collision rejection, and fixture-scoped simulated projection parity. Camera roll and Empty rotation are not reconstructed. QC+ does not check expected Camera/Null completeness, channel values/keyframes or projection parity; see [the exact channel boundary](HANDOFF_3D.md#after-effects-reconstruction-boundary).
 
 These automated tests establish regression behavior and guard intended native adapter paths. They do **not** by themselves certify a real After Effects desktop host, ScriptUI behavior, Undo semantics, save/reopen persistence, filesystem/sequence interpretation on a specific OS, or preservation of all artist-authored properties.
 
 ## Native After Effects evidence
+
+The v0.2.5 Blender `fef1023` and AE `049c095` campaigns preserve useful host observations, but their retained records do not establish the required offline/mount/credential isolation configuration. Their release-gate verdict is **INSUFFICIENT EVIDENCE**; historical PASS observations must not be applied to the current candidate. See [release preparation](RELEASE_PREPARATION_v0.2.5.md). Current exact-candidate native installation, preservation, rollback and reopen sign-off remain pending.
 
 ### S6 / S7 / S8 evidence
 

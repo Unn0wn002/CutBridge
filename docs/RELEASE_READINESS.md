@@ -1,6 +1,10 @@
 # CutBridge Release Readiness
 
-Native AE 26.5x89 testing found and repaired cached-object defects in revision reload and optional-layer QC. The latest candidate passes the recorded Build/QC, V001→V002→V003, status-change, optional-content and project-reopen checks. Release readiness remains INSUFFICIENT EVIDENCE pending the remaining native/review/delivery gates; authorization stays false. See [native evidence](evidence/v0.2.5/049c095-native-ae/README.md).
+Current readiness — **16 October 2026: INSUFFICIENT EVIDENCE** for submission and public release. The working submission target is **22 October 2026**; the official deadline remains unconfirmed. The [submission/demo checklist](SUBMISSION_DEMO_CHECKLIST.md) separates a reproducible review packet from protected release/publication/distribution actions.
+
+Historical AE 26.5x89 observations informed cached-object repairs. The Blender `fef1023` and AE `049c095` campaign records do not retain the required isolation policy, offline-adapter state, complete mount/credential boundary and all temporary-path settings. Their native release gates therefore remain **INSUFFICIENT EVIDENCE**, even where historical reports call observed behavior PASS. Network restoration after a run does not establish network isolation during it. The Blender handoff assertion checked presence rather than Camera/Empty channel correctness. Repeat the applicable native checks on exact current package hashes inside a documented isolation boundary; do not reuse these records as complete gate evidence.
+
+The historical checked boxes below describe their named candidates and scope. They do not mark current v0.2.5 native, review, installation or release gates complete. Current runtime/package changes require fresh automated verification and native acceptance, or an explicit demonstrated equivalence limited to unchanged tested inputs. S14B remains NOT_EXECUTED; authorization stays false.
 
 Preparation update — 3 October 2026: see [the v0.2.5 preparation record](RELEASE_PREPARATION_v0.2.5.md) for the independent v0.2.4 download audit, confirmed distribution hold, isolated candidate verification, and remaining native/publication/delivery gates.
 
