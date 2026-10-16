@@ -523,6 +523,71 @@ def test_unsafe_staging_stays_invalid_after_primary_package_comparison_failure(t
     assert not (evidence / "candidate-output/pytest.xml").exists()
 
 
+def test_main_retains_distinct_preflight_and_checks_command_arguments(tmp_path, monkeypatch):
+    root, trusted = tmp_path / "attempt", "a" * 40
+    monkeypatch.setattr(sys, "argv", ["candidate_verification.py", "--trusted-sha", trusted,
+        "--candidate-sha", "b" * 40, "--develop-sha", "c" * 40, "--root", str(root)])
+
+    def fake_git(repo, *args):
+        if args == ("rev-parse", "HEAD"):
+            return (trusted + "\n").encode()
+        if args[0:2] == ("cat-file", "-t"):
+            return b"commit\n"
+        if args[0] == "merge-base":
+            return ("d" * 40 + "\n").encode()
+        if args[0] == "diff":
+            return b"retained review diff"
+        if args[0:2] == ("cat-file", "blob"):
+            return b"#!/usr/bin/env bash\n# reviewed command wrapper\n"
+        pytest.fail(f"unexpected Git operation: {args}")
+
+    def snapshot(repo, sha, destination):
+        manifest = destination / "apps/blender/cutbridge/blender_manifest.toml"
+        manifest.parent.mkdir(parents=True)
+        data = b'version = "0.2.5"\n'
+        manifest.write_bytes(data)
+        return [{"path": "apps/blender/cutbridge/blender_manifest.toml", "mode": "100644",
+                 "oid": "e" * 40, "size": len(data), "sha256": verifier.digest(data)}]
+
+    class IndexResponse(io.BytesIO):
+        def geturl(self):
+            return verifier.INDEX_URL
+
+    actual_create_commands = []
+    preflight, checks = "1" * 64, "2" * 64
+
+    def successful_infrastructure(argv, **kwargs):
+        if argv[:3] == ["docker", "image", "inspect"]:
+            kwargs["stdout"].write(json.dumps([{"Id": "sha256:" + "f" * 64}]).encode())
+        elif argv[:2] == ["docker", "create"]:
+            actual_create_commands.append(tuple(argv))
+            container = preflight if len(actual_create_commands) == 1 else checks
+            kwargs["stdout"].write((container + "\n").encode())
+        elif argv[:2] == ["docker", "inspect"]:
+            if argv[-1] == checks:
+                # Stop after both invocations have been recorded; no candidate
+                # code or real Docker is needed to test the retained receipt.
+                raise RuntimeError("intentional stop after second create")
+            kwargs["stdout"].write(json.dumps([{"State": execution_state()}]).encode())
+        return SimpleNamespace(returncode=0)
+
+    monkeypatch.setattr(verifier, "git", fake_git)
+    monkeypatch.setattr(verifier, "prepare_snapshot", snapshot)
+    monkeypatch.setattr(verifier, "verify_snapshot", lambda *args: [])
+    monkeypatch.setattr(verifier, "validate_isolation", lambda *args: None)
+    monkeypatch.setattr(verifier.urllib.request, "urlopen", lambda *args, **kwargs: IndexResponse(b'{"releases": []}'))
+    monkeypatch.setattr(verifier.subprocess, "run", successful_infrastructure)
+    assert verifier.main() == 1
+    result = json.loads((root / "evidence/verification.json").read_text())
+    assert result["verdict"] == "INSUFFICIENT EVIDENCE"
+    assert "intentional stop" in result["reason"]
+    retained = [command for command in result["commands"] if command[:2] == ["docker", "create"]]
+    assert len(retained) == 2
+    assert retained[0][-1] == "--preflight"
+    assert retained[1][-1] == "--checks"
+    assert retained == [list(command) for command in actual_create_commands]
+
+
 @pytest.mark.parametrize("same_candidate,wrong_checkout", [(True, False), (False, True)])
 def test_orchestration_rejects_candidate_trust_and_wrong_checkout_before_any_execution(tmp_path, monkeypatch, same_candidate, wrong_checkout):
     trusted = "a" * 40
