@@ -1,7 +1,8 @@
 # Verifier review — 16 October 2026
 
-Verdict: **INSUFFICIENT EVIDENCE** for the trusted Linux end-to-end verifier.
-This static review does not claim native-host readiness, public-release readiness,
+Latest reviewed execution verdict: **FAIL** for candidate `931b475…` in the first
+trusted Linux bootstrap run. The earlier static-only review was INSUFFICIENT
+EVIDENCE until that run. This review does not claim native-host readiness, public-release readiness,
 owner authorization, or S14B completion. The reviewer worked in a separate worktree
 and also authored the verifier implementation; this is not an external security audit.
 
@@ -148,3 +149,42 @@ automated evidence remains scoped to that earlier candidate and tested inputs.
 No authorization, application-control policy, protection, or isolation control
 was changed to bypass these blockers. The reviewed Linux bootstrap is the next
 independently executable route; its actual container run and upload remain pending.
+
+## First trusted Linux execution and fixture-only correction
+
+[Reviewed bootstrap run 38909487938](https://github.com/Unn0wn002/CutBridge/actions/runs/38909487938)
+executed bootstrap/workflow commit `e9f004bf7700b9f876cbc11841835ebcd234355f`,
+trusted helper `a6ee2445f81906c024fd5b9e1689faac017f198a`, candidate
+`931b4752d0dbb2df915f73d65591604486c1f1d6`, and develop/merge-base `8cc5a4f…`.
+The uploaded identity records Ubuntu image `ubuntu24`, build `20261012.334.1`.
+Its trusted isolation preflight passed and all input paths/types/modes/bytes were
+identical afterward. The actual canonical pytest result was **4 failed, 391
+passed, two subtests passed**, correctly recorded as **FAIL**. Ordinary exact-head
+CI's 395 passing tests does not override the container failure.
+
+The reviewer read the uploaded ZIP as data, without extracting or executing it.
+Retained ZIP SHA-256:
+`8f454159b4fa24b46e89a0b568051a512bde4a7591cf054e3c6679e63fbf456e`.
+The four release-hygiene negative cases expected to alter copied fixtures before
+checking builder rejection. `shutil.copytree` preserved read-only source modes in
+their private TEMP copies; writes/deletions raised PermissionError before the
+intended assertions. Failures were confined to `verification-output/tmp/.../source`.
+They do not establish a product packaging failure or an isolation failure.
+
+Fix `d349f60bcdb18261791963a1eb51276abfa94137` changes test setup only: after
+copying, restore directory/file modes to 0755/0644 under the private TEMP fixture.
+Real candidate inputs are never chmodded. The four existing regressions remain
+unchanged and the enclosing before/after input comparison remains required.
+The failed snapshot must not be reused. A new candidate and fresh snapshot are
+required for the rerun.
+
+Root integrated the fix into `a44792099b3b5f5b7a2f69a41061268fe59586b3`.
+Reviewed the next literal bootstrap at the same external worktree path: SHA-256
+`1d647ba4691aad86c2ef9475e16eda4abbe1d87efd81eab74bb1b3f592992684`.
+Its only workflow change is the candidate pin from `931b475…` to `a447920…`.
+Trust `a6ee244…`, develop `8cc5a4f…`, all executable helper/command-wrapper bytes,
+branch guard, permissions, credential settings and upload boundary are unchanged.
+Git comparison confirms the only test change relative to the trust tree is the
+seven-line TEMP-fixture mode correction. No new static gating issue was found.
+Acceptance remains scoped to that exact file and the subsequently recorded
+bootstrap commit/run SHA. Its fresh execution result remains pending here.
