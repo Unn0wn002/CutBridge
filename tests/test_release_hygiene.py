@@ -19,6 +19,13 @@ class ReleaseHygieneTests(unittest.TestCase):
         shutil.copytree(ROOT / "apps", self.root / "apps")
         if (ROOT / "LICENSE").exists():
             shutil.copy2(ROOT / "LICENSE", self.root / "LICENSE")
+        # copytree preserves the immutable snapshot's 0444/0555 modes. These
+        # negative tests mutate only private copies under the approved TEMP
+        # directory; make that fixture writable without touching real inputs.
+        for directory, _, files in os.walk(self.root):
+            Path(directory).chmod(0o755)
+            for name in files:
+                (Path(directory) / name).chmod(0o644)
         spec = importlib.util.spec_from_file_location("release_hygiene", ROOT / "tools/build_release.py")
         self.builder = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(self.builder)
