@@ -7,6 +7,7 @@ from pathlib import Path
 import sys
 import stat
 import zipfile
+from types import SimpleNamespace
 
 import pytest
 
@@ -106,6 +107,24 @@ def test_inventory_includes_cache_names_outside_designated_output(tmp_path):
     (tmp_path / "verification-output/allowed").write_bytes(b"writable")
     inventory = verifier.regular_inventory(tmp_path, allow_root_output=True)
     assert [item["path"] for item in inventory] == ["__pycache__", "__pycache__/unexpected.pyc"]
+
+
+def test_inventory_uses_complete_nofollow_stat_not_partial_direntry_metadata(tmp_path, monkeypatch):
+    (tmp_path / "ordinary").write_bytes(b"regular file with one link")
+    real_scandir = verifier.os.scandir
+
+    def partial_scandir(directory):
+        with real_scandir(directory) as entries:
+            return [SimpleNamespace(
+                path=entry.path, name=entry.name,
+                stat=lambda **kwargs: pytest.fail("DirEntry metadata can omit Windows link count"))
+                for entry in entries]
+
+    monkeypatch.setattr(verifier.os, "scandir", partial_scandir)
+    inventory = verifier.regular_inventory(tmp_path)
+    assert len(inventory) == 1
+    assert inventory[0]["path"] == "ordinary"
+    assert inventory[0]["sha256"] == verifier.digest(b"regular file with one link")
 
 
 @pytest.mark.skipif(os.name != "posix", reason="snapshot modes require the Linux verifier host")
