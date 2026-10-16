@@ -134,7 +134,10 @@ def regular_inventory(root, *, allow_root_output=False):
     while pending:
         for entry in sorted(os.scandir(pending.pop()), key=lambda item: item.name):
             relative = Path(entry.path).relative_to(root).as_posix()
-            info = entry.stat(follow_symlinks=False)
+            # Windows DirEntry.stat may omit inode/device/link-count metadata
+            # (reporting zero links for an ordinary file). Obtain complete
+            # no-follow metadata for hardlink rejection and open identity checks.
+            info = os.stat(entry.path, follow_symlinks=False)
             if allow_root_output and relative == "verification-output":
                 if not stat.S_ISDIR(info.st_mode):
                     raise IntegrityError("designated output is not a directory")
