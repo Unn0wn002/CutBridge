@@ -1,0 +1,85 @@
+name: Reviewed CutBridge verification bootstrap
+
+# One-purpose orchestration ref; independently review this exact commit before
+# pushing it. This never selects the workflow or tools from the candidate ref.
+on:
+  push:
+    branches: ['fix/trusted-verifier-bootstrap-20261016']
+
+permissions:
+  contents: read
+
+env:
+  TRUSTED_SHA: a6ee2445f81906c024fd5b9e1689faac017f198a
+  CANDIDATE_COMMIT: 931b4752d0dbb2df915f73d65591604486c1f1d6
+  DEVELOP_COMMIT: 8cc5a4fe19e97c2f83105b888f96ccf1b423e8fd
+
+jobs:
+  reviewed-verification:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Validate fixed reviewed pins and orchestration ref
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$GITHUB_EVENT_NAME" == push ]]
+          [[ "$GITHUB_REF" == refs/heads/fix/trusted-verifier-bootstrap-20261016 ]]
+          for sha in "$TRUSTED_SHA" "$CANDIDATE_COMMIT" "$DEVELOP_COMMIT"; do
+            [[ "$sha" =~ ^[a-f0-9]{40}$ ]] || exit 1
+          done
+          [[ "$TRUSTED_SHA" != "$CANDIDATE_COMMIT" ]]
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.TRUSTED_SHA }}
+          persist-credentials: false
+          fetch-depth: 0
+          submodules: false
+          lfs: false
+      - name: Run reviewed tools against exact candidate in isolated containers
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python3 -I tools/candidate_verification.py \
+            --trusted-sha "$TRUSTED_SHA" --candidate-sha "$CANDIDATE_COMMIT" \
+            --develop-sha "$DEVELOP_COMMIT" --root "$RUNNER_TEMP/cutbridge-verification"
+      - name: Retain bootstrap and runner identity separately from candidate output
+        if: always()
+        shell: bash
+        env:
+          BOOTSTRAP_SHA: ${{ github.sha }}
+          BOOTSTRAP_REF: ${{ github.ref }}
+          WORKFLOW_SHA: ${{ github.workflow_sha }}
+          WORKFLOW_REF: ${{ github.workflow_ref }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+          RUNNER_OS: ${{ runner.os }}
+          RUNNER_ARCH: ${{ runner.arch }}
+        run: |
+          python3 -I - <<'PY'
+          import hashlib, json, os, platform
+          from pathlib import Path
+          evidence = Path(os.environ["RUNNER_TEMP"]) / "cutbridge-verification/evidence"
+          evidence.mkdir(parents=True, exist_ok=True)
+          keys = ("TRUSTED_SHA", "CANDIDATE_COMMIT", "DEVELOP_COMMIT", "BOOTSTRAP_SHA",
+                  "BOOTSTRAP_REF", "WORKFLOW_SHA", "WORKFLOW_REF", "RUN_ID", "RUN_ATTEMPT",
+                  "RUNNER_OS", "RUNNER_ARCH", "ImageOS", "ImageVersion")
+          record = {key: os.environ.get(key) for key in keys}
+          record.update(platform=platform.platform(), machine=platform.machine(),
+                        orchestration_python=platform.python_version(),
+                        scope="Reviewed bootstrap identity only; see verification.json for canonical-check verdict")
+          data = (json.dumps(record, sort_keys=True, indent=2) + "\n").encode()
+          (evidence / "bootstrap-context.json").write_bytes(data)
+          (evidence / "bootstrap-context.sha256").write_text(
+              hashlib.sha256(data).hexdigest() + "  bootstrap-context.json\n")
+          PY
+      - name: Upload only host-owned staged evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: cutbridge-reviewed-${{ env.CANDIDATE_COMMIT }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/cutbridge-verification/evidence/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30
