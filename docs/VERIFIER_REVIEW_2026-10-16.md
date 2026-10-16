@@ -1,8 +1,8 @@
 # Verifier review — 16 October 2026
 
-Latest reviewed execution verdict: **FAIL** for candidate `931b475…` in the first
-trusted Linux bootstrap run. The earlier static-only review was INSUFFICIENT
-EVIDENCE until that run. This review does not claim native-host readiness, public-release readiness,
+Latest reviewed execution verdict: **PASS**, limited to automated scope for
+candidate `a447920…` in trusted Linux bootstrap run `38910000382`. The first
+Linux attempt's FAIL remains retained below. This review does not claim native-host readiness, public-release readiness,
 owner authorization, or S14B completion. The reviewer worked in a separate worktree
 and also authored the verifier implementation; this is not an external security audit.
 
@@ -188,3 +188,72 @@ Git comparison confirms the only test change relative to the trust tree is the
 seven-line TEMP-fixture mode correction. No new static gating issue was found.
 Acceptance remains scoped to that exact file and the subsequently recorded
 bootstrap commit/run SHA. Its fresh execution result remains pending here.
+
+## Second trusted Linux run: automated PASS
+
+Independently read the [second trusted run](https://github.com/Unn0wn002/CutBridge/actions/runs/38910000382)
+and retained evidence as data, without running candidate code on the owner's host.
+The bootstrap/workflow SHA is `8d1ecef5e2abb8c0b27f7951eb5a3eb75773afcc`, candidate
+`a44792099b3b5f5b7a2f69a41061268fe59586b3`, trust
+`a6ee2445f81906c024fd5b9e1689faac017f198a`, and develop/merge-base `8cc5a4f…`.
+Uploaded ZIP SHA-256:
+`53e9783c81da36c66eb5b9d3782244806d1b3023b1213eebd21fc354956d0e79`.
+All 48 entries of `evidence.sha256` and the separate bootstrap-context checksum
+were independently recomputed and matched: 49 checksum comparisons in total.
+
+Host: Ubuntu runner image `ubuntu24`, build `20261012.334.1`, Linux
+`6.17.0-1022-azure`, x86_64. Dependency preparation records Python 3.13.16,
+Node 22.23.3, bpy 5.2.1, pytest 9.1.1 and jsonschema 4.26.0. Executed image ID:
+`sha256:92eb13d9218e0bbae65eb01a1251d095752da3bfc2d4840f2bb4298208cda76d`.
+Snapshot ID: `9ef5906dfc923d3b3eef49d64873181a575b3f73d986942ee635061842b74aea`.
+
+Read preflight and candidate container inspections before/after execution. Both
+containers exited zero, with no OOM or daemon error. The actual preflight command
+was `bash /orchestration/checks.sh --preflight`; the candidate command used
+`--checks`. Both had network `none`, read-only rootfs/source/verification-inputs/
+orchestration, exactly one writable output mount, UID `1000:1000`, dropped `ALL`
+capabilities and `no-new-privileges`. Removal logs retain each container ID.
+No owner credentials, host HOME or engine socket were mounted.
+
+All 386 Git-file inputs and all 437 combined path/type/mode/file entries remained
+identical. The before/after manifest SHA-256 is
+`3de2a3078e02980d0b023f959be840b1cf4c7ece689e8c44bda034a9899a5424`;
+the before/after inventory JSON SHA-256 is
+`8621c2ab6f8e88b675381596f812153b859bd5c40fb2e8dd5da717251997ca6f`.
+Full pytest: **395 passed, two subtests passed**, no skips. Syntax, standalone
+Blender RNA lifecycle, required Node/CJS checks, both builds, checksums, independent
+archive/metadata/guide validation, and unpublished distribution simulation passed.
+This establishes automated scope only; it does not execute Blender GUI or AE APIs.
+
+Both Linux builds have identical complete four-artifact inventories and bytes.
+The repeated inventory SHA-256 is
+`d76ee5dc7c4c76973352fc3282e554c98dec6ff762b3b0fec5460614618de34d`.
+
+| Linux release-simulation artifact | SHA-256 |
+| --- | --- |
+| Blender ZIP | `864131a58a1c56e4364c3e435ef1433fbda415515be7292770212bfdc4c31bfe` |
+| After Effects ZIP | `427a36ba8638e88940b18f9daa34537c7e41ad939f3b81fddb50a3812d691268` |
+| `SHA256SUMS.txt` | `d153d2ca56594f28ee4ed75d9b97859d4430a0950ad1385aaa6d32fedebbe4bb` |
+| `release-metadata.json` | `a9e0d91202173cb9ad431a3f1b85ca0b8b8d4a416ad49a5e8e3c336e23a1722f` |
+
+Only the two ZIPs are byte-identical to the earlier Windows `5293cd4…` artifacts.
+The text checksum and metadata files differ between hosts because of CRLF versus
+LF; their newline-normalized contents were independently compared and match.
+Do not claim four-file cross-platform byte identity. Each host's own repeated
+build produced complete identical four-file output.
+
+One receipt limitation was found during inspection: `verification.json` retained
+the reusable first Docker-create argument list by reference, so it showed
+`--checks` after that list was reused. Actual preflight inspections independently
+and unambiguously record `--preflight`, its container ID and zero exit. This is a
+command-record accuracy defect, not a failed isolation probe or failed execution;
+the retained inspections resolve this run's actual command. Fix
+`571f4cdb1c992124bdb35e3d089de1de1535b254` copies argument lists when recording them.
+Its main-path regression checks distinct preflight/checks receipts after caller
+mutation. Isolation and product behavior are unchanged. That new test has not
+been executed by this reviewer, so the recorded result above remains 395 tests.
+
+The final candidate/docs/evidence HEAD requires its own exact-head normal CI and
+reviewed trusted run. Any later helper pin must be reviewed separately; native
+hosts remain blocked as previously recorded. Neither this automated PASS nor
+artifact reproduction authorizes protected merges, publication or distribution.
