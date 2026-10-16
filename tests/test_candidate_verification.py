@@ -471,6 +471,58 @@ def test_successful_docker_command_with_malformed_trusted_json_is_infrastructure
     assert not any(argv[:2] == ["docker", "create"] for argv in calls)
 
 
+@pytest.mark.parametrize("failure", ["repeat-comparison", "package-validation"])
+def test_safe_packages_and_both_inventories_are_retained_after_package_failure(tmp_path, failure):
+    output, evidence = tmp_path / "output", tmp_path / "evidence"
+    output.mkdir()
+    evidence.mkdir()
+    version = valid_packages(output / "dist-ci")
+    valid_packages(output / "dist-repeat")
+    if failure == "repeat-comparison":
+        (output / "dist-repeat/extra-in-repeat").write_bytes(b"reproduce nondeterminism")
+    else:
+        for name in ("dist-ci", "dist-repeat"):
+            metadata_path = output / name / "release-metadata.json"
+            metadata = json.loads(metadata_path.read_text())
+            metadata["tag"] = "v99.0.0"
+            metadata_path.write_text(json.dumps(metadata))
+    try:
+        with pytest.raises(verifier.CandidateFailure):
+            verifier.retain_package_outputs(output, evidence, version, verify_packages=True)
+        for name in ("dist-ci", "dist-repeat"):
+            inventory = json.loads((evidence / (name + "-inventory.json")).read_text())
+            assert inventory
+            for entry in inventory:
+                if entry["type"] == "file":
+                    staged = evidence / "candidate-output" / name / entry["path"]
+                    assert staged.read_bytes() == (output / name / entry["path"]).read_bytes()
+                    assert verifier.digest(staged.read_bytes()) == entry["sha256"]
+        primary = json.loads((evidence / "package-verification-failure.json").read_text())
+        assert primary["verdict"] == "FAIL"
+        assert (evidence / "staged-output-inventory.json").is_file()
+    finally:
+        for path in evidence.rglob("*"):
+            if path.is_file():
+                path.chmod(0o666)
+
+
+def test_unsafe_staging_stays_invalid_after_primary_package_comparison_failure(tmp_path):
+    output, evidence = tmp_path / "output", tmp_path / "evidence"
+    output.mkdir()
+    evidence.mkdir()
+    version = valid_packages(output / "dist-ci")
+    valid_packages(output / "dist-repeat")
+    (output / "dist-repeat/extra").write_bytes(b"repeat differs")
+    outside = tmp_path / "owner-secret"
+    outside.write_bytes(b"must never be staged")
+    make_symlink(output / "pytest.xml", outside)
+    with pytest.raises(verifier.IntegrityError, match="symlink"):
+        verifier.retain_package_outputs(output, evidence, version, verify_packages=True)
+    primary = json.loads((evidence / "package-verification-failure.json").read_text())
+    assert primary["verdict"] == "FAIL"
+    assert not (evidence / "candidate-output/pytest.xml").exists()
+
+
 @pytest.mark.parametrize("same_candidate,wrong_checkout", [(True, False), (False, True)])
 def test_orchestration_rejects_candidate_trust_and_wrong_checkout_before_any_execution(tmp_path, monkeypatch, same_candidate, wrong_checkout):
     trusted = "a" * 40
