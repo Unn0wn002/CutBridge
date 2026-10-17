@@ -99,6 +99,8 @@ Supported producer subset:
 
 Unsupported Camera/transform cases fail closed. Parenting, constraints, and drivers may influence the evaluated Blender world transform, but CutBridge does not recreate the Blender hierarchy in AE.
 
+AE reconstructs only Camera Position/Point of Interest/Zoom and Null Position/Scale. It does not apply Camera `up`/basis or Null basis to Orientation/rotation, so accepted producer data does not imply camera-roll or Empty-rotation parity.
+
 See [HANDOFF_3D.md](HANDOFF_3D.md) before enabling this workflow.
 
 ## 4. Validate Cut
@@ -215,9 +217,9 @@ QC checks include, where inspectable:
 - required/optional sequence availability and unexpected matching files;
 - comp resolution, pixel aspect, FPS, and duration;
 - managed footage/layer ownership and sources;
-- managed S10C Camera/Null state where present;
 - stale/foreign/ambiguous managed state;
-- revision compatibility boundaries.
+
+The stale-tag scan includes existing Camera/Null layers. QC does not verify expected Camera/Null completeness, transform values/keyframes or projection parity. Inspect the supported channels separately. Revision compatibility is assessed by the revision workflow.
 
 QC is diagnostic-only. It must not silently adopt, import, move, retag, replace sources, or auto-repair ownership state.
 

@@ -113,6 +113,7 @@ function host(m, files, options = {}) {
   const runtime = {File, Folder, Window, Panel, FolderItem, FootageItem, CompItem, AVLayer: Layer, ImportOptions, ImportAsType: {FOOTAGE: 1},
     ScriptUI: {newFont() {}}, CutBridgeQCPlus: QCPlus, alert: message => alerts.push(String(message)), $: {writeln() {}},
     app: {project, beginUndoGroup() {}, endUndoGroup() {}, newProject() {}}};
+  if (options.isValid) runtime.isValid = options.isValid;
   vm.createContext(runtime); vm.runInContext(source, runtime);
 
   function reloadScript() { controls.length = 0; vm.runInContext(source, runtime); }

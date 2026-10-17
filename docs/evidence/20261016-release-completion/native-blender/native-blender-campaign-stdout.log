@@ -1,0 +1,83 @@
+00:42.360  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V001\render\line\C001_LINE_0001.png'
+00:42.360  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V001\render\shadow\C001_SHADOW_0001.png'
+00:42.422  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V001\render\depth\C001_DEPTH_0001.exr'
+00:42.438  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V001\render\beauty\C001_BEAUTY_0001.png'
+00:42.454  render           | Saved: 'C:\Evidence\verification-output\native-blender\main-render\frame-0001.png'
+00:42.860  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V001\render\beauty\C001_BEAUTY_0002.png'
+00:42.860  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V001\render\line\C001_LINE_0002.png'
+00:42.875  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V001\render\shadow\C001_SHADOW_0002.png'
+00:42.922  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V001\render\depth\C001_DEPTH_0002.exr'
+00:42.938  render           | Saved: 'C:\Evidence\verification-output\native-blender\main-render\frame-0002.png'
+00:43.329  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V001\render\beauty\C001_BEAUTY_0003.png'
+00:43.344  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V001\render\line\C001_LINE_0003.png'
+00:43.360  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V001\render\shadow\C001_SHADOW_0003.png'
+00:43.407  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V001\render\depth\C001_DEPTH_0003.exr'
+00:43.422  render           | Saved: 'C:\Evidence\verification-output\native-blender\main-render\frame-0003.png'
+00:44.797  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V002\render\line\C001_LINE_0001.png'
+00:44.813  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V002\render\shadow\C001_SHADOW_0001.png'
+00:44.860  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V002\render\depth\C001_DEPTH_0001.exr'
+00:44.875  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V002\render\beauty\C001_BEAUTY_0001.png'
+00:44.891  render           | Saved: 'C:\Evidence\verification-output\native-blender\main-render\frame-0001.png'
+00:45.297  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V002\render\beauty\C001_BEAUTY_0002.png'
+00:45.297  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V002\render\line\C001_LINE_0002.png'
+00:45.313  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V002\render\shadow\C001_SHADOW_0002.png'
+00:45.360  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V002\render\depth\C001_DEPTH_0002.exr'
+00:45.375  render           | Saved: 'C:\Evidence\verification-output\native-blender\main-render\frame-0002.png'
+00:45.813  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V002\render\depth\C001_DEPTH_0003.exr'
+00:45.813  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V002\render\beauty\C001_BEAUTY_0003.png'
+00:45.829  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V002\render\line\C001_LINE_0003.png'
+00:45.844  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V002\render\shadow\C001_SHADOW_0003.png'
+00:45.844  render           | Saved: 'C:\Evidence\verification-output\native-blender\main-render\frame-0003.png'
+00:47.204  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V003\render\line\C001_LINE_0001.png'
+00:47.219  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V003\render\shadow\C001_SHADOW_0001.png'
+00:47.235  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V003\render\beauty\C001_BEAUTY_0001.png'
+00:47.282  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V003\render\depth\C001_DEPTH_0001.exr'
+00:47.297  render           | Saved: 'C:\Evidence\verification-output\native-blender\main-render\frame-0001.png'
+00:47.735  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V003\render\depth\C001_DEPTH_0002.exr'
+00:47.750  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V003\render\line\C001_LINE_0002.png'
+00:47.750  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V003\render\shadow\C001_SHADOW_0002.png'
+00:47.766  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V003\render\beauty\C001_BEAUTY_0002.png'
+00:47.782  render           | Saved: 'C:\Evidence\verification-output\native-blender\main-render\frame-0002.png'
+00:48.188  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V003\render\line\C001_LINE_0003.png'
+00:48.235  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V003\render\depth\C001_DEPTH_0003.exr'
+00:48.250  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V003\render\beauty\C001_BEAUTY_0003.png'
+00:48.250  render           | Saved: 'C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V003\render\shadow\C001_SHADOW_0003.png'
+00:48.266  render           | Saved: 'C:\Evidence\verification-output\native-blender\main-render\frame-0003.png'
+Info: Saved as "fixture-V001.blend"
+
+=== CutBridge Validation ===
+[WARNING] HANDOFF_PRODUCER_ONLY: 3D handoff is enabled for supported perspective Camera and marked Empty samples; After Effects can reconstruct Camera Position/Point of Interest/Zoom and Null Position/Scale only. Fix: Inspect those channels in the exact After Effects host after Build. Camera roll and Empty rotation are not reconstructed; QC does not inspect these transforms.
+============================
+
+Warning: CutBridge: valid with 1 warning(s). Warning: 3D handoff is enabled for supported perspective Camera and marked Empty samples; After Effects can reconstruct Camera Position/Point of Interest/Zoom and Null Position/Scale only. Why: The workflow may continue, but this condition can affect the result. Can I continue? Yes, after reviewing the consequence. Fix: Inspect those channels in the exact After Effects host after Build. Camera roll and Empty rotation are not reconstructed; QC does not inspect these transforms. [EN] 3D handoff is enabled for supported perspective Camera and marked Empty samples; After Effects can reconstruct Camera Position/Point of Interest/Zoom and Null Position/Scale only. Fix: Inspect those channels in the exact After Effects host after Build. Camera roll and Empty rotation are not reconstructed; QC does not inspect these transforms.
+CutBridge package: C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V001
+Info: CutBridge package created: C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V001\cutbridge.json
+Error: Existing Package Is Protected: This version already contains render/user data, so Build Package will not overwrite it. Why: CutBridge protects completed or in-progress package payload from destructive same-version rebuilds. Can I continue? Yes for rendering the already-built package; no for rebuilding this same version. Fix: Continue Render Animation without Build Package, or increment Version for a new revision. [EN] Package Native025_EP01_SC010_C001_T01_V001 contains render/user data (render/beauty/C001_BEAUTY_0001.png) and will not be overwritten. Fix: For a new revision, increment Version. To keep rendering this already-built version, do not run Build Package again.
+Error: Existing Package Is Protected: This version already contains render/user data, so Build Package will not overwrite it. Why: CutBridge protects completed or in-progress package payload from destructive same-version rebuilds. Can I continue? Yes for rendering the already-built package; no for rebuilding this same version. Fix: Continue Render Animation without Build Package, or increment Version for a new revision. [EN] Package Native025_EP01_SC010_C001_T01_V001 contains render/user data (render/beauty/C001_BEAUTY_0001.png) and will not be overwritten. Fix: For a new revision, increment Version. To keep rendering this already-built version, do not run Build Package again.
+Info: Saved as "fixture-V002.blend"
+
+=== CutBridge Validation ===
+[WARNING] HANDOFF_PRODUCER_ONLY: 3D handoff is enabled for supported perspective Camera and marked Empty samples; After Effects can reconstruct Camera Position/Point of Interest/Zoom and Null Position/Scale only. Fix: Inspect those channels in the exact After Effects host after Build. Camera roll and Empty rotation are not reconstructed; QC does not inspect these transforms.
+============================
+
+Warning: CutBridge: valid with 1 warning(s). Warning: 3D handoff is enabled for supported perspective Camera and marked Empty samples; After Effects can reconstruct Camera Position/Point of Interest/Zoom and Null Position/Scale only. Why: The workflow may continue, but this condition can affect the result. Can I continue? Yes, after reviewing the consequence. Fix: Inspect those channels in the exact After Effects host after Build. Camera roll and Empty rotation are not reconstructed; QC does not inspect these transforms. [EN] 3D handoff is enabled for supported perspective Camera and marked Empty samples; After Effects can reconstruct Camera Position/Point of Interest/Zoom and Null Position/Scale only. Fix: Inspect those channels in the exact After Effects host after Build. Camera roll and Empty rotation are not reconstructed; QC does not inspect these transforms.
+CutBridge package: C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V002
+Info: CutBridge package created: C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V002\cutbridge.json
+Error: Existing Package Is Protected: This version already contains render/user data, so Build Package will not overwrite it. Why: CutBridge protects completed or in-progress package payload from destructive same-version rebuilds. Can I continue? Yes for rendering the already-built package; no for rebuilding this same version. Fix: Continue Render Animation without Build Package, or increment Version for a new revision. [EN] Package Native025_EP01_SC010_C001_T01_V002 contains render/user data (render/beauty/C001_BEAUTY_0001.png) and will not be overwritten. Fix: For a new revision, increment Version. To keep rendering this already-built version, do not run Build Package again.
+Error: Existing Package Is Protected: This version already contains render/user data, so Build Package will not overwrite it. Why: CutBridge protects completed or in-progress package payload from destructive same-version rebuilds. Can I continue? Yes for rendering the already-built package; no for rebuilding this same version. Fix: Continue Render Animation without Build Package, or increment Version for a new revision. [EN] Package Native025_EP01_SC010_C001_T01_V002 contains render/user data (render/beauty/C001_BEAUTY_0001.png) and will not be overwritten. Fix: For a new revision, increment Version. To keep rendering this already-built version, do not run Build Package again.
+Info: Saved as "fixture-V003.blend"
+
+=== CutBridge Validation ===
+[WARNING] HANDOFF_PRODUCER_ONLY: 3D handoff is enabled for supported perspective Camera and marked Empty samples; After Effects can reconstruct Camera Position/Point of Interest/Zoom and Null Position/Scale only. Fix: Inspect those channels in the exact After Effects host after Build. Camera roll and Empty rotation are not reconstructed; QC does not inspect these transforms.
+============================
+
+Warning: CutBridge: valid with 1 warning(s). Warning: 3D handoff is enabled for supported perspective Camera and marked Empty samples; After Effects can reconstruct Camera Position/Point of Interest/Zoom and Null Position/Scale only. Why: The workflow may continue, but this condition can affect the result. Can I continue? Yes, after reviewing the consequence. Fix: Inspect those channels in the exact After Effects host after Build. Camera roll and Empty rotation are not reconstructed; QC does not inspect these transforms. [EN] 3D handoff is enabled for supported perspective Camera and marked Empty samples; After Effects can reconstruct Camera Position/Point of Interest/Zoom and Null Position/Scale only. Fix: Inspect those channels in the exact After Effects host after Build. Camera roll and Empty rotation are not reconstructed; QC does not inspect these transforms.
+CutBridge package: C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V003
+Info: CutBridge package created: C:\Evidence\verification-output\native-blender\packages\Native025_EP01_SC010_C001_T01_V003\cutbridge.json
+Error: Existing Package Is Protected: This version already contains render/user data, so Build Package will not overwrite it. Why: CutBridge protects completed or in-progress package payload from destructive same-version rebuilds. Can I continue? Yes for rendering the already-built package; no for rebuilding this same version. Fix: Continue Render Animation without Build Package, or increment Version for a new revision. [EN] Package Native025_EP01_SC010_C001_T01_V003 contains render/user data (render/beauty/C001_BEAUTY_0001.png) and will not be overwritten. Fix: For a new revision, increment Version. To keep rendering this already-built version, do not run Build Package again.
+00:49.610  blend            | Read blend: "C:\Evidence\verification-output\native-blender\fixtures\reopen-V003.blend"
+00:52.266  blend            | Saved session recovery to "C:\Evidence\verification-output\tmp\quit.blend"
+Error: Existing Package Is Protected: This version already contains render/user data, so Build Package will not overwrite it. Why: CutBridge protects completed or in-progress package payload from destructive same-version rebuilds. Can I continue? Yes for rendering the already-built package; no for rebuilding this same version. Fix: Continue Render Animation without Build Package, or increment Version for a new revision. [EN] Package Native025_EP01_SC010_C001_T01_V003 contains render/user data (render/beauty/C001_BEAUTY_0001.png) and will not be overwritten. Fix: For a new revision, increment Version. To keep rendering this already-built version, do not run Build Package again.
+Info: Saved as "reopen-V003.blend"
+
+Blender quit

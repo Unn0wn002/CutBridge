@@ -1,0 +1,35 @@
+{
+    "adapters":  [
+                     {
+                         "Name":  "Teredo Tunneling Pseudo-Interface",
+                         "Status":  "Not Present",
+                         "InterfaceDescription":  ""
+                     },
+                     {
+                         "Name":  "Microsoft IP-HTTPS Platform Interface",
+                         "Status":  "Not Present",
+                         "InterfaceDescription":  ""
+                     },
+                     {
+                         "Name":  "Ethernet (Kernel Debugger)",
+                         "Status":  "Not Present",
+                         "InterfaceDescription":  "Microsoft Kernel Debug Network Adapter"
+                     },
+                     {
+                         "Name":  "6to4 Adapter",
+                         "Status":  "Not Present",
+                         "InterfaceDescription":  ""
+                     }
+                 ],
+    "source_writable":  false,
+    "TMPDIR":  "C:\\LocalVerification\\verification-output\\tmp",
+    "os":  "Microsoft Windows NT 10.0.26100.0",
+    "credential_environment_names":  [
+
+                                     ],
+    "PYTHONPYCACHEPREFIX":  "C:\\Evidence\\verification-output\\pycache",
+    "identity":  "3E6B83F9-7F9C-4\\WDAGUtilityAccount",
+    "timestamp_utc":  "2026-10-16T13:36:37.3555337Z",
+    "owner_home_visible":  false,
+    "source_git_visible":  false
+}

@@ -1,0 +1,106 @@
+{
+  "overall_verdict": "INSUFFICIENT EVIDENCE",
+  "native_status": "PREPARED_NOT_EXECUTED",
+  "branch": "fix/current-release-completion-20261016",
+  "prior_checkpoint": "5a4f43b6b0f4c11e97221a3e800d39c4244fe4fa",
+  "engineering_runtime_baseline_sha": "639374ce5f1b5f0d36847258d052c36ab21dd208",
+  "tested_preparation_sha": "85b8eb06617c1f195385c1b96ce9452882b63b8e",
+  "supplement_path": "tests/native_ae/source_replacement_rollback.jsx",
+  "supplement_sha256": "332dfcf34551caabd741e4cc6b31216d36a11899e7af1aae1ac30148ad97e54d",
+  "unchanged_common_harness_sha256": "509273dc0788b1060253923e22ed6415cb731c43e89e834922a1f327cf2ba324",
+  "static_review": {
+    "kind": "Independent read-only agent preparation/isolation review; no native execution or release approval",
+    "existing_supplement_found": false,
+    "blocking_findings": [],
+    "native_or_release_acceptance": "NOT_RECEIVED"
+  },
+  "automated_preparation": {
+    "result": "PASS",
+    "trusted_run": 39012397226,
+    "ordinary_ci_runs": [
+      39012366909,
+      39012370095
+    ],
+    "tests": 396,
+    "subtests": 2,
+    "skips": 0,
+    "ae_node_suites": 18,
+    "syntax": "compileall and runtime Node syntax; supplemental JSX parsed/executed by existing vm mock suite",
+    "rna": "bpy 5.2.1 lifecycle PASS",
+    "mock_cases": [
+      "successful rollback after first swap / second null-source throw",
+      "null source returns without throwing",
+      "first native swap throws early",
+      "first native swap is a no-op",
+      "staged IDs retained by remove"
+    ],
+    "trusted_sha": "571f4cdb1c992124bdb35e3d089de1de1535b254",
+    "bootstrap_sha": "904083b2be165f5597270db21f59eaa73b26b2d4",
+    "snapshot_id": "658a6e6c35939b0ea1e85136f09616c1e3f0f5ca8c8c96a7f69ceb75f536a46b",
+    "image_id": "sha256:8fd3a3e913300cd067d173e74ee4ac51e22a69d5cf1cceb434bf12449c393beb",
+    "host": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+    "runner_image": "20261012.334.1",
+    "integrity": "identical exact paths/types/modes/bytes",
+    "artifact_id": 12093690618,
+    "artifact_sha256": "39a9ec8f6029feee1d381a3d54201d58e3165b0fff29bcc00ece9a76b9962cef",
+    "inner_evidence_checksums_verified": 48,
+    "bootstrap_context_checksum_verified": true,
+    "all_four_repeat_build_assets_identical_to_frozen_packet": true,
+    "full_evidence_directory": "C:\\Temp\\CutBridge-validation-closeout-20261016\\source-rollback\\passed-85b8eb0",
+    "artifact_archive": "C:\\Temp\\CutBridge-validation-closeout-20261016\\source-rollback\\passed-85b8eb0-evidence.zip"
+  },
+  "initial_failed_preparation": {
+    "candidate_sha": "62a03522873cab0dd9c7ac3827dfe9d2e49c1048",
+    "trusted_run": 39012325839,
+    "verdict": "FAIL",
+    "cause": "Mock diagnostic JSON.stringify(report) encountered circular AE-shaped objects; fixed in85b8eb0.",
+    "snapshot_integrity": "identical",
+    "artifact_sha256": "785807ab5eca87157a66af9ab722df5d14c57bbc2b464f48ef095dbdcb2ea9e4",
+    "full_evidence_directory": "C:\\Temp\\CutBridge-validation-closeout-20261016\\source-rollback\\failed-62a0352"
+  },
+  "operator_command": "& 'C:\\AfterEffects\\AfterFX.exe' -m -r 'C:\\NativeAEInput\\source_replacement_rollback.jsx'",
+  "required_prior_input": "Approved native environment and retained campaign artist-V003.aep with >=2 active managed passes",
+  "expected_outputs": [
+    "source-replacement-rollback.json",
+    "source-replacement-rollback-evidence.json",
+    "source-replacement-rollback-recovered.aep",
+    "Actual native PID/normal-exit logs and unchanged input inventories"
+  ],
+  "blocker": "Independently approved initializing isolated native AE environment unavailable; startup investigation remains closed.",
+  "release_assets": [
+    {
+      "mode": 420,
+      "path": "CutBridge-AfterEffects-v0.2.5.zip",
+      "sha256": "427a36ba8638e88940b18f9daa34537c7e41ad939f3b81fddb50a3812d691268",
+      "size": 59686,
+      "type": "file"
+    },
+    {
+      "mode": 420,
+      "path": "CutBridge-Blender-v0.2.5.zip",
+      "sha256": "864131a58a1c56e4364c3e435ef1433fbda415515be7292770212bfdc4c31bfe",
+      "size": 63682,
+      "type": "file"
+    },
+    {
+      "mode": 420,
+      "path": "SHA256SUMS.txt",
+      "sha256": "d153d2ca56594f28ee4ed75d9b97859d4430a0950ad1385aaa6d32fedebbe4bb",
+      "size": 195,
+      "type": "file"
+    },
+    {
+      "mode": 420,
+      "path": "release-metadata.json",
+      "sha256": "a9e0d91202173cb9ad431a3f1b85ca0b8b8d4a416ad49a5e8e3c336e23a1722f",
+      "size": 674,
+      "type": "file"
+    }
+  ],
+  "baseline_receipt_unchanged": true,
+  "release_authorization": false,
+  "production_version": "0.2.3",
+  "S14B": "NOT_EXECUTED",
+  "environment_acceptance": "NOT_RECEIVED",
+  "scope_acceptance": "NOT_RECEIVED"
+}

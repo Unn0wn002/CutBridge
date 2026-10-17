@@ -1,0 +1,14 @@
+{
+  "status": "DATA_STAGED_NOT_EXECUTED",
+  "original_config_sha256": "d20831f54905e088d70c3c5ab2b23d76fdd9c3faef5682a115fb122a40486550",
+  "derived_config_sha256": "c0026f4e41b45b56628e29ea08b428320eb716d24ed8685387e736e2bdfef59a",
+  "changes": {
+    "installation_metadata": {
+      "before": "C:/Evidence/verification-output/native-ae/installation.json",
+      "after": "C:/Review/installation.json"
+    }
+  },
+  "reason": "Place installation evidence in read-only review input, outside candidate-writable report output. Independent review is required before any new native execution.",
+  "runtime_or_package_bytes_changed": false,
+  "source_baseline": "639374ce5f1b5f0d36847258d052c36ab21dd208"
+}

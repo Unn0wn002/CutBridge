@@ -1,5 +1,7 @@
 # CutBridge
 
+v0.2.5 remains **INSUFFICIENT EVIDENCE** for submission and public release. Independently trusted Linux verification passed on exact code `a44792099b3b5f5b7a2f69a41061268fe59586b3` (**395 tests + 2 subtests**, no skips), alongside ordinary CI and the equivalent-package native Blender 5.2.2 scripted scope. Current AE and Blender visual checks are blocked by host initialization before candidate execution; manual-update checks, scope acceptance and independent release review remain open. See [release preparation](docs/RELEASE_PREPARATION_v0.2.5.md) for exact hashes/scope and local packet directions, and the [submission/demo checklist](docs/SUBMISSION_DEMO_CHECKLIST.md). The working target is **22 October 2026**; the official submission deadline is unconfirmed.
+
 **CutBridge is a Blender → After Effects production handoff tool for animation cuts.**
 
 It standardizes cut metadata, render-pass packaging, versioning, `cutbridge.json` handoff, After Effects project setup, QC, controlled revision handling, Japanese-first workflow UX, Studio Presets, and an optional bounded Camera/3D Null handoff.
@@ -48,6 +50,8 @@ CutBridge currently provides:
 - optional bounded Blender Camera / Empty → AE Camera / 3D Null handoff.
 
 ## Current development status
+
+The [v0.2.5 release-preparation record](docs/RELEASE_PREPARATION_v0.2.5.md) tracks the independent v0.2.4 audit, preserved distribution hold, candidate verification, and remaining release gates.
 
 Engineering/native-host validation is complete through **S13**. **S14A**, the Japanese target-user validation protocol and fail-closed evidence tooling, is integrated. The v0.2.3 release-facing Japanese claim scope was deliberately narrowed instead of claiming S14B completion. **S14B remains NOT_EXECUTED** and is reserved for a future release or claim that needs representative Japanese target-user usability evidence.
 
@@ -220,8 +224,9 @@ QC+ reports deterministic PASS / WARNING / ERROR diagnostics using stable `CBQ-*
 - comp resolution, pixel aspect, FPS, and duration;
 - managed footage/layer ownership;
 - source consistency;
-- Camera/Null state where applicable;
-- revision compatibility boundaries.
+- obsolete managed-version tags on existing layers, including Camera/Null layers.
+
+QC does not verify expected Camera/Null completeness, their transform values/keyframes, or projection parity. Revision compatibility is assessed by the revision workflow. Inspect the supported Camera Position/Point of Interest/Zoom and Null Position/Scale channels separately when demonstrating 3D handoff.
 
 QC is **diagnostic-only**. It does not silently repair ownership, replace sources, or mutate unrelated artist content.
 
@@ -271,6 +276,8 @@ AE time = (frame - frame_start) / fps
 ```
 
 Supported producer scope includes the active perspective camera and explicitly marked Blender Empties under the documented constraints.
+
+AE writes Camera Position, Point of Interest from the sampled forward vector, and Zoom; Nulls receive Position and supplied Scale. Serialized up/basis data is not applied to Orientation/rotation. Camera roll and Empty rotation are not reconstructed. The producer opt-in remains an engineering setting, outside the normal N-panel controls; see the [channel and QC boundary](docs/HANDOFF_3D.md#after-effects-reconstruction-boundary).
 
 CutBridge does **not** promise arbitrary geometry, lights, bones, rigs, hierarchy recreation, or full-scene synchronization.
 
@@ -360,6 +367,7 @@ Project safety, branch, and verification rules are in [`AGENTS.md`](AGENTS.md).
 - [Compatibility](docs/COMPATIBILITY.md)
 - [S14 Japanese Target-User Validation](docs/S14_JP_USER_VALIDATION.md)
 - [Release Readiness](docs/RELEASE_READINESS.md)
+- [Submission and demo checklist](docs/SUBMISSION_DEMO_CHECKLIST.md)
 - [Completion Status](docs/COMPLETION_STATUS.md)
 - [S12/S13 Evidence Summary](docs/S12_S13_EVIDENCE_SUMMARY.md)
 - [Technical Debt](docs/TECHNICAL_DEBT.md)

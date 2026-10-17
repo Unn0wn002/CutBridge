@@ -1,0 +1,97 @@
+{
+  "total_count": 1,
+  "jobs": [
+    {
+      "id": 117001417386,
+      "run_id": 38909487938,
+      "workflow_name": "Reviewed CutBridge verification bootstrap",
+      "head_branch": "fix/trusted-verifier-bootstrap-20261016",
+      "run_url": "https://api.github.com/repos/Unn0wn002/CutBridge/actions/runs/38909487938",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOUL_85s8AAAAbPdPyqg",
+      "head_sha": "e9f004bf7700b9f876cbc11841835ebcd234355f",
+      "url": "https://api.github.com/repos/Unn0wn002/CutBridge/actions/jobs/117001417386",
+      "html_url": "https://github.com/Unn0wn002/CutBridge/actions/runs/38909487938/job/117001417386",
+      "status": "completed",
+      "conclusion": "failure",
+      "created_at": "2026-10-16T13:39:06Z",
+      "started_at": "2026-10-16T13:39:08Z",
+      "completed_at": "2026-10-16T13:40:03Z",
+      "name": "reviewed-verification",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-16T13:39:09Z",
+          "completed_at": "2026-10-16T13:39:10Z"
+        },
+        {
+          "name": "Validate fixed reviewed pins and orchestration ref",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-16T13:39:10Z",
+          "completed_at": "2026-10-16T13:39:10Z"
+        },
+        {
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-16T13:39:10Z",
+          "completed_at": "2026-10-16T13:39:11Z"
+        },
+        {
+          "name": "Run reviewed tools against exact candidate in isolated containers",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 4,
+          "started_at": "2026-10-16T13:39:11Z",
+          "completed_at": "2026-10-16T13:40:00Z"
+        },
+        {
+          "name": "Retain bootstrap and runner identity separately from candidate output",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-16T13:40:00Z",
+          "completed_at": "2026-10-16T13:40:00Z"
+        },
+        {
+          "name": "Upload only host-owned staged evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-16T13:40:00Z",
+          "completed_at": "2026-10-16T13:40:02Z"
+        },
+        {
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-10-16T13:40:02Z",
+          "completed_at": "2026-10-16T13:40:02Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-16T13:40:02Z",
+          "completed_at": "2026-10-16T13:40:02Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/Unn0wn002/CutBridge/check-runs/117001417386",
+      "labels": [
+        "ubuntu-latest"
+      ],
+      "runner_id": 1000002827,
+      "runner_name": "GitHub Actions 1000002827",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    }
+  ]
+}

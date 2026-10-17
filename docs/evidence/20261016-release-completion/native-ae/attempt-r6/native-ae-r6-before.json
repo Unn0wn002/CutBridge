@@ -1,0 +1,719 @@
+{
+  "captured_utc": "2026-10-16T13:33:52.277885+00:00",
+  "inventory": [
+    {
+      "root": "harness",
+      "path": "campaign.jsx",
+      "type": "file",
+      "bytes": 4308,
+      "sha256": "62b12b710c5b2bf36cc439fcf79624d3cb2f44c2dcb238239f6bd14be15de154"
+    },
+    {
+      "root": "harness",
+      "path": "common.jsx",
+      "type": "file",
+      "bytes": 20520,
+      "sha256": "509273dc0788b1060253923e22ed6415cb731c43e89e834922a1f327cf2ba324"
+    },
+    {
+      "root": "harness",
+      "path": "config.json",
+      "type": "file",
+      "bytes": 456,
+      "sha256": "d20831f54905e088d70c3c5ab2b23d76fdd9c3faef5682a115fb122a40486550"
+    },
+    {
+      "root": "harness",
+      "path": "fresh_reopen.jsx",
+      "type": "file",
+      "bytes": 451,
+      "sha256": "c9f9c65a458750fbc398132ae7378a12702c66bdba3898d3c0595b29fed33f12"
+    },
+    {
+      "root": "harness",
+      "path": "negative.jsx",
+      "type": "file",
+      "bytes": 5703,
+      "sha256": "de672fe968bba14846bf502fceb0c1508ff3ac9c96284e09596caaddcac1987f"
+    },
+    {
+      "root": "harness",
+      "path": "probe.jsx",
+      "type": "file",
+      "bytes": 1145,
+      "sha256": "67409615e912ca337498a19e63b2d2d495e5b18d7eae5065a8d4b1077089b0e4"
+    },
+    {
+      "root": "harness",
+      "path": "README.md",
+      "type": "file",
+      "bytes": 6735,
+      "sha256": "d6dc9341eced0d05bc48d82cc0da105f03dc2281c33bc1a467d7075f77e7bc8e"
+    },
+    {
+      "root": "harness",
+      "path": "reopen.jsx",
+      "type": "file",
+      "bytes": 959,
+      "sha256": "ff1d05274f47f7ab5f9db0f81702f2285d1d3ff4bee1be1d8a573065b5722fd0"
+    },
+    {
+      "root": "harness",
+      "path": "rollback.jsx",
+      "type": "file",
+      "bytes": 4985,
+      "sha256": "2cfac923fa60bca22af4909810f44f7bc30b8a6136dd430a4d857f8530d7b0a5"
+    },
+    {
+      "root": "harness",
+      "path": "run_all.jsx",
+      "type": "file",
+      "bytes": 1507,
+      "sha256": "df82d8e3a1c871fdd992633e9846badd59c0665608bf10c37f425e404af836a1"
+    },
+    {
+      "root": "orchestration",
+      "path": "launch-native-ae.ps1",
+      "type": "file",
+      "bytes": 5408,
+      "sha256": "133892033295be061bccd74978edd96fd14debec4d6c4c74564af4b611b1d17b"
+    },
+    {
+      "root": "review",
+      "path": "candidate.diff",
+      "type": "file",
+      "bytes": 7015060,
+      "sha256": "ab0ce9f1e519f96cc0d2c9bd2a4fce83ae5cbc03bcd6e773694ef2d1063bd56e"
+    },
+    {
+      "root": "review",
+      "path": "candidate.json",
+      "type": "file",
+      "bytes": 311,
+      "sha256": "9476b2254a48fb8f87540a31cdd7177d87db8902c79446db7b710783e951231e"
+    },
+    {
+      "root": "review",
+      "path": "manifest-before.json",
+      "type": "file",
+      "bytes": 103754,
+      "sha256": "86595edd03431e79893e76a6f71d568ae48342f94fc0f064bee9aedb1e9ed5f0"
+    },
+    {
+      "root": "review",
+      "path": "production-release-index.json",
+      "type": "file",
+      "bytes": 493,
+      "sha256": "2b14d552e6bc54d393dfac81041e4d84dc42e0067753c3914639beac945a6367"
+    },
+    {
+      "root": "runtime",
+      "path": "CutBridge.jsx",
+      "type": "file",
+      "bytes": 126600,
+      "sha256": "ca8f7049fad8c0b93b3753ce520852d4b0c2f6d120e2c75a01f9aa2fc3743082"
+    },
+    {
+      "root": "runtime",
+      "path": "INSTALL.md",
+      "type": "file",
+      "bytes": 7519,
+      "sha256": "defe6e087bbcb9bc2e4947352583f1b5f1c245f794ae6261a3f56693ecf20214"
+    },
+    {
+      "root": "runtime",
+      "path": "LICENSE",
+      "type": "file",
+      "bytes": 35149,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    },
+    {
+      "root": "runtime",
+      "path": "localization.js",
+      "type": "file",
+      "bytes": 15045,
+      "sha256": "413f6cd969e928bbc6c55efb5125003d62f314ba4b7424c29ed4dfe32cff5b0e"
+    },
+    {
+      "root": "runtime",
+      "path": "qc_plus.js",
+      "type": "file",
+      "bytes": 15087,
+      "sha256": "054b8f0a2239c28020f758dab19049c1e4a8d74170c16a42e2aa8d4eee222cb8"
+    },
+    {
+      "root": "runtime",
+      "path": "revision_manager.js",
+      "type": "file",
+      "bytes": 43408,
+      "sha256": "ca9df1b6678eeaa1bebf03a5ba8e35253f0a9984a8891d0f00cc01bbc222a097"
+    },
+    {
+      "root": "packages",
+      "path": "artist-before.json",
+      "type": "file",
+      "bytes": 547,
+      "sha256": "fa63dc5b7286b2c7a1e0dd200b0284bfe513196899aa8687945f4435c2d48b5e"
+    },
+    {
+      "root": "packages",
+      "path": "fixture-contract.json",
+      "type": "file",
+      "bytes": 452,
+      "sha256": "95c7e654ffb6269444483c8fce67b6e9d790d599bd265bc374af03855d5b82b4"
+    },
+    {
+      "root": "packages",
+      "path": "fixtures",
+      "type": "directory"
+    },
+    {
+      "root": "packages",
+      "path": "fixtures/fixture-V001.blend",
+      "type": "file",
+      "bytes": 102455,
+      "sha256": "7d2f7e12758243d00ad11440981fdb51be81d413fe3f8277332fca6c28345f57"
+    },
+    {
+      "root": "packages",
+      "path": "fixtures/fixture-V002.blend",
+      "type": "file",
+      "bytes": 104422,
+      "sha256": "841df0e8f22e5ce7b4e2a3a5af58716eb5c6ddf6cc90622c49266c6bf4bea892"
+    },
+    {
+      "root": "packages",
+      "path": "fixtures/fixture-V003.blend",
+      "type": "file",
+      "bytes": 104507,
+      "sha256": "8784d61f96f7cfe86810f37e8b2a13458328ec2610b370e7def646bd49f4d022"
+    },
+    {
+      "root": "packages",
+      "path": "fixtures/reopen-V003.blend",
+      "type": "file",
+      "bytes": 104395,
+      "sha256": "75767c361c7c873a5b2e86810dbc359aab99d14b84e1321b22f4f820b8dc2fdb"
+    },
+    {
+      "root": "packages",
+      "path": "handoff-V001-comparison.json",
+      "type": "file",
+      "bytes": 11058,
+      "sha256": "f0d89d97608a254fa3ae6f885a5e1a9e507ae31c42446d1bd4b75688f7ac6cb1"
+    },
+    {
+      "root": "packages",
+      "path": "handoff-V002-comparison.json",
+      "type": "file",
+      "bytes": 11058,
+      "sha256": "bcef0878cff2a4c34700f45e2f20c22edf63fc22c859547fd896d86e8a58c95d"
+    },
+    {
+      "root": "packages",
+      "path": "handoff-V003-comparison.json",
+      "type": "file",
+      "bytes": 11093,
+      "sha256": "8108318270afd4267e127d075d74b6118dc76160e0a16b0280374ee681ba1fd7"
+    },
+    {
+      "root": "packages",
+      "path": "main-render",
+      "type": "directory"
+    },
+    {
+      "root": "packages",
+      "path": "main-render/frame-0001.png",
+      "type": "file",
+      "bytes": 39926,
+      "sha256": "2673fcc33e6db1992419700bd2730a68ce9a8b7b1ca42b0c6667f1705393e68c"
+    },
+    {
+      "root": "packages",
+      "path": "main-render/frame-0002.png",
+      "type": "file",
+      "bytes": 39942,
+      "sha256": "0ae867b982f4933a24ae021e84122a71d4d14d8aed599a364bf39e137a5e70d2"
+    },
+    {
+      "root": "packages",
+      "path": "main-render/frame-0003.png",
+      "type": "file",
+      "bytes": 40461,
+      "sha256": "82289c5ed7cb28b1587740d1be1213856ffa444471a6f3cc492a4fd1a95a063b"
+    },
+    {
+      "root": "packages",
+      "path": "native-blender.json",
+      "type": "file",
+      "bytes": 22114,
+      "sha256": "8f0914569cd56cfdbb9bd9500ff28b92d4469c4b6ef1d068d7a2ba9d008f0090"
+    },
+    {
+      "root": "packages",
+      "path": "package-V001-inventory.json",
+      "type": "file",
+      "bytes": 4567,
+      "sha256": "d0852d8a13069ea8ee853148309d10d4416c4170d73190cf3ed20244332b6484"
+    },
+    {
+      "root": "packages",
+      "path": "package-V002-inventory.json",
+      "type": "file",
+      "bytes": 4567,
+      "sha256": "741aeea96cd59c746d8328f539cf8b1a603ba949b183c4c87472b400fcf6b9ef"
+    },
+    {
+      "root": "packages",
+      "path": "package-V003-inventory.json",
+      "type": "file",
+      "bytes": 4567,
+      "sha256": "84af745e42f7b55e289707b776d050bb41a2c304608d67b21bf1e07afdfa39ef"
+    },
+    {
+      "root": "packages",
+      "path": "packages",
+      "type": "directory"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V001",
+      "type": "directory"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V001/camera",
+      "type": "directory"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V001/cutbridge.json",
+      "type": "file",
+      "bytes": 7477,
+      "sha256": "e2ebb3ab79199af023d15e2028e66079219735e6fe92c5f260cae3b67179e9f7"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V001/preview",
+      "type": "directory"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V001/render",
+      "type": "directory"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V001/render/beauty",
+      "type": "directory"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V001/render/beauty/C001_BEAUTY_0001.png",
+      "type": "file",
+      "bytes": 40084,
+      "sha256": "4d22d39f2bca9d3692fe2892495b9696c2f5cbe71c7facbbc13085bd9fc10c22"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V001/render/beauty/C001_BEAUTY_0002.png",
+      "type": "file",
+      "bytes": 40152,
+      "sha256": "f626915d719b38500c7f15693a215ffbc457e1fa9a71ae2b34d6285d1a518d03"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V001/render/beauty/C001_BEAUTY_0003.png",
+      "type": "file",
+      "bytes": 40081,
+      "sha256": "79d54e0f582bbff8bedd7cba7e7994becb56900355efb6350c941fa309c79fdb"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V001/render/depth",
+      "type": "directory"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V001/render/depth/C001_DEPTH_0001.exr",
+      "type": "file",
+      "bytes": 925192,
+      "sha256": "72636760f4627082e41cec666fa3910c94cad843ce792a729dd5b25e423358af"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V001/render/depth/C001_DEPTH_0002.exr",
+      "type": "file",
+      "bytes": 925192,
+      "sha256": "33d68ae7c5b4dac0ad9c417fa2cc57598bca4c06dccc5c2c657787d759095285"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V001/render/depth/C001_DEPTH_0003.exr",
+      "type": "file",
+      "bytes": 925192,
+      "sha256": "5f4571b1ae0330a92b96703726164ef4f3822d355c473987a48570d708e92b0e"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V001/render/line",
+      "type": "directory"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V001/render/line/C001_LINE_0001.png",
+      "type": "file",
+      "bytes": 23982,
+      "sha256": "d639195e25da0bf30f326057d98d3e6f02e124359d5a6096a7180d7f7e7e3acb"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V001/render/line/C001_LINE_0002.png",
+      "type": "file",
+      "bytes": 24176,
+      "sha256": "f9c01145b3dd3afb96816070b24dbf423ffa3fc997bbe8c6a5fede6a5e5ba3e6"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V001/render/line/C001_LINE_0003.png",
+      "type": "file",
+      "bytes": 24009,
+      "sha256": "232c7e5819f8c2f681f6920830e68e60438a945aa1ac77b6cc42b51d2fbc1c0f"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V001/render/shadow",
+      "type": "directory"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V001/render/shadow/C001_SHADOW_0001.png",
+      "type": "file",
+      "bytes": 34272,
+      "sha256": "ff6d512bfcc6c0696ae4c8cb99dc3f0a97e124c7e39b9b1858b98a37184c7497"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V001/render/shadow/C001_SHADOW_0002.png",
+      "type": "file",
+      "bytes": 34213,
+      "sha256": "91cb8ce851bed0dfc14bda9cd1bf32944d97d054216011988955d09f983607d8"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V001/render/shadow/C001_SHADOW_0003.png",
+      "type": "file",
+      "bytes": 34303,
+      "sha256": "2ace0b35d698c5b5b07f1ee37f161f279faae00630e2828e1505573d3e4b49ca"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V002",
+      "type": "directory"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V002/camera",
+      "type": "directory"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V002/cutbridge.json",
+      "type": "file",
+      "bytes": 7477,
+      "sha256": "68e134b7ed199fb2475da61ef44b36c61e44789b584047495085a93a8f736e07"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V002/preview",
+      "type": "directory"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V002/render",
+      "type": "directory"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V002/render/beauty",
+      "type": "directory"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V002/render/beauty/C001_BEAUTY_0001.png",
+      "type": "file",
+      "bytes": 40113,
+      "sha256": "bb91d570f741e83ee3f830df9fec77a637f7140edca979d1096e30dd7df04a97"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V002/render/beauty/C001_BEAUTY_0002.png",
+      "type": "file",
+      "bytes": 40327,
+      "sha256": "2dcf8451a2f186195a44978fbd1850573c193f2716cd39084357b79f3ccd5832"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V002/render/beauty/C001_BEAUTY_0003.png",
+      "type": "file",
+      "bytes": 40073,
+      "sha256": "96404bb9fd78e12850d41985631533ae081dddb3c701cdd1e4733047b22c3a24"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V002/render/depth",
+      "type": "directory"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V002/render/depth/C001_DEPTH_0001.exr",
+      "type": "file",
+      "bytes": 925192,
+      "sha256": "80626263cdf8ae442a0010e6affd70994cc2888f1e45b0ab8cda06d1bed1da93"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V002/render/depth/C001_DEPTH_0002.exr",
+      "type": "file",
+      "bytes": 925192,
+      "sha256": "2c0cfb40a249dbc0b4912996b48107f1ca8d3edb6f38cf6f35b01156654f34c4"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V002/render/depth/C001_DEPTH_0003.exr",
+      "type": "file",
+      "bytes": 925192,
+      "sha256": "2253d7f70f2239d7e5b7c78f83154ef8e9fae10548783b1dc3a3ac70c34a91ab"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V002/render/line",
+      "type": "directory"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V002/render/line/C001_LINE_0001.png",
+      "type": "file",
+      "bytes": 24163,
+      "sha256": "322a7c5d0a3517b0cdfd3ad9271127dc52b979a96a87102e8e10747345a97d06"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V002/render/line/C001_LINE_0002.png",
+      "type": "file",
+      "bytes": 23964,
+      "sha256": "02cafdfd753d82c0ae1deeefc5ec3f49f75d42bfefab22caa935e64e09346c5d"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V002/render/line/C001_LINE_0003.png",
+      "type": "file",
+      "bytes": 24262,
+      "sha256": "87bb4dd976e7ac4db7b3871bd4cbbbc8e79db82e387b83b6e02b1dc5092f76ae"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V002/render/shadow",
+      "type": "directory"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V002/render/shadow/C001_SHADOW_0001.png",
+      "type": "file",
+      "bytes": 34228,
+      "sha256": "e4ef34aa694e1bd238c6df2dfe0463f69ad4be9d0560789668f8cc46686d65fc"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V002/render/shadow/C001_SHADOW_0002.png",
+      "type": "file",
+      "bytes": 34310,
+      "sha256": "2ee89cfd70e1bf20dec35245a0c784ac6760755b6fb9885a60f5d3b140e326bc"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V002/render/shadow/C001_SHADOW_0003.png",
+      "type": "file",
+      "bytes": 34329,
+      "sha256": "b39529b27826b9eaee1204bc2b35bcf337210887d9b8834391c162d231a72f56"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V003",
+      "type": "directory"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V003/camera",
+      "type": "directory"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V003/cutbridge.json",
+      "type": "file",
+      "bytes": 7485,
+      "sha256": "6aa730ce0a518831f968e7cfeb34396faf72cf19efc8b64cdc9eda58ec841835"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V003/preview",
+      "type": "directory"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V003/render",
+      "type": "directory"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V003/render/beauty",
+      "type": "directory"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V003/render/beauty/C001_BEAUTY_0001.png",
+      "type": "file",
+      "bytes": 39917,
+      "sha256": "bc83ebe4120baebc5c772d1b301455c7531d9afb59a0ee26d80c4be810c5d9d0"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V003/render/beauty/C001_BEAUTY_0002.png",
+      "type": "file",
+      "bytes": 39933,
+      "sha256": "1ed433a266a0a2b59f7bcb1b3ad23d9807592edf0f4d35372b554829bd30ec09"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V003/render/beauty/C001_BEAUTY_0003.png",
+      "type": "file",
+      "bytes": 40452,
+      "sha256": "cba39269d268778325a5fd992b4081d533d1732f5e8cf1918e58da6297c254fa"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V003/render/depth",
+      "type": "directory"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V003/render/depth/C001_DEPTH_0001.exr",
+      "type": "file",
+      "bytes": 925192,
+      "sha256": "c5ef6977de283c9d5b6cf3115bd9434753888b4b9431bbcaaa00d96dae09a36c"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V003/render/depth/C001_DEPTH_0002.exr",
+      "type": "file",
+      "bytes": 925192,
+      "sha256": "c7d22301e9f0b935bfa593e014da039a5509c326a0beb0498e968f99767ea905"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V003/render/depth/C001_DEPTH_0003.exr",
+      "type": "file",
+      "bytes": 925192,
+      "sha256": "2ce1075e89ab7cdf8803f4fbe6a8c6401d838fb923e5b3990d3374115cbfb832"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V003/render/line",
+      "type": "directory"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V003/render/line/C001_LINE_0001.png",
+      "type": "file",
+      "bytes": 23974,
+      "sha256": "e38d4f10de9b055c7fe1d42876927a26125204ed111f6c7c0a5619d4989bba14"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V003/render/line/C001_LINE_0002.png",
+      "type": "file",
+      "bytes": 24227,
+      "sha256": "e5074385c3f6a2eed736bde292913d027997925a2bdda8470093234f8816e2e9"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V003/render/line/C001_LINE_0003.png",
+      "type": "file",
+      "bytes": 24079,
+      "sha256": "0f67f3c6a0ae55ef150a94fd5ea567deb47ddab97d6f7783938b40b32a47b6e4"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V003/render/shadow",
+      "type": "directory"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V003/render/shadow/C001_SHADOW_0001.png",
+      "type": "file",
+      "bytes": 34281,
+      "sha256": "541e02731fec604d19bf1b003766fe59e072f737889895ee5a2cbc9167f90b79"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V003/render/shadow/C001_SHADOW_0002.png",
+      "type": "file",
+      "bytes": 34237,
+      "sha256": "df25f4fc6298c9547350ad2bd5518cf0fceec79e0d296109196487332ad62c36"
+    },
+    {
+      "root": "packages",
+      "path": "packages/Native025_EP01_SC010_C001_T01_V003/render/shadow/C001_SHADOW_0003.png",
+      "type": "file",
+      "bytes": 34246,
+      "sha256": "2fa8560d5d58a18093308cf5a88113651f491bdb97036f144a162453dfe8bee0"
+    },
+    {
+      "root": "packages",
+      "path": "reopen-blender.json",
+      "type": "file",
+      "bytes": 4276,
+      "sha256": "1103833a38d1909e5d2a1a25dce10c8bba687474f08ff1a71e5c5bff5af57aac"
+    },
+    {
+      "root": "packages",
+      "path": "repository",
+      "type": "directory"
+    },
+    {
+      "root": "packages",
+      "path": "repository/CutBridge-Blender-v0.2.5.zip",
+      "type": "file",
+      "bytes": 63682,
+      "sha256": "864131a58a1c56e4364c3e435ef1433fbda415515be7292770212bfdc4c31bfe"
+    },
+    {
+      "root": "packages",
+      "path": "repository/index.json",
+      "type": "file",
+      "bytes": 867,
+      "sha256": "b82724590b32f93666aa2d02a60ec0fb63fdc6bcd9ce45ed654f99cfa43a45d9"
+    },
+    {
+      "root": "packages",
+      "path": "rollback-after.json",
+      "type": "file",
+      "bytes": 4743,
+      "sha256": "a41b9c12b999106f87c8537b4dc37f5f0d246e09447bbd81067f95fc2c2027d7"
+    },
+    {
+      "root": "packages",
+      "path": "rollback-before.json",
+      "type": "file",
+      "bytes": 4743,
+      "sha256": "a41b9c12b999106f87c8537b4dc37f5f0d246e09447bbd81067f95fc2c2027d7"
+    },
+    {
+      "root": "policy",
+      "path": "native-ae-r6.wsb",
+      "type": "file",
+      "bytes": 2273,
+      "sha256": "a9b20ccd2cecac91fc6e701ae36866ccf6a1d729113b1f6fa568ffc6083a4d85"
+    }
+  ]
+}

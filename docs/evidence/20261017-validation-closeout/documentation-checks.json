@@ -1,0 +1,11 @@
+{
+  "checks": "PASS for documentation/data only",
+  "relative_links_verified": 10,
+  "packet_readme_ascii_clean": true,
+  "frozen_four_assets_and_original_receipt_unchanged": true,
+  "runtime_tools_tests_workflows_authorization_diff": "EMPTY",
+  "release_and_scope_acceptance": "NOT_RECEIVED",
+  "native_execution": "NOT_EXECUTED",
+  "engineering_tests": "Preserved396+2subtests at639374c; not rerun for documentation",
+  "operator_inventory_files": null
+}

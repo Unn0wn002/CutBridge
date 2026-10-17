@@ -1,0 +1,15 @@
+{
+  "comparison": "IDENTICAL",
+  "records": 7511,
+  "roots": {
+    "control-binary": 1,
+    "microsoft-runtime": 9,
+    "orchestration": 1,
+    "policy": 1,
+    "vendor-blender": 7499
+  },
+  "before_sha256": "c54299162e1583665f4a7903519d7d652c0881f3f7f3d1d53a4d9f7588e3eb9b",
+  "after_sha256": "fdd1da8e43009048e06145ca848de48280ede8ac09039467fc9606b6c757f870",
+  "complete_inventories_retained": "C:\\Users\\unn0w\\.codex\\worktrees\\5d5d\\CutBridge\\dist\\release-candidate-20261016\\validation-closeout\\manifests",
+  "not_proven": "No guest execution/isolation/native availability result was returned"
+}

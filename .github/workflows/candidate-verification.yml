@@ -1,0 +1,69 @@
+name: Isolated candidate verification
+
+# Opt-in only: a candidate push/PR cannot select privileged orchestration.
+on:
+  workflow_dispatch:
+    inputs:
+      trusted_orchestration_sha:
+        description: Independently reviewed immutable workflow/tool commit (not the candidate)
+        required: true
+        type: string
+      candidate_sha:
+        description: Exact candidate commit to verify
+        required: true
+        type: string
+      develop_sha:
+        description: Recorded fetched develop commit; calculate the candidate merge-base
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  isolated-candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Require the independently selected trust pin
+        shell: bash
+        env:
+          TRUSTED_SHA: ${{ inputs.trusted_orchestration_sha }}
+          WORKFLOW_SHA: ${{ github.workflow_sha }}
+          CANDIDATE_SHA: ${{ inputs.candidate_sha }}
+          DEVELOP_SHA: ${{ inputs.develop_sha }}
+        run: |
+          set -euo pipefail
+          for sha in "$TRUSTED_SHA" "$WORKFLOW_SHA" "$CANDIDATE_SHA" "$DEVELOP_SHA"; do
+            [[ "$sha" =~ ^[a-f0-9]{40}$ ]] || exit 1
+          done
+          [[ "$WORKFLOW_SHA" == "$TRUSTED_SHA" ]]
+          [[ "$CANDIDATE_SHA" != "$TRUSTED_SHA" ]]
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.trusted_orchestration_sha }}
+          persist-credentials: false
+          fetch-depth: 0
+          submodules: false
+          lfs: false
+      - name: Run reviewed orchestration against untrusted candidate objects
+        shell: bash
+        env:
+          TRUSTED_SHA: ${{ inputs.trusted_orchestration_sha }}
+          CANDIDATE_SHA: ${{ inputs.candidate_sha }}
+          DEVELOP_SHA: ${{ inputs.develop_sha }}
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python3 -I tools/candidate_verification.py \
+            --trusted-sha "$TRUSTED_SHA" --candidate-sha "$CANDIDATE_SHA" \
+            --develop-sha "$DEVELOP_SHA" --root "$RUNNER_TEMP/cutbridge-verification"
+      # Upload only host-owned regular-file copies, never writable output paths.
+      - name: Retain staged inputs, packages, and verification evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: cutbridge-candidate-${{ inputs.candidate_sha }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/cutbridge-verification/evidence/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30

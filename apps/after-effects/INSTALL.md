@@ -11,7 +11,7 @@ CutBridge After Effects packages use **four adjacent runtime files**:
 
 ## First-run smoke test
 
-1. Keep `CutBridge.jsx`, `revision_manager.js`, `qc_plus.js`, and `localization.js` in the same directory.
+1. Verify the ZIP's SHA-256 against both `SHA256SUMS.txt` and `release-metadata.json`, then extract the ZIP to a fresh directory. Keep `CutBridge.jsx`, `revision_manager.js`, `qc_plus.js`, and `localization.js` from that same package together; do not mix sidecars from different versions.
 2. In After Effects choose **File > Scripts > Run Script File...**.
 3. Select `CutBridge.jsx`.
 4. Confirm the panel opens in Japanese by default and can switch explicitly to English.
@@ -61,13 +61,16 @@ When `cutbridge.json` contains a valid optional `handoff_3d` block, S10C can rec
 
 - one CutBridge-managed perspective camera;
 - CutBridge-managed 3D Null layers for serialized Blender Empties;
-- baked position/orientation/projection timing from the producer contract.
+- Camera Position, Point of Interest derived from `forward`, and Zoom at sample times;
+- Null Position and supplied Scale at sample times.
+
+Camera `up`/basis and Null basis data are serialized but are not applied to AE Orientation or rotation channels. Camera roll and Empty rotation are not reconstructed. QC+ checks manifest/sequence/comp/managed render state and obsolete managed tags; it does not check expected Camera/Null completeness, channel values/keyframes, or projection parity. Inspect the supported channels separately rather than treating a clean QC report as 3D transform acceptance.
 
 CutBridge validates the handoff contract before project mutation. Ownership is identity-based, not visible-name-only. Repeated Build must be idempotent. A same-name unmanaged artist camera/null must cause fail-closed collision handling instead of adoption or overwrite.
 
 S10C does **not** provide geometry transfer, light transfer, bones, arbitrary Blender hierarchy recreation, or general scene synchronization.
 
-See `../../docs/HANDOFF_3D.md`.
+See `../../docs/HANDOFF_3D.md` in the source tree corresponding to the package tag. Source-tree `../../docs/` paths below are reference locations; those files are not included in the AE ZIP. The release-readiness link at the end of this guide is pinned to that tag during packaging.
 
 ## Native validation status
 
@@ -91,7 +94,7 @@ Recorded S10C evidence:
 - unmanaged camera/null name collisions: fail-closed PASS;
 - project persistence: PASS.
 
-This validates the bounded S10C scope in the named real host. It does **not** certify every After Effects 2024–2026 version, OS, camera configuration, or production workflow.
+These historical measurements cover the recorded fixture in the named real host. The projection measurement is separate from QC+ and does not establish camera-roll or Empty-rotation support. This evidence does **not** certify every After Effects 2024–2026 version, OS, camera configuration, production workflow, or later candidate package.
 
 ## Validation boundary
 

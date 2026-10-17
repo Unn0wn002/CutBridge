@@ -132,12 +132,12 @@ HELP_CONTENT = {
         "EN": ("Camera", (
             ("What is this?", "The active Blender scene camera recorded in the package metadata."),
             ("Required", "A scene camera is required for a valid production cut."),
-            ("3D handoff", "Experimental producer-side Camera/3D sample data remains hidden and is not release-facing until native AE reconstruction is fully validated."),
+            ("3D handoff", "The advanced control remains hidden. AE writes Camera Position/Point of Interest/Zoom and marked Empty Null Position/Scale only. Camera roll and Empty rotation are not reconstructed; inspect channels separately from QC in the exact host."),
         )),
         "JA": ("カメラ", (
             ("これは何？", "パッケージメタデータに記録されるBlender Sceneのアクティブカメラです。"),
             ("必須", "有効なプロダクションカットにはSceneカメラが必要です。"),
-            ("3Dハンドオフ", "実験的なCamera/3Dサンプル出力は非表示のままで、AE側のネイティブ再構築検証が完了するまでリリース向け機能として扱いません。"),
+            ("3Dハンドオフ", "高度な設定は非表示のままです。AEはCameraのPosition/Point of Interest/Zoomと、マーク付きEmptyのNull Position/Scaleのみ適用します。Camera RollとEmpty Rotationは再構築しません。実ホストでQCとは別にChannelを確認してください。"),
         )),
     },
     "output_path": {
@@ -154,14 +154,14 @@ HELP_CONTENT = {
     },
     "three_d_handoff": {
         "EN": ("Camera / 3D Handoff", (
-            ("Status", "Experimental producer-only data path; it is intentionally not a normal release-facing control."),
-            ("What it can contain", "Camera and supported transform samples for controlled Blender-to-AE reconstruction experiments."),
-            ("Limitation", "Do not assume AE Camera/3D Null creation is release-supported until the exact native-host validation gate passes."),
+            ("Status", "Advanced bounded handoff; the control intentionally remains hidden and disabled by default."),
+            ("What it can contain", "Evaluated-world samples; AE applies Camera Position/Point of Interest/Zoom and marked Empty Null Position/Scale only."),
+            ("Limitation", "Camera roll and Empty rotation are not reconstructed. QC does not inspect these transforms; inspect channels in the exact AE host. Compatibility claims remain limited to recorded native scope."),
         )),
         "JA": ("Camera / 3Dハンドオフ", (
-            ("状態", "実験的なproducer-onlyデータ経路で、通常のリリース向け操作としては意図的に表示していません。"),
-            ("含められるもの", "管理されたBlender→AE再構築試験用のCameraおよび対応トランスフォームサンプルです。"),
-            ("制限", "正確なネイティブホスト検証ゲートを通るまでは、AE Camera/3D Null生成をリリース対応と見なさないでください。"),
+            ("状態", "範囲を限定した高度なハンドオフです。設定は意図的に非表示で、初期値は無効です。"),
+            ("含められるもの", "Evaluated Worldサンプルを含めます。AEで適用するChannelはCameraのPosition/Point of Interest/Zoomと、マーク付きEmptyのNull Position/Scaleのみです。"),
+            ("制限", "Camera RollとEmpty Rotationは再構築しません。QCはこれらのTransformを検証しません。実際のAEホストでChannelを確認してください。互換性の主張は記録済みのネイティブ範囲に限定されます。"),
         )),
     },
 }

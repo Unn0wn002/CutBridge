@@ -1,0 +1,20 @@
+{
+    "owner_home_visible":  false,
+    "ae_installed":  true,
+    "credential_environment_present":  false,
+    "host_shares":  [
+                        {
+                            "DeviceID":  "C:",
+                            "DriveType":  3,
+                            "ProviderName":  null
+                        }
+                    ],
+    "username":  "WDAGUtilityAccount",
+    "network_adapters":  [
+                             {
+                                 "Name":  "Ethernet",
+                                 "Status":  "Up"
+                             }
+                         ],
+    "blender_installed":  true
+}

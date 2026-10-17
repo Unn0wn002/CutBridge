@@ -1,0 +1,9 @@
+{
+    "launcher_exited":  false,
+    "exit_code":  null,
+    "script_result":  "INSUFFICIENT EVIDENCE",
+    "timestamp_utc":  "2026-10-16T08:52:14.5812318Z",
+    "pid":  8764,
+    "normal_ae_exit":  "Requires native process/quit record; .com launch exit alone is insufficient",
+    "scope":  "Scripted native exact-package tests; no S14B or visual installer sign-off"
+}

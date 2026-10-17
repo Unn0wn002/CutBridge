@@ -1,0 +1,15 @@
+{
+  "status": "NOT_RECEIVED",
+  "candidate_sha": "639374ce5f1b5f0d36847258d052c36ab21dd208",
+  "reviewer_name": null,
+  "reviewed_at_utc": null,
+  "os_build": null,
+  "host_builds": {},
+  "vendor_binary_and_dependency_hashes": {},
+  "network_disabled_evidence": [],
+  "owner_credentials_absent_evidence": [],
+  "read_only_inputs_and_explicit_writable_paths": [],
+  "vendor_only_blank_and_probe_controls": [],
+  "approved_for_candidate_execution": false,
+  "scope": "Environment acceptance only; not native workflow or release approval"
+}

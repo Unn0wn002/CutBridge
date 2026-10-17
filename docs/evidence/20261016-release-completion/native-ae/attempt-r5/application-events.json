@@ -1,0 +1,37 @@
+[
+    {
+        "Id":  24,
+        "ProviderName":  "Microsoft-Windows-AppModel-State",
+        "Message":  "Repair of state locations for operation InitializeDataChangedSignaler against package Microsoft.Windows.ShellExperienceHost_cw5n1h2txyewy with error -2147024894 returned Error Code: 0"
+    },
+    {
+        "Id":  23,
+        "ProviderName":  "Microsoft-Windows-AppModel-State",
+        "Message":  "Triggered repair of state locations because operation InitializeDataChangedSignaler against package Microsoft.Windows.ShellExperienceHost_cw5n1h2txyewy hit error -2147024894."
+    },
+    {
+        "Id":  4,
+        "ProviderName":  "Microsoft-Windows-AppModel-State",
+        "Message":  "ApiSet Function: CreateStateChangeNotification:statechangenotification.cpp,226,80070002;[ReadStateName];statemanager.cpp,1158,80070002; returned with Result: -2147024894"
+    },
+    {
+        "Id":  1001,
+        "ProviderName":  "Windows Error Reporting",
+        "Message":  "Fault bucket , type 0\r\nEvent Name: LiveKernelEvent\r\nResponse: Not available\r\nCab Id: 0\r\n\r\nProblem signature:\r\nP1: 193\r\nP2: aaaaaaaaaaaaaaaa\r\nP3: aaaaaaaaaaaaaaaa\r\nP4: aaaaaaaaaaaaaaaa\r\nP5: aaaaaaaaaaaaaaaa\r\nP6: 10_0_26100\r\nP7: 0_0\r\nP8: 256_1\r\nP9: \r\nP10: \r\n\r\nAttached files:\r\n\\\\?\\C:\\Windows\\LiveKernelReports\\WATCHDOG\\WATCHDOG-20261016-2032.dmp\r\n\\\\?\\C:\\Windows\\SystemTemp\\WER-19203-0.sysdata.xml\r\n\\\\?\\C:\\Windows\\LiveKernelReports\\WATCHDOG-20261016-2032.dmp\r\n\\\\?\\C:\\ProgramData\\Microsoft\\Windows\\WER\\Temp\\WER.873ddbc2-fe7a-42ef-8dea-6cfa01c040da.tmp.xml\r\n\\\\?\\C:\\ProgramData\\Microsoft\\Windows\\WER\\Temp\\WER.92f1ebbe-4038-4f00-a1a1-0ee61221d053.tmp.WERInternalMetadata.xml\r\n\r\nThese files may be available here:\r\n\\\\?\\C:\\ProgramData\\Microsoft\\Windows\\WER\\ReportQueue\\Kernel_193_f3cfd2d62189a1729fe35733da6c2e7aff21f6ad_00000000_cab_ce0c4f0a-ad3d-46ac-b28e-ce1502ef02e5\r\n\r\nAnalysis symbol: \r\nRechecking for solution: 0\r\nReport Id: ce0c4f0a-ad3d-46ac-b28e-ce1502ef02e5\r\nReport Status: 6\r\nHashed bucket: \r\nCab Guid: 0"
+    },
+    {
+        "Id":  1001,
+        "ProviderName":  "Windows Error Reporting",
+        "Message":  "Fault bucket , type 0\r\nEvent Name: LiveKernelEvent\r\nResponse: Not available\r\nCab Id: 0\r\n\r\nProblem signature:\r\nP1: 193\r\nP2: aaaaaaaaaaaaaaaa\r\nP3: aaaaaaaaaaaaaaaa\r\nP4: aaaaaaaaaaaaaaaa\r\nP5: aaaaaaaaaaaaaaaa\r\nP6: 10_0_26100\r\nP7: 0_0\r\nP8: 256_1\r\nP9: \r\nP10: \r\n\r\nAttached files:\r\n\\\\?\\C:\\Windows\\LiveKernelReports\\WATCHDOG\\WATCHDOG-20261016-2032.dmp\r\n\\\\?\\C:\\Windows\\SystemTemp\\WER-19203-0.sysdata.xml\r\n\\\\?\\C:\\Windows\\LiveKernelReports\\WATCHDOG-20261016-2032.dmp\r\n\\\\?\\C:\\ProgramData\\Microsoft\\Windows\\WER\\Temp\\WER.873ddbc2-fe7a-42ef-8dea-6cfa01c040da.tmp.xml\r\n\\\\?\\C:\\ProgramData\\Microsoft\\Windows\\WER\\Temp\\WER.92f1ebbe-4038-4f00-a1a1-0ee61221d053.tmp.WERInternalMetadata.xml\r\n\r\nThese files may be available here:\r\n\\\\?\\C:\\ProgramData\\Microsoft\\Windows\\WER\\ReportQueue\\Kernel_193_f3cfd2d62189a1729fe35733da6c2e7aff21f6ad_00000000_cab_ce0c4f0a-ad3d-46ac-b28e-ce1502ef02e5\r\n\r\nAnalysis symbol: \r\nRechecking for solution: 0\r\nReport Id: ce0c4f0a-ad3d-46ac-b28e-ce1502ef02e5\r\nReport Status: 4\r\nHashed bucket: \r\nCab Guid: 0"
+    },
+    {
+        "Id":  5617,
+        "ProviderName":  "Microsoft-Windows-WMI",
+        "Message":  "Windows Management Instrumentation Service subsystems initialized successfully"
+    },
+    {
+        "Id":  4097,
+        "ProviderName":  "Microsoft-Windows-CAPI2",
+        "Message":  "Successful auto update of third-party root certificate:: Subject: \u003cCN=DigiCert Trusted Root G4, OU=www.digicert.com, O=DigiCert Inc, C=US\u003e Sha1 thumbprint: \u003cDDFB16CD4931C973A2037D3FC83A4D7D775D05E4\u003e."
+    }
+]

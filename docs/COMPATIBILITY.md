@@ -21,6 +21,8 @@ These headless checks establish specific API/contract behavior but do not by the
 
 The S8 native Blender gate passed on Blender 5.2.1 LTS for the tested Japanese/English N-panel, narrow-panel layout, Validate Cut, and Build Package workflow.
 
+Current bounded native Blender evidence is **5.2.2**, build `d13f752e3b9c`, for the exact/equivalent ZIP accompanying tested code SHA `a44792099b3b5f5b7a2f69a41061268fe59586b3`. The scripted GUI-event-loop V001–V003/36-output, preservation, negative/rollback and fresh-process reopen scope passed with actual exits 0; visual installation/panel/manual-update checks remain excluded. A separate visual attempt failed official-validator startup with `0xc0e90002` before candidate execution, so it adds no visual acceptance or candidate-failure evidence. See [current preparation](RELEASE_PREPARATION_v0.2.5.md) for SHA-256 and equivalence boundaries. The official `bpy 5.2.1` automated runtime passed **395 tests + 2 subtests**, no skips, in the independently trusted Linux run; it remains separate from native Blender 5.2.2 evidence.
+
 S10B evaluated-world camera/Empty producer behavior is covered authoritatively by the official Blender 5.2.1 automated runtime/package suite. The broader release-target end-to-end campaign remains a separate release gate.
 
 ## Platform identifiers
@@ -55,13 +57,15 @@ Automated coverage includes:
 - **S4 contract coverage:** manifest/schema validation, frame semantics, required/optional passes, exact sequence coverage, path containment, Unicode filename handling in contract/host mocks, legacy data-only JSON parsing, and AE product-version synchronization.
 - **S5 reliability coverage:** deterministic managed comp/footage/layer ownership, repeated build and script-reload behavior, collision/drift rejection, cache rediscovery, managed-source/FPS validation, QC failure reporting, optional-pass behavior, and rollback of newly created managed objects.
 - **S6 revision coverage:** compatibility classification, opaque revision tickets, live ownership revalidation, stage-all/validate-all replacement import, native-adapter `AVLayer.replaceSource(..., false)` usage, source-swap rollback, V001→V002→V003 host-shaped lifecycle checks, historical-footage provenance, package-root note preservation, Build/QC after revision and reload, fail-closed handling of missing/duplicate deterministic package structure, pass-set rejection semantics, and managed-layer QC verification.
-- **S7 QC+ coverage:** deterministic `CBQ-*` diagnostics, native binding guards, warning/error remediation semantics, and revision-aware QC.
+- **S7 QC+ coverage:** deterministic `CBQ-*` diagnostics, native binding guards, sequence/comp/managed render ownership checks and warning/error remediation semantics. Revision compatibility is assessed by the revision workflow; a clean QC report does not certify 3D transforms.
 - **S8 localization coverage:** Japanese-first / English-fallback behavior, invalid/missing localization handling, persistence semantics, and native UI binding guards.
-- **S10C reconstruction coverage:** optional `handoff_3d` validation, managed camera/3D Null ownership, coordinate/projection transformation, FOV/Zoom parity, repeated-build isolation, collision rejection, and simulated projection parity.
+- **S10C reconstruction coverage:** optional `handoff_3d` validation, managed camera/3D Null ownership, Camera Position/Point of Interest/Zoom and Null Position/Scale, repeated-build isolation, collision rejection, and fixture-scoped simulated projection parity. Camera roll and Empty rotation are not reconstructed. QC+ does not check expected Camera/Null completeness, channel values/keyframes or projection parity; see [the exact channel boundary](HANDOFF_3D.md#after-effects-reconstruction-boundary).
 
 These automated tests establish regression behavior and guard intended native adapter paths. They do **not** by themselves certify a real After Effects desktop host, ScriptUI behavior, Undo semantics, save/reopen persistence, filesystem/sequence interpretation on a specific OS, or preservation of all artist-authored properties.
 
 ## Native After Effects evidence
+
+The v0.2.5 Blender `fef1023` and AE `049c095` campaigns preserve useful host observations, but their retained records do not establish the required offline/mount/credential isolation configuration. Their release-gate verdict is **INSUFFICIENT EVIDENCE**; historical PASS observations must not be applied to the current candidate. Current AE acceptance is **BLOCKED / INSUFFICIENT EVIDENCE**: the corrected harness did not execute, AE startup exited `0xc0e90002` with vGPU Enable and Disable, and fresh preflight observed an `rpds` DLL blocked by Application Control. Causation is not established and policy was not changed. [Retained assessment](evidence/20261016-release-completion/native-ae/assessment.json) accepts zero current candidate native assertions. Current exact-package AE installation, preservation, rollback and reopen acceptance remains unexecuted; Node/CI success does not certify this native scope.
 
 ### S6 / S7 / S8 evidence
 
@@ -105,7 +109,7 @@ The authoritative execution checklist is [RELEASE_READINESS.md](RELEASE_READINES
 
 ## Current compatibility summary
 
-- Blender 4.2 / 4.5 / 5.2 LTS: target matrix; automated authoritative runtime currently centers on 5.2.1, with bounded real Blender 5.2.1 evidence already recorded.
+- Blender 4.2 / 4.5 / 5.2 LTS: target matrix; automated authoritative runtime centers on 5.2.1. Bounded historical 5.2.1 and current scripted 5.2.2 native scopes are distinct; neither certifies the complete target matrix.
 - After Effects 2024–2026: target range.
 - After Effects 2026 Build 87 on Windows 11: bounded real native evidence exists for S6–S8 scopes and S10C reconstruction/parity.
 - Stable broad compatibility certification: **not yet claimed**.

@@ -1,0 +1,83 @@
+{
+  "version": 1,
+  "root": "C:\\Evidence\\verification-output\\native-blender\\packages\\Native025_EP01_SC010_C001_T01_V001",
+  "manifest_sha256": "e2ebb3ab79199af023d15e2028e66079219735e6fe92c5f260cae3b67179e9f7",
+  "fixture_sha256": "7d2f7e12758243d00ad11440981fdb51be81d413fe3f8277332fca6c28345f57",
+  "handoff_comparison_sha256": "f0d89d97608a254fa3ae6f885a5e1a9e507ae31c42446d1bd4b75688f7ac6cb1",
+  "rendered": [
+    "render/beauty/C001_BEAUTY_0001.png",
+    "render/beauty/C001_BEAUTY_0002.png",
+    "render/beauty/C001_BEAUTY_0003.png",
+    "render/depth/C001_DEPTH_0001.exr",
+    "render/depth/C001_DEPTH_0002.exr",
+    "render/depth/C001_DEPTH_0003.exr",
+    "render/line/C001_LINE_0001.png",
+    "render/line/C001_LINE_0002.png",
+    "render/line/C001_LINE_0003.png",
+    "render/shadow/C001_SHADOW_0001.png",
+    "render/shadow/C001_SHADOW_0002.png",
+    "render/shadow/C001_SHADOW_0003.png"
+  ],
+  "files": {
+    "cutbridge.json": {
+      "bytes": 7477,
+      "sha256": "e2ebb3ab79199af023d15e2028e66079219735e6fe92c5f260cae3b67179e9f7"
+    },
+    "render/beauty/C001_BEAUTY_0001.png": {
+      "bytes": 40084,
+      "sha256": "4d22d39f2bca9d3692fe2892495b9696c2f5cbe71c7facbbc13085bd9fc10c22"
+    },
+    "render/beauty/C001_BEAUTY_0002.png": {
+      "bytes": 40152,
+      "sha256": "f626915d719b38500c7f15693a215ffbc457e1fa9a71ae2b34d6285d1a518d03"
+    },
+    "render/beauty/C001_BEAUTY_0003.png": {
+      "bytes": 40081,
+      "sha256": "79d54e0f582bbff8bedd7cba7e7994becb56900355efb6350c941fa309c79fdb"
+    },
+    "render/depth/C001_DEPTH_0001.exr": {
+      "bytes": 925192,
+      "sha256": "72636760f4627082e41cec666fa3910c94cad843ce792a729dd5b25e423358af"
+    },
+    "render/depth/C001_DEPTH_0002.exr": {
+      "bytes": 925192,
+      "sha256": "33d68ae7c5b4dac0ad9c417fa2cc57598bca4c06dccc5c2c657787d759095285"
+    },
+    "render/depth/C001_DEPTH_0003.exr": {
+      "bytes": 925192,
+      "sha256": "5f4571b1ae0330a92b96703726164ef4f3822d355c473987a48570d708e92b0e"
+    },
+    "render/line/C001_LINE_0001.png": {
+      "bytes": 23982,
+      "sha256": "d639195e25da0bf30f326057d98d3e6f02e124359d5a6096a7180d7f7e7e3acb"
+    },
+    "render/line/C001_LINE_0002.png": {
+      "bytes": 24176,
+      "sha256": "f9c01145b3dd3afb96816070b24dbf423ffa3fc997bbe8c6a5fede6a5e5ba3e6"
+    },
+    "render/line/C001_LINE_0003.png": {
+      "bytes": 24009,
+      "sha256": "232c7e5819f8c2f681f6920830e68e60438a945aa1ac77b6cc42b51d2fbc1c0f"
+    },
+    "render/shadow/C001_SHADOW_0001.png": {
+      "bytes": 34272,
+      "sha256": "ff6d512bfcc6c0696ae4c8cb99dc3f0a97e124c7e39b9b1858b98a37184c7497"
+    },
+    "render/shadow/C001_SHADOW_0002.png": {
+      "bytes": 34213,
+      "sha256": "91cb8ce851bed0dfc14bda9cd1bf32944d97d054216011988955d09f983607d8"
+    },
+    "render/shadow/C001_SHADOW_0003.png": {
+      "bytes": 34303,
+      "sha256": "2ace0b35d698c5b5b07f1ee37f161f279faae00630e2828e1505573d3e4b49ca"
+    }
+  },
+  "overwrite": {
+    "result": "RuntimeError from cancelled operator",
+    "message": "Error: Existing Package Is Protected: This version already contains render/user data, so Build Package will not overwrite it. Why: CutBridge protects completed or in-progress package payload from destructive same-version rebuilds. Can I continue? Yes for rendering the already-built package; no for rebuilding this same version. Fix: Continue Render Animation without Build Package, or increment Version for a new revision. [EN] Package Native025_EP01_SC010_C001_T01_V001 contains render/user data (render/beauty/C001_BEAUTY_0001.png) and will not be overwritten. Fix: For a new revision, increment Version. To keep rendering this already-built version, do not run Build Package again.\n"
+  },
+  "mismatch_build": {
+    "result": "RuntimeError from cancelled operator",
+    "message": "Error: Existing Package Is Protected: This version already contains render/user data, so Build Package will not overwrite it. Why: CutBridge protects completed or in-progress package payload from destructive same-version rebuilds. Can I continue? Yes for rendering the already-built package; no for rebuilding this same version. Fix: Continue Render Animation without Build Package, or increment Version for a new revision. [EN] Package Native025_EP01_SC010_C001_T01_V001 contains render/user data (render/beauty/C001_BEAUTY_0001.png) and will not be overwritten. Fix: For a new revision, increment Version. To keep rendering this already-built version, do not run Build Package again.\n"
+  }
+}

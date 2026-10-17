@@ -1,0 +1,182 @@
+{
+  "overall_verdict": "INSUFFICIENT EVIDENCE",
+  "candidate_sha": "a44792099b3b5f5b7a2f69a41061268fe59586b3",
+  "branch": "fix/current-release-completion-20261016",
+  "base_sha": "8cc5a4fe19e97c2f83105b888f96ccf1b423e8fd",
+  "merge_base_sha": "8cc5a4fe19e97c2f83105b888f96ccf1b423e8fd",
+  "trusted_linux": {
+    "verdict": "PASS",
+    "run_url": "https://github.com/Unn0wn002/CutBridge/actions/runs/38910000382",
+    "bootstrap_sha": "8d1ecef5e2abb8c0b27f7951eb5a3eb75773afcc",
+    "trusted_tools_sha": "a6ee2445f81906c024fd5b9e1689faac017f198a",
+    "snapshot_id": "9ef5906dfc923d3b3eef49d64873181a575b3f73d986942ee635061842b74aea",
+    "image_id": "sha256:92eb13d9218e0bbae65eb01a1251d095752da3bfc2d4840f2bb4298208cda76d",
+    "pytest_passed": 395,
+    "subtests_passed": 2,
+    "skipped": 0,
+    "bpy": "5.2.1",
+    "node_suites": 18,
+    "syntax": "PASS",
+    "preflight": "PASS",
+    "complete_repeated_package_bytes": "IDENTICAL",
+    "input_integrity": "identical exact paths/types/modes/bytes",
+    "safe_staging_upload": "PASS",
+    "retained_download_sha256": "53e9783c81da36c66eb5b9d3782244806d1b3023b1213eebd21fc354956d0e79",
+    "verified_inner_checksums": 48,
+    "evidence_path": "trusted-linux/passed-r2/"
+  },
+  "ordinary_ci": {
+    "verdict": "PASS",
+    "candidate_sha": "a44792099b3b5f5b7a2f69a41061268fe59586b3",
+    "run_url": "https://github.com/Unn0wn002/CutBridge/actions/runs/38909885640",
+    "pytest_passed": 395,
+    "subtests_passed": 2,
+    "skipped": 0,
+    "evidence_path": "ci/"
+  },
+  "windows_earlier": {
+    "candidate_sha": "5293cd46a819debfe8ecf41f740c4e94806dd89c",
+    "verdict": "PASS",
+    "pytest": {
+      "passed": 390,
+      "skipped": [
+        {
+          "test": "tests.test_candidate_verification::test_snapshot_verification_rejects_missing_extra_and_mode_changes",
+          "reason": "snapshot modes require the Linux verifier host"
+        },
+        {
+          "test": "tests.test_candidate_verification::test_fifo_is_rejected_without_blocking",
+          "reason": "FIFO regression requires POSIX"
+        }
+      ],
+      "subtests_passed": 2
+    },
+    "node_suites": 18,
+    "toolchain": {
+      "python": "3.13.13 official embedded Windows runtime",
+      "bpy": "5.2.1 official wheel",
+      "node": "22.23.3 official Windows x64 archive"
+    },
+    "evidence_path": "automated/",
+    "integrity": {
+      "checks-r3": {
+        "result": "IDENTICAL",
+        "records": 488,
+        "before_sha256": "50bc2185257d6a45bf34254c63906babb6021348f52608cb57f20a64a35fe650",
+        "after_sha256": "8a20c378843eefcde5051c5839ec832626d484430198006924b264ee9dfa2ed0"
+      },
+      "native-blender": {
+        "result": "IDENTICAL",
+        "records": 24,
+        "before_sha256": "4817423b4823b2dffcd3b042b5be2f206da8e287b42e97b7b34ab9e52237dd66",
+        "after_sha256": "8c7c60c9ecf56a6c0ca44cbfb5be1e41fcabd7ce134f2122c14b23d4e6732b26"
+      },
+      "dependencies": {
+        "result": "IDENTICAL",
+        "records": 7968,
+        "before_sha256": "171aa1844e5778a3bab084f4c3901693d2c029466b942855a1c23c704d448249",
+        "after_sha256": "c12acb08960385b4566c704e8336f288ea8147c0862ea680dec5345eba9f6a01"
+      }
+    },
+    "artifacts": {
+      "CutBridge-Blender-v0.2.5.zip": {
+        "sha256": "864131a58a1c56e4364c3e435ef1433fbda415515be7292770212bfdc4c31bfe",
+        "bytes": 63682
+      },
+      "CutBridge-AfterEffects-v0.2.5.zip": {
+        "sha256": "427a36ba8638e88940b18f9daa34537c7e41ad939f3b81fddb50a3812d691268",
+        "bytes": 59686
+      },
+      "SHA256SUMS.txt": {
+        "sha256": "93f1d73022b85fc3ece4b71ca0500af73dd71fce95b47b3068948646ecd884dd",
+        "bytes": 197
+      },
+      "release-metadata.json": {
+        "sha256": "5b29b100062c1dea0fcb5c868e3b35f7e28aa58ce70b3d9f905e9a6c8e38f709",
+        "bytes": 694
+      }
+    }
+  },
+  "windows_latest_attempt": {
+    "verdict": "INSUFFICIENT EVIDENCE",
+    "candidate_sha": "931b4752d0dbb2df915f73d65591604486c1f1d6",
+    "candidate_execution": "NOT_EXECUTED",
+    "reason": "Application Control blocked rpds DLL in dependency preflight",
+    "input_inventory": "IDENTICAL",
+    "evidence_path": "windows-latest-attempt/"
+  },
+  "native_blender": {
+    "scoped_result": "PASS",
+    "host": "5.2.2 LTS",
+    "build_hash": "d13f752e3b9c",
+    "rendered_outputs": 36,
+    "fresh_process_reopen": "PASS",
+    "actual_gui_process_ids": [
+      4948,
+      4956
+    ],
+    "actual_exit_codes": [
+      0,
+      0
+    ],
+    "visual_installer_and_button_checks": "NOT_EXECUTED",
+    "source_sha": "c234d1f42d7cdff10170289c0cbd35b4a007d8c6",
+    "evidence_path": "native-blender/"
+  },
+  "native_ae": {
+    "verdict": "INSUFFICIENT EVIDENCE",
+    "observed_host": "26.5x89 / build89",
+    "candidate_native_assertions": 0,
+    "evidence_path": "native-ae/assessment.json",
+    "normal_exit_and_reopen": "NOT_VERIFIED",
+    "startup_exit_status": "0xc0e90002",
+    "policy_or_authorization_changed": false
+  },
+  "native_visual_attempt": {
+    "verdict": "INSUFFICIENT EVIDENCE",
+    "reason": "Official Blender validator startup exited 0xc0e90002 before candidate harness",
+    "evidence_path": "native-blender-visual/"
+  },
+  "artifacts": {
+    "CutBridge-AfterEffects-v0.2.5.zip": {
+      "bytes": 59686,
+      "sha256": "427a36ba8638e88940b18f9daa34537c7e41ad939f3b81fddb50a3812d691268"
+    },
+    "CutBridge-Blender-v0.2.5.zip": {
+      "bytes": 63682,
+      "sha256": "864131a58a1c56e4364c3e435ef1433fbda415515be7292770212bfdc4c31bfe"
+    },
+    "release-metadata.json": {
+      "bytes": 674,
+      "sha256": "a9e0d91202173cb9ad431a3f1b85ca0b8b8d4a416ad49a5e8e3c336e23a1722f"
+    },
+    "SHA256SUMS.txt": {
+      "bytes": 195,
+      "sha256": "d153d2ca56594f28ee4ed75d9b97859d4430a0950ad1385aaa6d32fedebbe4bb"
+    }
+  },
+  "equivalence": {
+    "c234_to_a447_apps_license_builder_git_diff": "EMPTY",
+    "windows_5293_linux_a447_two_zip_hashes": "IDENTICAL",
+    "text_assets": "Platform CRLF/LF differs across hosts; JSON values/checksum entries identical. Each toolchain independently produced two byte-identical complete four-asset builds. Primary packet uses exact Linux a447 bytes.",
+    "native_blender_reuse": "Exact unchanged Blender ZIP and retained fixtures/harness/build. Limited to observed scripted native scope; no AE/UI/manual result transferred."
+  },
+  "official_blender_generator": {
+    "before_after_inputs": "IDENTICAL",
+    "before_after_reopen_inputs": "IDENTICAL",
+    "official_generator_entry_matches_preview": true,
+    "official_index_sha256": "b82724590b32f93666aa2d02a60ec0fb63fdc6bcd9ce45ed654f99cfa43a45d9"
+  },
+  "working_target": "2026-10-22",
+  "official_submission_deadline": "UNCONFIRMED",
+  "s14b": "NOT_EXECUTED",
+  "release_authorization": false,
+  "production_version": "0.2.3",
+  "public_release": "NOT_AUTHORIZED",
+  "required_remaining": [
+    "AE native installation/workflow V001-V003/preservation/negative/rollback/reopen acceptance in an approved initializing host",
+    "Applicable Blender/AE visual installation/UI/manual-update checks",
+    "Independent exact-candidate release review and demonstrated-scope acceptance",
+    "Separate explicit protected promotion, exact-tuple authorization, publication/download verification and distribution approval"
+  ]
+}

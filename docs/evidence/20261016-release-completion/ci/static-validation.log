@@ -1,0 +1,522 @@
+﻿2026-10-16T08:41:23.4665741Z Current runner version: '2.337.0'
+2026-10-16T08:41:23.4691437Z ##[group]Runner Image Provisioner
+2026-10-16T08:41:23.4692749Z Hosted Compute Agent
+2026-10-16T08:41:23.4693376Z Version: 20261012.601
+2026-10-16T08:41:23.4694011Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+2026-10-16T08:41:23.4694796Z Build Date: 2026-10-12T17:48:21Z
+2026-10-16T08:41:23.4695520Z Worker ID: {38daf534-4b07-46ae-a71d-9304f2271dfe}
+2026-10-16T08:41:23.4696219Z Region: westus
+2026-10-16T08:41:23.4696835Z Cloud: Azure
+2026-10-16T08:41:23.4697373Z ##[endgroup]
+2026-10-16T08:41:23.4699313Z ##[group]Operating System
+2026-10-16T08:41:23.4700018Z Ubuntu
+2026-10-16T08:41:23.4700566Z 24.04.5
+2026-10-16T08:41:23.4701143Z LTS
+2026-10-16T08:41:23.4701664Z ##[endgroup]
+2026-10-16T08:41:23.4702255Z ##[group]Runner Image
+2026-10-16T08:41:23.4703176Z Image: ubuntu-24.04
+2026-10-16T08:41:23.4703742Z Version: 20261012.334.1
+2026-10-16T08:41:23.4705084Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-16T08:41:23.4706702Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+2026-10-16T08:41:23.4707734Z ##[endgroup]
+2026-10-16T08:41:23.4708891Z ##[group]GITHUB_TOKEN Permissions
+2026-10-16T08:41:23.4710820Z Contents: read
+2026-10-16T08:41:23.4711424Z Metadata: read
+2026-10-16T08:41:23.4712078Z ##[endgroup]
+2026-10-16T08:41:23.4714651Z Secret source: Actions
+2026-10-16T08:41:23.4715726Z Cache mode: write
+2026-10-16T08:41:23.4716433Z Prepare workflow directory
+2026-10-16T08:41:23.5093146Z Prepare all required actions
+2026-10-16T08:41:23.5155898Z Getting action download info
+2026-10-16T08:41:23.8984749Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-10-16T08:41:24.0168511Z Download action repository 'actions/setup-node@820762786026740c76f36085b0efc47a31fe5020' (SHA:820762786026740c76f36085b0efc47a31fe5020)
+2026-10-16T08:41:24.0983502Z Download action repository 'actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97' (SHA:5fda3b95a4ea91299a34e894583c3862153e4b97)
+2026-10-16T08:41:24.2281696Z Download action repository 'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a' (SHA:043fb46d1a93c77aae656e7c1c64a875d1fc6a0a)
+2026-10-16T08:41:24.3012641Z Download action repository 'actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c' (SHA:3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c)
+2026-10-16T08:41:24.8002551Z Complete job name: static-validation
+2026-10-16T08:41:24.8840774Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-10-16T08:41:24.8841871Z with:
+2026-10-16T08:41:24.8842323Z   persist-credentials: false
+2026-10-16T08:41:24.8843153Z   repository: Unn0wn002/CutBridge
+2026-10-16T08:41:24.8847027Z   token: ***
+2026-10-16T08:41:24.8847456Z   ssh-strict: true
+2026-10-16T08:41:24.8847892Z   ssh-user: git
+2026-10-16T08:41:24.8848308Z   clean: true
+2026-10-16T08:41:24.8848756Z   sparse-checkout-cone-mode: true
+2026-10-16T08:41:24.8849314Z   fetch-depth: 1
+2026-10-16T08:41:24.8849749Z   fetch-tags: false
+2026-10-16T08:41:24.8850193Z   show-progress: true
+2026-10-16T08:41:24.8850644Z   lfs: false
+2026-10-16T08:41:24.8851103Z   submodules: false
+2026-10-16T08:41:24.8851548Z   set-safe-directory: true
+2026-10-16T08:41:24.8852066Z   allow-unsafe-pr-checkout: false
+2026-10-16T08:41:24.8853059Z ##[endgroup]
+2026-10-16T08:41:24.9948570Z Syncing repository: Unn0wn002/CutBridge
+2026-10-16T08:41:24.9950625Z ##[group]Getting Git version info
+2026-10-16T08:41:24.9951870Z Working directory is '/home/runner/work/CutBridge/CutBridge'
+2026-10-16T08:41:24.9953984Z [command]/usr/bin/git version
+2026-10-16T08:41:25.0055118Z git version 2.55.0
+2026-10-16T08:41:25.0080290Z ##[endgroup]
+2026-10-16T08:41:25.0092871Z Temporarily overriding HOME='/home/runner/work/_temp/390cf18f-ccea-4bb6-a546-262ba1a4c008' before making global git config changes
+2026-10-16T08:41:25.0095464Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-16T08:41:25.0100693Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/CutBridge/CutBridge
+2026-10-16T08:41:25.0159403Z Deleting the contents of '/home/runner/work/CutBridge/CutBridge'
+2026-10-16T08:41:25.0163894Z ##[group]Determining repository object format
+2026-10-16T08:41:25.0165787Z ##[endgroup]
+2026-10-16T08:41:25.0167216Z ##[group]Initializing the repository
+2026-10-16T08:41:25.0170717Z [command]/usr/bin/git init /home/runner/work/CutBridge/CutBridge
+2026-10-16T08:41:25.0319459Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-16T08:41:25.0321530Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-16T08:41:25.0324001Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-16T08:41:25.0325446Z hint: call:
+2026-10-16T08:41:25.0326397Z hint:
+2026-10-16T08:41:25.0327279Z hint: 	git config --global init.defaultBranch <name>
+2026-10-16T08:41:25.0328074Z hint:
+2026-10-16T08:41:25.0328701Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-16T08:41:25.0329706Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-16T08:41:25.0330495Z hint:
+2026-10-16T08:41:25.0330941Z hint: 	git branch -m <name>
+2026-10-16T08:41:25.0331444Z hint:
+2026-10-16T08:41:25.0332113Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-16T08:41:25.0335213Z Initialized empty Git repository in /home/runner/work/CutBridge/CutBridge/.git/
+2026-10-16T08:41:25.0349241Z [command]/usr/bin/git remote add origin https://github.com/Unn0wn002/CutBridge
+2026-10-16T08:41:25.0419275Z ##[endgroup]
+2026-10-16T08:41:25.0420752Z ##[group]Disabling automatic garbage collection
+2026-10-16T08:41:25.0422214Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-16T08:41:25.0457706Z ##[endgroup]
+2026-10-16T08:41:25.0459047Z ##[group]Setting up auth
+2026-10-16T08:41:25.0460047Z Removing SSH command configuration
+2026-10-16T08:41:25.0465622Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-16T08:41:25.0506587Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-16T08:41:25.0928221Z Removing HTTP extra header
+2026-10-16T08:41:25.0934636Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-16T08:41:25.0974103Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-16T08:41:25.1192102Z Removing includeIf entries pointing to credentials config files
+2026-10-16T08:41:25.1197955Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-16T08:41:25.1239514Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-16T08:41:25.1464721Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-98e2162f-00c7-45c1-92f6-70f4598713c0.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-16T08:41:25.1504256Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/CutBridge/CutBridge/.git.path /home/runner/work/_temp/git-credentials-98e2162f-00c7-45c1-92f6-70f4598713c0.config
+2026-10-16T08:41:25.1539641Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/CutBridge/CutBridge/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-98e2162f-00c7-45c1-92f6-70f4598713c0.config
+2026-10-16T08:41:25.1593602Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-98e2162f-00c7-45c1-92f6-70f4598713c0.config
+2026-10-16T08:41:25.1628343Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-98e2162f-00c7-45c1-92f6-70f4598713c0.config
+2026-10-16T08:41:25.1660185Z ##[endgroup]
+2026-10-16T08:41:25.1661385Z ##[group]Fetching the repository
+2026-10-16T08:41:25.1666402Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +5293cd46a819debfe8ecf41f740c4e94806dd89c:refs/remotes/origin/fix/current-release-completion-20261016
+2026-10-16T08:41:26.0826920Z From https://github.com/Unn0wn002/CutBridge
+2026-10-16T08:41:26.0828860Z  * [new ref]         5293cd46a819debfe8ecf41f740c4e94806dd89c -> origin/fix/current-release-completion-20261016
+2026-10-16T08:41:26.0837900Z [command]/usr/bin/git branch --list --remote origin/fix/current-release-completion-20261016
+2026-10-16T08:41:26.0867741Z   origin/fix/current-release-completion-20261016
+2026-10-16T08:41:26.0877419Z [command]/usr/bin/git rev-parse refs/remotes/origin/fix/current-release-completion-20261016
+2026-10-16T08:41:26.0904930Z 5293cd46a819debfe8ecf41f740c4e94806dd89c
+2026-10-16T08:41:26.0910139Z ##[endgroup]
+2026-10-16T08:41:26.0911852Z ##[group]Determining the checkout info
+2026-10-16T08:41:26.0914022Z ##[endgroup]
+2026-10-16T08:41:26.0916454Z [command]/usr/bin/git sparse-checkout disable
+2026-10-16T08:41:26.0977436Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-16T08:41:26.1013386Z ##[group]Checking out the ref
+2026-10-16T08:41:26.1018525Z [command]/usr/bin/git checkout --progress --force -B fix/current-release-completion-20261016 refs/remotes/origin/fix/current-release-completion-20261016
+2026-10-16T08:41:26.1524122Z Switched to a new branch 'fix/current-release-completion-20261016'
+2026-10-16T08:41:26.1529691Z branch 'fix/current-release-completion-20261016' set up to track 'origin/fix/current-release-completion-20261016'.
+2026-10-16T08:41:26.1539638Z ##[endgroup]
+2026-10-16T08:41:26.1591870Z [command]/usr/bin/git log -1 --format=%H
+2026-10-16T08:41:26.1622959Z 5293cd46a819debfe8ecf41f740c4e94806dd89c
+2026-10-16T08:41:26.1633466Z ##[group]Removing auth
+2026-10-16T08:41:26.1634489Z Removing SSH command configuration
+2026-10-16T08:41:26.1638170Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-16T08:41:26.1676468Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-16T08:41:26.1907597Z Removing HTTP extra header
+2026-10-16T08:41:26.1911798Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-16T08:41:26.1947516Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-16T08:41:26.2171765Z Removing includeIf entries pointing to credentials config files
+2026-10-16T08:41:26.2175501Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-16T08:41:26.2208200Z includeif.gitdir:/home/runner/work/CutBridge/CutBridge/.git.path
+2026-10-16T08:41:26.2209462Z includeif.gitdir:/home/runner/work/CutBridge/CutBridge/.git/worktrees/*.path
+2026-10-16T08:41:26.2210375Z includeif.gitdir:/github/workspace/.git.path
+2026-10-16T08:41:26.2211403Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-16T08:41:26.2217784Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/CutBridge/CutBridge/.git.path
+2026-10-16T08:41:26.2245034Z /home/runner/work/_temp/git-credentials-98e2162f-00c7-45c1-92f6-70f4598713c0.config
+2026-10-16T08:41:26.2254687Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/CutBridge/CutBridge/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-98e2162f\-00c7\-45c1\-92f6\-70f4598713c0\.config
+2026-10-16T08:41:26.2298196Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/CutBridge/CutBridge/.git/worktrees/*.path
+2026-10-16T08:41:26.2324766Z /home/runner/work/_temp/git-credentials-98e2162f-00c7-45c1-92f6-70f4598713c0.config
+2026-10-16T08:41:26.2333096Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/CutBridge/CutBridge/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-98e2162f\-00c7\-45c1\-92f6\-70f4598713c0\.config
+2026-10-16T08:41:26.2370346Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-10-16T08:41:26.2400388Z /github/runner_temp/git-credentials-98e2162f-00c7-45c1-92f6-70f4598713c0.config
+2026-10-16T08:41:26.2418584Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-98e2162f\-00c7\-45c1\-92f6\-70f4598713c0\.config
+2026-10-16T08:41:26.2449482Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-16T08:41:26.2475224Z /github/runner_temp/git-credentials-98e2162f-00c7-45c1-92f6-70f4598713c0.config
+2026-10-16T08:41:26.2482574Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-98e2162f\-00c7\-45c1\-92f6\-70f4598713c0\.config
+2026-10-16T08:41:26.2519449Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-16T08:41:26.2761047Z Removing credentials config '/home/runner/work/_temp/git-credentials-98e2162f-00c7-45c1-92f6-70f4598713c0.config'
+2026-10-16T08:41:26.2764055Z ##[endgroup]
+2026-10-16T08:41:26.3036028Z ##[group]Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+2026-10-16T08:41:26.3036662Z with:
+2026-10-16T08:41:26.3037041Z   node-version: 22
+2026-10-16T08:41:26.3037437Z   check-latest: false
+2026-10-16T08:41:26.3040565Z   token: ***
+2026-10-16T08:41:26.3040987Z   package-manager-cache: true
+2026-10-16T08:41:26.3041429Z ##[endgroup]
+2026-10-16T08:41:26.4342142Z Found in cache @ /opt/hostedtoolcache/node/22.23.3/x64
+2026-10-16T08:41:26.4346589Z ##[group]Environment details
+2026-10-16T08:41:26.9095321Z node: v22.23.3
+2026-10-16T08:41:26.9095942Z npm: 10.9.9
+2026-10-16T08:41:26.9096367Z yarn: 1.22.22
+2026-10-16T08:41:26.9097700Z ##[endgroup]
+2026-10-16T08:41:26.9290694Z ##[group]Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+2026-10-16T08:41:26.9291178Z with:
+2026-10-16T08:41:26.9291425Z   python-version: 3.11
+2026-10-16T08:41:26.9291700Z   check-latest: false
+2026-10-16T08:41:26.9294892Z   token: ***
+2026-10-16T08:41:26.9295166Z   update-environment: true
+2026-10-16T08:41:26.9295472Z   allow-prereleases: false
+2026-10-16T08:41:26.9295768Z   freethreaded: false
+2026-10-16T08:41:26.9296039Z ##[endgroup]
+2026-10-16T08:41:27.0496702Z ##[group]Installed versions
+2026-10-16T08:41:27.0632855Z Successfully set up CPython (3.11.17)
+2026-10-16T08:41:27.0634246Z ##[endgroup]
+2026-10-16T08:41:27.0777007Z ##[group]Run python -m pip install pytest jsonschema
+2026-10-16T08:41:27.0777583Z [36;1mpython -m pip install pytest jsonschema[0m
+2026-10-16T08:41:27.1119550Z shell: /usr/bin/bash -e {0}
+2026-10-16T08:41:27.1120024Z env:
+2026-10-16T08:41:27.1120474Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:27.1121221Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-10-16T08:41:27.1121917Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:27.1122751Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:27.1123397Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:27.1124030Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-10-16T08:41:27.1124563Z ##[endgroup]
+2026-10-16T08:41:28.0221868Z Collecting pytest
+2026-10-16T08:41:28.0794638Z   Downloading pytest-9.1.1-py3-none-any.whl.metadata (7.6 kB)
+2026-10-16T08:41:28.1067282Z Collecting jsonschema
+2026-10-16T08:41:28.1097131Z   Downloading jsonschema-4.26.0-py3-none-any.whl.metadata (7.6 kB)
+2026-10-16T08:41:28.1219569Z Collecting iniconfig>=1.0.1 (from pytest)
+2026-10-16T08:41:28.1252464Z   Downloading iniconfig-2.3.1-py3-none-any.whl.metadata (2.8 kB)
+2026-10-16T08:41:28.1397509Z Collecting packaging>=22 (from pytest)
+2026-10-16T08:41:28.1427203Z   Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+2026-10-16T08:41:28.1653078Z Collecting pluggy<2,>=1.5 (from pytest)
+2026-10-16T08:41:28.1685280Z   Downloading pluggy-1.7.0-py3-none-any.whl.metadata (5.0 kB)
+2026-10-16T08:41:28.1859726Z Collecting pygments>=2.7.2 (from pytest)
+2026-10-16T08:41:28.1929736Z   Downloading pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+2026-10-16T08:41:28.2058508Z Collecting attrs>=22.2.0 (from jsonschema)
+2026-10-16T08:41:28.2088983Z   Downloading attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+2026-10-16T08:41:28.2204516Z Collecting jsonschema-specifications>=2023.03.6 (from jsonschema)
+2026-10-16T08:41:28.2232673Z   Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl.metadata (2.9 kB)
+2026-10-16T08:41:28.2421819Z Collecting referencing>=0.28.4 (from jsonschema)
+2026-10-16T08:41:28.2451262Z   Downloading referencing-0.37.0-py3-none-any.whl.metadata (2.8 kB)
+2026-10-16T08:41:28.4875920Z Collecting rpds-py>=0.25.0 (from jsonschema)
+2026-10-16T08:41:28.4911198Z   Downloading rpds_py-2026.9.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.1 kB)
+2026-10-16T08:41:28.5108144Z Collecting typing-extensions>=4.4.0 (from referencing>=0.28.4->jsonschema)
+2026-10-16T08:41:28.5140546Z   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+2026-10-16T08:41:28.5210170Z Downloading pytest-9.1.1-py3-none-any.whl (386 kB)
+2026-10-16T08:41:28.5360976Z Downloading pluggy-1.7.0-py3-none-any.whl (27 kB)
+2026-10-16T08:41:28.5412116Z Downloading jsonschema-4.26.0-py3-none-any.whl (90 kB)
+2026-10-16T08:41:28.5463907Z Downloading attrs-26.1.0-py3-none-any.whl (67 kB)
+2026-10-16T08:41:28.5517843Z Downloading iniconfig-2.3.1-py3-none-any.whl (7.6 kB)
+2026-10-16T08:41:28.5569201Z Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)
+2026-10-16T08:41:28.5616272Z Downloading packaging-26.3-py3-none-any.whl (129 kB)
+2026-10-16T08:41:28.5669968Z Downloading pygments-2.21.0-py3-none-any.whl (1.3 MB)
+2026-10-16T08:41:28.5839156Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 109.8 MB/s  0:00:00
+2026-10-16T08:41:28.5881931Z Downloading referencing-0.37.0-py3-none-any.whl (26 kB)
+2026-10-16T08:41:28.5936493Z Downloading rpds_py-2026.9.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (375 kB)
+2026-10-16T08:41:28.6009552Z Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+2026-10-16T08:41:28.6714591Z Installing collected packages: typing-extensions, rpds-py, pygments, pluggy, packaging, iniconfig, attrs, referencing, pytest, jsonschema-specifications, jsonschema
+2026-10-16T08:41:29.8313161Z 
+2026-10-16T08:41:29.8326595Z Successfully installed attrs-26.1.0 iniconfig-2.3.1 jsonschema-4.26.0 jsonschema-specifications-2025.9.1 packaging-26.3 pluggy-1.7.0 pygments-2.21.0 pytest-9.1.1 referencing-0.37.0 rpds-py-2026.9.1 typing-extensions-4.16.0
+2026-10-16T08:41:29.9036230Z ##[group]Run pytest -q tests/test_static.py tests/test_release_hygiene.py tests/test_release_authorization.py tests/test_ae_contract.py tests/test_ae_s5.py tests/test_ae_s6.py tests/test_ae_s7.py tests/test_ae_s8.py tests/test_s8_blender_localization.py tests/test_studio_presets.py tests/test_camera_handoff_contract.py tests/test_handoff_3d_schema.py tests/test_ae_install_docs.py tests/test_ae_package_identity.py
+2026-10-16T08:41:29.9039944Z [36;1mpytest -q tests/test_static.py tests/test_release_hygiene.py tests/test_release_authorization.py tests/test_ae_contract.py tests/test_ae_s5.py tests/test_ae_s6.py tests/test_ae_s7.py tests/test_ae_s8.py tests/test_s8_blender_localization.py tests/test_studio_presets.py tests/test_camera_handoff_contract.py tests/test_handoff_3d_schema.py tests/test_ae_install_docs.py tests/test_ae_package_identity.py[0m
+2026-10-16T08:41:29.9108673Z shell: /usr/bin/bash -e {0}
+2026-10-16T08:41:29.9109057Z env:
+2026-10-16T08:41:29.9109511Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:29.9110221Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-10-16T08:41:29.9110922Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:29.9111553Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:29.9112196Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:29.9113020Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-10-16T08:41:29.9113554Z ##[endgroup]
+2026-10-16T08:41:33.1613402Z ...................................................................... [ 46%]
+2026-10-16T08:41:33.8709786Z ........................................................................ [ 95%]
+2026-10-16T08:41:34.6075873Z .......                                                                  [100%]
+2026-10-16T08:41:34.6077094Z 149 passed, 2 subtests passed in 3.23s
+2026-10-16T08:41:34.6404769Z ##[group]Run set -euo pipefail
+2026-10-16T08:41:34.6405099Z [36;1mset -euo pipefail[0m
+2026-10-16T08:41:34.6405359Z [36;1mVERSION="$(python - <<'PY'[0m
+2026-10-16T08:41:34.6405627Z [36;1mimport tomllib[0m
+2026-10-16T08:41:34.6405998Z [36;1mwith open('apps/blender/cutbridge/blender_manifest.toml', 'rb') as fh:[0m
+2026-10-16T08:41:34.6406439Z [36;1m    print(tomllib.load(fh)['version'])[0m
+2026-10-16T08:41:34.6406730Z [36;1mPY[0m
+2026-10-16T08:41:34.6406915Z [36;1m)"[0m
+2026-10-16T08:41:34.6407238Z [36;1mpython tools/build_release.py --tag "v${VERSION}" --output dist-ci[0m
+2026-10-16T08:41:34.6407719Z [36;1mtest -f "dist-ci/CutBridge-Blender-v${VERSION}.zip"[0m
+2026-10-16T08:41:34.6408140Z [36;1mtest -f "dist-ci/CutBridge-AfterEffects-v${VERSION}.zip"[0m
+2026-10-16T08:41:34.6408500Z [36;1mtest -f dist-ci/SHA256SUMS.txt[0m
+2026-10-16T08:41:34.6408807Z [36;1mtest -f dist-ci/release-metadata.json[0m
+2026-10-16T08:41:34.6409184Z [36;1m(cd dist-ci && sha256sum --check SHA256SUMS.txt)[0m
+2026-10-16T08:41:34.6476286Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-16T08:41:34.6476650Z env:
+2026-10-16T08:41:34.6476925Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:34.6477383Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-10-16T08:41:34.6477874Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:34.6478309Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:34.6478764Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:34.6479202Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-10-16T08:41:34.6479575Z ##[endgroup]
+2026-10-16T08:41:34.7531102Z {
+2026-10-16T08:41:34.7531718Z   "schema_version": 1,
+2026-10-16T08:41:34.7532645Z   "version": "0.2.5",
+2026-10-16T08:41:34.7533258Z   "product_version": "0.2.5",
+2026-10-16T08:41:34.7533973Z   "tag": "v0.2.5",
+2026-10-16T08:41:34.7534566Z   "channel": "stable",
+2026-10-16T08:41:34.7535149Z   "prerelease": false,
+2026-10-16T08:41:34.7535816Z   "blender_version_min": "4.2.0",
+2026-10-16T08:41:34.7536495Z   "artifacts": {
+2026-10-16T08:41:34.7536834Z     "blender": {
+2026-10-16T08:41:34.7537317Z       "filename": "CutBridge-Blender-v0.2.5.zip",
+2026-10-16T08:41:34.7538117Z       "sha256": "864131a58a1c56e4364c3e435ef1433fbda415515be7292770212bfdc4c31bfe"
+2026-10-16T08:41:34.7538821Z     },
+2026-10-16T08:41:34.7539132Z     "after_effects": {
+2026-10-16T08:41:34.7539688Z       "filename": "CutBridge-AfterEffects-v0.2.5.zip",
+2026-10-16T08:41:34.7540426Z       "sha256": "427a36ba8638e88940b18f9daa34537c7e41ad939f3b81fddb50a3812d691268"
+2026-10-16T08:41:34.7541004Z     }
+2026-10-16T08:41:34.7541258Z   },
+2026-10-16T08:41:34.7542226Z   "distribution_note": "Mirror release artifacts and a generated update index to a distribution endpoint that is separate from the source repository"
+2026-10-16T08:41:34.7543425Z }
+2026-10-16T08:41:34.7631617Z CutBridge-AfterEffects-v0.2.5.zip: OK
+2026-10-16T08:41:34.7632792Z CutBridge-Blender-v0.2.5.zip: OK
+2026-10-16T08:41:34.7670572Z ##[group]Run node tests/ae_s6_revision_checks.cjs
+2026-10-16T08:41:34.7670984Z [36;1mnode tests/ae_s6_revision_checks.cjs[0m
+2026-10-16T08:41:34.7671375Z [36;1mnode tests/ae_s6_optional_pass_lifecycle_checks.cjs[0m
+2026-10-16T08:41:34.7671789Z [36;1mnode tests/ae_s6_extend_script_binding_checks.cjs[0m
+2026-10-16T08:41:34.7735129Z shell: /usr/bin/bash -e {0}
+2026-10-16T08:41:34.7735424Z env:
+2026-10-16T08:41:34.7735736Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:34.7736272Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-10-16T08:41:34.7736790Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:34.7737255Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:34.7737728Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:34.7738226Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-10-16T08:41:34.7738619Z ##[endgroup]
+2026-10-16T08:41:34.8141538Z PASS producer-style V001/V002/V003 names can differ for the same cut
+2026-10-16T08:41:34.8146964Z PASS all tuple fields reject drift despite equal package_name
+2026-10-16T08:41:34.8151517Z PASS delimiter tuples and ownership keys cannot collide
+2026-10-16T08:41:34.8157320Z PASS canonical revision token helper rejects malformed values
+2026-10-16T08:41:34.8165337Z PASS duplicate candidate numbers cannot select by input order
+2026-10-16T08:41:34.8181782Z PASS malformed manifests fail closed through the existing AE contract
+2026-10-16T08:41:34.8188419Z PASS malformed, duplicate and unsafe passes fail closed
+2026-10-16T08:41:34.8190156Z PASS prototype pass names remain valid
+2026-10-16T08:41:34.8195173Z PASS media changes follow conservative source-only compatibility policy
+2026-10-16T08:41:34.8206220Z PASS all validation and rollback callbacks are mandatory
+2026-10-16T08:41:34.8229763Z PASS successful source-only transaction preserves mock layer properties and ordering
+2026-10-16T08:41:34.8237062Z PASS warnings require explicit confirmation even if public ticket is modified
+2026-10-16T08:41:34.8243159Z PASS forged tickets and caller changes cannot redirect a plan
+2026-10-16T08:41:34.8263633Z PASS live host ownership rejects forged records, tag/type/container/source and tuple drift
+2026-10-16T08:41:34.8267890Z PASS duplicate or missing required live layers block
+2026-10-16T08:41:34.8272751Z PASS ownership is checked again after planning and before importing
+2026-10-16T08:41:34.8279975Z PASS tag drift during import blocks all source swaps and removes staged imports
+2026-10-16T08:41:34.8287706Z PASS validation failure cleans the failing import as well as earlier staged imports
+2026-10-16T08:41:34.8292275Z PASS import allocation then throw is cleaned via mandatory tracking
+2026-10-16T08:41:34.8297971Z PASS multi-action mutate-then-throw restores every attempted layer
+2026-10-16T08:41:34.8303169Z PASS silent swap failure is detected and restored
+2026-10-16T08:41:34.8309874Z PASS restore failure retains all replacements and prevents retry
+2026-10-16T08:41:34.8314774Z PASS cleanup failure is explicit and cleanup continues for remaining imports
+2026-10-16T08:41:34.8320490Z PASS commit failure rolls back all swapped sources and staged replacements
+2026-10-16T08:41:34.8326694Z PASS unprintable removal errors cannot interrupt cleanup or bypass poisoning
+2026-10-16T08:41:34.8332408Z PASS unprintable restore and original errors preserve subsequent recovery attempts
+2026-10-16T08:41:34.8338825Z PASS malformed schema coercion cannot abort valid candidate discovery
+2026-10-16T08:41:34.8342220Z PASS removed optional pass blocks source-only revision before mutation
+2026-10-16T08:41:34.8345421Z PASS missing optional layer promoted to required blocks
+2026-10-16T08:41:34.8376030Z PASS browser/ExtendScript-style loading fails closed without the contract
+2026-10-16T08:41:34.8376798Z S6 revision checks: PASS (30 groups; native AE MANUAL NOT EXECUTED)
+2026-10-16T08:41:34.9171471Z S6 native-host lifecycle: PASS (V001→V002→V003 + failed-import numeric-ID cleanup + invalid native caches + Build/QC/reload + ownership collisions; real AE MANUAL NOT EXECUTED)
+2026-10-16T08:41:34.9207875Z S6 optional-pass lifecycle: PASS (pass removal blocked before mutation; original project remains coherent; real AE MANUAL NOT EXECUTED)
+2026-10-16T08:41:34.9549896Z S6 ExtendScript binding/pass-set guard: PASS
+2026-10-16T08:41:34.9620259Z ##[group]Run node tests/ae_s7_qc_plus_checks.cjs
+2026-10-16T08:41:34.9620659Z [36;1mnode tests/ae_s7_qc_plus_checks.cjs[0m
+2026-10-16T08:41:34.9621003Z [36;1mnode tests/ae_s7_native_qc_binding_checks.cjs[0m
+2026-10-16T08:41:34.9686656Z shell: /usr/bin/bash -e {0}
+2026-10-16T08:41:34.9686912Z env:
+2026-10-16T08:41:34.9687185Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:34.9687663Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-10-16T08:41:34.9688140Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:34.9688553Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:34.9688961Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:34.9689383Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-10-16T08:41:34.9689725Z ##[endgroup]
+2026-10-16T08:41:35.0049632Z S7 QC+ diagnostic engine: PASS (severity/codes/remediation/determinism/sequence/comp/ownership/host/revision)
+2026-10-16T08:41:35.1431124Z PASS: 45 S5 AE import/comp reliability groups (Node mocks; AE GUI not executed)
+2026-10-16T08:41:35.1524128Z S7 native QC+ binding: PASS (sidecar binding, stable codes, comp/ownership diagnostics, warning remediation, non-mutation)
+2026-10-16T08:41:35.1664237Z ##[group]Run node tests/ae_s8_localization_checks.cjs
+2026-10-16T08:41:35.1664678Z [36;1mnode tests/ae_s8_localization_checks.cjs[0m
+2026-10-16T08:41:35.1665060Z [36;1mnode tests/ae_s8_native_ui_binding_checks.cjs[0m
+2026-10-16T08:41:35.1728786Z shell: /usr/bin/bash -e {0}
+2026-10-16T08:41:35.1729100Z env:
+2026-10-16T08:41:35.1729439Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:35.1730034Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-10-16T08:41:35.1730641Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:35.1731144Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:35.1731653Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:35.1732164Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-10-16T08:41:35.1732814Z ##[endgroup]
+2026-10-16T08:41:35.2070353Z PASS Japanese is the first-class default with deterministic English fallback
+2026-10-16T08:41:35.2075252Z PASS primary panel labels are locale-aware and not slash-combined
+2026-10-16T08:41:35.2076227Z PASS missing keys and invalid locale fall back safely
+2026-10-16T08:41:35.2077121Z PASS locale state changes without touching workflow data
+2026-10-16T08:41:35.2078222Z PASS Japanese error wrapper preserves canonical English support detail
+2026-10-16T08:41:35.2080054Z PASS revision reasons are Japanese-first while canonical text survives
+2026-10-16T08:41:35.2089330Z PASS QC localization preserves stable CBQ code and canonical English message
+2026-10-16T08:41:35.2090957Z PASS QC headline and remediation marker remain support-readable
+2026-10-16T08:41:35.2092098Z S8 After Effects localization engine: PASS
+2026-10-16T08:41:35.2473336Z S8/beta.2 native ScriptUI binding: PASS (dockable hierarchy, EN/JA descriptions, contextual help, non-mutation)
+2026-10-16T08:41:35.2548181Z ##[group]Run node tests/ae_s10c_reconstruction_checks.cjs
+2026-10-16T08:41:35.2548632Z [36;1mnode tests/ae_s10c_reconstruction_checks.cjs[0m
+2026-10-16T08:41:35.2611917Z shell: /usr/bin/bash -e {0}
+2026-10-16T08:41:35.2612210Z env:
+2026-10-16T08:41:35.2612683Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:35.2613423Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-10-16T08:41:35.2613955Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:35.2614420Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:35.2614884Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:35.2615356Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-10-16T08:41:35.2615749Z ##[endgroup]
+2026-10-16T08:41:35.2987752Z PASS validateManifest passes for valid handoff_3d
+2026-10-16T08:41:35.2993073Z PASS validateHandoff3D rejects unsupported schema or version
+2026-10-16T08:41:35.2995765Z PASS validateHandoff3D rejects non-perspective cameras
+2026-10-16T08:41:35.2998256Z PASS validateHandoff3D rejects non-EMPTY null objects
+2026-10-16T08:41:35.3000651Z PASS validateHandoff3D rejects non-finite coordinates
+2026-10-16T08:41:35.3003665Z PASS managedTag generates distinct camera and null tags
+2026-10-16T08:41:35.3083817Z ALERTS: [ 'CutBridge: comp built\nC001_COMP\n1920x1080 @ 24 fps' ]
+2026-10-16T08:41:35.3096949Z ALERTS: [
+2026-10-16T08:41:35.3097701Z   'CutBridge: comp built\nC001_COMP\n1920x1080 @ 24 fps',
+2026-10-16T08:41:35.3098582Z   'CutBridge: comp reused safely\nC001_COMP\n1920x1080 @ 24 fps'
+2026-10-16T08:41:35.3099146Z ]
+2026-10-16T08:41:35.3099862Z PASS buildComp creates managed camera and nulls with correct keyframes and ordering
+2026-10-16T08:41:35.3119856Z PASS buildComp fails closed if unmanaged camera or null collides by name
+2026-10-16T08:41:35.3120711Z 
+2026-10-16T08:41:35.3121039Z S10C Reconstruction Checks: ALL 8 TEST GROUPS PASSED
+2026-10-16T08:41:35.3216511Z ##[group]Run node tests/ae_s13_revision_3d_tag_migration_checks.cjs
+2026-10-16T08:41:35.3217053Z [36;1mnode tests/ae_s13_revision_3d_tag_migration_checks.cjs[0m
+2026-10-16T08:41:35.3279876Z shell: /usr/bin/bash -e {0}
+2026-10-16T08:41:35.3280166Z env:
+2026-10-16T08:41:35.3280482Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:35.3281018Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-10-16T08:41:35.3281533Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:35.3282002Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:35.3282697Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:35.3283171Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-10-16T08:41:35.3283564Z ##[endgroup]
+2026-10-16T08:41:35.3945214Z S13 AE 3D revision migration: PASS (verified indexed camera POI + V001→V002→V003 tags + baked samples + QC clean; real AE retest still required)
+2026-10-16T08:41:35.4023869Z ##[group]Run cp apps/after-effects/CutBridge.jsx /tmp/CutBridge.js
+2026-10-16T08:41:35.4024424Z [36;1mcp apps/after-effects/CutBridge.jsx /tmp/CutBridge.js[0m
+2026-10-16T08:41:35.4024931Z [36;1mcp apps/after-effects/revision_manager.js /tmp/revision_manager.js[0m
+2026-10-16T08:41:35.4025403Z [36;1mcp apps/after-effects/qc_plus.js /tmp/qc_plus.js[0m
+2026-10-16T08:41:35.4025840Z [36;1mcp apps/after-effects/localization.js /tmp/localization.js[0m
+2026-10-16T08:41:35.4026225Z [36;1mnode --check /tmp/CutBridge.js[0m
+2026-10-16T08:41:35.4026531Z [36;1mnode --check /tmp/revision_manager.js[0m
+2026-10-16T08:41:35.4026837Z [36;1mnode --check /tmp/qc_plus.js[0m
+2026-10-16T08:41:35.4027126Z [36;1mnode --check /tmp/localization.js[0m
+2026-10-16T08:41:35.4090272Z shell: /usr/bin/bash -e {0}
+2026-10-16T08:41:35.4090530Z env:
+2026-10-16T08:41:35.4090816Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:35.4091329Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-10-16T08:41:35.4091803Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:35.4092209Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:35.4092894Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:35.4093323Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-10-16T08:41:35.4093862Z ##[endgroup]
+2026-10-16T08:41:35.5340872Z ##[group]Run cp dist-ci/SHA256SUMS.txt /tmp/cutbridge-actions-smoke.txt
+2026-10-16T08:41:35.5341439Z [36;1mcp dist-ci/SHA256SUMS.txt /tmp/cutbridge-actions-smoke.txt[0m
+2026-10-16T08:41:35.5404726Z shell: /usr/bin/bash -e {0}
+2026-10-16T08:41:35.5405011Z env:
+2026-10-16T08:41:35.5405317Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:35.5405853Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-10-16T08:41:35.5406383Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:35.5406845Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:35.5407330Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:35.5407810Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-10-16T08:41:35.5408203Z ##[endgroup]
+2026-10-16T08:41:35.5599766Z ##[group]Run actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+2026-10-16T08:41:35.5600214Z with:
+2026-10-16T08:41:35.5600449Z   name: cutbridge-actions-smoke-38875347991-1
+2026-10-16T08:41:35.5600772Z   path: /tmp/cutbridge-actions-smoke.txt
+2026-10-16T08:41:35.5601065Z   if-no-files-found: error
+2026-10-16T08:41:35.5601304Z   retention-days: 1
+2026-10-16T08:41:35.5601516Z   compression-level: 6
+2026-10-16T08:41:35.5601728Z   overwrite: false
+2026-10-16T08:41:35.5601941Z   include-hidden-files: false
+2026-10-16T08:41:35.5602177Z   archive: true
+2026-10-16T08:41:35.5602696Z env:
+2026-10-16T08:41:35.5602979Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:35.5603414Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-10-16T08:41:35.5603847Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:35.5604232Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:35.5604646Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:35.5605038Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-10-16T08:41:35.5605364Z ##[endgroup]
+2026-10-16T08:41:35.7039204Z With the provided path, there will be 1 file uploaded
+2026-10-16T08:41:35.7051880Z Artifact name is valid!
+2026-10-16T08:41:35.7052982Z Root directory input is valid!
+2026-10-16T08:41:36.1121220Z Uploading artifact: cutbridge-actions-smoke-38875347991-1.zip
+2026-10-16T08:41:36.1166149Z Beginning upload of artifact content to blob storage
+2026-10-16T08:41:36.4045240Z Uploaded bytes 307
+2026-10-16T08:41:36.4755772Z Finished uploading artifact content to blob storage!
+2026-10-16T08:41:36.4757151Z SHA256 digest of uploaded artifact is d2f8831c22f4887fdf92b75bb64e063848fd6b7356759e639b51c798f7205e01
+2026-10-16T08:41:36.4758611Z Finalizing artifact upload
+2026-10-16T08:41:36.9273958Z Artifact cutbridge-actions-smoke-38875347991-1 successfully finalized. Artifact ID 12033999464
+2026-10-16T08:41:36.9275196Z Artifact cutbridge-actions-smoke-38875347991-1 has been successfully uploaded! Final size is 307 bytes. Artifact ID is 12033999464
+2026-10-16T08:41:36.9276360Z Artifact download URL: https://github.com/Unn0wn002/CutBridge/actions/runs/38875347991/artifacts/12033999464
+2026-10-16T08:41:36.9403039Z ##[group]Run actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+2026-10-16T08:41:36.9403498Z with:
+2026-10-16T08:41:36.9403741Z   name: cutbridge-actions-smoke-38875347991-1
+2026-10-16T08:41:36.9404049Z   path: artifact-smoke
+2026-10-16T08:41:36.9404292Z   merge-multiple: false
+2026-10-16T08:41:36.9404534Z   repository: Unn0wn002/CutBridge
+2026-10-16T08:41:36.9404785Z   run-id: 38875347991
+2026-10-16T08:41:36.9405010Z   skip-decompress: false
+2026-10-16T08:41:36.9405244Z   digest-mismatch: error
+2026-10-16T08:41:36.9405464Z env:
+2026-10-16T08:41:36.9405722Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:36.9406161Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-10-16T08:41:36.9406588Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:36.9407155Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:36.9407565Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:36.9407952Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-10-16T08:41:36.9408278Z ##[endgroup]
+2026-10-16T08:41:37.0973346Z Downloading single artifact
+2026-10-16T08:41:37.3992013Z Preparing to download the following artifacts:
+2026-10-16T08:41:37.3993344Z - cutbridge-actions-smoke-38875347991-1 (ID: 12033999464, Size: 307, Expected Digest: sha256:d2f8831c22f4887fdf92b75bb64e063848fd6b7356759e639b51c798f7205e01)
+2026-10-16T08:41:37.9244281Z Redirecting to blob download url: https://productionresultssa15.blob.core.windows.net/actions-results/b2ee1037-08b8-8048-927c-724264c772bb/workflow-job-run-04fbb89b-055d-58cd-a229-71cc6725b9d3/artifacts/4e32de9b5c62b60dbf6831eba05903648884993b6fbc8cce01430aaa0d159962.zip
+2026-10-16T08:41:37.9247417Z Starting download of artifact to: /home/runner/work/CutBridge/CutBridge/artifact-smoke
+2026-10-16T08:41:38.1814617Z (node:2800) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+2026-10-16T08:41:38.1816643Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-16T08:41:38.1853993Z SHA256 digest of downloaded artifact is d2f8831c22f4887fdf92b75bb64e063848fd6b7356759e639b51c798f7205e01
+2026-10-16T08:41:38.1855103Z Artifact download completed successfully.
+2026-10-16T08:41:38.1855720Z Total of 1 artifact(s) downloaded
+2026-10-16T08:41:38.1860333Z Download artifact has finished successfully
+2026-10-16T08:41:38.1983376Z ##[group]Run cmp dist-ci/SHA256SUMS.txt artifact-smoke/cutbridge-actions-smoke.txt
+2026-10-16T08:41:38.1984467Z [36;1mcmp dist-ci/SHA256SUMS.txt artifact-smoke/cutbridge-actions-smoke.txt[0m
+2026-10-16T08:41:38.2077356Z shell: /usr/bin/bash -e {0}
+2026-10-16T08:41:38.2077826Z env:
+2026-10-16T08:41:38.2078328Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:38.2079191Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-10-16T08:41:38.2080123Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:38.2080954Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:38.2081758Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-16T08:41:38.2082820Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-10-16T08:41:38.2083525Z ##[endgroup]
+2026-10-16T08:41:38.2297851Z Post job cleanup.
+2026-10-16T08:41:38.3619915Z Post job cleanup.
+2026-10-16T08:41:38.5008540Z Post job cleanup.
+2026-10-16T08:41:38.5862250Z [command]/usr/bin/git version
+2026-10-16T08:41:38.5916259Z git version 2.55.0
+2026-10-16T08:41:38.5959873Z Temporarily overriding HOME='/home/runner/work/_temp/478ae782-ee90-4b14-b5e6-8843b559100d' before making global git config changes
+2026-10-16T08:41:38.5961531Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-16T08:41:38.5966929Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/CutBridge/CutBridge
+2026-10-16T08:41:38.6002743Z Removing SSH command configuration
+2026-10-16T08:41:38.6010068Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-16T08:41:38.6046030Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-16T08:41:38.6300847Z Removing HTTP extra header
+2026-10-16T08:41:38.6306873Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-16T08:41:38.6341661Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-16T08:41:38.6594268Z Removing includeIf entries pointing to credentials config files
+2026-10-16T08:41:38.6609906Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-16T08:41:38.6657392Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-16T08:41:38.7057634Z Cleaning up orphan processes
+

@@ -1,0 +1,12 @@
+﻿{
+    "timestamp_utc":  "2026-10-03T16:21:34.6313627Z",
+    "username":  "WDAGUtilityAccount",
+    "computer_name":  "898BBFD0-E85E-4",
+    "owner_home_visible":  false,
+    "credential_environment_present":  false,
+    "candidate_execution":  "NOT_EXECUTED",
+    "isolation_probe":  "PASS",
+    "input_writable":  false,
+    "external_network_connected":  false,
+    "blender_version_exit_code":  0
+}
