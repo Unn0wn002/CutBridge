@@ -532,7 +532,7 @@ function exerciseSourceRollback(overrides = {}) {
     return {host, report, evidence, reloads, saved};
 }
 const sourceRollback = exerciseSourceRollback();
-assert.equal(sourceRollback.report.status, "PASS", JSON.stringify(sourceRollback.report));
+assert.equal(sourceRollback.report.status, "PASS", sourceRollback.report.error || "source rollback preparation checks");
 assert.equal(sourceRollback.evidence.first_native_swap_completed, true);
 assert.equal(sourceRollback.evidence.native_call_threw, true);
 assert.equal(sourceRollback.evidence.swaps[1].invalid_argument, "null");
