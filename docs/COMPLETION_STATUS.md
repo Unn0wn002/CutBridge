@@ -1,5 +1,21 @@
 # CutBridge Completion Status
 
+## Validation closeout — 17 October 2026
+
+**Verdict: INSUFFICIENT EVIDENCE.** Branch `fix/current-release-completion-20261016` retains frozen engineering SHA `639374ce5f1b5f0d36847258d052c36ab21dd208`; this follow-up changes documentation/evidence only. Its **396 tests + 2 subtests**, RNA, 18 AE Node suites, syntax and repeat packaging remain complete and SHA-bound. [The original final receipt](evidence/20261017-validation-closeout/BASELINE_639374c_VERIFICATION.json) is retained unchanged. Earlier 395/392/390 counts below remain historical. Runtime/package bytes are frozen; native Blender evidence retains only its recorded equivalent-package scope.
+
+The 60-minute startup diagnosis window began `2026-10-16T15:55:38Z` and expired at `16:55:38Z` during an interrupted turn. On resumption at `2026-10-17T00:47:41Z`, no new startup attempt was launched. The pending Blender-only control produced no guest isolation/process/availability files; the Sandbox desktop alone did not establish native startup. Its **7,511 before/after input records were identical**. No claim is made that the VM stopped at the deadline. The existing control was subsequently closed, with no candidate code mapped or loaded.
+
+Independent preparation found AE's active `AfterFXLib.dll` Authenticode **HashMismatch** and an incomplete full-tree inventory after an unreadable backup-file path. AE was excluded from the fresh control. These facts, prior `0xc0e90002`, the separate historical Application Control block, and absent control output do **not** establish a common root cause. No installation, execution policy, security setting or authorization was changed. [The retained assessment](evidence/20261017-validation-closeout/assessment.json) separates these gaps from product failures and accepted automation.
+
+The packet README's four garbled arrows and one range dash are repaired. Original bytes and the original **63-entry** checksum catalog were preserved and verified before amendment; the immutable final-639 receipt and all four release assets are unchanged. The local packet includes a hash-inventoried, data-only `operator-handoff/` bundle: exact AE runtime, existing harnesses, real Blender V001–V003 inputs, 639 review metadata and unfilled acceptance forms. Configuration changes are explicit; data staging is not native installation or execution evidence.
+
+[One operator handoff](NATIVE_VALIDATION_HANDOFF.md) specifies environment requirements, commands, expected outputs, native coverage gaps, manual EN/JA/installation/dockable/update checks and evidence to return. [The review packet](INDEPENDENT_RELEASE_REVIEW_PACKET.md) and [scope form](validation/scope-acceptance.json) are prepared. Independent release review, environment acceptance and demonstrated-scope acceptance are all **NOT_RECEIVED**; no reviewer was contacted and no approval is claimed.
+
+Next action: an operator supplies an independently approved native environment with clean, readable vendor inputs and working orchestration; prove blank and no-candidate probe startup first, then execute the retained exact-package native/manual procedures and return named, SHA-bound scope/evidence decisions. Submission readiness remains insufficient. Public-release promotion, exact-tuple authorization, publication/download verification and distribution remain separate authorized gates. Authorization stays false, production stays v0.2.3, and S14B stays **NOT_EXECUTED**. Working target: **22 October 2026**; official deadline unconfirmed.
+
+## Recorded engineering checkpoint — 16 October 2026
+
 Current verdict — **INSUFFICIENT EVIDENCE**. Independently trusted Linux verification and the bounded equivalent-package native Blender campaign passed for the scope below. Native AE and visual checks could not execute in the current host environment; manual-update checks, scope acceptance and independent release review remain incomplete. Submission readiness and public-release readiness remain separate. Release authorization stays false; production distribution stays on v0.2.3.
 
 ## Current checkpoint — 16 October 2026

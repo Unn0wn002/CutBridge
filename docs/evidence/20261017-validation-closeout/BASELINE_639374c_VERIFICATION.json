@@ -1,0 +1,89 @@
+{
+  "overall_verdict": "INSUFFICIENT EVIDENCE",
+  "automated_verdict": "PASS",
+  "candidate_sha": "639374ce5f1b5f0d36847258d052c36ab21dd208",
+  "branch": "fix/current-release-completion-20261016",
+  "pull_request": "https://github.com/Unn0wn002/CutBridge/pull/113",
+  "trusted_verification_run": "https://github.com/Unn0wn002/CutBridge/actions/runs/38911851205",
+  "bootstrap_sha": "9d4e8eb7c03e3fd60b751bf093b57d599d446db5",
+  "trusted_tools_sha": "571f4cdb1c992124bdb35e3d089de1de1535b254",
+  "ordinary_ci_run": "https://github.com/Unn0wn002/CutBridge/actions/runs/38911503228",
+  "pytest_passed": 396,
+  "subtests_passed": 2,
+  "skipped": 0,
+  "bpy": "5.2.1",
+  "node_suites": 18,
+  "syntax": "PASS",
+  "input_integrity": "IDENTICAL paths/types/modes/bytes",
+  "complete_repeated_packages": "IDENTICAL",
+  "safe_staging_upload": "PASS",
+  "preflight_recorded_and_actual_commands": "--preflight / --checks, distinct matching container inspections",
+  "image_id": "sha256:99239f1ba80a915f7984a0932cfa8d4e841d14adcc0a9f1fd8a388c0f22264f3",
+  "artifacts": {
+    "CutBridge-AfterEffects-v0.2.5.zip": {
+      "bytes": 59686,
+      "sha256": "427a36ba8638e88940b18f9daa34537c7e41ad939f3b81fddb50a3812d691268"
+    },
+    "CutBridge-Blender-v0.2.5.zip": {
+      "bytes": 63682,
+      "sha256": "864131a58a1c56e4364c3e435ef1433fbda415515be7292770212bfdc4c31bfe"
+    },
+    "release-metadata.json": {
+      "bytes": 674,
+      "sha256": "a9e0d91202173cb9ad431a3f1b85ca0b8b8d4a416ad49a5e8e3c336e23a1722f"
+    },
+    "SHA256SUMS.txt": {
+      "bytes": 195,
+      "sha256": "d153d2ca56594f28ee4ed75d9b97859d4430a0950ad1385aaa6d32fedebbe4bb"
+    }
+  },
+  "retained_evidence_zip": "C:\\Temp\\CutBridge-verification-20261016\\bootstrap-final-evidence.zip",
+  "retained_evidence_zip_sha256": "06b3be67cb741e58b649fe18ff353048560508b6307e091db5d384dd434d20e7",
+  "retained_evidence_directory": "C:\\Temp\\CutBridge-verification-20261016\\remote-bootstrap-final",
+  "retention_receipt": {
+    "artifact_zip_sha256": "06b3be67cb741e58b649fe18ff353048560508b6307e091db5d384dd434d20e7",
+    "artifact_zip_bytes": 12237082,
+    "retained_zip": "C:\\Temp\\CutBridge-verification-20261016\\bootstrap-final-evidence.zip",
+    "retained_extracted": "C:\\Temp\\CutBridge-verification-20261016\\remote-bootstrap-final",
+    "verified_inner_checksums": 48,
+    "bootstrap": {
+      "BOOTSTRAP_REF": "refs/heads/fix/trusted-verifier-bootstrap-20261016",
+      "BOOTSTRAP_SHA": "9d4e8eb7c03e3fd60b751bf093b57d599d446db5",
+      "CANDIDATE_COMMIT": "639374ce5f1b5f0d36847258d052c36ab21dd208",
+      "DEVELOP_COMMIT": "8cc5a4fe19e97c2f83105b888f96ccf1b423e8fd",
+      "ImageOS": "ubuntu24",
+      "ImageVersion": "20261012.334.1",
+      "RUNNER_ARCH": "X64",
+      "RUNNER_OS": "Linux",
+      "RUN_ATTEMPT": "1",
+      "RUN_ID": "38911851205",
+      "TRUSTED_SHA": "571f4cdb1c992124bdb35e3d089de1de1535b254",
+      "WORKFLOW_REF": "Unn0wn002/CutBridge/.github/workflows/reviewed-release-verification.yml@refs/heads/fix/trusted-verifier-bootstrap-20261016",
+      "WORKFLOW_SHA": "9d4e8eb7c03e3fd60b751bf093b57d599d446db5",
+      "machine": "x86_64",
+      "orchestration_python": "3.12.3",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "scope": "Reviewed bootstrap identity only; see verification.json for canonical-check verdict"
+    },
+    "verdict": "PASS",
+    "candidate_sha": "639374ce5f1b5f0d36847258d052c36ab21dd208",
+    "source_archive_sha256": "472a49754f0bbdfa34acd4974898d1507cd93b84dec2a55dfb5a41d418be1715",
+    "candidate_diff_sha256": "0292a9efffa7c883cccbbb6573ac3181f992b485ea9621da8ab7e0d851d76605"
+  },
+  "source_archive_sha256": "472a49754f0bbdfa34acd4974898d1507cd93b84dec2a55dfb5a41d418be1715",
+  "candidate_diff_sha256": "0292a9efffa7c883cccbbb6573ac3181f992b485ea9621da8ab7e0d851d76605",
+  "native_blender": "Scoped PASS reused only for exact unchanged Blender ZIP, 5.2.2 d13f752e3b9c, 36 outputs, V001-V003/preservation/negative/rollback/fresh-process reopen; see baseline EVIDENCE_BINDING.json",
+  "native_ae": "INSUFFICIENT EVIDENCE; no accepted current native assertions",
+  "native_manual_visual_update": "UNEXECUTED/BLOCKED; see committed assessment",
+  "s14b": "NOT_EXECUTED",
+  "release_authorization": false,
+  "production_version": "0.2.3",
+  "working_target": "2026-10-22",
+  "official_submission_deadline": "UNCONFIRMED",
+  "remaining": [
+    "Approved initializing offline credential-free AE/native visual environment",
+    "Native/manual installation/workflow/preservation/negative/rollback/reopen/update acceptance",
+    "Independent release review and demonstrated-scope acceptance",
+    "Separately authorized protected promotion/release/publication/download/distribution gates"
+  ]
+}

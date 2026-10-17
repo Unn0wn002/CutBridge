@@ -398,5 +398,27 @@
       "exhaustive_preservation_and_remaining_negative_signoff": "PENDING",
       "japanese_representative_users": "NOT_EXECUTED"
     }
+  },
+  "validation_closeout": {
+    "record_date": "2026-10-17",
+    "engineering_baseline_sha": "639374ce5f1b5f0d36847258d052c36ab21dd208",
+    "verdict": "INSUFFICIENT EVIDENCE",
+    "completed_automation": {
+      "passed": 396,
+      "subtests": 2,
+      "rna": "5.2.1",
+      "ae_node_suites": 18,
+      "record": "evidence/20261017-validation-closeout/BASELINE_639374c_VERIFICATION.json"
+    },
+    "runtime_and_packages": "FROZEN",
+    "native_environment": "NOT_ESTABLISHED",
+    "diagnosis": "Timebox expired; no further startup attempt after resumption",
+    "assessment": "evidence/20261017-validation-closeout/assessment.json",
+    "operator_handoff": "NATIVE_VALIDATION_HANDOFF.md",
+    "release_review": "NOT_RECEIVED",
+    "demonstrated_scope_acceptance": "NOT_RECEIVED",
+    "S14B": "NOT_EXECUTED",
+    "release_authorization": false,
+    "production_version": "0.2.3"
   }
 }

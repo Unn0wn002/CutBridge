@@ -1,0 +1,116 @@
+# Native validation operator handoff — PR #113
+
+Prepared 17 October 2026. **INSUFFICIENT EVIDENCE / NOT_EXECUTED / ACCEPTANCE NOT_RECEIVED.** This is the single handoff for the remaining native work. It does not authorize a security change, protected merge, publication or distribution. S14B is NOT_EXECUTED. Working target: 22 October; official deadline unconfirmed.
+
+## Frozen inputs and completed work
+
+Engineering baseline: `639374ce5f1b5f0d36847258d052c36ab21dd208`, branch `fix/current-release-completion-20261016`. Later closeout changes are documentation/evidence only. Preserve the exact-baseline **396 tests + 2 subtests**, RNA, 18 AE Node suites, syntax and repeat-package PASS in `FINAL_HEAD_VERIFICATION.json`. Do not rerun completed engineering merely to replace its SHA label. Existing native Blender 5.2.2 build `d13f752e3b9c` evidence covers only its recorded unchanged-ZIP scripted scope.
+
+Packet: `C:\Users\unn0w\.codex\worktrees\5d5d\CutBridge\dist\release-candidate-20261016`. The data-staged `operator-handoff` subdirectory contains existing native harnesses, the real rendered Blender V001–V003 packages, exact extracted AE runtime, 639374c review metadata and unfilled acceptance forms. It contains no claimed execution or approval. The original harness config is retained; its derived installation-metadata path points at read-only review input. Review all derivative configuration and hashes before execution.
+
+| Frozen artifact | SHA-256 |
+| --- | --- |
+| Blender ZIP | `864131a58a1c56e4364c3e435ef1433fbda415515be7292770212bfdc4c31bfe` |
+| AE ZIP | `427a36ba8638e88940b18f9daa34537c7e41ad939f3b81fddb50a3812d691268` |
+| Linux release metadata | `a9e0d91202173cb9ad431a3f1b85ca0b8b8d4a416ad49a5e8e3c336e23a1722f` |
+| Linux checksums | `d153d2ca56594f28ee4ed75d9b97859d4430a0950ad1385aaa6d32fedebbe4bb` |
+
+These read-only owner/reviewer commands verify identity without executing candidate code:
+
+```powershell
+$packet = 'C:\Users\unn0w\.codex\worktrees\5d5d\CutBridge\dist\release-candidate-20261016'
+Get-Content -LiteralPath "$packet\FINAL_HEAD_VERIFICATION.json"
+Get-FileHash -Algorithm SHA256 -LiteralPath "$packet\CutBridge-Blender-v0.2.5.zip", "$packet\CutBridge-AfterEffects-v0.2.5.zip", "$packet\release-metadata.json", "$packet\SHA256SUMS.txt"
+```
+
+## Current blocker and diagnosis boundary
+
+The diagnosis window began `2026-10-16T15:55:38Z`, with deadline `16:55:38Z`. It elapsed during an interrupted turn. On resumption at `2026-10-17T00:47:41Z`, no further startup attempt was launched. The pending control had produced no guest files; its desktop alone did not prove native availability. No claim is made that the VM stopped at the deadline. Its 7,511 input records were identical before/after.
+
+Full AE preparation encountered an unreadable `AfterFXLib.dll.bak` path; a subsequent lookup did not find it. The active `AfterFXLib.dll` Authenticode check reported **HashMismatch**, while AfterFX.exe and Blender.exe signatures verified. AE was excluded from the fresh control. This does not establish the cause of prior `0xc0e90002`, the separate `rpds` Application Control block, or the absent control output. No installation, authorization or security policy was changed. See [the retained assessment](evidence/20261017-validation-closeout/assessment.json).
+
+Do not repeat those identical failed attempts. The next operator must supply a materially different, independently approved environment with normally provisioned vendor installations and working orchestration. Do not repair the current installation, copy license stores, disable security controls, or override execution policy through this handoff.
+
+## Environment acceptance before any candidate load
+
+Use a disposable Windows VM/Sandbox with supported, normally installed and appropriately provisioned Blender/AE. Prefer the recorded Blender 5.2.2 and AE 26.5x89 for comparable scope; other builds require their own explicit scope. Dependencies and permitted host licensing/profile preparation occur separately from candidate execution. No owner HOME, browser, SSH/cloud/GitHub authentication or other owner credential store may be exposed.
+
+An independent operator/reviewer must record and approve:
+
+- Exact OS/host/build and hashes of the full executable/dependency/startup-script trees; readable inventories and appropriate vendor provenance/signature checks. Current mismatched or unreadable AE inputs cannot be silently accepted as clean controls.
+- Effective network denial, actual adapters/interfaces, read-only input mounts/ACLs, and explicit writable `verification-output`/temporary/profile/cache locations. Native host preferences and caches must fit the approved boundary; environment variables alone are not proof that the host honors it.
+- Normal, approved orchestration and script/file permissions. Do not add an execution-policy bypass or alter application security/privacy settings to make a report appear.
+- A host-side 60-minute deadline/watchdog independent of guest logon. Stop on missing isolation proof, unreadable/mutated inputs, initialization failure or a required permission/credential prompt. Preserve incomplete results as INSUFFICIENT EVIDENCE.
+
+First launch **blank vendor hosts with no CutBridge code, ZIPs or fixtures mapped**. Blender uses `--factory-startup --disable-autoexec`; AE omits `-r`. Observe actual native workspaces, close normally, and record actual process IDs/exits. Then use separate fresh outputs for a reviewed no-candidate API probe. Keep vendor bytes/settings identical except the probe argument; record fresh/warm profile differences. An OS helper running or a process existing is not native availability. Require the probe JSON, exact build, actual native process and normal-exit evidence. Do not infer mapped-path causation from local versus mapped controls whose binary bytes/builds differ.
+
+The existing no-candidate AE probe is `native-ae-input/probe.jsx`. A reviewed invocation inside the approved isolated guest is:
+
+```powershell
+& 'C:\AfterEffects\AfterFX.exe' -m
+# After independent blank-workspace observation and actual normal exit,
+# use a fresh probe output/profile under the same approved controls:
+& 'C:\AfterEffects\AfterFX.exe' -m -r 'C:\NativeAEInput\probe.jsx'
+```
+
+Expected probe result: `native-ae/availability.json` says AVAILABLE, reports the exact host/build and says candidate execution/native campaign NOT_EXECUTED. Availability is not a workflow PASS. Complete `environment-acceptance.json` only after real independent acceptance; its supplied status is NOT_RECEIVED.
+
+## Exact input layout and commands after acceptance
+
+Use a new empty output for every attempt. Retain the reviewed VM policy and host-side before/after path/type/mode/byte inventories. Do not relaunch old r6 policies or reuse old output directories: they bind older review metadata and contain unsuccessful attempts.
+
+| Read-only staged input | Approved guest path |
+| --- | --- |
+| `operator-handoff/native-ae-input` | `C:\NativeAEInput` |
+| `operator-handoff/native-blender-visual-input` | `C:\NativeBlenderInput` |
+| `operator-handoff/review` | `C:\Review` |
+| `operator-handoff/ae-runtime` | `C:\AERuntime` |
+| `operator-handoff/real-blender-input` | `C:\Packages` |
+| `operator-handoff/artifacts` | `C:\Artifacts` |
+| Reviewed, normally installed vendor applications | `C:\AfterEffects` and `C:\Blender` aliases |
+| Fresh designated output only | `C:\Evidence\verification-output` writable |
+
+These paths are a required layout, not proof that a VM is approved. `review/candidate.json` binds 639374c; `review/installation.json` records actual extracted file hashes as **data staging**, not installation acceptance. Independently compare all runtime/fixture/harness bytes with the bundle inventory. Native AE's common harness reads the receipt but does not itself authenticate those bytes; the external inventory is the authority.
+
+Set `TEMP`, `TMP`, `TMPDIR` and `PYTHONPYCACHEPREFIX` under approved output. Set Blender config/data/extensions paths there too. Use reviewed orchestration to retain actual process IDs/exits, stdout/stderr and report state. The following are the existing native application commands, executed **only inside that approved guest**, sequentially:
+
+```powershell
+& 'C:\AfterEffects\AfterFX.exe' -m -r 'C:\NativeAEInput\run_all.jsx'
+# Require the previous actual AfterFX.exe exit and saved artist-V003.aep first.
+& 'C:\AfterEffects\AfterFX.exe' -m -r 'C:\NativeAEInput\fresh_reopen.jsx'
+```
+
+Expected `native-ae` outputs: campaign/negative/rollback/reopen JSON, all-status.json, artist-V001.aep through artist-V003.aep, preservation-baseline.json, reopened-V003.aep and fresh-process-reopen.json. Require each phase PASS, distinct actual native PIDs, prior exit before fresh launch, both actual normal exits, unchanged inputs, and concrete state assertions. Existing launcher `verdict.txt` reflects run_all only and does **not** gate on successful fresh-process reopen; adjudicate the full evidence yourself. A `.com` launcher exit or Sandbox shutdown is not native normal-exit evidence.
+
+## Required native cases and retained-harness limits
+
+- Execute real V001–V003 Build/QC/repeat Build/revisions using the 36 real rendered Blender inputs. Compare source paths, persistent ownership IDs, counts, dimensions/FPS/frame range, and concrete artist/root-note state.
+- Execute existing required deletion/de-tagging, renamed/duplicate folder, incompatible timing/pass-set, required/optional status, optional-layer and optional-sequence cases. Require blocked operations to preserve the before/after project inventory.
+- Execute existing post-import failure: capture the actual allocated numeric ID, require its removal and native `isValid(handle) == false`, preserve prior sources/notes/artist state and verify recovery Build/QC. Exercise stale native footage/layer rediscovery separately.
+- Add the **moved deterministic folder** manual case in a disposable V003 copy: move the managed comp folder outside its package root; Build/revision/QC must reject without recreating/adopting structure or mutating other objects. Retain original and actual parent/item IDs.
+- The retained r5 harness does **not** inject a native source-replacement failure. Use a separately reviewed supplemental fault method before claiming that gate. One inspectable method is to wrap the public revision manager's `createExecutor` temporarily, then wrap the received real adapter's `swapManagedSource`: let the first real swap complete and deliberately pass an invalid source to the second real swap so the actual native `replaceSource` call fails. Restore all wrappers in `finally`. Record that the native call actually threw; otherwise the injection is unproven. Require rollback to restore old sources/metadata/artist state and remove replacement IDs, then reload/Build/QC. Do not edit packaged runtime, relabel post-import failure as this case, or claim this planned method executed.
+- Inspect supported Camera Position/POI/Zoom and Null Position/Scale against manifest values/times independently of QC. Camera roll, Empty rotation, general projection and expected 3D completeness are excluded. Preservation fixtures do not cover every possible artist property; explicitly name extra claims such as blending/mattes or temporal ease if tested.
+- Save/reopen within process, reload panel/Build/QC, then exit normally and reopen in a distinct fresh process. Return saved-project hashes and actual source/state comparisons.
+
+## Installation, visible UI and manual update
+
+Blender: install the exact ZIP through the real Preferences > Get Extensions > Install from Disk flow, enable it and record actual EN/JA normal/narrow panel/help and Validate/Build button observations. Official CLI installation alone does not prove those actions. The existing visual orchestration uses:
+
+```powershell
+& 'C:\Blender\blender.exe' --command extension validate 'C:\Artifacts\CutBridge-Blender-v0.2.5.zip'
+& 'C:\Blender\blender.exe' --command extension repo-add cutbridge_candidate --name CutBridgeCandidate --directory 'C:\Evidence\verification-output\extensions\candidate'
+& 'C:\Blender\blender.exe' --command extension install-file -r cutbridge_candidate --enable 'C:\Artifacts\CutBridge-Blender-v0.2.5.zip'
+& 'C:\Blender\blender.exe' --python-exit-code 1 --python 'C:\NativeBlenderInput\visual_blender.py'
+```
+
+The visual harness reports `native-blender-visual/ready.json` and captures native screenshots. Its adjacent README specifies output-side phase.json commands: EN, JA, NARROW_API_EN/JA, HELP_CAMERA_EN/JA, CAPTURE and QUIT. Issue one phase at a time, wait for its matching sequence, inspect real pixels and measured width, then continue. Capture failure or an unselected tab is not visual PASS.
+
+AE: keep the four runtime files adjacent. Observe File > Scripts > Run Script File and EN/JA. For dockable acceptance, prepare the exact four files in the actual guest application's Scripts/ScriptUI Panels directory through approved installation preparation, verify/freeze their bytes read-only before candidate execution, restart AE, and observe Window > CutBridge. The old read-only mapped application cannot be written to for that installation; it needs the approved disposable installation target. Run Script File/evalFile is not dockable-menu evidence.
+
+Manual update: with candidate networking denied, exercise the real Check for Updates UI and record unavailable/fail-closed behavior plus unchanged disabled startup scheduling. Positive discovery/selection/install requires a separately identified approved offline fixture/interface; absent that, leave it NOT_EXECUTED. Do not enable networking, publish or deploy v0.2.5 merely to make the check pass. Live publication/distribution checks belong to their separately authorized gates.
+
+## Evidence and acceptance to return
+
+Return one fresh evidence directory with environment acceptance, actual VM/network/credential/mount controls, full input inventories before/after, exact SHA and all artifact/runtime/fixture/harness hashes, OS/host/build, native command lines/start-end/PIDs/exits, complete stdout/stderr/events, phase JSON and native object/state comparisons, observed screenshots with case-specific notes, saved-project hashes and any exclusions. Keep ZIPs/projects/renders outside Git. Include a SHA-256 catalog and preserve interrupted checkpoints/raw unsuccessful results.
+
+Use exactly one overall verdict: PASS, FAIL, INVALID, INSUFFICIENT EVIDENCE or WORKSPACE_NOT_ACCESSIBLE. Missing initialization/isolation/report/host evidence is insufficient; changed input integrity is invalid; an actual candidate assertion failure needs a valid isolated reproduction. Return the unfilled [scope form](validation/scope-acceptance.json) only after actual execution/review and named owner acceptance. The [independent review packet](INDEPENDENT_RELEASE_REVIEW_PACKET.md) is prepared; review and demonstrated-scope acceptance are both NOT_RECEIVED. Neither form authorizes a release or waives an unexecuted gate.

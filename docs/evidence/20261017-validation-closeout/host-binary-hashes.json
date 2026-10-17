@@ -1,0 +1,17 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "39CD58EF58211B00720EE27CFCD243332FB6D289D37582C8FC2BA1679255B87D",
+    "Path": "C:\\Program Files\\Adobe\\Adobe After Effects 2026\\Support Files\\AfterFXLib.dll"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "013E7FA7232368C05DD14E5CAE694AD7D5CB0D260A9D5956BFCFE20E4860C06F",
+    "Path": "C:\\Program Files\\Adobe\\Adobe After Effects 2026\\Support Files\\AfterFX.exe"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "F141A3C5754500E6F84361099A4CD53F0BB7662B6A0D2CFAAA8FBB63E92234A0",
+    "Path": "C:\\Program Files\\Blender Foundation\\Blender 5.2\\blender.exe"
+  }
+]
