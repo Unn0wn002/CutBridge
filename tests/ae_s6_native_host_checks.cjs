@@ -37,6 +37,11 @@ function makeHost(options = {}) {
     const invalidHandles = new WeakSet(), validityChecks = [], nativeEvents = [];
     let nextItemId = 1;
     const diskFiles = new Set([...frameFiles(1), ...frameFiles(2), ...frameFiles(3)]);
+    if (options.sourceRollback) {
+        for (const version of [1, 2, 3, 4]) for (const pass of ["BEAUTY", "DEPTH"]) {
+            for (const n of [1, 2, 3]) diskFiles.add(packagePath(version) + "/render/" + pass.toLowerCase() + "/C001_" + pass + "_000" + n + ".png");
+        }
+    }
     const normalize = value => path.posix.normalize(String(value).replaceAll("\\", "/"));
 
     // A removed native AE object is an invalid handle, not an ordinary JS object.
@@ -127,7 +132,12 @@ function makeHost(options = {}) {
         });
     }
     AVLayer.prototype.replaceSource = function(item, fixExpressions) {
-        replaceFlags.push(fixExpressions); this._source = item;
+        replaceFlags.push(fixExpressions);
+        nativeEvents.push("replace:" + (item ? item.id : "null"));
+        if (options.sourceRollback && options.failFirstSwap && item) throw new Error("First native replacement failed early");
+        if (options.sourceRollback && !item && !options.acceptNullSource) throw new TypeError("Native replaceSource requires an AVItem");
+        if (options.sourceRollback && options.ignoreValidSwap && item) return;
+        this._source = item;
     };
     AVLayer.prototype.moveToBeginning = function() {
         const list = this.containingComp._layers, i = list.indexOf(this);
@@ -433,4 +443,112 @@ assert.equal(collisionHost.childFolders(manualRoot).length, 0, "unverified packa
 assert.equal(manualRoot.comment, "Studio-owned folder");
 assert.match(collisionHost.alerts.at(-1), /project-root folder|package root|package folder|ownership|collision|not verified/i);
 
-console.log("S6 native-host lifecycle: PASS (V001→V002→V003 + failed-import numeric-ID cleanup + invalid native caches + Build/QC/reload + ownership collisions; real AE MANUAL NOT EXECUTED)");
+// Execute the actual supplemental JSX through this existing host-shaped vm and
+// the real CutBridge adapter/executor. CB file/project helpers below are mocks;
+// no result here is native AE evidence. The JSX is parsed by vm.Script as well.
+const supplementPath = path.join(root, "tests/native_ae/source_replacement_rollback.jsx");
+const supplement = new vm.Script(fs.readFileSync(supplementPath, "utf8"), {filename: supplementPath});
+function exerciseSourceRollback(overrides = {}) {
+    const options = {nativeHandles: true, sourceRollback: true, ...overrides};
+    const host = makeHost(options), current = manifest(3), candidate = manifest(4);
+    for (const m of [current, candidate]) {
+        m.passes.push({name: "DEPTH", path: "render/depth", sequence_pattern: "C001_DEPTH_####.png", required: true});
+        m.ae.layer_order.push("DEPTH");
+    }
+    host.queue(current); host.click("Import Package"); host.click("Build Comp");
+    const c = host.comps()[0], packageRoot = host.topRoot(current.package_name);
+    packageRoot.comment = "Artist root note";
+    c.layer(1).artistEffects = {effect: 42, mask: [1, 2], keys: [0, 1], expression: "value + 1"};
+    let syntheticId = 1000000;
+    for (const item of host.projectItems) if (item.id === undefined) item.id = syntheticId++;
+    for (const layer of c._layers) layer.id = syntheticId++;
+    const runtime = host.runtime, files = new Map(), report = {checks: []};
+    let reloads = 0, saved = 0, closed = 0, quit = 0;
+    runtime.$.global = runtime;
+    runtime.CloseOptions = {DO_NOT_SAVE_CHANGES: 0};
+    runtime.app.project.save = () => { saved++; };
+    runtime.app.project.close = () => { closed++; };
+    runtime.app.quit = () => { quit++; };
+    runtime.Window.find = () => ({close() {}});
+    function check(name, passed, details) {
+        report.checks.push({name, passed, details});
+        if (!passed) { const error = new Error(name); error.observedCheckFailure = true; throw error; }
+    }
+    function snapshot() {
+        return {
+            items: host.projectItems.map(item => ({id: item.id, name: item.name, comment: item.comment, parent: item.parentFolder && item.parentFolder.id})),
+            layers: c._layers.map(layer => ({id: layer.id, name: layer.name, comment: layer.comment, source: layer.source && layer.source.id, artist: layer.artistEffects})),
+            artist_root_note: packageRoot.comment
+        };
+    }
+    runtime.CB = {
+        config: {output_root: "/evidence", runtime_directory: "C:/AERuntime"}, report,
+        packages: {3: {path: packagePath(3) + "/cutbridge.json"}},
+        execute(phase, task) {
+            try { task(); report.status = "PASS"; }
+            catch (error) { report.status = error.observedCheckFailure ? "FAIL" : "INSUFFICIENT EVIDENCE"; report.error = String(error); }
+        },
+        openSaved(version) { assert.equal(version, 3); return c; },
+        build(label) {
+            const result = runtime.CutBridgeContract.buildComp();
+            check(label, result.success === true, result);
+            const qc = runtime.CutBridgeContract.runQC();
+            check(label + " QC", qc.report.summary.ERROR === 0, qc);
+        },
+        check, insufficient: message => new Error(message), snapshot,
+        ids: () => host.projectItems.map(item => item.id),
+        save: (file, value) => files.set(file, JSON.parse(JSON.stringify(value))),
+        json: JSON.stringify, parse: JSON.parse,
+        equal: (a, b) => JSON.stringify(a) === JSON.stringify(b),
+        variant(name, version, mutate) { assert.equal(version, 4); assert.equal(mutate, null); return {path: packagePath(4) + "/cutbridge.json", manifest: candidate}; },
+        revision(file, version, confirmation) {
+            assert.equal(file, packagePath(4) + "/cutbridge.json"); assert.equal(confirmation, true);
+            const start = host.alerts.length;
+            host.queue(candidate); host.click("Update Revision");
+            // Match the retained common.jsx check: a no-throw invalid source
+            // must not silently apply V004 and pass the supplemental test.
+            check("revision resulting version", runtime.CutBridgeContract.getState().manifest.version === version);
+            return {alerts: host.alerts.slice(start)};
+        },
+        comp: () => c
+    };
+    // Reload uses the actual JSX and actual parser, with a mock disk manifest.
+    runtime.$.evalFile = file => {
+        if (file.fsName === "C:/NativeAEInput/common.jsx") return;
+        assert.equal(file.fsName, "C:/AERuntime/CutBridge.jsx");
+        reloads++; host.reload();
+        const actualLoad = runtime.CutBridgeContract.loadManifest;
+        runtime.CutBridgeContract.loadManifest = fileOrPath => {
+            const f = new runtime.File(fileOrPath); f._text = JSON.stringify(current); return actualLoad(f);
+        };
+    };
+    const originalFactory = Revision.createExecutor;
+    supplement.runInContext(runtime);
+    assert.strictEqual(Revision.createExecutor, originalFactory, "manager instrumentation must restore in finally even on assertion failure");
+    const evidence = files.get("/evidence/source-replacement-rollback-evidence.json");
+    assert.ok(evidence, "retain concrete evidence on success and failure");
+    assert.equal(evidence.instrumentation_restored, true);
+    assert.equal(closed, 1); assert.equal(quit, 1);
+    return {host, report, evidence, reloads, saved};
+}
+const sourceRollback = exerciseSourceRollback();
+assert.equal(sourceRollback.report.status, "PASS", JSON.stringify(sourceRollback.report));
+assert.equal(sourceRollback.evidence.first_native_swap_completed, true);
+assert.equal(sourceRollback.evidence.native_call_threw, true);
+assert.equal(sourceRollback.evidence.swaps[1].invalid_argument, "null");
+assert.match(sourceRollback.evidence.swaps[1].exception.text, /Native replaceSource/);
+assert.equal(sourceRollback.evidence.cleanup.length, 2);
+assert.ok(sourceRollback.evidence.cleanup.every(record => record.absent && record.invalid_handle));
+assert.deepEqual(sourceRollback.evidence.before, sourceRollback.evidence.after);
+assert.deepEqual(sourceRollback.evidence.before, sourceRollback.evidence.recovered);
+assert.notDeepEqual(sourceRollback.evidence.before, sourceRollback.evidence.after_first_swap);
+assert.equal(sourceRollback.reloads, 1); assert.equal(sourceRollback.saved, 1);
+assert.ok(sourceRollback.host.nativeEvents.includes("replace:null"));
+assert.ok(!sourceRollback.host.nativeEvents.some(event => event.startsWith("invalid-")));
+for (const options of [{acceptNullSource: true}, {failFirstSwap: true}, {ignoreValidSwap: true}, {refuseRemoval: true}]) {
+    const rejected = exerciseSourceRollback(options);
+    assert.notEqual(rejected.report.status, "PASS", "unproven swap/throw or retained staged ID must fail closed: " + JSON.stringify(options));
+    assert.equal(rejected.saved, 0, "failed supplement must not claim a recovered saved project");
+    if (options.acceptNullSource || options.failFirstSwap || options.ignoreValidSwap) assert.equal(rejected.evidence.native_call_threw, false);
+}
+console.log("S6 native-host lifecycle: PASS (V001→V002→V003 + failed-import numeric-ID cleanup + invalid native caches + source-replacement rollback supplement and adversarial mocks + Build/QC/reload + ownership collisions; real AE MANUAL NOT EXECUTED)");

@@ -4,7 +4,7 @@ Prepared 17 October 2026. **INSUFFICIENT EVIDENCE / NOT_EXECUTED / ACCEPTANCE NO
 
 ## Frozen inputs and completed work
 
-Engineering baseline: `639374ce5f1b5f0d36847258d052c36ab21dd208`, branch `fix/current-release-completion-20261016`. Later closeout changes are documentation/evidence only. Preserve the exact-baseline **396 tests + 2 subtests**, RNA, 18 AE Node suites, syntax and repeat-package PASS in `FINAL_HEAD_VERIFICATION.json`. Do not rerun completed engineering merely to replace its SHA label. Existing native Blender 5.2.2 build `d13f752e3b9c` evidence covers only its recorded unchanged-ZIP scripted scope.
+Engineering baseline: `639374ce5f1b5f0d36847258d052c36ab21dd208`, branch `fix/current-release-completion-20261016`. The 5a4f43b closeout changed documentation/evidence only; the subsequent source-replacement rollback preparation changes test inputs and this handoff, while packaged runtime stays frozen. Preserve the exact-baseline **396 tests + 2 subtests**, RNA, 18 AE Node suites, syntax and repeat-package PASS in `FINAL_HEAD_VERIFICATION.json`. Later preparation checks retain their own tested SHA. Existing native Blender 5.2.2 build `d13f752e3b9c` evidence covers only its recorded unchanged-ZIP scripted scope.
 
 Packet: `C:\Users\unn0w\.codex\worktrees\5d5d\CutBridge\dist\release-candidate-20261016`. The data-staged `operator-handoff` subdirectory contains existing native harnesses, the real rendered Blender V001–V003 packages, exact extracted AE runtime, 639374c review metadata and unfilled acceptance forms. It contains no claimed execution or approval. The original harness config is retained; its derived installation-metadata path points at read-only review input. Review all derivative configuration and hashes before execution.
 
@@ -88,9 +88,32 @@ Expected `native-ae` outputs: campaign/negative/rollback/reopen JSON, all-status
 - Execute existing required deletion/de-tagging, renamed/duplicate folder, incompatible timing/pass-set, required/optional status, optional-layer and optional-sequence cases. Require blocked operations to preserve the before/after project inventory.
 - Execute existing post-import failure: capture the actual allocated numeric ID, require its removal and native `isValid(handle) == false`, preserve prior sources/notes/artist state and verify recovery Build/QC. Exercise stale native footage/layer rediscovery separately.
 - Add the **moved deterministic folder** manual case in a disposable V003 copy: move the managed comp folder outside its package root; Build/revision/QC must reject without recreating/adopting structure or mutating other objects. Retain original and actual parent/item IDs.
-- The retained r5 harness does **not** inject a native source-replacement failure. Use a separately reviewed supplemental fault method before claiming that gate. One inspectable method is to wrap the public revision manager's `createExecutor` temporarily, then wrap the received real adapter's `swapManagedSource`: let the first real swap complete and deliberately pass an invalid source to the second real swap so the actual native `replaceSource` call fails. Restore all wrappers in `finally`. Record that the native call actually threw; otherwise the injection is unproven. Require rollback to restore old sources/metadata/artist state and remove replacement IDs, then reload/Build/QC. Do not edit packaged runtime, relabel post-import failure as this case, or claim this planned method executed.
+- The historical r5 harness alone does **not** inject native source-replacement failure. The [supplemental phase](../tests/native_ae/source_replacement_rollback.jsx) below extends its existing CB helpers. Its status is **PREPARED_NOT_EXECUTED**; mock preparation checks do not establish native behavior. Do not relabel the post-import case as this separate gate.
 - Inspect supported Camera Position/POI/Zoom and Null Position/Scale against manifest values/times independently of QC. Camera roll, Empty rotation, general projection and expected 3D completeness are excluded. Preservation fixtures do not cover every possible artist property; explicitly name extra claims such as blending/mattes or temporal ease if tested.
 - Save/reopen within process, reload panel/Build/QC, then exit normally and reopen in a distinct fresh process. Return saved-project hashes and actual source/state comparisons.
+
+## Prepared source-replacement rollback supplement
+
+Status: **PREPARED_NOT_EXECUTED**. Targeted inventory and independent read-only review found no existing reviewed supplement. This phase uses unchanged retained `common.jsx`, actual packaged revision UI/adapter/executor and the campaign's disposable `artist-V003.aep`; it creates only an output-side V004 fixture. It does not replace the native campaign or its independent environment acceptance.
+
+Before guest execution, stage the exact reviewed `tests/native_ae/source_replacement_rollback.jsx` alongside `operator-handoff/native-ae-input/common.jsx` as `C:\NativeAEInput\source_replacement_rollback.jsx`. Bind its SHA-256 and preparation commit separately from the frozen runtime SHA in the external input inventory; keep the input read-only. The amended operator bundle includes this phase and its checksum. Require at least two active managed passes, a successful existing campaign and its saved V003 artist project. The existing approved environment requirements above apply unchanged. The closed startup investigation must not be retried as part of this preparation.
+
+After `run_all.jsx` has completed and its actual native process has exited, invoke inside that approved isolated guest:
+
+```powershell
+& 'C:\AfterEffects\AfterFX.exe' -m -r 'C:\NativeAEInput\source_replacement_rollback.jsx'
+# Retain the actual AfterFX.exe PID and normal exit, then run the existing
+# fresh_reopen.jsx command separately. A launcher exit is insufficient.
+```
+
+Expected output under `C:\Evidence\verification-output\native-ae`:
+
+- `source-replacement-rollback.json`: every recorded check passes; native host/build, original candidate metadata and scope remain bound to the input inventory.
+- `source-replacement-rollback-evidence.json`: complete `before`, staged numeric IDs/paths, two swap records, `after_first_swap`, `after`, cleanup and `recovered`. The first real swap must change the source. The second calls the real adapter with null and must actually throw from native `replaceSource`; retain exception text/file/line, unchanged native method and live-input checks. A synthetic wrapper throw, no-op first swap or accepted null argument cannot establish this gate.
+- All staged IDs must be absent, every captured removed handle must satisfy native `isValid(handle) === false`, and original source paths/IDs, manifests, ownership comments, folder names/parents, caches and the retained campaign's measured artist state must equal the baseline. The existing preservation scope excludes unmeasured artist properties and unsupported 3D channels.
+- `instrumentation_restored: true` after `finally` restores the manager factory and each adapter wrapper. The phase reloads the actual installed panel/manifest, runs Build/QC, compares recovered state and saves `source-replacement-rollback-recovered.aep`. Return its external SHA-256 plus process/log/input-integrity evidence. Partial evidence is flushed before/after injection and on failure; missing native throw or recovery is not a successful case.
+
+Preparation is exercised through the existing `tests/ae_s6_native_host_checks.cjs` suite and canonical CONTRIBUTING verification, with adversarial mocks for a non-throwing native method, failed/no-op first swap and retained replacement IDs. Those results prove preparation only. The remaining blocker is an independently approved, initializing native AE environment; no native execution, environment approval or demonstrated-scope acceptance is claimed.
 
 ## Installation, visible UI and manual update
 

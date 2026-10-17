@@ -1,5 +1,13 @@
 # CutBridge Completion Status
 
+## Source-replacement rollback preparation — 17 October 2026
+
+**Verdict: INSUFFICIENT EVIDENCE. Native status: PREPARED_NOT_EXECUTED.** Branch `fix/current-release-completion-20261016` continues checkpoint `5a4f43b6b0f4c11e97221a3e800d39c4244fe4fa`. Frozen engineering/runtime baseline remains `639374ce5f1b5f0d36847258d052c36ab21dd208`; its completed 396 tests + 2 subtests and bounded native Blender evidence remain separately SHA-bound.
+
+No reviewed source-swap failure supplement was found. [The new phase](../tests/native_ae/source_replacement_rollback.jsx) extends the retained CB native harness using the disposable V003 campaign project. It observes one successful real replacement, passes null through the real adapter on the second swap and requires an actual native exception. It retains snapshots, staged IDs/paths, exception and cleanup evidence, restores instrumentation in `finally`, compares original sources/metadata/caches/artist state, then reloads the actual panel and runs Build/QC. Existing AE host-shaped mocks cover the phase and adversarial no-throw/early-failure/no-op/retained-ID cases. Preparation validation is pending the required isolated procedure; no candidate-controlled command has run in the owner environment.
+
+[The existing handoff](NATIVE_VALIDATION_HANDOFF.md#prepared-source-replacement-rollback-supplement) records the exact `AfterFX.exe -m -r C:\NativeAEInput\source_replacement_rollback.jsx` invocation, output files and proof requirements. Packaged runtime, release ZIPs, authorization and production remain unchanged. No startup retry, security/licensing change or acceptance occurred. Next action: complete isolated automated preparation checks, then an approved native operator executes this supplemental phase after the retained campaign and returns concrete evidence. Submission readiness remains insufficient; public-release gates remain separate, authorization false, production v0.2.3 and S14B NOT_EXECUTED.
+
 ## Validation closeout — 17 October 2026
 
 **Verdict: INSUFFICIENT EVIDENCE.** Branch `fix/current-release-completion-20261016` retains frozen engineering SHA `639374ce5f1b5f0d36847258d052c36ab21dd208`; this follow-up changes documentation/evidence only. Its **396 tests + 2 subtests**, RNA, 18 AE Node suites, syntax and repeat packaging remain complete and SHA-bound. [The original final receipt](evidence/20261017-validation-closeout/BASELINE_639374c_VERIFICATION.json) is retained unchanged. Earlier 395/392/390 counts below remain historical. Runtime/package bytes are frozen; native Blender evidence retains only its recorded equivalent-package scope.
