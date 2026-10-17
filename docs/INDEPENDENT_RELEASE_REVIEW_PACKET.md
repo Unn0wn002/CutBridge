@@ -4,6 +4,8 @@ Status: **PREPARED / REVIEW NOT_RECEIVED / SCOPE ACCEPTANCE NOT_RECEIVED**. This
 
 Closeout update, 17 October 2026: review the frozen baseline below plus the later documentation/evidence diff on PR #113. The startup timebox expired without an approved initializing native environment; see [the handoff](NATIVE_VALIDATION_HANDOFF.md) and [assessment](evidence/20261017-validation-closeout/assessment.json). The README was repaired, preserving original bytes/catalog; final-639 results and release assets were not changed.
 
+Bounded supplemental preparation at `85b8eb06617c1f195385c1b96ce9452882b63b8e` adds the missing native source-replacement rollback phase and adversarial mocks, with [separate automated evidence](evidence/20261017-source-replacement-rollback/preparation.json). Runtime and all four package assets still match 639374c exactly. Review the phase and [its invocation/evidence requirements](NATIVE_VALIDATION_HANDOFF.md#prepared-source-replacement-rollback-supplement); native status remains **PREPARED_NOT_EXECUTED** and release/scope approval remains **NOT_RECEIVED**.
+
 ## Exact decision and baseline
 
 Review [PR #113](https://github.com/Unn0wn002/CutBridge/pull/113) at exact source **`639374ce5f1b5f0d36847258d052c36ab21dd208`**, branch `fix/current-release-completion-20261016`, fetched develop/merge-base **`8cc5a4fe19e97c2f83105b888f96ccf1b423e8fd`**. The working target is **22 October 2026**; the official submission deadline remains **UNCONFIRMED**.
