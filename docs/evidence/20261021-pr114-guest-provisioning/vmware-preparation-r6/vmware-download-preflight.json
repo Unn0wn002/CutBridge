@@ -1,0 +1,107 @@
+{
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "phase": "OFFICIAL_VMWARE_INSTALLER_UNAVAILABLE_WITHOUT_ACCOUNT",
+  "observed_utc": "2026-10-21T16:58:46Z",
+  "documentation_head": "36c15890ce613c46203f30e842dae31f33914427",
+  "runtime_source": "5aa2da24fc8be41626ee84178c7fdce05d02eebc",
+  "owner_authorization": "Prepare the VMware route; preserve AI Native Test; stop at installer consent/sign-in/reboot/security boundary",
+  "browser": {
+    "name": "Microsoft Edge",
+    "id": "4",
+    "download_guide_tab": "1688015118",
+    "historical_sign_in_tab": "1688015121",
+    "observed_registration_tab": "1688015137"
+  },
+  "official_guide": "https://knowledge.broadcom.com/external/article/368667/download-and-license-free-vmware-desktop.html",
+  "official_download_target": "https://support.broadcom.com/group/ecx/productdownloads?subfamily=VMware%20Workstation%20Pro&freeDownloads=true",
+  "actual_stopping_page": "https://profile.broadcom.com/web/registration",
+  "actual_page_title": "Registration (owner declined account creation)",
+  "observed_fields": {
+    "email_address": "EMPTY AT CAPTURE",
+    "captcha": "NOT_SOLVED",
+    "personal_data": "NONE ENTERED BY AGENT"
+  },
+  "action_taken": "Followed official guide to sign-in; owner had no account; opened official Register form without input; owner declined account creation; bounded official winget catalog had no Workstation package; stopped before any installer retrieval/execution",
+  "agent_entered_credentials": false,
+  "agent_submitted_authentication": false,
+  "accepted_terms": false,
+  "installer": {
+    "downloaded": false,
+    "filename": null,
+    "selected_version": null,
+    "sha256": null,
+    "signature": null,
+    "executed": false,
+    "installed": false
+  },
+  "host_inspection": {
+    "cpu": "AMD Ryzen 7 8700F 8-Core Processor",
+    "cores": 8,
+    "logical_processors": 16,
+    "os": "Windows 11 Pro 10.0.26300",
+    "gpu": "NVIDIA GeForce RTX 5060 Ti",
+    "compatibility": "Exact selected Workstation build/host/3D compatibility not established"
+  },
+  "public_research": {
+    "workstation_26h1_release": "https://blogs.vmware.com/cloud-foundation/2026/05/14/announcing-vmware-workstation-and-fusion-26h1/",
+    "general_graphics": "Official product page advertises DirectX11/OpenGL4.3; actual guest support must be proved",
+    "release_notes": "https://techdocs.broadcom.com/us/en/vmware-cis/desktop-hypervisors/workstation-pro/26H1.html returned 403 to the web reader; no alternate protected transport attempted"
+  },
+  "preserved": {
+    "hyper_v_vm": "AI Native Test",
+    "ae_warning": "Left open per owner choice",
+    "frozen_packages_and_evidence": "UNCHANGED",
+    "host_security_or_licensing_changes": "NONE",
+    "host_reboot": "NONE",
+    "candidate_mapped_or_executed_by_agent": false
+  },
+  "next_operator_action": "Provide a local path to an already obtained official VMware Workstation Pro Windows x64 installer if available. Verify vendor signature/hash/version before any execution. No account creation or repeated sign-in is requested after owner declined.",
+  "prerequisite": "An official vendor installer accessible through an approved route. The portal route requires an account; owner declined. No Workstation package was available in the checked winget source.",
+  "dependent_work": "Official installer retrieval/hash/signature inspection, installation consent, graphics-capable guest preflight, isolation/no-candidate probe, all remaining candidate native acceptance and release",
+  "windows_iso": {
+    "path": "C:\\Users\\unn0w\\Downloads\\Windows11_Client_x64_en-us_26300_9457.iso",
+    "length": 9047330816,
+    "sha256": "bd4307df32bc8af33b39ccecb1174aeb345386630f89a2b86c7a4e36b55ea650",
+    "matches_retained_microsoft_published_hash": true,
+    "source_binding": "quick-create-r4/installation-media-required.json official Microsoft generated English x64 Build26300.9457 checksum",
+    "scope": "Data-only hash verification of local media; no mount/installation, no proof of the existing guest's installed OS"
+  },
+  "owner_account_choice": "I prefer not to create an account",
+  "registration": {
+    "url": "https://profile.broadcom.com/web/registration",
+    "tab_id": "1688015137",
+    "observed_form": "Email Address and CAPTCHA; no personal data entered or CAPTCHA solved by agent",
+    "owner_choice": "DECLINED_ACCOUNT_CREATION",
+    "created": false,
+    "terms_accepted": false
+  },
+  "public_catalog": {
+    "source": "Microsoft Windows Package Manager winget source",
+    "github_manifest_lookup": "404 / manifests/v/VMware/WorkstationPro; not proof by itself",
+    "show_command": "winget show --id VMware.WorkstationPro --exact --source winget --disable-interactivity",
+    "show_exit": 1,
+    "show_result": "No package found matching input criteria.",
+    "search_command": "winget search VMware --source winget --disable-interactivity",
+    "search_exit": 0,
+    "search_result": "No Workstation package listed",
+    "scope": "Bounded public official catalog check; no alternate protected download, mirror, guessed CDN URL, source-agreement acceptance or software execution"
+  },
+  "screenshots": [
+    {
+      "path": "C:\\Temp\\CutBridge-vmware-preparation-20261021-r6\\broadcom-sign-in.jpg",
+      "sha256": "e32b05356ff29e47d4c367ad051d183691b9bc4a7e5c4c97b93f6a9e05357d20",
+      "scope": "Actual blank Broadcom sign-in page; no secrets and no qualified CutBridge screenshot"
+    },
+    {
+      "path": "C:\\Temp\\CutBridge-vmware-preparation-20261021-r6\\broadcom-registration.jpg",
+      "sha256": "14f5f2042efb2fa443adc52098b1f84d9632bf2fac8a0351dc7e8468776885bd",
+      "scope": "Actual untouched registration form at capture; account creation later declined"
+    }
+  ],
+  "historical_sign_in_page": "https://access.broadcom.com/default/ui/v1/signin/",
+  "historical_sign_in_fields": {
+    "username": "EMPTY",
+    "remember_me": false,
+    "next": "DISABLED"
+  }
+}
