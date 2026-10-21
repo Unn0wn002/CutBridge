@@ -2,6 +2,8 @@
 
 Before tagging a CutBridge release:
 
+Latest guest preparation: Quick Create is open; select its Windows 11 entry for inspection before creation. Gallery evaluation validity is unknown, and Chrome blocked the independent current Windows ISO request. [The exact record](evidence/20261021-pr114-guest-provisioning/quick-create-r3/OPERATOR_ACTION.md) supersedes earlier consent/launch checkpoints. No guest, host-installation, native acceptance or release box is complete from these observations.
+
 Current exact setup boundary: local Hyper-V host selection is observed and its VM list is empty. Microsoft's signed Quick Create launcher is waiting for protected Windows consent; [the immediate action](evidence/20261021-pr114-guest-provisioning/quick-create-r2/OPERATOR_ACTION.md) is approval of that specific launcher prompt. Earlier host-selection requests below are historical checkpoints; native acceptance and release authorization stay incomplete.
 
 Latest provisioning checkpoint: one fresh Sandbox creation failed before a usable guest; official signed installers are staged. The immediate operator handoff is selection of the local host in the open elevated Hyper-V Manager, as [recorded here](evidence/20261021-pr114-guest-provisioning/OPERATOR_ACTION.md). Provisioning and every still-open native acceptance box remain incomplete; no completed implementation/automation/download/AI-review gate is reopened.

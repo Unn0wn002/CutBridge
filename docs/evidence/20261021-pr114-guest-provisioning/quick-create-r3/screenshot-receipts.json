@@ -1,0 +1,8 @@
+{
+  "quick_create_image": "C:\\Temp\\CutBridge-hyperv-quick-create-20261021-r2\\quick-create-gallery-current.jpg",
+  "quick_create_sha256": "4c208c4eaa98b4742bda6c9a1ba54d3c61e12b7fbf4365a864d2afa41c211f70",
+  "browser_error_image": "C:\\Temp\\CutBridge-hyperv-quick-create-20261021-r2\\windows-iso-browser-block.jpg",
+  "browser_error_sha256": "744ef3960972c9eed435f5438e324063828dc2980686663061a708214d4c7d6f",
+  "scope": "Actual setup screenshots only, not qualified CutBridge screenshots",
+  "images_uploaded_to_git": false
+}

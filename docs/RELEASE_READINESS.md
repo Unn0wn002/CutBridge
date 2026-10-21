@@ -2,6 +2,8 @@
 
 ## Active bounded free release — 21 October 2026
 
+Current setup checkpoint: Quick Create is open; Windows-image suitability remains unestablished, and the official current Windows ISO download request was blocked by Chrome. [The retained gallery/download record](evidence/20261021-pr114-guest-provisioning/quick-create-r3/OPERATOR_ACTION.md) names the one immediate manual selection needed and distinguishes metadata/URL availability from licensed guest availability. No native or release gate is newly passed; candidate bytes and earlier evidence remain unchanged.
+
 Latest virtualization checkpoint: selected local Hyper-V host has no listed VMs; the normal signed Quick Create launcher is waiting at protected Windows elevation consent. [Exact action and evidence](evidence/20261021-pr114-guest-provisioning/quick-create-r2/OPERATOR_ACTION.md) replace the earlier host-selection request. No native or release gate is passed by this setup observation; no failed Sandbox attempt was repeated.
 
 Latest setup result: **INSUFFICIENT EVIDENCE**. A fresh Sandbox provisioning attempt crashed before a usable guest (`0x80370106`), and Hyper-V Manager is elevated above the UI helper. [The setup record](evidence/20261021-pr114-guest-provisioning/OPERATOR_ACTION.md) preserves the exact error, official staged installers and immediate host-node selection needed from the operator. No current native case, screenshot or release gate is newly passed; existing candidate bytes and completed checks remain unchanged.

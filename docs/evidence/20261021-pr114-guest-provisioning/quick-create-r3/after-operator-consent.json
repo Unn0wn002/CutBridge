@@ -1,0 +1,14 @@
+{
+  "observed_utc": "2026-10-21T10:52:46.0989333Z",
+  "operator_report": "Done: pending launcher consent approved",
+  "observed_after_report": "No consent or VMCreate process/window; only Hyper-V Manager remains",
+  "application_error_log": "No matching VMCreate/Hyper-V Quick Create event among last 40 Application records within 20 minutes",
+  "host_node": "AYAKUMI_NOZOMI selected; GUI still shows no virtual machines",
+  "parent_console_action": "One fresh screenshot-derived Quick Create click after consent; no visible dialog or secondary window",
+  "standalone_relaunches": 0,
+  "sandbox_retries": 0,
+  "current_action": "Operator clicks Quick Create once in the already open parent console and leaves its dialog open",
+  "cause": "UNKNOWN; supported clicks show no resulting dialog, and accessibility reports higher integrity",
+  "candidate_execution": "NOT_EXECUTED",
+  "packages_runtime": "UNCHANGED"
+}

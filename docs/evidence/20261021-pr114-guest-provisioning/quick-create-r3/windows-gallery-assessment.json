@@ -1,0 +1,71 @@
+{
+  "gallery_url": "https://download.microsoft.com/download/5/f/5/5f5197e8-7a9a-49dd-bd81-5d4bfa27d6a9/en-us/GalleryHyperV.JSON",
+  "gallery_sha256": "372a93efc92e77d86c3f3cea1a2d59347ec67e388d879e8cbbce786d9422445a",
+  "encoding": "UTF-16 LE with BOM; parsed using BOM-aware reader",
+  "initial_decode": "Initial UTF-8 assumption rejected by JSON parser; raw re-retrieval retained and decoded correctly; no executable data ran",
+  "windows_image": {
+    "name": "Windows 11 dev environment",
+    "publisher": "Microsoft",
+    "lastUpdated": "2024-07-25T12:00:00Z",
+    "version": "10.0.22621",
+    "locale": "en-US",
+    "description": [
+      "This evaluation copy of Windows 11 21H2 will enable you to try out Windows 11 development with an evaluation copy of Windows.  ",
+      "\r\n\r\n",
+      "This evaluation copy will expire after a pre-determined amount of time.  ",
+      "\r\n\r\n",
+      "The license terms for the Windows 11 VMs supersede any conflicting Windows license terms.    ",
+      "\r\n\r\n",
+      "By using the virtual machine, you are accepting the EULAs for all the installed products.  ",
+      "\r\n\r\n",
+      "Please see https://aka.ms/windowsdevelopervirtualmachineeula for more information.  "
+    ],
+    "config": {
+      "secureBoot": "true"
+    },
+    "requirements": {
+      "diskSpace": "20000000000"
+    },
+    "disk": {
+      "uri": "https://download.microsoft.com/download/c/2/7/c275218e-b8d9-4adc-9344-ac3ee87349c3/WinDev2407Eval.HyperV.zip",
+      "hash": "sha256:B546C32894785DBAAC07543D913BDE9D6598972F76A440D6B5C00B2E73739684",
+      "archiveRelativePath": "WinDev2407Eval.vhdx"
+    },
+    "logo": {
+      "uri": "https://download.microsoft.com/download/c/f/5/cf5b587c-98bf-4cfc-9844-a2a7d8c96d83/Windows11_Logo.png",
+      "hash": "sha256:5E583CE95340BE9FF1CB56FD39C5DDDF3B3341B93E417144D361C3F29A5A7395"
+    },
+    "symbol": {
+      "uri": "https://download.microsoft.com/download/c/f/5/cf5b587c-98bf-4cfc-9844-a2a7d8c96d83/Windows11_Symbol.png",
+      "hash": "sha256:E3AEE6BA9114467BBF2C92CA83BE84949F709A13350A6A10F21779FF83343748"
+    },
+    "thumbnail": {
+      "uri": "https://download.microsoft.com/download/c/f/5/cf5b587c-98bf-4cfc-9844-a2a7d8c96d83/Windows11_Thumbnail.png",
+      "hash": "sha256:E7BF96E18754D71E41B32A8EDCDE9E2F1DBAF47C7CD05D6DE0764CD4E4EA5066"
+    },
+    "details": [
+      {
+        "name": "Edition",
+        "value": "Windows 11 Enterprise"
+      },
+      {
+        "name": "Copyright",
+        "value": "Copyright (c) Microsoft Corporation. All rights reserved."
+      },
+      {
+        "name": "License",
+        "value": "By using the virtual machine, you are accepting the EULAs for all the installed products."
+      }
+    ]
+  },
+  "checked_utc": "2026-10-21T11:18:22.1347116Z",
+  "availability": {
+    "status": 200,
+    "length": [
+      "23299441890"
+    ],
+    "content_type": [
+      "application/octet-stream"
+    ]
+  }
+}
