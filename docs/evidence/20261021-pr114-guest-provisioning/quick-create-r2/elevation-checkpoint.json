@@ -1,0 +1,40 @@
+{
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "phase": "HYPER_V_QUICK_CREATE_ELEVATION",
+  "review_head": "86d3c437d65f3a6fa85f489d4b90ae2f19f0d13f",
+  "runtime_source": "5aa2da24fc8be41626ee84178c7fdce05d02eebc",
+  "host_node": "AYAKUMI_NOZOMI",
+  "host_node_observed_selected": true,
+  "visible_vm_inventory": "No virtual machines were found on this server",
+  "inventory_scope": "Observed selected local Hyper-V host GUI only",
+  "helper_access": "Accessibility limited by higher Windows integrity",
+  "quick_create_click": "One screenshot-derived click; no visible change or secondary window",
+  "supported_launcher": {
+    "path": "C:\\Program Files\\Hyper-V\\VMCreate.exe",
+    "version": "10.0.26100.9549 (WinBuild.160101.0800)",
+    "bytes": 712640,
+    "sha256": "4a2335342fe78e72c8382bb42447d33bfadfcf6478ad9d8151b72a328bc6f3fa",
+    "signature": "Valid",
+    "signature_message": "Signature verified.",
+    "signer": "CN=Microsoft Windows, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
+  },
+  "launcher_attempts": 1,
+  "launcher_call": "sky.launch_app for verified installed executable",
+  "launcher_result": "Timed out after 15 seconds; subsequent window inventory revealed permission window",
+  "permission_window": {
+    "app": "process:consent.exe",
+    "title": "Microsoft Windows is requesting your permission",
+    "id": 854086,
+    "observation": "Returned by supported window inventory; screenshot/text capture reported minimized",
+    "accepted_by_agent": false,
+    "prompt_body_and_publisher": "Not captured; Microsoft signature is from launcher file, not inferred prompt text"
+  },
+  "operator_action": "Approve the Windows permission prompt for C:\\Program Files\\Hyper-V\\VMCreate.exe (Microsoft-signed Quick Create), then report done. No VM has been created.",
+  "sandbox_retry_count": 0,
+  "candidate_mapping": "NONE",
+  "candidate_native_execution": "NOT_EXECUTED",
+  "frozen_packages": "PRESERVED",
+  "host_security_licensing_feature_reboot_changes": "NONE",
+  "prior_installer_staging": "C:\\Temp\\CutBridge-guest-setup-20261021-r1\\installers",
+  "observed_utc": "2026-10-21T10:44:15.4122032Z"
+}

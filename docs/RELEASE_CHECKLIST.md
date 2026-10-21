@@ -2,6 +2,8 @@
 
 Before tagging a CutBridge release:
 
+Current exact setup boundary: local Hyper-V host selection is observed and its VM list is empty. Microsoft's signed Quick Create launcher is waiting for protected Windows consent; [the immediate action](evidence/20261021-pr114-guest-provisioning/quick-create-r2/OPERATOR_ACTION.md) is approval of that specific launcher prompt. Earlier host-selection requests below are historical checkpoints; native acceptance and release authorization stay incomplete.
+
 Latest provisioning checkpoint: one fresh Sandbox creation failed before a usable guest; official signed installers are staged. The immediate operator handoff is selection of the local host in the open elevated Hyper-V Manager, as [recorded here](evidence/20261021-pr114-guest-provisioning/OPERATOR_ACTION.md). Provisioning and every still-open native acceptance box remain incomplete; no completed implementation/automation/download/AI-review gate is reopened.
 
 PR #114 continuation, 21 October: exact candidate packages have been retrieved to the PC and their SHA-256 values verified; raw-source AE/GPL binding and 53 unchanged harness/fixture files are recorded in [the current packet](evidence/20261021-pr114-native-continuation/OPERATOR_HANDOFF.md). Tested runtime remains `5aa2da24fc8be41626ee84178c7fdce05d02eebc`; documentation-only follow-up does not rename that evidence. Native installation/UI/revisions/preservation/negative/rollback/fresh-reopen and actual screenshots remain NOT_EXECUTED. Release authorization remains false. The next operator action is provision of the suitable isolated native environment; no representative-user research prerequisite is added. The published-release download check below still applies after future publication.
