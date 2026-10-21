@@ -1,0 +1,14 @@
+{
+  "source_page": "https://helpx.adobe.com/download-install/apps/download-install-apps/creative-cloud-apps/download-creative-cloud-desktop-app-using-direct-links.html",
+  "download_url": "https://ccmdls.adobe.com/AdobeProducts/StandaloneBuilds/ACCC/ESD/6.11.0/478.6/win64/ACCCx6_11_0_478_6.zip",
+  "path": "C:\\Temp\\CutBridge-guest-setup-20261021-r1\\installers\\ACCCx6_11_0_478_6.zip",
+  "bytes": 325658691,
+  "sha256": "171563e44a92343e3ea5a6dc54df99843e3f477e7df22b1e34c2356e75f4edb8",
+  "zip_members": 223,
+  "setup_member": "Set-up.exe",
+  "setup_sha256": "1647412d83e4062f6378405ea67f032871fa59a3c97ec33a4f7c3365e43417f0",
+  "setup_signature": "Valid",
+  "setup_signature_message": "Signature verified.",
+  "setup_signer": "CN=Adobe Inc., OU=AAM 256, O=Adobe Inc., L=San Jose, S=ca, C=US, SERIALNUMBER=2748129, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.2=Delaware, OID.1.3.6.1.4.1.311.60.2.1.3=US",
+  "executed": false
+}

@@ -1,0 +1,56 @@
+{
+  "os": {
+    "Caption": "Microsoft Windows 11 Pro",
+    "Version": "10.0.26300",
+    "BuildNumber": "26300"
+  },
+  "system": {
+    "TotalPhysicalMemory": 68357574656,
+    "HypervisorPresent": true
+  },
+  "sandbox_package": {
+    "Name": "MicrosoftWindows.WindowsSandbox",
+    "Version": "0.8.107.0",
+    "Status": 0
+  },
+  "hyperv_services": [
+    {
+      "Name": "hns",
+      "Status": "Running",
+      "StartType": "Manual"
+    },
+    {
+      "Name": "vmcompute",
+      "Status": "Running",
+      "StartType": "Manual"
+    },
+    {
+      "Name": "vmms",
+      "Status": "Running",
+      "StartType": "Automatic"
+    }
+  ],
+  "interfaces": [
+    {
+      "Name": "WindowsSandbox.exe",
+      "Source": "C:\\Windows\\system32\\WindowsSandbox.exe"
+    },
+    {
+      "Name": "wsb.exe",
+      "Source": "C:\\Users\\unn0w\\AppData\\Local\\Microsoft\\WindowsApps\\wsb.exe"
+    },
+    {
+      "Name": "virtmgmt.msc",
+      "Source": "C:\\Windows\\system32\\virtmgmt.msc"
+    },
+    {
+      "Name": "vmconnect.exe",
+      "Source": "C:\\Windows\\system32\\vmconnect.exe"
+    },
+    {
+      "Name": "Get-VM",
+      "Source": "Hyper-V"
+    }
+  ],
+  "start_result_written_utc": "2026-10-21T10:22:11.7670758Z"
+}

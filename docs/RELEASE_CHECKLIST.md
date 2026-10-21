@@ -2,6 +2,8 @@
 
 Before tagging a CutBridge release:
 
+Latest provisioning checkpoint: one fresh Sandbox creation failed before a usable guest; official signed installers are staged. The immediate operator handoff is selection of the local host in the open elevated Hyper-V Manager, as [recorded here](evidence/20261021-pr114-guest-provisioning/OPERATOR_ACTION.md). Provisioning and every still-open native acceptance box remain incomplete; no completed implementation/automation/download/AI-review gate is reopened.
+
 PR #114 continuation, 21 October: exact candidate packages have been retrieved to the PC and their SHA-256 values verified; raw-source AE/GPL binding and 53 unchanged harness/fixture files are recorded in [the current packet](evidence/20261021-pr114-native-continuation/OPERATOR_HANDOFF.md). Tested runtime remains `5aa2da24fc8be41626ee84178c7fdce05d02eebc`; documentation-only follow-up does not rename that evidence. Native installation/UI/revisions/preservation/negative/rollback/fresh-reopen and actual screenshots remain NOT_EXECUTED. Release authorization remains false. The next operator action is provision of the suitable isolated native environment; no representative-user research prerequisite is added. The published-release download check below still applies after future publication.
 
 For the owner-confirmed 25 October 2026 free-release target (Asia/Jakarta), use [SUBMISSION_DEMO_CHECKLIST.md](SUBMISSION_DEMO_CHECKLIST.md) to assemble the review packet and native execution record. Submission readiness and public-release readiness are separate decisions; neither follows from green CI alone.

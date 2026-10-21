@@ -1,0 +1,49 @@
+{
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "phase": "VENDOR_ENVIRONMENT_PROVISIONING",
+  "review_head": "cb11e2120bc63275f63c5f4baf64d2591fb7f8e2",
+  "runtime_sha": "5aa2da24fc8be41626ee84178c7fdce05d02eebc",
+  "candidate_package_bytes": "PRESERVED",
+  "setup_attempts": 1,
+  "route": "Supported wsb CLI 0.8.107.0",
+  "config": "preparation.wsb",
+  "start_exit_code": -2143878906,
+  "start_error": "The virtual machine or container exited unexpectedly. (0x80370106)",
+  "guest_desktop_available": false,
+  "guest_remaining_open": false,
+  "guest_closed_by_agent": false,
+  "sandbox_list_after": "Empty",
+  "host_os": {
+    "Caption": "Microsoft Windows 11 Pro",
+    "Version": "10.0.26300",
+    "BuildNumber": "26300"
+  },
+  "host_build": "26300.9711, 26H2",
+  "hyperv_services": "vmms, vmcompute and hns running",
+  "hyperv_inventory": "Unknown: Get-VM access denied in previous preflight; not retried",
+  "hyperv_gui": "Hyper-V Manager opened; local AYAKUMI_NOZOMI node visible; root selected; helper reports higher Windows integrity",
+  "crash_observation": {
+    "provider": "Windows Error Reporting",
+    "event_id": 1001,
+    "times": [
+      "2026-10-21T17:22:23.3327963+07:00",
+      "2026-10-21T17:22:23.3279924+07:00"
+    ],
+    "event_name": "ContainerCrashDump",
+    "P1": "59",
+    "P2": "3221225477",
+    "dump": "C:\\ProgramData\\Microsoft\\Windows\\Containers\\Dumps\\06968013-d9e1-412c-b786-67bcd9cc12c4.dmp",
+    "cause": "UNKNOWN",
+    "related_to_ae_dll": "No causal relationship established",
+    "detailed_logs": "Compute/Worker/VMMS Admin logs require elevation"
+  },
+  "official_installers": "Downloaded, hash-recorded and vendor-signed; not executed",
+  "adobe_payload": "Fully extracted for future guest setup; 223 ZIP members",
+  "host_application_changes": "NONE",
+  "host_security_licensing_reboot_changes": "NONE",
+  "candidate_mapped": false,
+  "candidate_native_execution": "NOT_EXECUTED",
+  "smallest_operator_action": "In the open Hyper-V Manager window select AYAKUMI_NOZOMI in the left pane; report the resulting VM list or access/error message. Do not create or alter VMs yet.",
+  "dependencies": "All native application provisioning/startup, probe and qualification cases remain dependent on usable virtualization and accepted native boundary.",
+  "created_utc": "2026-10-21T10:27:05.7316147Z"
+}
