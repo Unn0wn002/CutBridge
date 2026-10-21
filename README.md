@@ -1,6 +1,6 @@
 # CutBridge
 
-v0.2.5 remains **INSUFFICIENT EVIDENCE** for submission and public release. Independently trusted Linux verification passed on exact code `a44792099b3b5f5b7a2f69a41061268fe59586b3` (**395 tests + 2 subtests**, no skips), alongside ordinary CI and the equivalent-package native Blender 5.2.2 scripted scope. Current AE and Blender visual checks are blocked by host initialization before candidate execution; manual-update checks, scope acceptance and independent release review remain open. See [release preparation](docs/RELEASE_PREPARATION_v0.2.5.md) for exact hashes/scope and local packet directions, and the [submission/demo checklist](docs/SUBMISSION_DEMO_CHECKLIST.md). The working target is **22 October 2026**; the official submission deadline is unconfirmed.
+v0.2.5 is the bounded **free release candidate**, targeted for **Sunday, 25 October 2026 (Asia/Jakarta)**. Feature scope is frozen; a qualified published release ends feature development, with critical defects only afterward. Current verdict: **INSUFFICIENT EVIDENCE** until exact-package native acceptance completes. Historical verification remains tied to its recorded SHA; see [completion status](docs/COMPLETION_STATUS.md) for the current candidate, checks, and blockers.
 
 **CutBridge is a Blender → After Effects production handoff tool for animation cuts.**
 
@@ -188,15 +188,9 @@ localization.js
 
 **Keep all four files together.**
 
-For a first test:
+Install all four adjacent runtime files from one verified package into the installed AE version's `Scripts/ScriptUI Panels` directory. Restart AE, then open **Window > CutBridge** and dock the tab in your workspace. Routine Build/QC completion and full diagnostics appear in the panel's scrollable Results field; revision confirmation and blocking errors remain visible.
 
-1. Open After Effects.
-2. Choose **File → Scripts → Run Script File...**.
-3. Select `CutBridge.jsx`.
-4. Confirm the CutBridge panel opens.
-5. Use the Japanese / English selector as needed.
-
-For a dockable panel, place all four files in the installed After Effects version's `Scripts/ScriptUI Panels` directory, restart After Effects, then open **Window → CutBridge**.
+Optional floating fallback: keep the files together and choose **File > Scripts > Run Script File... > CutBridge.jsx**. Removal and update instructions are in the installation guide.
 
 See [`apps/after-effects/INSTALL.md`](apps/after-effects/INSTALL.md).
 

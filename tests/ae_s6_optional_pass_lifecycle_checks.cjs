@@ -57,7 +57,7 @@ const confirmsBefore = h.confirms.length;
 // rebuild or future migration workflow is required for pass-set changes.
 h.queue(v2);
 h.click("Update Revision");
-assert.match(h.alerts.at(-1), /Revision blocked|Removing an optional pass is unsupported/i);
+assert.match(h.messages.at(-1), /Revision blocked|Removing an optional pass is unsupported/i);
 assert.equal(h.confirms.length, confirmsBefore, "blocked pass removal must not reach confirmation");
 assert.equal(h.replaceFlags.length, replaceBefore, "blocked pass removal must not call replaceSource");
 assert.equal(h.footage().length, footageBefore, "blocked pass removal must not import replacement footage");
@@ -75,10 +75,10 @@ h.reload();
 h.queue(v1);
 h.click("Import Package");
 h.click("Build Comp");
-assert.match(h.alerts.at(-1), /comp reused safely/i);
+assert.match(h.messages.at(-1), /comp reused safely/i);
 assert.equal(comp.numLayers, layersBefore);
 assert.equal(h.footage().length, footageBefore);
 h.click("Run QC");
-assert.match(h.alerts.at(-1), /CutBridge QC — PASS/);
+assert.match(h.messages.at(-1), /CutBridge QC — PASS/);
 
 console.log("S6 optional-pass lifecycle: PASS (pass removal blocked before mutation; original project remains coherent; real AE MANUAL NOT EXECUTED)");

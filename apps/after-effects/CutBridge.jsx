@@ -8,8 +8,8 @@ CutBridge After Effects
 - QC validates exact manifest frame coverage, comp metadata, duration and FPS
 
 Install/test:
-File > Scripts > Run Script File... > CutBridge.jsx
-For a dockable panel, place this file in After Effects/Scripts/ScriptUI Panels and restart AE.
+Keep all four runtime files in Scripts/ScriptUI Panels, restart AE, then use Window > CutBridge.
+Optional floating fallback: File > Scripts > Run Script File... > CutBridge.jsx.
 */
 
 var CutBridgeContract = (function () {
@@ -1382,7 +1382,7 @@ if (typeof module !== "undefined" && module.exports) {
         } catch (e) { alertError(e.toString()); }
     }
 
-    function buildComp() {
+    function buildComp(onResult) {
         if (!ensureManifestLoaded()) return {success: false, error: "Manifest not loaded"};
         var m = state.manifest, preflight;
         try { preflight = preflightSequences(m); } catch (preflightError) { alertError(preflightError.toString()); return {success: false, error: preflightError.toString()}; }
@@ -1430,8 +1430,9 @@ if (typeof module !== "undefined" && module.exports) {
             comp.openInViewer();
             var message = tr(compResult.created ? "comp_built" : "comp_reused") + "\n" + comp.name + "\n" + m.resolution.width + "x" + m.resolution.height + " @ " + m.fps + " fps";
             if (warnings.length) message += "\n\n" + tr("warnings") + "\n- " + warnings.join("\n- ");
-            alert(message);
-            return {success: true, comp: comp, compResult: compResult, warnings: warnings};
+            if (typeof onResult === "function") onResult(message);
+            else alert(message);
+            return {success: true, comp: comp, compResult: compResult, warnings: warnings, message: message};
         } catch (e) {
             var rollbackFailures = rollbackNewBuildObjects(createdLayers, createdFootage), errorMessage = e.toString();
             if (createdLayers.length || createdFootage.length) errorMessage += "\n" + tr("rollback_created");
@@ -1467,7 +1468,7 @@ if (typeof module !== "undefined" && module.exports) {
         return result;
     }
 
-    function runQC() {
+    function runQC(onResult) {
         if (!ensureManifestLoaded()) return;
         var m = state.manifest, qc, records = [];
         function append(items) {
@@ -1478,7 +1479,9 @@ if (typeof module !== "undefined" && module.exports) {
             var l10n = getLocalization();
             records = l10n.localizeRecords(currentLocale, records);
             var report = qc.render(records);
-            alert("CutBridge QC — " + l10n.qcHeadline(currentLocale, report.headline) + "\n\n" + l10n.localizeRenderedQC(currentLocale, report.text));
+            var message = "CutBridge QC — " + l10n.qcHeadline(currentLocale, report.headline) + "\n\n" + l10n.localizeRenderedQC(currentLocale, report.text);
+            if (typeof onResult === "function") onResult(message);
+            else alert(message);
             return {records: records, report: report};
         }
 
@@ -1627,6 +1630,7 @@ if (typeof module !== "undefined" && module.exports) {
             EN: {
                 package_section: "Package",
                 actions_section: "Workflow",
+                results_section: "Results",
                 package_label: "Package",
                 status_label: "Status",
                 status_ready: "READY",
@@ -1673,6 +1677,7 @@ if (typeof module !== "undefined" && module.exports) {
             JA: {
                 package_section: "パッケージ",
                 actions_section: "ワークフロー",
+                results_section: "結果",
                 package_label: "パッケージ",
                 status_label: "状態",
                 status_ready: "準備完了 / READY",
@@ -1758,7 +1763,8 @@ if (typeof module !== "undefined" && module.exports) {
     function buildUI(thisObj) {
         loadLocalePreference();
         var pal = (thisObj instanceof Panel) ? thisObj : new Window("palette", "CutBridge", undefined, {resizeable: true}); if (!pal) return pal;
-        pal.orientation = "column"; pal.alignChildren = ["fill", "top"]; pal.spacing = 8; pal.margins = 12;
+        pal.orientation = "column"; pal.alignChildren = ["fill", "top"]; pal.spacing = 4; pal.margins = 8;
+        pal.preferredSize = [360, 560]; pal.minimumSize = [280, 560];
 
         var panelStatusKind = state.manifest ? "READY" : "WARNING";
         var panelStatusKey = state.manifest ? "status_package_loaded" : "status_load_prompt";
@@ -1771,22 +1777,21 @@ if (typeof module !== "undefined" && module.exports) {
 
         var packageHeading = pal.add("statictext", undefined, aeUiText("package_section"));
         try { packageHeading.graphics.font = ScriptUI.newFont(packageHeading.graphics.font.name, "BOLD", 12); } catch (packageHeadingError) {}
-        var packageName = pal.add("statictext", undefined, ""); packageName.characters = 48;
-        var packageMeta = pal.add("statictext", undefined, packageStatusText(state.manifest)); packageMeta.characters = 48;
-        var statusKind = pal.add("statictext", undefined, ""); statusKind.characters = 48;
-        var statusDetail = pal.add("statictext", undefined, "", {multiline: true}); statusDetail.characters = 52; statusDetail.preferredSize.height = 34;
+        var packageName = pal.add("statictext", undefined, "", {multiline: true}); packageName.preferredSize.height = 30; packageName.minimumSize = [0, 30];
+        var packageMeta = pal.add("statictext", undefined, packageStatusText(state.manifest), {multiline: true}); packageMeta.preferredSize.height = 30; packageMeta.minimumSize = [0, 30];
+        var statusKind = pal.add("statictext", undefined, ""); statusKind.minimumSize = [0, 18];
+        var statusDetail = pal.add("statictext", undefined, "", {multiline: true}); statusDetail.preferredSize.height = 34; statusDetail.minimumSize = [0, 34];
 
         var actionsHeading = pal.add("statictext", undefined, aeUiText("actions_section"));
         try { actionsHeading.graphics.font = ScriptUI.newFont(actionsHeading.graphics.font.name, "BOLD", 12); } catch (actionsHeadingError) {}
 
         function addAction(buttonText, descriptionKey, helpTopic, handler) {
-            var button = pal.add("button", undefined, buttonText);
-            var helpButton = pal.add("button", undefined, "?"); helpButton.preferredSize.width = 30;
-            var description = pal.add("statictext", undefined, aeUiText(descriptionKey), {multiline: true});
-            description.characters = 52; description.preferredSize.height = 34;
+            var row = pal.add("group"); row.orientation = "row"; row.alignChildren = ["fill", "center"];
+            var button = row.add("button", undefined, buttonText); button.alignment = ["fill", "center"]; button.helpTip = aeUiText(descriptionKey);
+            var helpButton = row.add("button", undefined, "?"); helpButton.alignment = ["right", "center"]; helpButton.preferredSize.width = 30;
             button.onClick = handler;
             helpButton.onClick = function() { showContextHelp(helpTopic); };
-            return {button: button, help: helpButton, description: description};
+            return {button: button, help: helpButton};
         }
 
         function statusLabelFor(kind) {
@@ -1799,6 +1804,7 @@ if (typeof module !== "undefined" && module.exports) {
             var manifest = state.manifest;
             packageHeading.text = aeUiText("package_section");
             actionsHeading.text = aeUiText("actions_section");
+            if (resultsHeading) resultsHeading.text = aeUiText("results_section");
             packageName.text = aeUiText("package_label") + ": " + (manifest ? (manifest.package_name || manifest.cut || aeUiText("none")) : aeUiText("none"));
             packageMeta.text = packageStatusText(manifest);
             statusKind.text = aeUiText("status_label") + ": " + statusLabelFor(panelStatusKind);
@@ -1813,22 +1819,24 @@ if (typeof module !== "undefined" && module.exports) {
 
         var loadAction = addAction(tr("import_package"), "desc_load", "load", function() {
             loadOnly(
-                function() { setPanelStatus("READY", "status_package_loaded"); },
-                function() { setPanelStatus("ERROR", "status_action_failed"); }
+                function() { results.text = ""; setPanelStatus("READY", "status_package_loaded"); },
+                function(error) { results.text = error.toString(); setPanelStatus("ERROR", "status_action_failed"); }
             );
         });
         var buildAction = addAction(tr("build_comp"), "desc_build", "build", function() {
-            var result = buildComp();
-            if (result && result.success) setPanelStatus("READY", "status_build_complete");
-            else if (result) setPanelStatus("ERROR", "status_action_failed");
+            var result = buildComp(function(message) { results.text = message; });
+            if (result && result.success) setPanelStatus(result.warnings.length ? "WARNING" : "READY", "status_build_complete");
+            else if (result) { results.text = result.error; setPanelStatus("ERROR", "status_action_failed"); }
         });
         var qcAction = addAction(tr("run_qc"), "desc_qc", "qc", function() {
             try {
-                var result = runQC(), headline = result && result.report ? String(result.report.headline || "").toUpperCase() : "";
+                var result = runQC(function(message) { results.text = message; }), headline = result && result.report ? String(result.report.headline || "").toUpperCase() : "";
                 if (headline.indexOf("ERROR") >= 0) setPanelStatus("ERROR", "status_qc_error");
                 else if (headline.indexOf("WARNING") >= 0) setPanelStatus("WARNING", "status_qc_warning");
                 else if (result && result.report) setPanelStatus("READY", "status_qc_pass");
+                else if (result && result.error) { results.text = result.error; setPanelStatus("ERROR", "status_action_failed"); }
             } catch (e) {
+                results.text = e.toString();
                 setPanelStatus("ERROR", "status_action_failed");
                 alertError(e.toString());
             }
@@ -1837,19 +1845,22 @@ if (typeof module !== "undefined" && module.exports) {
             var beforeVersion = state.manifest ? state.manifest.version : null;
             updateRevision();
             var afterVersion = state.manifest ? state.manifest.version : null;
-            if (beforeVersion !== null && afterVersion !== null && beforeVersion !== afterVersion) setPanelStatus("READY", "status_revision_complete");
+            if (beforeVersion !== null && afterVersion !== null && beforeVersion !== afterVersion) { results.text = aeUiText("status_revision_complete"); setPanelStatus("READY", "status_revision_complete"); }
             else refreshPackagePanel();
         });
 
-        var note = pal.add("statictext", undefined, tr("workflow_note", {version: CutBridgeContract.PRODUCT_VERSION}), {multiline: true}); note.preferredSize.height = 32;
+        var resultsHeading = pal.add("statictext", undefined, aeUiText("results_section"));
+        var results = pal.add("edittext", undefined, "", {multiline: true, readonly: true, scrolling: true});
+        results.alignment = ["fill", "fill"]; results.preferredSize.height = 100; results.minimumSize = [0, 80];
+        var note = pal.add("statictext", undefined, tr("workflow_note", {version: CutBridgeContract.PRODUCT_VERSION}), {multiline: true}); note.preferredSize.height = 32; note.minimumSize = [0, 32];
 
         function refreshLocale() {
             localeSelect.selection = currentLocale === "JA" ? 0 : 1;
             localeLabel.text = tr("language_label");
-            loadAction.button.text = tr("import_package"); loadAction.description.text = aeUiText("desc_load");
-            buildAction.button.text = tr("build_comp"); buildAction.description.text = aeUiText("desc_build");
-            qcAction.button.text = tr("run_qc"); qcAction.description.text = aeUiText("desc_qc");
-            revisionAction.button.text = tr("update_revision"); revisionAction.description.text = aeUiText("desc_revision");
+            loadAction.button.text = tr("import_package"); loadAction.button.helpTip = aeUiText("desc_load");
+            buildAction.button.text = tr("build_comp"); buildAction.button.helpTip = aeUiText("desc_build");
+            qcAction.button.text = tr("run_qc"); qcAction.button.helpTip = aeUiText("desc_qc");
+            revisionAction.button.text = tr("update_revision"); revisionAction.button.helpTip = aeUiText("desc_revision");
             note.text = tr("workflow_note", {version: CutBridgeContract.PRODUCT_VERSION});
             refreshPackagePanel();
             try { pal.layout.layout(true); } catch (layoutError) {}

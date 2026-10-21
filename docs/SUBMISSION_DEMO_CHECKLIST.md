@@ -1,5 +1,18 @@
 # CutBridge submission and demo checklist
 
+## Active bounded free release — 21 October 2026
+
+Target: **Sunday, 25 October 2026 (Asia/Jakarta)**, confirmed by the owner. This supersedes the earlier 22 October working target. Scope is frozen; feature development stops at a qualified published release, with critical defects only afterward. See [the bounded release policy](FREE_RELEASE_2026-10-25.md).
+
+The current branch `fix/free-release-20261021` retains all PR #113 commits and adds the dockable-first installation/compact ScriptUI/in-panel Build-QC patch. Earlier AE runtime/package hashes and frozen-runtime statements below describe historical candidates; they do not qualify this changed AE runtime. Historical 396-test/18-suite and Blender evidence remain bound to their exact recorded inputs.
+
+The owner authorizes a separately documented AI code/evidence review instead of owner-controlled administrative human review for this release. This does not waive native acceptance or enforced GitHub approvals. S14B remains NOT_EXECUTED; unsupported channels and broad compatibility/commercial claims remain excluded.
+
+Current native verdict: **INSUFFICIENT EVIDENCE**. Blank owner-session AE/Blender workspaces initialize, but the 19 October provisioned Sandbox is no longer present and the installed AE core DLL still reports HashMismatch. No current candidate code has been loaded into the owner session. The required isolated native campaign and qualified-build screenshots remain unexecuted. Release authorization remains false; v0.2.4 is immutable/held, production remains v0.2.3.
+
+## Historical records (retain original identities and decisions)
+
+
 Closeout, 17 October: frozen `639374c` completed **396 tests + 2 subtests**, RNA, 18 Node suites, syntax and repeated packaging; its unchanged [final receipt](evidence/20261017-validation-closeout/BASELINE_639374c_VERIFICATION.json) is authoritative. Runtime/package bytes remain frozen. The timeboxed follow-up did not establish an approved initializing native environment. Use [the operator handoff](NATIVE_VALIDATION_HANDOFF.md), [review packet](INDEPENDENT_RELEASE_REVIEW_PACKET.md) and unfilled [scope form](validation/scope-acceptance.json). Native execution, independent release approval and demonstrated-scope acceptance remain incomplete. Dated a447/5293 evidence below retains its own counts.
 
 Working target: **22 October 2026**. The official submission deadline and evaluator-specific delivery requirements remain **unconfirmed**. This checklist prepares a reviewable v0.2.5 packet and demonstration using the existing [release checklist](RELEASE_CHECKLIST.md), [verification commands](CONTRIBUTING.md) and [S12 host procedure](S12_E2E_VALIDATION.md); it adds no parallel test command or publication path.

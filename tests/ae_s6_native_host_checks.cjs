@@ -175,9 +175,12 @@ function makeHost(options = {}) {
     function ImportOptions(file) { this.file = file; this.sequence = false; this.forceAlphabetical = true; this.importAs = null; }
     ImportOptions.prototype.canImportAs = () => true;
 
+    const messages = [];
     function Window() { this.layout = {resize() {}, layout() {}}; }
     Window.prototype.add = function(type, unused, text) {
         const control = {type, text, graphics: {font: {name: "Arial"}}, preferredSize: {}};
+        control.add = Window.prototype.add;
+        if (type === "edittext") { let value = ""; Object.defineProperty(control, "text", {get() { return value; }, set(text) { value = String(text); messages.push(value); }}); }
         if (type === "button") controls.push(control);
         return control;
     };
@@ -187,7 +190,7 @@ function makeHost(options = {}) {
     const runtime = {
         File, Folder, Window, Panel, FolderItem, FootageItem, CompItem, AVLayer, ImportOptions,
         ImportAsType: {FOOTAGE: 1}, ScriptUI: {newFont() {}}, CutBridgeRevisionManager: Revision, CutBridgeQCPlus: QCPlus,
-        alert: message => alerts.push(String(message)),
+        alert: message => { alerts.push(String(message)); messages.push(String(message)); },
         confirm: message => { confirms.push(String(message)); return true; },
         $: {writeln() {}},
         app: {project, beginUndoGroup() {}, endUndoGroup() {}, newProject() {}}
@@ -216,7 +219,7 @@ function makeHost(options = {}) {
     }
     function childFolders(parent) { return projectItems.filter(x => x instanceof FolderItem && x.parentFolder === parent); }
 
-    return {alerts, confirms, replaceFlags, queue, click, reload, topRoot, comps, footage, addManualRoot, childFolders,
+    return {messages, alerts, confirms, replaceFlags, queue, click, reload, topRoot, comps, footage, addManualRoot, childFolders,
         projectItems, runtime, validityChecks, nativeEvents, invalidHandles};
 }
 
@@ -243,7 +246,7 @@ const sourceV2 = layer.source;
 assert.notEqual(sourceV2, sourceV1);
 assert.equal(sourceV2.comment, Contract.managedTag("footage", v2, "BEAUTY"));
 h.click("Build Comp"); h.click("Run QC");
-assert.match(h.alerts.at(-1), /CutBridge QC — PASS/);
+assert.match(h.messages.at(-1), /CutBridge QC — PASS/);
 
 // Revision must not choose an arbitrary current root or deterministic child folder.
 const duplicateCurrentRoot = h.addManualRoot(v2.package_name, "duplicate current root");
@@ -257,7 +260,7 @@ assert.equal(h.footage().length, footageBeforeBlockedRevision, "duplicate curren
 assert.equal(h.replaceFlags.length, replaceCallsBeforeBlockedRevision, "duplicate current root must not call replaceSource");
 assert.equal(h.confirms.length, confirmsBeforeBlockedRevision, "duplicate current root must block before confirmation");
 assert.equal(h.topRoot(v2.package_name), packageRoot, "current managed root must not migrate on ambiguous revision");
-assert.match(h.alerts.at(-1), /package root.*must exist exactly once|duplicate roots/i);
+assert.match(h.messages.at(-1), /package root.*must exist exactly once|duplicate roots/i);
 h.projectItems.splice(h.projectItems.indexOf(duplicateCurrentRoot), 1);
 
 const renderFolderV2 = h.childFolders(packageRoot).find(folder => folder.name === "02_RENDER");
@@ -275,7 +278,7 @@ assert.equal(h.footage().length, footageBeforeBlockedRevision, "duplicate render
 assert.equal(h.replaceFlags.length, replaceCallsBeforeBlockedRevision, "duplicate render folder must not call replaceSource");
 assert.equal(h.confirms.length, confirmsBeforeBlockedRevision, "duplicate render folder must block before confirmation");
 assert.equal(h.topRoot(v2.package_name), packageRoot, "current managed root must stay V002 on folder ambiguity");
-assert.match(h.alerts.at(-1), /managed folder '02_RENDER'.*must exist exactly once|02_RENDER.*duplicate folder/i);
+assert.match(h.messages.at(-1), /managed folder '02_RENDER'.*must exist exactly once|02_RENDER.*duplicate folder/i);
 h.projectItems.splice(h.projectItems.indexOf(duplicateRenderFolder), 1);
 
 h.queue(v3); h.click("Update Revision");
@@ -290,12 +293,12 @@ assert.equal(layer.comment, Contract.managedTag("layer", v3, "BEAUTY"));
 assert.equal(comp.comment, Contract.managedTag("comp", v3, v3.ae.comp_name));
 assert.equal(h.footage().length, 3, "V001/V002 provenance footage plus active V003 should coexist");
 h.click("Build Comp"); h.click("Run QC");
-assert.match(h.alerts.at(-1), /CutBridge QC — PASS/);
+assert.match(h.messages.at(-1), /CutBridge QC — PASS/);
 assert.deepEqual(h.replaceFlags, [false, false], "revision swaps must use replaceSource(..., false)");
 
 // Re-open the V003 package after script reload and prove project-state discovery remains safe.
 h.reload(); h.queue(v3); h.click("Import Package"); h.click("Build Comp"); h.click("Run QC");
-assert.match(h.alerts.at(-1), /CutBridge QC — PASS/);
+assert.match(h.messages.at(-1), /CutBridge QC — PASS/);
 assert.equal(h.comps().length, 1);
 assert.equal(h.footage().length, 3);
 assert.equal(h.topRoot(v3.package_name).comment, "Artist / studio package note");
@@ -316,8 +319,8 @@ const preservedItems = failedImportHost.projectItems.slice();
 const oldSourceId = preservedSource.id;
 assert.equal(typeof oldSourceId, "number", "native mock footage IDs must exercise numeric-ID cleanup");
 failedImportHost.queue(v2); failedImportHost.click("Update Revision");
-assert.match(failedImportHost.alerts.at(-1), /Injected replacement conform failure.*rollback completed/i);
-assert.doesNotMatch(failedImportHost.alerts.at(-1), /ROLLBACK INCOMPLETE|Object is invalid/i);
+assert.match(failedImportHost.messages.at(-1), /Injected replacement conform failure.*rollback completed/i);
+assert.doesNotMatch(failedImportHost.messages.at(-1), /ROLLBACK INCOMPLETE|Object is invalid/i);
 assert.deepEqual(failedImportHost.projectItems, preservedItems, "failed replacement import must remove only its new project item");
 assert.strictEqual(preservedLayer.source, preservedSource, "failed import must leave the old source live");
 assert.equal(preservedSource.id, oldSourceId);
@@ -341,7 +344,7 @@ const refusedImportHost = makeHost({nativeHandles: true, failConformVersion: 2, 
 refusedImportHost.queue(v1); refusedImportHost.click("Import Package"); refusedImportHost.click("Build Comp");
 const refusedLayer = refusedImportHost.comps()[0].layer(1), refusedSource = refusedLayer.source;
 refusedImportHost.queue(v2); refusedImportHost.click("Update Revision");
-assert.match(refusedImportHost.alerts.at(-1), /ROLLBACK INCOMPLETE.*Removal not verified/i);
+assert.match(refusedImportHost.messages.at(-1), /ROLLBACK INCOMPLETE.*Removal not verified/i);
 assert.strictEqual(refusedLayer.source, refusedSource);
 assert.equal(refusedImportHost.footage().length, 2, "retained replacement must be reported rather than declared removed");
 assert.deepEqual(refusedImportHost.replaceFlags, []);
@@ -374,7 +377,7 @@ for (const kind of ["footage", "layer"]) {
     const itemCount = invalidHost.projectItems.length, layerCount = activeComp.numLayers;
     invalidHost.validityChecks.length = 0;
     invalidHost.click("Build Comp");
-    assert.match(invalidHost.alerts.at(-1), /reused safely/i, "invalid cached " + kind + " must not prevent safe live discovery");
+    assert.match(invalidHost.messages.at(-1), /reused safely/i, "invalid cached " + kind + " must not prevent safe live discovery");
     assert.ok(invalidHost.validityChecks.some(check => check.target === oldHandle && check.valid === false), "native invalidity guard must inspect the cached " + kind + " handle");
     assert.equal(invalidHost.projectItems.length, itemCount);
     assert.equal(activeComp.numLayers, layerCount);
@@ -382,7 +385,7 @@ for (const kind of ["footage", "layer"]) {
     const activeLayer = kind === "layer" ? replacement : oldLayer;
     assert.strictEqual(activeLayer.source, kind === "footage" ? replacement : oldFootage);
     invalidHost.reload(); invalidHost.queue(v1); invalidHost.click("Import Package"); invalidHost.click("Build Comp");
-    assert.match(invalidHost.alerts.at(-1), /reused safely/i);
+    assert.match(invalidHost.messages.at(-1), /reused safely/i);
     assert.equal(invalidHost.projectItems.length, itemCount);
     assert.equal(activeComp.numLayers, layerCount);
 }
@@ -405,7 +408,7 @@ assert.equal(staleComp.numLayers, staleLayerCount, "stale prior-version managed 
 assert.equal(staleLayerHost.footage().length, staleFootageCount, "blocked Build must not import extra footage");
 assert.strictEqual(staleLayer.source, staleActiveSource, "blocked Build must not change the active layer source");
 assert.equal(staleSourceV1.comment, Contract.managedTag("footage", staleV1, "BEAUTY"), "historical footage must remain version-scoped rather than becoming a collision");
-assert.match(staleLayerHost.alerts.at(-1), /managed layer ownership|unverified layer|ambiguous managed layer/i);
+assert.match(staleLayerHost.messages.at(-1), /managed layer ownership|unverified layer|ambiguous managed layer/i);
 
 // An extra prior-version managed layer in the active comp is still CutBridge-owned drift
 // even if its name/source no longer collide with the current pass. Build and QC must fail closed.
@@ -427,10 +430,10 @@ assert.equal(orphanComp.numLayers, orphanLayerCount, "orphan prior-version manag
 assert.equal(orphanLayerHost.footage().length, orphanFootageCount, "blocked orphan-layer Build must not import footage");
 assert.equal(orphanLayerHost.replaceFlags.length, orphanReplaceCount, "blocked orphan-layer Build must not swap managed sources");
 assert.strictEqual(orphanCurrentLayer.source, orphanSourceV2, "blocked orphan-layer Build must preserve the active current source");
-assert.match(orphanLayerHost.alerts.at(-1), /stale|orphan|managed layer ownership|unverified layer|ambiguous managed layer/i);
+assert.match(orphanLayerHost.messages.at(-1), /stale|orphan|managed layer ownership|unverified layer|ambiguous managed layer/i);
 orphanLayerHost.click("Run QC");
-assert.doesNotMatch(orphanLayerHost.alerts.at(-1), /CutBridge QC — PASS\b/);
-assert.match(orphanLayerHost.alerts.at(-1), /stale|orphan|managed layer ownership|managed layer/i);
+assert.doesNotMatch(orphanLayerHost.messages.at(-1), /CutBridge QC — PASS\b/);
+assert.match(orphanLayerHost.messages.at(-1), /stale|orphan|managed layer ownership|managed layer/i);
 
 // A user-owned top-level folder with the deterministic package name is a collision,
 // not ownership proof. Build must not create children or managed objects inside it.
@@ -441,7 +444,7 @@ assert.equal(collisionHost.comps().length, 0, "unverified package root must not 
 assert.equal(collisionHost.footage().length, 0, "unverified package root must not receive managed footage");
 assert.equal(collisionHost.childFolders(manualRoot).length, 0, "unverified package root must not be mutated with CutBridge child folders");
 assert.equal(manualRoot.comment, "Studio-owned folder");
-assert.match(collisionHost.alerts.at(-1), /project-root folder|package root|package folder|ownership|collision|not verified/i);
+assert.match(collisionHost.messages.at(-1), /project-root folder|package root|package folder|ownership|collision|not verified/i);
 
 // Execute the actual supplemental JSX through this existing host-shaped vm and
 // the real CutBridge adapter/executor. CB file/project helpers below are mocks;

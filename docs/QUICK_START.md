@@ -176,13 +176,9 @@ Current development packages use **four adjacent runtime files**:
 
 Keep them together.
 
-First test:
+Install all four files from the same verified ZIP into your AE version's `Scripts/ScriptUI Panels` directory. Restart After Effects, then open **Window > CutBridge** and dock its tab. Confirm the JA/EN selector works. Build/QC details stay in the panel's scrollable Results field; keep revision confirmations and errors visible.
 
-1. In After Effects choose **File > Scripts > Run Script File...**.
-2. Select `CutBridge.jsx`.
-3. Confirm the panel opens and the JA/EN selector works.
-
-For a dockable panel, place all four files in the appropriate `Scripts/ScriptUI Panels` directory and restart After Effects.
+Optional floating fallback: choose **File > Scripts > Run Script File...**, then select the extracted `CutBridge.jsx` with its three adjacent sidecars. For removal or updates, close AE and remove or replace only these four installed runtime files; preserve artist projects and footage.
 
 If `localization.js` is missing or invalid, CutBridge must fall back to coherent English UI without weakening Build/QC/Revision safety. The safety-critical revision and QC sidecars must remain available.
 

@@ -1,5 +1,18 @@
 # Native validation operator handoff — PR #113
 
+## Active bounded free release — 21 October 2026
+
+Target: **Sunday, 25 October 2026 (Asia/Jakarta)**, confirmed by the owner. This supersedes the earlier 22 October working target. Scope is frozen; feature development stops at a qualified published release, with critical defects only afterward. See [the bounded release policy](FREE_RELEASE_2026-10-25.md).
+
+The current branch `fix/free-release-20261021` retains all PR #113 commits and adds the dockable-first installation/compact ScriptUI/in-panel Build-QC patch. Earlier AE runtime/package hashes and frozen-runtime statements below describe historical candidates; they do not qualify this changed AE runtime. Historical 396-test/18-suite and Blender evidence remain bound to their exact recorded inputs.
+
+The owner authorizes a separately documented AI code/evidence review instead of owner-controlled administrative human review for this release. This does not waive native acceptance or enforced GitHub approvals. S14B remains NOT_EXECUTED; unsupported channels and broad compatibility/commercial claims remain excluded.
+
+Current native verdict: **INSUFFICIENT EVIDENCE**. Blank owner-session AE/Blender workspaces initialize, but the 19 October provisioned Sandbox is no longer present and the installed AE core DLL still reports HashMismatch. No current candidate code has been loaded into the owner session. The required isolated native campaign and qualified-build screenshots remain unexecuted. Release authorization remains false; v0.2.4 is immutable/held, production remains v0.2.3.
+
+## Historical records (retain original identities and decisions)
+
+
 Prepared 17 October 2026. **INSUFFICIENT EVIDENCE / NOT_EXECUTED / ACCEPTANCE NOT_RECEIVED.** This is the single handoff for the remaining native work. It does not authorize a security change, protected merge, publication or distribution. S14B is NOT_EXECUTED. Working target: 22 October; official deadline unconfirmed.
 
 ## Frozen inputs and completed work

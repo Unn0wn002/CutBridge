@@ -1,5 +1,12 @@
 # Changelog
 
+## Bounded v0.2.5 free-release candidate — 21 October 2026
+
+- Make installation of four adjacent runtime files in Scripts/ScriptUI Panels and Window > CutBridge the primary workflow; retain floating fallback and add removal/update instructions.
+- Use compact workflow rows with localized tooltips/help and scrollable, selectable in-panel Build/QC results. Preserve revision confirmations and blocking errors.
+- Freeze scope for Sunday, 25 October 2026, Asia/Jakarta; explicitly document AI administrative review and unexecuted native gates.
+
+
 All notable CutBridge changes are tracked here.
 
 ## [0.2.5] - Unreleased

@@ -22,7 +22,7 @@ const {host, manifest, beautyFiles} = fixtureModule.exports;
 
 function assertQcFailsManagedLayer(h, label) {
   h.click('QC');
-  const message = h.alerts.at(-1);
+  const message = h.messages.at(-1);
   assert.doesNotMatch(message, /^CutBridge QC — PASS(?:\n| with)/, label + ': QC must not report a passing headline');
   assert.match(message, /managed layer|managed-layer|layer ownership/i, label + ': QC must report managed-layer ownership failure');
 }
@@ -78,7 +78,7 @@ function lineFiles() {
   line.remove();
   removedLayer = line;
   h.click('QC');
-  const message = h.alerts.at(-1);
+  const message = h.messages.at(-1);
   assert.match(message, /^CutBridge QC — WARNING — 1 warning\(s\)/, 'missing complete optional managed layer should warn, not hard-fail');
   assert.match(message, /WARNING \[CBQ-LAYER-OPTIONAL-MISSING\] LINE: optional managed layer is missing/);
   assert.doesNotMatch(message, /ERROR \[[^\]]+\] LINE:/, 'missing optional layer should not become a hard error when ownership is otherwise unambiguous');
@@ -96,7 +96,7 @@ function lineFiles() {
     if (index >= 0) files.splice(index, 1);
   }
   h.click('QC');
-  const message = h.alerts.at(-1);
+  const message = h.messages.at(-1);
   assert.match(message, /^CutBridge QC — WARNING — 1 warning\(s\)/, 'missing optional source sequence should remain the documented warning/skip path');
   assert.match(message, /WARNING \[CBQ-SEQ-OPTIONAL-FOLDER-MISSING\] LINE: Optional pass folder is missing/);
   assert.doesNotMatch(message, /ERROR \[[^\]]+\] LINE:/, 'skipped optional source must not become a managed-layer hard error');

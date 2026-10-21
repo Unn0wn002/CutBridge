@@ -173,9 +173,9 @@ CutBridge Output へ必要な Pass をレンダーします。AE へ渡す前に
 - `qc_plus.js`
 - `localization.js`
 
-最初は **File > Scripts > Run Script File...** から `CutBridge.jsx` を実行できます。
+同じ検証済みZIPの4ファイルすべてを、対象AEの `Scripts/ScriptUI Panels` に配置します。AEを再起動し、**Window > CutBridge** で開いてタブをドッキングしてください。Build/QCの結果はパネル内のスクロール可能な「結果」に表示されます。差し替えの確認と停止エラーのダイアログは保持します。
 
-Dockable Panel として使用する場合は 4 ファイルすべてを `Scripts/ScriptUI Panels` に配置して AE を再起動します。
+フローティング表示が必要な場合は、4ファイルを隣接させたまま **File > Scripts > Run Script File... > CutBridge.jsx** を使用できます。更新・削除時はAEを終了し、この4ファイルだけを置き換えるか削除してください。制作プロジェクトや素材は削除しません。
 
 `localization.js` が欠けている場合は安全に English Fallback へ移行しますが、Build / QC / Revision Safety は弱くなりません。
 

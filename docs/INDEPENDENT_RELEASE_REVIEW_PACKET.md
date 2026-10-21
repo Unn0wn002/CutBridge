@@ -1,5 +1,18 @@
 # Independent release review packet — PR #113
 
+## Active bounded free release — 21 October 2026
+
+Target: **Sunday, 25 October 2026 (Asia/Jakarta)**, confirmed by the owner. This supersedes the earlier 22 October working target. Scope is frozen; feature development stops at a qualified published release, with critical defects only afterward. See [the bounded release policy](FREE_RELEASE_2026-10-25.md).
+
+The current branch `fix/free-release-20261021` retains all PR #113 commits and adds the dockable-first installation/compact ScriptUI/in-panel Build-QC patch. Earlier AE runtime/package hashes and frozen-runtime statements below describe historical candidates; they do not qualify this changed AE runtime. Historical 396-test/18-suite and Blender evidence remain bound to their exact recorded inputs.
+
+The owner authorizes a separately documented AI code/evidence review instead of owner-controlled administrative human review for this release. This does not waive native acceptance or enforced GitHub approvals. S14B remains NOT_EXECUTED; unsupported channels and broad compatibility/commercial claims remain excluded.
+
+Current native verdict: **INSUFFICIENT EVIDENCE**. Blank owner-session AE/Blender workspaces initialize, but the 19 October provisioned Sandbox is no longer present and the installed AE core DLL still reports HashMismatch. No current candidate code has been loaded into the owner session. The required isolated native campaign and qualified-build screenshots remain unexecuted. Release authorization remains false; v0.2.4 is immutable/held, production remains v0.2.3.
+
+## Historical records (retain original identities and decisions)
+
+
 Status: **PREPARED / REVIEW NOT_RECEIVED / SCOPE ACCEPTANCE NOT_RECEIVED**. This is a request package for an independent reviewer; it contains no approval. No review has been posted or message sent. Runtime and package bytes remain frozen.
 
 Closeout update, 17 October 2026: review the frozen baseline below plus the later documentation/evidence diff on PR #113. The startup timebox expired without an approved initializing native environment; see [the handoff](NATIVE_VALIDATION_HANDOFF.md) and [assessment](evidence/20261017-validation-closeout/assessment.json). The README was repaired, preserving original bytes/catalog; final-639 results and release assets were not changed.

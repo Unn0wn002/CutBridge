@@ -2,7 +2,7 @@
 
 Before tagging a CutBridge release:
 
-For the 22 October 2026 working submission target (official deadline unconfirmed), use [SUBMISSION_DEMO_CHECKLIST.md](SUBMISSION_DEMO_CHECKLIST.md) to assemble the review packet and native execution record. Submission readiness and public-release readiness are separate decisions; neither follows from green CI alone.
+For the owner-confirmed 25 October 2026 free-release target (Asia/Jakarta), use [SUBMISSION_DEMO_CHECKLIST.md](SUBMISSION_DEMO_CHECKLIST.md) to assemble the review packet and native execution record. Submission readiness and public-release readiness are separate decisions; neither follows from green CI alone.
 
 - [ ] Review the live `main`/`develop` relationship and promote the verified candidate through a PR.
 - [ ] Run every command in [CONTRIBUTING.md](CONTRIBUTING.md); all authoritative tests and CI jobs pass on the exact candidate commit.
@@ -27,7 +27,7 @@ For the 22 October 2026 working submission target (official deadline unconfirmed
 - [ ] In disposable AE copies, inject a late import/validation failure and a source-replacement failure. Verify captured imported IDs are cleaned up, invalid native handles are rejected, prior sources/ownership/root notes and unrelated objects are preserved, and Build/QC/reload remain coherent after rollback. Retain the injection method and before/after state.
 - [ ] Complete a real Blender → package → After Effects smoke test. Do not replace it with headless or host-shaped evidence.
 - [ ] Update compatibility records and changelog release status with actual evidence.
-- [ ] Obtain the required independent review(s) for the exact release candidate and resolve all review findings before promotion/tagging.
+- [ ] Complete a separate exact-candidate AI code/evidence review and resolve findings before promotion/tagging for this bounded free release, as authorized in [FREE_RELEASE_2026-10-25.md](FREE_RELEASE_2026-10-25.md). Preserve enforced GitHub approval requirements and historical reviews.
 - [ ] Keep root `release-authorization.json` unapproved while any release gate is incomplete.
 - [ ] Decide the intended publication class and exact tag: stable `vX.Y.Z`, beta validation `vX.Y.Z-rc.N`/`vX.Y.Z-beta.N`, or development validation `vX.Y.Z-dev.N`.
 - [ ] On the validated current `main` candidate, change `release-authorization.json` to explicitly approve that exact tag, matching `channel` and `prerelease`; review/test that authorization commit as part of the release candidate.
