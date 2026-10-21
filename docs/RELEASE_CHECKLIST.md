@@ -2,6 +2,8 @@
 
 Before tagging a CutBridge release:
 
+Current preparation handoff: provide a permitted official Windows 11 24H2-or-later x64 ISO path. Gallery selection and image inspection are complete; older UI-action requests below are historical. [The current record](evidence/20261021-pr114-guest-provisioning/quick-create-r4/OPERATOR_ACTION.md) identifies the advertised OS mismatch for AE 26.5 and Chrome's blocked current ISO request. No native or release checkbox is completed by this environment assessment.
+
 Latest guest preparation: Quick Create is open; select its Windows 11 entry for inspection before creation. Gallery evaluation validity is unknown, and Chrome blocked the independent current Windows ISO request. [The exact record](evidence/20261021-pr114-guest-provisioning/quick-create-r3/OPERATOR_ACTION.md) supersedes earlier consent/launch checkpoints. No guest, host-installation, native acceptance or release box is complete from these observations.
 
 Current exact setup boundary: local Hyper-V host selection is observed and its VM list is empty. Microsoft's signed Quick Create launcher is waiting for protected Windows consent; [the immediate action](evidence/20261021-pr114-guest-provisioning/quick-create-r2/OPERATOR_ACTION.md) is approval of that specific launcher prompt. Earlier host-selection requests below are historical checkpoints; native acceptance and release authorization stay incomplete.

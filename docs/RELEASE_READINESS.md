@@ -2,6 +2,8 @@
 
 ## Active bounded free release — 21 October 2026
 
+**Current setup status: INSUFFICIENT EVIDENCE.** Gallery selection is complete; its advertised older Windows build does not meet the recorded AE 26.5 OS requirement as-is. A permitted official Windows 11 24H2-or-later ISO is needed after Chrome blocked the current download request. [The exact media handoff](evidence/20261021-pr114-guest-provisioning/quick-create-r4/OPERATOR_ACTION.md) supersedes earlier consent/selection requests while preserving their evidence. No guest, native test, qualified screenshot or release gate is newly passed.
+
 Current setup checkpoint: Quick Create is open; Windows-image suitability remains unestablished, and the official current Windows ISO download request was blocked by Chrome. [The retained gallery/download record](evidence/20261021-pr114-guest-provisioning/quick-create-r3/OPERATOR_ACTION.md) names the one immediate manual selection needed and distinguishes metadata/URL availability from licensed guest availability. No native or release gate is newly passed; candidate bytes and earlier evidence remain unchanged.
 
 Latest virtualization checkpoint: selected local Hyper-V host has no listed VMs; the normal signed Quick Create launcher is waiting at protected Windows elevation consent. [Exact action and evidence](evidence/20261021-pr114-guest-provisioning/quick-create-r2/OPERATOR_ACTION.md) replace the earlier host-selection request. No native or release gate is passed by this setup observation; no failed Sandbox attempt was repeated.
