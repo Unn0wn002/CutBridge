@@ -55,7 +55,7 @@ function makeRuntime({injectLocalization = true, savedLocale = null} = {}) {
     this.spacing = 0;
     this.margins = 0;
   }
-  Window.prototype.add = function(type, unused, textOrItems) { return makeControl(type, textOrItems); };
+  Window.prototype.add = function(type, unused, textOrItems, properties) { return makeControl(type, textOrItems, properties); };
   Window.prototype.center = function() {};
   Window.prototype.show = function() {};
   function Panel() {}

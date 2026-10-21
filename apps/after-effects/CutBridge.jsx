@@ -1845,7 +1845,7 @@ if (typeof module !== "undefined" && module.exports) {
             var beforeVersion = state.manifest ? state.manifest.version : null;
             updateRevision();
             var afterVersion = state.manifest ? state.manifest.version : null;
-            if (beforeVersion !== null && afterVersion !== null && beforeVersion !== afterVersion) { results.text = aeUiText("status_revision_complete"); setPanelStatus("READY", "status_revision_complete"); }
+            if (beforeVersion !== null && afterVersion !== null && beforeVersion !== afterVersion) { results.text = tr("revision_updated", {version: CutBridgeContract.zeroPad(afterVersion, 3)}) + "\n" + tr("revision_preserved"); setPanelStatus("READY", "status_revision_complete"); }
             else refreshPackagePanel();
         });
 

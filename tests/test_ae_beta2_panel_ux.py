@@ -12,7 +12,7 @@ def test_beta2_ae_panel_has_status_hierarchy_and_context_help():
     assert 'status_ready: "準備完了 / READY"' in SOURCE
     assert 'status_warning: "警告 / WARNING"' in SOURCE
     assert 'status_error: "エラー / ERROR"' in SOURCE
-    assert SOURCE.count('pal.add("button", undefined, "?")') == 1
+    assert SOURCE.count('row.add("button", undefined, "?")') == 1
     for topic in ('load', 'build', 'qc', 'revision'):
         assert f'"{topic}"' in SOURCE
 
