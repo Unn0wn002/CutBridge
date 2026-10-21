@@ -2,7 +2,9 @@
 
 ## Active bounded free release — 21 October 2026
 
-[AI code/evidence review completed](AI_RELEASE_REVIEW_2026-10-21.md) for source `5aa2da24fc8be41626ee84178c7fdce05d02eebc`: CI **396 passed + 2 subtests**, reviewed isolated canonical checks PASS, release decision **HOLD / INSUFFICIENT EVIDENCE**. Administrative AI review does not replace missing native acceptance or independent package download verification. No protected promotion, authorization or publication is performed.
+Continuation: package retrieval is complete. [PC verification](evidence/20261021-pr114-native-continuation/PC_PACKAGE_RECEIPT.json) binds both ZIP hashes and raw-source AE files; [the handoff](evidence/20261021-pr114-native-continuation/OPERATOR_HANDOFF.md) records remaining native cases. The original ChatGPT JSON was inaccessible; its user-supplied summary is retained without claiming original bytes. A fresh transfer runner recomputed the exact outer archive hash and inspected ZIPs/repeats; the PC verified all 11 transferred files. No native execution or qualified screenshot was produced. **HOLD / INSUFFICIENT EVIDENCE** continues because no suitable isolated, normally provisioned AE guest was established. AI administrative review and deferred representative-user research are not additional blockers.
+
+[AI code/evidence review completed](AI_RELEASE_REVIEW_2026-10-21.md) for source `5aa2da24fc8be41626ee84178c7fdce05d02eebc`: CI **396 passed + 2 subtests**, reviewed isolated canonical checks PASS, package download verification recorded, release decision **HOLD / INSUFFICIENT EVIDENCE**. Administrative AI review does not replace missing native acceptance. No protected promotion, authorization or publication is performed.
 
 Target: **Sunday, 25 October 2026 (Asia/Jakarta)**, confirmed by the owner. This supersedes the earlier 22 October working target. Scope is frozen; feature development stops at a qualified published release, with critical defects only afterward. See [the bounded release policy](FREE_RELEASE_2026-10-25.md).
 

@@ -1,0 +1,32 @@
+[
+  {
+    "path": "CutBridge.jsx",
+    "bytes": 128099,
+    "sha256": "161ce665f317053b0fab6c3d754c07f1ed893289d1a75b7121e0bef5215e48c3",
+    "source_match": true
+  },
+  {
+    "path": "revision_manager.js",
+    "bytes": 43408,
+    "sha256": "ca9df1b6678eeaa1bebf03a5ba8e35253f0a9984a8891d0f00cc01bbc222a097",
+    "source_match": true
+  },
+  {
+    "path": "qc_plus.js",
+    "bytes": 15087,
+    "sha256": "054b8f0a2239c28020f758dab19049c1e4a8d74170c16a42e2aa8d4eee222cb8",
+    "source_match": true
+  },
+  {
+    "path": "localization.js",
+    "bytes": 15045,
+    "sha256": "413f6cd969e928bbc6c55efb5125003d62f314ba4b7424c29ed4dfe32cff5b0e",
+    "source_match": true
+  },
+  {
+    "path": "LICENSE",
+    "bytes": 35149,
+    "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+    "source_match": true
+  }
+]

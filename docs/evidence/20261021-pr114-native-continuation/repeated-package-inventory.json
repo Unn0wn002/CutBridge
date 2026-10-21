@@ -1,0 +1,30 @@
+[
+  {
+    "mode": 420,
+    "path": "CutBridge-AfterEffects-v0.2.5.zip",
+    "sha256": "5363795c66b1fbb664444fd5346ca9532d99822ce2cf3315193d4abec1789b9c",
+    "size": 60408,
+    "type": "file"
+  },
+  {
+    "mode": 420,
+    "path": "CutBridge-Blender-v0.2.5.zip",
+    "sha256": "864131a58a1c56e4364c3e435ef1433fbda415515be7292770212bfdc4c31bfe",
+    "size": 63682,
+    "type": "file"
+  },
+  {
+    "mode": 420,
+    "path": "SHA256SUMS.txt",
+    "sha256": "75e998bcfc3302a1c20229cbf2a642b3eab4988ec545f7d265cd7812871b5ede",
+    "size": 195,
+    "type": "file"
+  },
+  {
+    "mode": 420,
+    "path": "release-metadata.json",
+    "sha256": "7c4a62d1b2602aa4f471e6e02bf743e4e0f70632de57d542e2e795853b2c21ec",
+    "size": 674,
+    "type": "file"
+  }
+]

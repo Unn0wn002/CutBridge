@@ -1,0 +1,23 @@
+{
+  "record_kind": "User-supplied summary, retained verbatim in scope; not the missing original attachment",
+  "original_filename": "CutBridge_PR114_download_verification.json",
+  "original_attachment_access": "Not present in accessible attachment directories, Downloads or C:/Temp; no download URL supplied",
+  "source": "User continuation message in this chat, 21 October 2026",
+  "inspection_environment": "ChatGPT execution environment, reported by user",
+  "artifact_id": 12334183017,
+  "run_id": 39575739610,
+  "outer_sha256": "04ef1fe67cd580200c4af6604c825680986745e4f56fc8184455166a566014cd",
+  "reported_results": {
+    "evidence_checksums": "48 passed",
+    "bootstrap_checksum": "passed",
+    "release_package_checksums": "both passed",
+    "outer_and_nested_zip_integrity": "passed",
+    "all_four_repeat_build_assets": "byte-identical",
+    "retained_before_after_input_inventories": "match",
+    "packaged_CutBridge_jsx": "matches retained source snapshot"
+  },
+  "scope": "Independent download verification; not native execution or human review",
+  "does_not_claim_original_json_bytes_or_hash": true,
+  "native_execution": "NOT_EXECUTED",
+  "human_review": "NOT_CLAIMED"
+}
