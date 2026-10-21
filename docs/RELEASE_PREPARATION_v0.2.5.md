@@ -1,5 +1,11 @@
 # CutBridge v0.2.5 release preparation
 
+## Active checkpoint — 21 October 2026
+
+The owner-confirmed free-release target is **Sunday, 25 October 2026 (Asia/Jakarta)**; scope is frozen. Exact source `5aa2da24fc8be41626ee84178c7fdce05d02eebc` in [PR #114](https://github.com/Unn0wn002/CutBridge/pull/114) preserves all #113/#112 work and adds dockable-first installation, compact ScriptUI rows and in-panel Build/QC results. CI passed **396 tests + 2 subtests** and the reviewed isolated canonical run passed. The [AI review](AI_RELEASE_REVIEW_2026-10-21.md) binds those results, package hashes, evidence and unresolved native/download gates. Decision: **INSUFFICIENT EVIDENCE / HOLD RELEASE**. Earlier dates, hashes, frozen-runtime statements and human-review requests below are historical and are superseded only by the explicit bounded policy in [FREE_RELEASE_2026-10-25.md](FREE_RELEASE_2026-10-25.md). Authorization is false, v0.2.4 stays immutable/held and production remains v0.2.3.
+
+## Historical preparation records
+
 Status: **PREPARING / NOT AUTHORIZED**. Production remains on v0.2.3. Do not mirror the immutable v0.2.4 packages: their AE installation guide has the confirmed Issue #99 documentation defect.
 
 Current assessment — **16 October 2026: INSUFFICIENT EVIDENCE** for submission and public release. The working target is **22 October 2026**; the official submission deadline remains unconfirmed. Use [the submission/demo checklist](SUBMISSION_DEMO_CHECKLIST.md) to prepare the exact-candidate review packet and remaining native checks. S14B stays NOT_EXECUTED and broader representative-user claims remain excluded.

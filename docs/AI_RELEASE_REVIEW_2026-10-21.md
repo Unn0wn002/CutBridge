@@ -1,0 +1,36 @@
+# AI code and evidence review — 21 October 2026
+
+Reviewer: **Codex (AI)**, in a separate read-only review pass after implementation and verification. This is not a human review or a claim of independence from authorship. The owner explicitly authorized this administrative substitution for the bounded free release. Historical review records are preserved.
+
+Reviewed source: `5aa2da24fc8be41626ee84178c7fdce05d02eebc`. Base for this patch: PR #113 `9fd4f8ea6851b2049c5edbfbd8b6e8deb611b254`. Integration base: `8cc5a4fe19e97c2f83105b888f96ccf1b423e8fd`. PR #114 retains the complete #113/#112 ancestry. Protected `main` remains `a393e409d19445c4090460b7e7b4716779161fa4`; main is an ancestor of develop, which is 41 commits ahead. No branch was reset or rewritten.
+
+## Code review
+
+- Read the complete patch to CutBridge.jsx, installation/quick starts, existing mock adapters, and regression assertions. Build/QC use an optional result callback from the panel. The public no-argument API keeps its prior alert behavior for existing harnesses. Revision confirmation and blocking operation errors remain dialogs; panel revision results retain the resulting version.
+- Action/help controls share compact rows; EN/JA action explanations remain in tooltips and contextual help. Results is multiline, read-only, scrollable and fills available space. Opening/help/locale mock checks still assert no project mutation. Native docking, dimensions and truncation are **not established** by these mocks.
+- Reviewed error/result paths and warning status. No changes to ownership, revision transaction, rollback, QC rules, manifest contract, Blender runtime, LICENSE, packaging tools, CI, release authorization or update scheduling occur in this patch. Their historical evidence remains scoped to its original identity.
+- Existing regressions still check source/ownership/state preservation and actual mock exception/cleanup behavior. The new output capture records both real mock alerts and writes to Results, while keeping alerts separately observable; focused assertions reject routine Build/QC alerts and retain full CBQ diagnostics. The source-replacement supplement remains PREPARED_NOT_EXECUTED natively.
+
+No additional blocking implementation defect was identified in this pass. Visual fit, actual ScriptUI behavior and native safety acceptance remain required.
+
+## Executed verification and evidence inspection
+
+Exact-source [push CI 39575594812](https://github.com/Unn0wn002/CutBridge/actions/runs/39575594812) and [PR CI 39575602151](https://github.com/Unn0wn002/CutBridge/actions/runs/39575602151) succeeded. Inspected native-runtime-job logs report **396 passed + 2 subtests**, and Blender 5.2 RNA registration PASS. Static job logs report **149 passed + 2 subtests**, package checksums OK, required AE Node groups, four-script syntax checks, and the checksum-artifact round trip. These counts overlap; do not add them together or call them desktop-host tests.
+
+[Reviewed isolated run 39575739610](https://github.com/Unn0wn002/CutBridge/actions/runs/39575739610) succeeded and logged `PASS: canonical checks completed`. Bootstrap `7072b3cad58a197f3b244b4837182de094096647` independently pins existing tools `571f4cdb1c992124bdb35e3d089de1de1535b254`, candidate `5aa2da24fc8be41626ee84178c7fdce05d02eebc`, and develop `8cc5a4fe19e97c2f83105b888f96ccf1b423e8fd`.
+
+Reviewed orchestration enforces offline read-only candidate/verification/orchestration mounts, unprivileged user, no credential environment/engine socket, distinct writable output/temp, actual container exit, exact before/after inventories, complete four-file repeat packaging, checksums/metadata/archive checks, stopped-container safe staging and distribution preview. Tools were unchanged from the prior independently reviewed pin. Candidate commands did not execute in the authenticated owner context. The uploaded [evidence/package bundle](https://github.com/Unn0wn002/CutBridge/actions/runs/39575739610/artifacts/12334183017) has service-reported SHA-256 `04ef1fe67cd580200c4af6604c825680986745e4f56fc8184455166a566014cd`, 12,366,041 bytes. That digest is an upload/API observation, **not an independently recomputed download hash**.
+
+The CI packaging log reports Blender ZIP SHA-256 `864131a58a1c56e4364c3e435ef1433fbda415515be7292770212bfdc4c31bfe` and AE ZIP `5363795c66b1fbb664444fd5346ca9532d99822ce2cf3315193d4abec1789b9c`. The Blender hash matches the retained prior scripted native package. Reuse is confined to that unchanged package and recorded scripted scenarios; GUI installation/visual/manual-update acceptance remains open. The changed AE ZIP has no current native qualification.
+
+The initial candidate `4304d8b2fc157ab90aa46ed9a65ea6fd18e58d15` failed four regression assertions. Its [isolated failed run](https://github.com/Unn0wn002/CutBridge/actions/runs/39575461213) and [failure artifact](https://github.com/Unn0wn002/CutBridge/actions/runs/39575461213/artifacts/12333707413) are retained, not relabeled. Repairs updated old function/group selectors, forwarded ScriptUI properties in the mock, and preserved version detail in Results. The subsequent passing run used a fresh snapshot.
+
+## Remaining blockers and disposition
+
+1. **Native isolation/provenance:** actual blank owner-session hosts initialize (Blender 5.2.2 LTS and AE 26.5.0 Build 89), but the previously provisioned Sandbox is absent and installed AfterFXLib.dll still reports HashMismatch. No current candidate native code was loaded. A normally provisioned, initialized, offline disposable native environment with accepted provenance and read-only/credential boundaries is still required. No equivalent startup retry, security/licensing adjustment or artist-project edit was made.
+2. **Native acceptance:** exact-package install, Window-menu docking/resize/reopen, EN/JA layout, Build/QC/repeat, V001–V003, artist preservation, negative cases, moved-folder rejection, source-replacement rollback and save/close/fresh-process reopen are unexecuted. No qualified-build screenshot exists. Host-only screenshots are not release screenshots.
+3. **Artifact retrieval:** both located GitHub CLIs lacked authentication. The browser connector reported an unattached debugger; the native browser fallback then stopped because it could not confidently determine the current Windows browser URL. All UI input stopped. The generated bundle is linked above, but local download/inventory/checksum inspection was not completed. No credentials were copied or settings changed.
+
+Live API inspection confirms all four rulesets active, required checks and review-thread resolution intact, zero required human approvals, and no bypass actors. Live production index still advertises only v0.2.3. GitHub v0.2.4 remains published and held; v0.2.5 is neither tagged nor published.
+
+**Overall verdict: INSUFFICIENT EVIDENCE. Decision: HOLD RELEASE.** The AI administrative review pass is completed for this named source and evidence scope; it does not approve missing native gates, downloads, promotion, publication or distribution. S14B remains NOT_EXECUTED. Unsupported 3D channels, broad compatibility and commercial/representative-user claims remain excluded. Continue only the bounded qualification work; a qualified published release remains the stopping point.

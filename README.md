@@ -1,6 +1,6 @@
 # CutBridge
 
-v0.2.5 is the bounded **free release candidate**, targeted for **Sunday, 25 October 2026 (Asia/Jakarta)**. Feature scope is frozen; a qualified published release ends feature development, with critical defects only afterward. Current verdict: **INSUFFICIENT EVIDENCE** until exact-package native acceptance completes. Historical verification remains tied to its recorded SHA; see [completion status](docs/COMPLETION_STATUS.md) for the current candidate, checks, and blockers.
+v0.2.5 is the bounded **free release candidate**, targeted for **Sunday, 25 October 2026 (Asia/Jakarta)**. Feature scope is frozen; a qualified published release ends feature development, with critical defects only afterward. Current verdict: **INSUFFICIENT EVIDENCE** until exact-package native acceptance completes. Candidate `5aa2da2` passed 396 tests + 2 subtests, CI and reviewed isolated verification. The [AI code/evidence review](docs/AI_RELEASE_REVIEW_2026-10-21.md) records package hashes, download limitations and the native blocker; see [completion status](docs/COMPLETION_STATUS.md). No v0.2.5 release is published.
 
 **CutBridge is a Blender → After Effects production handoff tool for animation cuts.**
 

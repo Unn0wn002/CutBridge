@@ -2,6 +2,8 @@
 
 ## Active bounded free release — 21 October 2026
 
+Exact tested source: **`5aa2da24fc8be41626ee84178c7fdce05d02eebc`**, [draft PR #114](https://github.com/Unn0wn002/CutBridge/pull/114). [Push CI](https://github.com/Unn0wn002/CutBridge/actions/runs/39575594812), [PR CI](https://github.com/Unn0wn002/CutBridge/actions/runs/39575602151), and [reviewed isolated verification](https://github.com/Unn0wn002/CutBridge/actions/runs/39575739610) succeeded; CI reports **396 tests + 2 subtests**. See the [separate AI review](AI_RELEASE_REVIEW_2026-10-21.md) for exact bindings, first-run failures, package hashes, retained scope and unresolved native/download gates. Later documentation commits do not replace this tested source identity.
+
 Target: **Sunday, 25 October 2026 (Asia/Jakarta)**, confirmed by the owner. This supersedes the earlier 22 October working target. Scope is frozen; feature development stops at a qualified published release, with critical defects only afterward. See [the bounded release policy](FREE_RELEASE_2026-10-25.md).
 
 The current branch `fix/free-release-20261021` retains all PR #113 commits and adds the dockable-first installation/compact ScriptUI/in-panel Build-QC patch. Earlier AE runtime/package hashes and frozen-runtime statements below describe historical candidates; they do not qualify this changed AE runtime. Historical 396-test/18-suite and Blender evidence remain bound to their exact recorded inputs.

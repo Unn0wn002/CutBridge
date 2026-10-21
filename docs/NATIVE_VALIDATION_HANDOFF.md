@@ -2,6 +2,8 @@
 
 ## Active bounded free release — 21 October 2026
 
+Current runtime source: `5aa2da24fc8be41626ee84178c7fdce05d02eebc`; [generated evidence/packages](https://github.com/Unn0wn002/CutBridge/actions/runs/39575739610/artifacts/12334183017) contain `candidate-output/dist-ci/` with the four artifacts. The CI packaging log reports Blender ZIP `864131a58a1c56e4364c3e435ef1433fbda415515be7292770212bfdc4c31bfe` and changed AE ZIP `5363795c66b1fbb664444fd5346ca9532d99822ce2cf3315193d4abec1789b9c`. Independently download and verify all manifests/inventories and exact runtime bytes before native staging. The old 639-bound operator bundle below is historical: reuse its existing harnesses/real rendered fixtures only after review, and replace its runtime/package/receipt bindings explicitly. Never run it unchanged and attribute its identity to this new AE package. Keep the source-replacement supplement's own hash and preparation identity separate. See [the AI review](AI_RELEASE_REVIEW_2026-10-21.md).
+
 Target: **Sunday, 25 October 2026 (Asia/Jakarta)**, confirmed by the owner. This supersedes the earlier 22 October working target. Scope is frozen; feature development stops at a qualified published release, with critical defects only afterward. See [the bounded release policy](FREE_RELEASE_2026-10-25.md).
 
 The current branch `fix/free-release-20261021` retains all PR #113 commits and adds the dockable-first installation/compact ScriptUI/in-panel Build-QC patch. Earlier AE runtime/package hashes and frozen-runtime statements below describe historical candidates; they do not qualify this changed AE runtime. Historical 396-test/18-suite and Blender evidence remain bound to their exact recorded inputs.

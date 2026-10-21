@@ -2,6 +2,8 @@
 
 ## Active bounded free release — 21 October 2026
 
+[AI code/evidence review completed](AI_RELEASE_REVIEW_2026-10-21.md) for source `5aa2da24fc8be41626ee84178c7fdce05d02eebc`: CI **396 passed + 2 subtests**, reviewed isolated canonical checks PASS, release decision **HOLD / INSUFFICIENT EVIDENCE**. Administrative AI review does not replace missing native acceptance or independent package download verification. No protected promotion, authorization or publication is performed.
+
 Target: **Sunday, 25 October 2026 (Asia/Jakarta)**, confirmed by the owner. This supersedes the earlier 22 October working target. Scope is frozen; feature development stops at a qualified published release, with critical defects only afterward. See [the bounded release policy](FREE_RELEASE_2026-10-25.md).
 
 The current branch `fix/free-release-20261021` retains all PR #113 commits and adds the dockable-first installation/compact ScriptUI/in-panel Build-QC patch. Earlier AE runtime/package hashes and frozen-runtime statements below describe historical candidates; they do not qualify this changed AE runtime. Historical 396-test/18-suite and Blender evidence remain bound to their exact recorded inputs.

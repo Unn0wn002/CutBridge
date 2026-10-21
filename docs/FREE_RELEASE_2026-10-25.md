@@ -24,7 +24,7 @@ Execution isolation in AGENTS.md still applies. No owner credentials/private fil
 
 ## 21 October host assessment
 
-Read-only registry inspection reports Blender 5.2.2 and AE 26.5. Blank vendor launches on the PC reached AE's normal Untitled Project/Home workspace and Blender's Unsaved 5.2.2 LTS workspace. AE initially showed Crash Repair Options; Continue used normal existing preferences. No candidate code was loaded and no setting was changed. These observations establish owner-session startup only.
+Read-only registry inspection reports Blender 5.2.2 and AE 26.5. Blank vendor launches on the PC reached AE's normal Untitled Project/Home workspace and Blender's Unsaved 5.2.2 LTS workspace. AE's actual About dialog reports **26.5.0 (Build 89)**. AE initially showed Crash Repair Options; Continue used normal existing preferences. No candidate code was loaded and no setting was changed. These observations establish owner-session startup only. Both blank hosts were subsequently closed normally through their UI; no artist project was opened or modified.
 
 The Font Preflight evidence at its repository/evidence/native-20261019-resumed/sandbox-host-inventory-v2.txt records AE 26.5x89 Build 89, en_US, WDAGUtilityAccount. Its native-20261019-zen/sandbox-preflight.json confirms that separate Sandbox host operated. Current native window/process inventory has no Windows Sandbox session, so that disposable provisioned installation is no longer available to this task. Current installed AfterFXLib.dll Authenticode status remains HashMismatch. No cause is inferred and the installation is not repaired or copied into a new control.
 
