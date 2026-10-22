@@ -1,5 +1,7 @@
 # CutBridge Completion Status
 
+**Non-VM preparation: NOT_INSTALLED / NOT_ACCEPTED.** Fixture transfer is verified at a111c61 (all 53 harness/fixture inputs). [A concrete disabled process-isolation proposal](NON_VM_NATIVE_CONFIGURATION_2026-10-22.md) is now prepared for owner review; a new kernel-driver facility needs authorization before laptop setup. Native controls and AE provenance remain unaccepted. No VM investigation, candidate execution or release occurred.
+
 ## Laptop fixture receipt — 22 October 2026
 
 **Fixture transfer verified and staged; native verdict remains INSUFFICIENT EVIDENCE / HOLD RELEASE.** The laptop ZIP matches SHA-256 `d355a28913c12e7f65f9a8ddd126b62e1381c7ebdf92b36a2ef208ffb37f94b4`. All 39 fixture sizes/hashes match in fresh archive extraction, the owner's extracted folder and the operator packet. Added 39 files with zero conflicts/overwrites; all 24 prior packet files remain unchanged. The packet now has **63/73 exact historical entries**, including **53/53 harness/fixture inputs**; 10 historical root/review metadata entries remain explicitly accounted for, without relabeling old environment receipts.
