@@ -1,5 +1,11 @@
 # Desktop fixture transfer for laptop qualification — 22 October 2026
 
+## Laptop delivery observed and verified
+
+The laptop has now verified the ZIP and all 39 fixture sizes/hashes and staged them without overwrites. All 24 prior packet files are unchanged; the packet has 63/73 exact historical entries. See [the actual laptop receipt](../20261022-pr114-laptop-fixture-transfer/README.md). This closes transport only; non-VM execution-boundary acceptance and AE provenance remain open. No candidate code or VM investigation ran.
+
+## Original desktop preparation record (preserved)
+
 **Verdict: INSUFFICIENT EVIDENCE. Native status: NOT_EXECUTED. Release: HOLD.**
 
 The desktop fetched and fast-forwarded the existing PR branch to laptop commit `f7acc7f8e0e67a5d5379527c35c84f2072a7f28f`. Its 13 committed evidence checksums verify; push CI 39764355950 and PR CI 39764360727 succeeded. This is review of retained laptop evidence, not a repeat of laptop host execution.

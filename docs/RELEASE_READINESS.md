@@ -1,5 +1,11 @@
 # CutBridge Release Readiness
 
+## Laptop fixture receipt — 22 October 2026
+
+**Fixture transfer verified and staged; native verdict remains INSUFFICIENT EVIDENCE / HOLD RELEASE.** The laptop ZIP matches SHA-256 `d355a28913c12e7f65f9a8ddd126b62e1381c7ebdf92b36a2ef208ffb37f94b4`. All 39 fixture sizes/hashes match in fresh archive extraction, the owner's extracted folder and the operator packet. Added 39 files with zero conflicts/overwrites; all 24 prior packet files remain unchanged. The packet now has **63/73 exact historical entries**, including **53/53 harness/fixture inputs**; 10 historical root/review metadata entries remain explicitly accounted for, without relabeling old environment receipts.
+
+[Actual laptop receipt, inventories and next prerequisite](evidence/20261022-pr114-laptop-fixture-transfer/README.md). Transport is complete. Next operator action: supply the actual non-VM execution configuration and control evidence for acceptance (owner-file/credential denial, network denial, read-only inputs, confined writable profiles/outputs and watchdog). AE vendor provenance remains separately unresolved. No CutBridge candidate code/test, application launch or VM investigation occurred during transfer. Frozen runtime/packages, release authorization false and production v0.2.3 remain unchanged. Earlier missing-fixture statements below describe preserved checkpoints.
+
 ## Laptop direct-host checkpoint — 22 October 2026
 
 **INSUFFICIENT EVIDENCE / HOLD RELEASE.** Direct blank startup completed on laptop AYAKUMI_NOZOMI_: Blender **5.2.3 LTS / e13b728c6880**, RTX 3050 Ti / OpenGL 4.6 NVIDIA 617.42, PID 5608, normal exit 0; AE **26.5.0 Build 89**, empty workspace, no compatibility conflicts, CUDA selected, PID 4176, normal exit 0. Both installed application-tree inventories are unchanged. AE's core DLL still reports **HashMismatch**, cause unknown. No CutBridge/probe/native campaign was executed.
