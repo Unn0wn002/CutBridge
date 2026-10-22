@@ -2,7 +2,7 @@
 
 **Status: PREPARED_NOT_INSTALLED. Environment verdict: INSUFFICIENT EVIDENCE. CutBridge: NOT_EXECUTED. Release: HOLD.**
 
-The owner has required direct laptop Blender/AE and no further Hyper-V, VMware or Windows Sandbox work. This document supplies a specific **process-isolation proposal**, rather than asking the owner to invent an isolation configuration. It is not an accepted environment or permission to install a new driver. No product implementation, native harness or validation framework is added.
+The owner has required direct laptop Blender/AE and no further Hyper-V, VMware or Windows Sandbox work. This document supplies a specific **process-isolation proposal**, rather than asking the owner to invent an isolation configuration. On 22 October the owner explicitly answered **“Approve non-VM preparation”** to the named Sandboxie-Plus 1.18.8 driver and separate-test-account proposal. Facility preparation on the laptop is now authorized; environment acceptance and candidate execution are not established by that approval. No product implementation, native harness or validation framework is added.
 
 ## Verified handoff state
 
@@ -24,7 +24,7 @@ The [official downloads page](https://sandboxie-plus.com/downloads/) selected th
 - No installer, driver, service, account, live configuration or sandboxed application was started/changed. Vendor license eligibility for this use has not been assumed; if a certificate/payment or unsuitable license is required, stop without purchasing or accepting it. Desktop installed-app inventory found no Sandboxie entry; laptop availability was not inspected from this session.
 - Exact Windows 26300 / Blender 5.2.3 / AE compatibility remains **UNVERIFIED**. Vendor documentation is not a native pass.
 
-Microsoft [AppContainer](https://learn.microsoft.com/en-us/windows/win32/secauthz/appcontainer-isolation) was considered as an existing OS mechanism. The [Win32 app-isolation packaging route](https://learn.microsoft.com/en-us/windows/win32/secauthz/app-isolation-overview) does not establish that unchanged installed Blender/AE work there; no custom launcher, vendor repackaging or new isolation framework was implemented. Sandboxie remains a proposal needing approval, not an asserted available facility.
+Microsoft [AppContainer](https://learn.microsoft.com/en-us/windows/win32/secauthz/appcontainer-isolation) was considered as an existing OS mechanism. The [Win32 app-isolation packaging route](https://learn.microsoft.com/en-us/windows/win32/secauthz/app-isolation-overview) does not establish that unchanged installed Blender/AE work there; no custom launcher, vendor repackaging or new isolation framework was implemented. Sandboxie preparation is approved, but its installation and effective availability on the laptop remain unobserved here.
 
 ## Exact laptop configuration to bind and prove
 
@@ -51,11 +51,13 @@ The current laptop `C:\Program Files\Adobe\Adobe After Effects 2026\Support File
 
 The owner must provide a normally provisioned vendor control whose provenance can be accepted, or an authoritative vendor explanation/verification covering the exact bytes. A whole separate supported AE version installed normally through official Creative Cloud is a possible later preparation choice, not an installed or approved control. It must preserve the current installation/projects, retain its actual version/signatures/inventory, and use existing licensing. Do not purchase, replace individual DLLs or repair the prohibited host installation.
 
-## Smallest action now
+## Approved preparation and laptop handoff
 
-**Owner decision: approve or decline this specific new non-VM facility for laptop preparation.** The earlier authorization covered existing approved facilities and a separately named VMware route; this kernel-driver installation has not been authorized or started. Approval would permit laptop preparation of the exact downloaded native Sandboxie facility and dedicated test identity, with the owner handling installer elevation/account choices. It would not approve the environment, waive HashMismatch, enable the disabled policy, alter application security/licensing, authorize a host reboot or start CutBridge.
+**Owner approval received: “Approve non-VM preparation.”** This authorizes preparing the exact named native Sandboxie facility and dedicated test identity on the laptop, with the owner handling protected installer elevation/account choices. It does not approve the environment, waive HashMismatch, enable the disabled policy unchanged, alter application security/licensing, authorize a host reboot or start CutBridge. The original preparation receipt and its `NOT_REQUESTED_YET` authorization field remain unchanged as the historical pre-approval observation.
 
-If approved, give laptop Codex this document and have it verify the installer on that laptop, inspect any existing installation, prepare the bound configuration and stop at the actual protected owner step. Candidate execution remains forbidden until the real controls, unchanged vendor startup and existing no-candidate probe are accepted. Installer-required reboot or Windows security-feature changes are a stopping boundary, not an instruction to proceed.
+The current desktop session cannot control the separate laptop. Continue in laptop Codex: fetch this branch without overwriting local work, read this document and the current computer-use skill, inspect the actual laptop and any existing Sandboxie installation, retrieve the official asset above and verify its exact size/hash/signature locally. Prepare the approved facility/test identity and bind the disabled configuration to observed laptop paths, identities and controls. Do not install on the desktop in place of the laptop. Do not request facility approval again; stop at the precise protected consent, private account/password/sign-in, required reboot, security-feature change, license/payment or genuine incompatibility boundary and identify the smallest owner action. Use Edge for browser interaction.
+
+Keep dependency/account preparation separate from candidate execution. Retain actual installer/configuration/account/control receipts without credentials; preserve the existing verified packet and package bytes. Candidate execution remains forbidden until the real controls, accepted vendor provenance/startup and existing no-candidate probe are accepted. No further VM work or repeated equivalent failed startup attempts are authorized. Only then proceed through the retained native procedures and protected release gates, recording unexecuted checks honestly.
 
 No further VM investigation is proposed. Release remains held with immutable v0.2.4 and production v0.2.3 unchanged.
 

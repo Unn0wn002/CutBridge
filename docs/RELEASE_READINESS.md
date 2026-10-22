@@ -1,6 +1,6 @@
 # CutBridge Release Readiness
 
-**Non-VM preparation: NOT_INSTALLED / NOT_ACCEPTED.** Fixture transfer is verified at a111c61 (all 53 harness/fixture inputs). [A concrete disabled process-isolation proposal](NON_VM_NATIVE_CONFIGURATION_2026-10-22.md) is now prepared for owner review; a new kernel-driver facility needs authorization before laptop setup. Native controls and AE provenance remain unaccepted. No VM investigation, candidate execution or release occurred.
+**Non-VM preparation: NOT_INSTALLED / NOT_ACCEPTED.** Fixture transfer is verified at a111c61 (all 53 harness/fixture inputs). The owner approved [Sandboxie-Plus 1.18.8 laptop preparation](NON_VM_NATIVE_CONFIGURATION_2026-10-22.md#approved-preparation-and-laptop-handoff) on 22 October. Preparation approval covers the named facility and separate test identity; installation and effective controls are not yet observed. Continue in laptop Codex; this desktop session cannot control that laptop. Native controls and AE provenance remain unaccepted. No VM investigation, candidate execution or release occurred.
 
 ## Laptop fixture receipt — 22 October 2026
 
