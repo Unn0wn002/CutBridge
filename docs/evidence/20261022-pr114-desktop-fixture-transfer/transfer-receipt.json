@@ -1,0 +1,51 @@
+{
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "prepared_utc": "2026-10-22T10:42:45.7866376Z",
+  "reviewed_laptop_commit": "f7acc7f8e0e67a5d5379527c35c84f2072a7f28f",
+  "runtime_source": "5aa2da24fc8be41626ee84178c7fdce05d02eebc",
+  "laptop_evidence_checksums_verified": 13,
+  "prior_ci": {
+    "conclusion": "success",
+    "push": 39764355950,
+    "pull_request": 39764360727
+  },
+  "archive": {
+    "path": "C:\\Temp\\CutBridge-laptop-fixture-transfer-20261022\\CutBridge-PR114-retained-fixtures.zip",
+    "fixture_bytes": 9235554,
+    "extra_entry": "transfer-manifest.json",
+    "entries": 40,
+    "sha256": "d355a28913c12e7f65f9a8ddd126b62e1381c7ebdf92b36a2ef208ffb37f94b4",
+    "bytes": 1241110,
+    "fixture_files": 39
+  },
+  "source": {
+    "root": "C:\\Temp\\CutBridge-native-qualification-20261021\\operator-handoff",
+    "decompressed_member_hashes": "39/39 MATCH",
+    "original_file_hashes_before": "39/39 MATCH",
+    "archive_manifest_sha256": "d42c79b5740104f28975e5a81dd60b9d217a397396aeaee9f4b872adf6a98eb7",
+    "original_file_hashes_after": "39/39 MATCH",
+    "expected_catalog_sha256": "98ffc2fd388ab1626785768ca88a4e49bef83bef51ac7a70254fea0b21e3ecf5",
+    "expected_catalog": "docs/evidence/20261022-pr114-laptop-direct/missing-fixtures.json",
+    "regeneration": "NONE"
+  },
+  "delivery": {
+    "status": "PREPARED_NOT_OBSERVED_ON_LAPTOP",
+    "next_action": "Owner copies single ZIP through normal permitted file-transfer route; laptop checks ZIP and every fixture before staging"
+  },
+  "native_candidate_execution": "NOT_EXECUTED",
+  "environment_acceptance": "NOT_ACCEPTED",
+  "ae_hash_mismatch_cause": "UNKNOWN",
+  "vm_investigation": "NONE",
+  "host_security_licensing_repair_reboot": "NONE",
+  "release": "HOLD",
+  "ae_zip_sha256": "5363795c66b1fbb664444fd5346ca9532d99822ce2cf3315193d4abec1789b9c",
+  "blender_zip_sha256": "864131a58a1c56e4364c3e435ef1433fbda415515be7292770212bfdc4c31bfe",
+  "packet_reconciliation": {
+    "laptop_exact_entries_before": 24,
+    "exact_fixture_entries_to_add": 39,
+    "expected_exact_historical_entries_after_successful_transfer": 63,
+    "historical_total": 73,
+    "other_historical_root_review_metadata": 10,
+    "metadata_policy": "Not included; account separately and create current laptop receipts without relabeling desktop controls"
+  }
+}
