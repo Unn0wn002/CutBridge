@@ -1,0 +1,79 @@
+{
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "phase": "VMWARE_GUEST_WIZARD_ENCRYPTION_OWNER_STEP",
+  "observed_utc": "2026-10-22T06:15:08Z",
+  "documentation_head": "a76707b59f89a188db0506e152bfb5d89da1b571",
+  "runtime_source": "5aa2da24fc8be41626ee84178c7fdce05d02eebc",
+  "manual_installation": {
+    "owner_report": "done",
+    "installed_entry": "VMware Workstation",
+    "display_version": "26.0.0",
+    "running_process_id": 30432,
+    "exe": "C:\\Program Files\\VMware\\VMware Workstation\\vmware.exe",
+    "file_version": "26.0.0 build-25388281",
+    "exe_sha256": "47ebf04b0d1cb8273794ec9e6d77a85e978d4c12f4f31024b4f41f3a842721ae",
+    "signature_status": "Valid",
+    "signer": "Broadcom Inc",
+    "home_observed": "WORKSTATION PRO 26H1",
+    "installer": "C:\\Users\\unn0w\\Downloads\\VMware-Workstation-Full-26H1-25388281.exe",
+    "installer_sha256": "a0ef9087607d9cad20b08139e73e41242e044ad5bd8cee141d3bad314586737f",
+    "scope": "Actual base 26H1 build; not r7's 26H1u1 installer. Full vendor dependency inventory and guest suitability not accepted."
+  },
+  "host_capacity_at_inspection": {
+    "total_memory_gib": 63.66,
+    "free_memory_gib": 41.96,
+    "free_c_disk_gib": 1382.59
+  },
+  "wizard": {
+    "type": "Typical",
+    "os_installation": "I will install the operating system later",
+    "guest_os": "Microsoft Windows / Windows 11 x64",
+    "name": "AI Native Test - VMware",
+    "location": "C:\\Users\\unn0w\\Virtual Machines\\AI Native Test - VMware",
+    "location_existed_before_wizard": false,
+    "default_onedrive_path_not_used": true,
+    "current_page": "Configure Encryption",
+    "default_observed_option": "Only the files needed to support a virtual TPM",
+    "password_fields_at_capture": "EMPTY",
+    "remember_checkbox_at_capture": "CHECKED by default; not changed by agent",
+    "agent_generated_or_entered_or_read_password": false,
+    "agent_changed_encryption_or_tpm_security_settings": false,
+    "owner_handoff": "Set and confirm unique VM encryption password privately, keep virtual TPM requirement, Next, leave following page open",
+    "finish_clicked": false,
+    "guest_booted": false
+  },
+  "planned_hardware": {
+    "memory_mb": 16384,
+    "virtual_cpu_count": 4,
+    "disk_gb": 200,
+    "accelerate_3d": true,
+    "status": "PLANNED ONLY; hardware wizard/settings not reached"
+  },
+  "media": {
+    "path": "C:\\Users\\unn0w\\Downloads\\Windows11_Client_x64_en-us_26300_9457.iso",
+    "sha256": "bd4307df32bc8af33b39ccecb1174aeb345386630f89a2b86c7a4e36b55ea650",
+    "binding": "r6 full local-file SHA256 matched retained Microsoft checksum; current existence observed; not mounted in new guest yet"
+  },
+  "screenshot": {
+    "file": "configure-encryption-empty.jpg",
+    "sha256": "11164d68cf863853f89e94a66c453d74c2440d0d84979c9cb1d953a634741151",
+    "scope": "Actual pre-input credential-free wizard screenshot; not qualified native evidence"
+  },
+  "preserved": {
+    "hyper_v_vm": "AI Native Test untouched by agent",
+    "ae_warning": "No agent action on old guest",
+    "runtime_and_packages": "UNCHANGED",
+    "candidate_mapped_or_executed": false,
+    "host_security_or_licensing_change_by_agent": "NONE",
+    "host_reboot_by_agent": "NONE",
+    "release_authorization": false
+  },
+  "open_gates": [
+    "New guest provisioning",
+    "Vendor graphics/OS/application provenance and blank startup",
+    "Effective offline/credential/read-only/writable-output boundaries",
+    "No-candidate probe",
+    "Remaining candidate native acceptance and qualified screenshots",
+    "Protected release/publication/distribution"
+  ]
+}
