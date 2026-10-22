@@ -1,0 +1,29 @@
+{
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "phase": "OWNER_INSTALLED_GUEST_BLENDER_GRAPHICS_BLOCKER",
+  "observed_utc": "2026-10-22T07:37:25.994Z",
+  "documentation_base": "8c35974a798ca19662bda980394fd39e4a9e5f98",
+  "runtime_source": "5aa2da24fc8be41626ee84178c7fdce05d02eebc",
+  "observations": {
+    "guest": "AI Native Test - VMware",
+    "desktop": "Observed running Windows desktop; exact installed OS build not inventoried",
+    "blender_shortcut": "Blender 5.2; exact minor version not inventoried",
+    "error": "A graphics card and driver with support for OpenGL 4.3 or higher is required.",
+    "scope": "Owner-initiated blank Blender launch. Agent observed existing error; no repeated launch or CutBridge load.",
+    "vmware_log_at_power_on_utc": "2026-10-22T06:30:30Z",
+    "vmware_log_3d": "SVGA3dCaps: host, at power on (3d enabled)",
+    "vmware_log_tools": "VMXVmdb_SetToolsVersionStatus: noTools, install possible; legacy version 0",
+    "limits": "Startup log is not current guest driver inventory. Later Tools heartbeats are present; installed Tools/display driver versions remain unverified."
+  },
+  "next_action": "Owner opens VM menu. If Install VMware Tools is available, complete normal guest installation and guest-only restart. If Reinstall VMware Tools appears, leave unclicked and report so installed driver is inspected first.",
+  "ui_control": "Supported coordinate, accessible menu and keyboard inputs produced no visible menu; no alternate automation or security workaround used.",
+  "screenshot": {
+    "path": "C:/Temp/CutBridge-vmware-graphics-20261022-r10/blender-opengl-error.jpg",
+    "sha256": "e51366cccd05e1794c0ef52e7b1f9366a10362e7ab527adfb387697216a4c16f",
+    "scope": "Actual environment startup error; not qualified CutBridge evidence"
+  },
+  "candidate_mapped_or_executed": false,
+  "current_candidate_native_acceptance": "NOT_EXECUTED",
+  "cutbridge_defect_observed": false,
+  "release_authorization": false
+}
