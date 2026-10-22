@@ -1,0 +1,35 @@
+; REVIEW ONLY. Not installed or accepted. Keep Enabled=n until laptop controls pass.
+; This fragment must be merged/reviewed by the owner; never replace an existing global config.
+; Requires explicit approval for the new Sandboxie facility/driver and account preparation.
+; No premium privacy/rule-specificity/compartment setting is used.
+[GlobalSettings]
+NetworkEnableWFP=y
+
+[CutBridgeNative025]
+Enabled=n
+FileRootPath=C:\CutBridgeNative\verification-output\box
+DropAdminRights=y
+BlockNetworkFiles=y
+AllowNetworkAccess=n
+NetworkAccess=*,Block
+BlockLocalLoop=y
+ReadFilePath=C:\CutBridgeNative\input
+ClosedFilePath=C:\Users\unn0w
+ClosedFilePath=C:\Users\Public
+ClosedFilePath=C:\Temp
+ClosedFilePath=\Device\Afd*
+ClosedFilePath=\Device\Tcp*
+ClosedFilePath=\Device\Udp*
+ClosedFilePath=\Device\RawIp*
+ClosedFilePath=\Device\Ip*
+; REQUIRED LAPTOP BINDING: enumerate and close every other owner/private root,
+; other profile, mounted data volume/alias and credential-bearing store.
+; Do not close C:\Users\* then try to open a child: classic ClosedFilePath wins.
+; No OpenFilePath/OpenKeyPath/OpenIpcPath, breakout, direct-recovery or
+; application compatibility exceptions are approved by this fragment.
+; Candidate-phase effective network must ALSO be offline at all laptop adapters:
+; WFP/hooks alone do not establish no DNS/broker/raw/loopback egress.
+; Stage installed panel/add-on copies as immutable inputs via trusted setup,
+; enforce their actual backing-file ACLs and include them in before/after inventories.
+; No candidate starts until those bindings and all existing acceptance fields pass.
+

@@ -1,0 +1,8 @@
+{
+  "complete_control_inventories": "C:\\Users\\unn0w\\.codex\\worktrees\\5d5d\\CutBridge\\dist\\release-candidate-20261016\\validation-closeout\\manifests",
+  "original_packet_readme_and_catalog": "C:\\Users\\unn0w\\.codex\\worktrees\\5d5d\\CutBridge\\dist\\release-candidate-20261016\\validation-closeout\\packet-amendment",
+  "staged_operator_inputs": "C:\\Users\\unn0w\\.codex\\worktrees\\5d5d\\CutBridge\\dist\\release-candidate-20261016\\operator-handoff",
+  "frozen_engineering_receipt": "C:\\Users\\unn0w\\.codex\\worktrees\\5d5d\\CutBridge\\dist\\release-candidate-20261016\\FINAL_HEAD_VERIFICATION.json",
+  "followup_receipt": "C:\\Users\\unn0w\\.codex\\worktrees\\5d5d\\CutBridge\\dist\\release-candidate-20261016\\VALIDATION_CLOSEOUT.json",
+  "note": "Vendor binaries, ZIPs, synthetic footage and projects remain outside Git. No native execution is claimed."
+}

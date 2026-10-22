@@ -1,0 +1,19 @@
+{
+  "candidate_sha": "a44792099b3b5f5b7a2f69a41061268fe59586b3",
+  "source_archive": {
+    "path": "C:\\Users\\unn0w\\.codex\\worktrees\\5d5d\\CutBridge\\dist\\release-candidate-20261016\\source-inputs.tar",
+    "sha256": "c06056d882c1ffe4c012b49d3401678a1ee6ae4e3d314a1748638018bcd720ad"
+  },
+  "candidate_diff": {
+    "path": "C:\\Users\\unn0w\\.codex\\worktrees\\5d5d\\CutBridge\\dist\\release-candidate-20261016\\candidate.diff",
+    "sha256": "69f0a72f144ea7439242dff48304af3fdf9477b48529bf1829a91008ba786f1c"
+  },
+  "trusted_linux_archive": {
+    "path": "C:\\Temp\\CutBridge-verification-20261016\\bootstrap-r2-evidence.zip",
+    "sha256": "53e9783c81da36c66eb5b9d3782244806d1b3023b1213eebd21fc354956d0e79"
+  },
+  "source_snapshot_archive_inventory": "C:\\Users\\unn0w\\.codex\\worktrees\\5d5d\\CutBridge\\dist\\release-candidate-20261016\\git-inventory.json",
+  "dependency_inventories": "C:\\Users\\unn0w\\.codex\\worktrees\\5d5d\\CutBridge\\dist\\release-candidate-20261016",
+  "native_fixture_storage": "C:\\Temp\\CutBridge-verification-20261016\\output-native-blender-r2\\native-blender",
+  "note": "All exact replay archives/packages/fixtures remain local outside Git. Original Windows5293 source inputs remain under historical-5293."
+}

@@ -1,0 +1,49 @@
+<Configuration>
+  <Networking>Disable</Networking>
+  <ClipboardRedirection>Disable</ClipboardRedirection>
+  <PrinterRedirection>Disable</PrinterRedirection>
+  <AudioInput>Disable</AudioInput>
+  <VideoInput>Disable</VideoInput>
+  <VGpu>Enable</VGpu>
+  <MemoryInMB>8192</MemoryInMB>
+  <MappedFolders>
+    <MappedFolder>
+      <HostFolder>C:\Temp\CutBridge-verification-20261016\native-blender-visual-input</HostFolder>
+      <SandboxFolder>C:\NativeBlenderInput</SandboxFolder>
+      <ReadOnly>true</ReadOnly>
+    </MappedFolder>
+    <MappedFolder>
+      <HostFolder>C:\Program Files\Blender Foundation\Blender 5.2</HostFolder>
+      <SandboxFolder>C:\Blender</SandboxFolder>
+      <ReadOnly>true</ReadOnly>
+    </MappedFolder>
+    <MappedFolder>
+      <HostFolder>C:\Temp\CutBridge-verification-20261016\runtime</HostFolder>
+      <SandboxFolder>C:\Runtime</SandboxFolder>
+      <ReadOnly>true</ReadOnly>
+    </MappedFolder>
+    <MappedFolder>
+      <HostFolder>C:\Temp\CutBridge-verification-20261016\orchestration-native-blender-visual-r2</HostFolder>
+      <SandboxFolder>C:\Orchestration</SandboxFolder>
+      <ReadOnly>true</ReadOnly>
+    </MappedFolder>
+    <MappedFolder>
+      <HostFolder>C:\Temp\CutBridge-verification-20261016\snapshot-r4-review</HostFolder>
+      <SandboxFolder>C:\Review</SandboxFolder>
+      <ReadOnly>true</ReadOnly>
+    </MappedFolder>
+    <MappedFolder>
+      <HostFolder>C:\Temp\CutBridge-verification-20261016\artifact-inputs-r2</HostFolder>
+      <SandboxFolder>C:\Artifacts</SandboxFolder>
+      <ReadOnly>true</ReadOnly>
+    </MappedFolder>
+    <MappedFolder>
+      <HostFolder>C:\Temp\CutBridge-verification-20261016\output-native-blender-visual-r2</HostFolder>
+      <SandboxFolder>C:\Evidence\verification-output</SandboxFolder>
+      <ReadOnly>false</ReadOnly>
+    </MappedFolder>
+  </MappedFolders>
+  <LogonCommand>
+    <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\Orchestration\launch-native-blender.ps1</Command>
+  </LogonCommand>
+</Configuration>

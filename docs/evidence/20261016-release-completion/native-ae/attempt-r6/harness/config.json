@@ -1,0 +1,10 @@
+{
+  "output_root": "C:/Evidence/verification-output/native-ae",
+  "runtime_directory": "C:/AERuntime",
+  "candidate_metadata": "C:/Review/candidate.json",
+  "installation_metadata": "C:/Evidence/verification-output/native-ae/installation.json",
+  "package_root": "C:/Packages/packages",
+  "manifests": [],
+  "expected_host_prefix": "26.5",
+  "scope": "Scripted real-host API campaign; GUI visual/usability inspection and S14B are NOT_EXECUTED"
+}

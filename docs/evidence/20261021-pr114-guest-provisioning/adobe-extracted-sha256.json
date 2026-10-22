@@ -1,0 +1,817 @@
+[
+  {
+    "path": "packages/AAM/IPC/IPC.pima",
+    "bytes": 635567,
+    "sha256": "35820d82b0b2e67554016a84b233505f9ab9b77ec5a52a004759265a18567cda"
+  },
+  {
+    "path": "packages/AAM/IPC/IPC.pimx",
+    "bytes": 58852,
+    "sha256": "0184e6b63dea884037cfa862107bd3e2d99a244334dfa641a4a1c312a5e59ce1"
+  },
+  {
+    "path": "packages/AAM/IPC/IPC.sig",
+    "bytes": 1809,
+    "sha256": "d2c94a56ba373bbef3e98ddae8307dffc72724bfbef2898a3eb712dd5020339d"
+  },
+  {
+    "path": "packages/ACC/ACCC/ACCC.pima",
+    "bytes": 2930639,
+    "sha256": "2a1b36855d1fa9351bc82f3dc8c7f983b6fce2cc1ba2bb2992d315037f4f8a2d"
+  },
+  {
+    "path": "packages/ACC/ACCC/ACCC.pimx",
+    "bytes": 23411,
+    "sha256": "4964c29a08b95b2e756ff3b7f6538574dbcef765a3b3d77fd336dfd03b3dd155"
+  },
+  {
+    "path": "packages/ACC/ACCC/ACCC.sig",
+    "bytes": 1812,
+    "sha256": "ba87b285a7fa6638427ecd6a0f38a512dafc740ff6d0aa5447cbcaa24ace277b"
+  },
+  {
+    "path": "packages/ACC64/3DI/3DI.pima",
+    "bytes": 1601798,
+    "sha256": "66fa61acb169a65edddf85bb3f87ec720f6724e092be43368c73f867b83f5521"
+  },
+  {
+    "path": "packages/ACC64/3DI/3DI.pimx",
+    "bytes": 1057,
+    "sha256": "2262ce51005e1a2877345538e03ae16afbfe32b3165f6469f898c43e3dec3de7"
+  },
+  {
+    "path": "packages/ACC64/3DI/3DI.sig",
+    "bytes": 1809,
+    "sha256": "eda6ecb93d72b95c5ef35148c24263b304029d7b7c7a186fa10c878bd777b8ee"
+  },
+  {
+    "path": "packages/ACC64/ACCC64/ACCC64.pima",
+    "bytes": 19458191,
+    "sha256": "4de01d4fdf3ddb900cb16592bdf2d7f1d90ed7e5f83364f7ba0d77a66ebc8fb2"
+  },
+  {
+    "path": "packages/ACC64/ACCC64/ACCC64.pimx",
+    "bytes": 4399,
+    "sha256": "7361e6a10df3eb4f8940d8e9a4d4b4e342d2e901f06f92d922ca7a4951d6186f"
+  },
+  {
+    "path": "packages/ACC64/ACCC64/ACCC64.sig",
+    "bytes": 1816,
+    "sha256": "0c4cae200b26f07099c72eafc3b2701db91b4d8793b31ee4982b5866c60e72ea"
+  },
+  {
+    "path": "packages/ACC64/Apps/Apps.pima",
+    "bytes": 4254750,
+    "sha256": "f9487f50442526c35ac114eb891a9114ef5d05a9cbc34f84ac59044c39eb6de3"
+  },
+  {
+    "path": "packages/ACC64/Apps/Apps.pimx",
+    "bytes": 1060,
+    "sha256": "caa310745275fb5072f26641568916b978360dd54a3d4c884e161670bd41f52d"
+  },
+  {
+    "path": "packages/ACC64/Apps/Apps.sig",
+    "bytes": 1811,
+    "sha256": "3feb7cdffab642fa93912340de6c2422ab95e00aed57b1e1adbfc95a67658f27"
+  },
+  {
+    "path": "packages/ACC64/Assets/Assets.pima",
+    "bytes": 698436,
+    "sha256": "dc695eef0fce51eaa13e00887647c7021cbdf0f6176b9857c7dc78d9b7779f23"
+  },
+  {
+    "path": "packages/ACC64/Assets/Assets.pimx",
+    "bytes": 1065,
+    "sha256": "dc440ed9c5a29efc391db416869be8713cbad1eddbadf54a6671d7575fa1603d"
+  },
+  {
+    "path": "packages/ACC64/Assets/Assets.sig",
+    "bytes": 1814,
+    "sha256": "66b91da1c021d2290e2dfa0a9d2bb049bf44dbae2c3516950d235dab62757275"
+  },
+  {
+    "path": "packages/ACC64/CCDContainer/CCDContainer.pima",
+    "bytes": 488814,
+    "sha256": "9cd31faca3d1aba227b4b14900884b32df7d2ae32f40f78cbd7d026645e382b3"
+  },
+  {
+    "path": "packages/ACC64/CCDContainer/CCDContainer.pimx",
+    "bytes": 1776,
+    "sha256": "80a2de90d0fe9d5416d75e524fec34d63b14c00cb7fca0fddcb25e81d6632e92"
+  },
+  {
+    "path": "packages/ACC64/CCDContainer/CCDContainer.sig",
+    "bytes": 1826,
+    "sha256": "571df96cbb26e8fdb6d2ec9a0eb544849f0d3472f9baf77e539ade3ec869b727"
+  },
+  {
+    "path": "packages/ACC64/CCDContainerJS/CCDContainerJS.pima",
+    "bytes": 6588156,
+    "sha256": "334fd34d207b422fc1c246d4f315307aa3c8a96166b6dc07523373a93fd565e5"
+  },
+  {
+    "path": "packages/ACC64/CCDContainerJS/CCDContainerJS.pimx",
+    "bytes": 1085,
+    "sha256": "cd116cf4682687b7086a9277eb39c3d9490fe5260b66cc8fd429229ecba68235"
+  },
+  {
+    "path": "packages/ACC64/CCDContainerJS/CCDContainerJS.sig",
+    "bytes": 1831,
+    "sha256": "9d0e92b5b691c96b84819f72f9838a7c317c46dfc6e91140e1597afbacdcccce"
+  },
+  {
+    "path": "packages/ACC64/CCLibs/CCLibs.pima",
+    "bytes": 11209195,
+    "sha256": "261f84a827f1b9371910c8e1d2cc4bcafb059ce39195bf30bdab0adcc1686c40"
+  },
+  {
+    "path": "packages/ACC64/CCLibs/CCLibs.pimx",
+    "bytes": 1074,
+    "sha256": "92800a5e09682d24f9f57b6e313443a50d013891a685edde5e05212f6b03f420"
+  },
+  {
+    "path": "packages/ACC64/CCLibs/CCLibs.sig",
+    "bytes": 1816,
+    "sha256": "34bba6e839ac7031dfb3cc11c93d34baca33343b599e53ec38f05d4d2490ed53"
+  },
+  {
+    "path": "packages/ACC64/CloudDocs/CloudDocs.pima",
+    "bytes": 1733490,
+    "sha256": "59e58780ccfc756bc7ecda46fea7608713de7dfdecf88faa5550276fbb7c917a"
+  },
+  {
+    "path": "packages/ACC64/CloudDocs/CloudDocs.pimx",
+    "bytes": 1074,
+    "sha256": "274e5a39353ed9b3f134dee56d39756e3295057cc68a288aa527c972fe27a2f8"
+  },
+  {
+    "path": "packages/ACC64/CloudDocs/CloudDocs.sig",
+    "bytes": 1821,
+    "sha256": "0d20775bccca9c1c2c4edca420ecf829d953a904d5c505dbbc7c87801b074147"
+  },
+  {
+    "path": "packages/ACC64/CloudSync/CloudSync.pima",
+    "bytes": 204685,
+    "sha256": "9f4353415fb27e5ebc370bd13753fb4081d61e5f2d93605592eb810708230c3f"
+  },
+  {
+    "path": "packages/ACC64/CloudSync/CloudSync.pimx",
+    "bytes": 1073,
+    "sha256": "3a27f6400b270ebe9140ebb1cecffe10558b9b200e8a9af5b2cd33eae90d229b"
+  },
+  {
+    "path": "packages/ACC64/CloudSync/CloudSync.sig",
+    "bytes": 1820,
+    "sha256": "47a560e30ee47e78ccfc2b24983302bd8c3b23316c504ed8a45192335474e236"
+  },
+  {
+    "path": "packages/ACC64/Diagnostics/Diagnostics.pima",
+    "bytes": 1943853,
+    "sha256": "16800803084b0db28f36e8171915356bdd0aa73420f0729b77fa51a711b24e62"
+  },
+  {
+    "path": "packages/ACC64/Diagnostics/Diagnostics.pimx",
+    "bytes": 1859,
+    "sha256": "09437107b24436dd2519bdd35c1f12d690b5158a2aae99d9b0258935de0129c3"
+  },
+  {
+    "path": "packages/ACC64/Diagnostics/Diagnostics.sig",
+    "bytes": 1825,
+    "sha256": "10b938bbe522e52ad4a42bf123a59331a44f111ee01f041cbd6c2828b0732bdc"
+  },
+  {
+    "path": "packages/ACC64/Fonts/Fonts.pima",
+    "bytes": 616199,
+    "sha256": "ad8bfdff59d293e415b797fa3b17db4a76b2931462455058ad32e8dcabbc9908"
+  },
+  {
+    "path": "packages/ACC64/Fonts/Fonts.pimx",
+    "bytes": 1062,
+    "sha256": "9b7de2b8f3e41ad3878607fd9e36078b1a6b7e0366d981f6159dfc79e9550260"
+  },
+  {
+    "path": "packages/ACC64/Fonts/Fonts.sig",
+    "bytes": 1812,
+    "sha256": "76b6821349bf6b1c14100e90a3e836ba55c4b7fc4adace169ca64d6ef753d214"
+  },
+  {
+    "path": "packages/ACC64/Home/Home.pima",
+    "bytes": 1019565,
+    "sha256": "5ec8084d45c2306837ed5356d77ed366f18d0eae94e69f14a0483cfd1bdbcbbc"
+  },
+  {
+    "path": "packages/ACC64/Home/Home.pimx",
+    "bytes": 1059,
+    "sha256": "a1c069b67166682f7acd786af900b58deb1311feb7b314b252fb295faccaf4bb"
+  },
+  {
+    "path": "packages/ACC64/Home/Home.sig",
+    "bytes": 1811,
+    "sha256": "da11ca48aa1a2ac5ac289d949959f30c8445af4e62f7102ef49b1754b36de8f7"
+  },
+  {
+    "path": "packages/ACC64/LocalFiles/LocalFiles.pima",
+    "bytes": 1024236,
+    "sha256": "337703cd64d9c632efb8a7c7d4a8ed151861effa19702a72bba7287c7a6063d6"
+  },
+  {
+    "path": "packages/ACC64/LocalFiles/LocalFiles.pimx",
+    "bytes": 1077,
+    "sha256": "45382283928ec4d0e890a43f3543d4bbef4555e93d56e675e18fe5f24179869e"
+  },
+  {
+    "path": "packages/ACC64/LocalFiles/LocalFiles.sig",
+    "bytes": 1823,
+    "sha256": "85cc003df08643964dae57db14188412ab88ba2134a056ab5f05968997e63b53"
+  },
+  {
+    "path": "packages/ACC64/OneUp/OneUp.pima",
+    "bytes": 10660348,
+    "sha256": "300ddcebad58415e5946d46342758e91e097cf67b221dbd45c960a1abd6e08bb"
+  },
+  {
+    "path": "packages/ACC64/OneUp/OneUp.pimx",
+    "bytes": 1063,
+    "sha256": "2b3f7712738aeaa0dc0524d1cb23c4fed4bd7ffa5236b94b346076fa35f72303"
+  },
+  {
+    "path": "packages/ACC64/OneUp/OneUp.sig",
+    "bytes": 1814,
+    "sha256": "8c39b8a4d99d354e05a2896d2a6bf752d03080497d4789c7cc7e1922a7520622"
+  },
+  {
+    "path": "packages/ACC64/Plugins/Plugins.pima",
+    "bytes": 1278589,
+    "sha256": "85ffc40c736ed6221fb655ef99d5d4fa1182883e53f42ebdaab51c7eb90bb017"
+  },
+  {
+    "path": "packages/ACC64/Plugins/Plugins.pimx",
+    "bytes": 1068,
+    "sha256": "e0d9496cc5a82cf57144f9091df24dc50d7c8b39820f921ad549dfd353c1df4b"
+  },
+  {
+    "path": "packages/ACC64/Plugins/Plugins.sig",
+    "bytes": 1817,
+    "sha256": "80a24afa61c21e8e1c47298f2155b2438f0e15831323b3701b09922cfdb64cdc"
+  },
+  {
+    "path": "packages/ACC64/ShareSheet/ShareSheet.pima",
+    "bytes": 11751,
+    "sha256": "d18d3b19e1b51169efbf9fad72826d219bcf71b9ba3df002ea929f338c7b1488"
+  },
+  {
+    "path": "packages/ACC64/ShareSheet/ShareSheet.pimx",
+    "bytes": 1083,
+    "sha256": "19b5a6353a571c23da71289be374a73e3ad8bf9feea15b1b995c22cb5d6b5639"
+  },
+  {
+    "path": "packages/ACC64/ShareSheet/ShareSheet.sig",
+    "bytes": 1821,
+    "sha256": "7d28994e284022068af767732c44e0e3839ecacb978db360ae87b00fe1c937c7"
+  },
+  {
+    "path": "packages/ACC64/Stock/Stock.pima",
+    "bytes": 576155,
+    "sha256": "0b74f319b31cd0f0a00ffe62daab84537a598fc5cf050c4478e9a3055742849d"
+  },
+  {
+    "path": "packages/ACC64/Stock/Stock.pimx",
+    "bytes": 1060,
+    "sha256": "60f114054515190e70f6c675ab73d405a65923531b21490b36ab7ecf174a92bd"
+  },
+  {
+    "path": "packages/ACC64/Stock/Stock.sig",
+    "bytes": 1812,
+    "sha256": "761cbc2a743cf40be4818e783284a470b485023da795b21fc88bb452a8f04db9"
+  },
+  {
+    "path": "packages/ACC64/StockAssets/StockAssets.pima",
+    "bytes": 976124,
+    "sha256": "96c3e8a432265015df64db26386b5a6a489324d9ac9e687cc024d7fd5e5b96b6"
+  },
+  {
+    "path": "packages/ACC64/StockAssets/StockAssets.pimx",
+    "bytes": 1080,
+    "sha256": "d9904b15f7fddacf7082460c222ddd7943e13c61611d466e9c14fcd9202b9d56"
+  },
+  {
+    "path": "packages/ACC64/StockAssets/StockAssets.sig",
+    "bytes": 1824,
+    "sha256": "de19ff9d30ec5ae886bc778aff0c9a0c173d3fea5f7ed075b920a5e828154b63"
+  },
+  {
+    "path": "packages/ACC64/UAM/UAM.pima",
+    "bytes": 1118419,
+    "sha256": "cb4827b1a800ea0a384aaf278fffc61df213ad2c95813a89c1bf6e89074e9e2e"
+  },
+  {
+    "path": "packages/ACC64/UAM/UAM.pimx",
+    "bytes": 1063,
+    "sha256": "e838459375dc2d20265b405feef4cdf27c999f47ed5c80d44d738b1719171491"
+  },
+  {
+    "path": "packages/ACC64/UAM/UAM.sig",
+    "bytes": 1809,
+    "sha256": "5c798dc3472a27fdd42f637f28edafc155db85b3c9dfbecc3a5fa77b67672162"
+  },
+  {
+    "path": "packages/ACC64/WebFS/WebFS.pima",
+    "bytes": 811956,
+    "sha256": "a755a7ca37e3aa5524f7c265c7806a2306e267ac901b63a93c7e0fa6b29d3f32"
+  },
+  {
+    "path": "packages/ACC64/WebFS/WebFS.pimx",
+    "bytes": 1441,
+    "sha256": "f9a2ed914c6b58c063a9e64ce9eb554f171fb3da9522be1772eb719bff6816ad"
+  },
+  {
+    "path": "packages/ACC64/WebFS/WebFS.sig",
+    "bytes": 1812,
+    "sha256": "cd88ed5a11f67469c6d08684931e65424828c3e73b0a6aedf847b93b099236b0"
+  },
+  {
+    "path": "packages/ADC/ADCUtils/ADCUtils.pima",
+    "bytes": 6450494,
+    "sha256": "f7a30189f597264eeb586c9ee9a8ddbd7db7041209fede35fbc3a35010df1639"
+  },
+  {
+    "path": "packages/ADC/ADCUtils/ADCUtils.pimx",
+    "bytes": 4580,
+    "sha256": "b4619c8678d97f9c3e15827dbd78afac76a83f559375e83e8d73c83e07632c6e"
+  },
+  {
+    "path": "packages/ADC/ADCUtils/ADCUtils.sig",
+    "bytes": 1819,
+    "sha256": "6a17e6317cab83cec7abfce7fdb857d8bba711b050ef349d4169801006154150"
+  },
+  {
+    "path": "packages/ADC/AdobeGenuineClient/AdobeGenuineClient.pima",
+    "bytes": 5208428,
+    "sha256": "b7a5b8a66400f2a62cccdf8f5d67b4ada9eeb3c32bd58dbcabdbe3e74464a211"
+  },
+  {
+    "path": "packages/ADC/AdobeGenuineClient/AdobeGenuineClient.pimx",
+    "bytes": 2328,
+    "sha256": "3a63ca1372ed713f697da115dbec093c19b2c4da9e4aa6f460e81e3a05108cd2"
+  },
+  {
+    "path": "packages/ADC/AdobeGenuineClient/AdobeGenuineClient.sig",
+    "bytes": 1839,
+    "sha256": "74ab84c6f5ace3959b029ed49b3850cd9d72830860458b4f7902f6abd7176482"
+  },
+  {
+    "path": "packages/ADC/ADS/ADS.pima",
+    "bytes": 6234327,
+    "sha256": "cb62fc7181472d32def55decb2b154ba17009aeed0a589c80de5d9c3ec9edd30"
+  },
+  {
+    "path": "packages/ADC/ADS/ADS.pimx",
+    "bytes": 4361,
+    "sha256": "40fc23799df6fda3acc83e54e1f7192431b7499ff189f9e55e81dabecea520f8"
+  },
+  {
+    "path": "packages/ADC/ADS/ADS.sig",
+    "bytes": 1809,
+    "sha256": "3219f6f8caf21754cbd6350bc8cdd964d4cde1b63be2a750aee315817435d12f"
+  },
+  {
+    "path": "packages/ADC/AppsPanel/AppsPanel.pima",
+    "bytes": 3841239,
+    "sha256": "f788404df564b4b419519e5907ab77549007b88bf8ef5849c316bb7df2308f3c"
+  },
+  {
+    "path": "packages/ADC/AppsPanel/AppsPanel.pimx",
+    "bytes": 18829,
+    "sha256": "564a7308007c2f8ef410bb6aafd278cf146a0ab8cc66349133f3fdce0bc5718f"
+  },
+  {
+    "path": "packages/ADC/AppsPanel/AppsPanel.sig",
+    "bytes": 1822,
+    "sha256": "70823213f4a69719569cd4e486faea8d9d41d4cdc8ee9bbcb65300faec1307f7"
+  },
+  {
+    "path": "packages/ADC/Core/Core.pima",
+    "bytes": 1533553,
+    "sha256": "30cdf00d4fee79b769f1acf2cdd600461c81e8610803ef529ae6fbf6b1a847fb"
+  },
+  {
+    "path": "packages/ADC/Core/Core.pimx",
+    "bytes": 1768,
+    "sha256": "e860e4b4fb5a3fbfa92e428c2067234267aebeb403b2daa971724bfe496f97b1"
+  },
+  {
+    "path": "packages/ADC/Core/Core.sig",
+    "bytes": 1811,
+    "sha256": "4b7d436fe0a2e87e4db194ec0de7dc760b5784bbba86ff4d6cefef492d4bcccb"
+  },
+  {
+    "path": "packages/ADC/CoreExt/CoreExt.pima",
+    "bytes": 1616140,
+    "sha256": "cf1c61b396674e939c82a8ae03112b29753d226c8677373541aa1178219bde92"
+  },
+  {
+    "path": "packages/ADC/CoreExt/CoreExt.pimx",
+    "bytes": 2994,
+    "sha256": "48231d906cca7b43c513f0d82864433f422bc726505ac0e134d89c22ccf48e9e"
+  },
+  {
+    "path": "packages/ADC/CoreExt/CoreExt.sig",
+    "bytes": 1817,
+    "sha256": "0f61a693a3b48af29dd588bd8fe2ff11a791c52f428b43f2a4980f85fd101a1a"
+  },
+  {
+    "path": "packages/ADC/DEBox/DEBox.pima",
+    "bytes": 12383948,
+    "sha256": "08070ae0100cf4c057895647fb7b39a37ac3e41782e05e952eb22d5743de7932"
+  },
+  {
+    "path": "packages/ADC/DEBox/DEBox.pimx",
+    "bytes": 10410,
+    "sha256": "1d44ece8cc61bb63e6b92cb9200497fb20da5eeea58ba68207db20a84fb43fe2"
+  },
+  {
+    "path": "packages/ADC/DEBox/DEBox.sig",
+    "bytes": 1815,
+    "sha256": "bb2fa0f7a2046907cc57b887364b6b2664f34e8b210cb59ced9f6b2975e778e7"
+  },
+  {
+    "path": "packages/ADC/ElevationManager/ElevationManager.pima",
+    "bytes": 1313488,
+    "sha256": "1c46b676a6c7674173649b1803dbe23381cf023cf37a192414943132a78f0446"
+  },
+  {
+    "path": "packages/ADC/ElevationManager/ElevationManager.pimx",
+    "bytes": 2925,
+    "sha256": "323ffc9433a795d86081c8773a206853ac32ccc9d4d4f8e8476bfc1a83597611"
+  },
+  {
+    "path": "packages/ADC/ElevationManager/ElevationManager.sig",
+    "bytes": 1835,
+    "sha256": "e71244e58e1e2173893f18cb8f9a6b351bd8923990f7da70c7f18fc2cc3412e1"
+  },
+  {
+    "path": "packages/ADC/FilesPanel/FilesPanel.pima",
+    "bytes": 2745489,
+    "sha256": "c1798f544f1d7a01976914c980aed1eff0ac5729fa16170f408984e96618083c"
+  },
+  {
+    "path": "packages/ADC/FilesPanel/FilesPanel.pimx",
+    "bytes": 20228,
+    "sha256": "2e529e8452d6ebc4aa87046dd5c267e25a971b51fc983c8b7ac63b923e58a611"
+  },
+  {
+    "path": "packages/ADC/FilesPanel/FilesPanel.sig",
+    "bytes": 1824,
+    "sha256": "33727a2a621cff2ed0a7082ad8f6c53cbf090b5cb8595358e240b7e1acfeef13"
+  },
+  {
+    "path": "packages/ADC/FontsPanel/FontsPanel.pima",
+    "bytes": 1217726,
+    "sha256": "86c3611ebc622b066fcc3e78ae910726cea668d3f947eac9127a231cbc30b746"
+  },
+  {
+    "path": "packages/ADC/FontsPanel/FontsPanel.pimx",
+    "bytes": 18478,
+    "sha256": "b88ba1c66e79887add786eca8635d6f42a1c23f7762d17ee2b3b2586a5892963"
+  },
+  {
+    "path": "packages/ADC/FontsPanel/FontsPanel.sig",
+    "bytes": 1824,
+    "sha256": "37e44708426f44c26dd407720410f9ef22cc1a3092ecb291e14647b3ad56ef88"
+  },
+  {
+    "path": "packages/ADC/HDBox/HDBox.pima",
+    "bytes": 14795357,
+    "sha256": "626500f5b94ccd7c3814c601945463f12039460a0d8fcc8d01614f44a6d1c305"
+  },
+  {
+    "path": "packages/ADC/HDBox/HDBox.pimx",
+    "bytes": 7199,
+    "sha256": "a1a22ee1ec1f31afb2d666890d9b858cf0222dc2bd9aa4006ee320f1947afd3c"
+  },
+  {
+    "path": "packages/ADC/HDBox/HDBox.sig",
+    "bytes": 1814,
+    "sha256": "c2c7394039f349f6981ddd604da7da67cddaaffd00ee7a3ba78a156520afe254"
+  },
+  {
+    "path": "packages/ADC/IPCBox/IPCBox.pima",
+    "bytes": 1832051,
+    "sha256": "42efd342e492fb9ad8a8469af1a6f59579ce642188521b17498183a47e5ef03a"
+  },
+  {
+    "path": "packages/ADC/IPCBox/IPCBox.pimx",
+    "bytes": 3339,
+    "sha256": "e745fefec8408989b0b84ee9e891af996a50dd4be5b4ad543bd02714d0a9cdd6"
+  },
+  {
+    "path": "packages/ADC/IPCBox/IPCBox.sig",
+    "bytes": 1815,
+    "sha256": "1e8cd4880586565aed5152e57f9ad83f10e72e99028227a26f46d650c5c6959c"
+  },
+  {
+    "path": "packages/ADC/LCC/LCC.pima",
+    "bytes": 11688491,
+    "sha256": "3098640b3014e8b702a52c33812a23368c94e05c3734925baad300b1569db95a"
+  },
+  {
+    "path": "packages/ADC/LCC/LCC.pimx",
+    "bytes": 4861,
+    "sha256": "0b72d07167015cf090fe8f6b12302c7f7b5809cd7a23c55f867414f1ecb87a79"
+  },
+  {
+    "path": "packages/ADC/LCC/LCC.sig",
+    "bytes": 1810,
+    "sha256": "f1b0b71438bc80708b96979ef6b1a7af6f7f53f0c2ae20e33b8b88621993de57"
+  },
+  {
+    "path": "packages/ADC/NHEX/NHEX.pima",
+    "bytes": 329353,
+    "sha256": "609d8787dfa15487850d3c5ec88faeb176a997a483da16d83db539aff9bbc68c"
+  },
+  {
+    "path": "packages/ADC/NHEX/NHEX.pimx",
+    "bytes": 1706,
+    "sha256": "9938eee990cffdf208bd22f059562ac0eb0c596263c8ffcb0b799557ab6962c6"
+  },
+  {
+    "path": "packages/ADC/NHEX/NHEX.sig",
+    "bytes": 1810,
+    "sha256": "3f31a4b8fa29912e2d952760a0156549818c55164f811cf7d48744ec058cc860"
+  },
+  {
+    "path": "packages/ADC/Notifications/Notifications.pima",
+    "bytes": 4707787,
+    "sha256": "904f59030b070a6ca3970dbf9b92194c5f7df01e3a6f099d37a9ae2069cb0212"
+  },
+  {
+    "path": "packages/ADC/Notifications/Notifications.pimx",
+    "bytes": 4146,
+    "sha256": "7cbe30f478bea22a455c4740f49609f11a677735b5e31290e2579cb38230b9a8"
+  },
+  {
+    "path": "packages/ADC/Notifications/Notifications.sig",
+    "bytes": 1829,
+    "sha256": "54df805379a3b43dbc3d24993a6940168e8e09827bf52bb859a687d01f663b01"
+  },
+  {
+    "path": "packages/ADC/RemoteCoreExts/RemoteCoreExts.pima",
+    "bytes": 2313404,
+    "sha256": "73a250d02fcd7ba2e4810539fdb2a53afd8eee382b4a55b0d77d505e4223ccd7"
+  },
+  {
+    "path": "packages/ADC/RemoteCoreExts/RemoteCoreExts.pimx",
+    "bytes": 1826,
+    "sha256": "58d6c693f523c4a12e0854c7d08ff485153570d8c22f587ccad085e0f7915ea7"
+  },
+  {
+    "path": "packages/ADC/RemoteCoreExts/RemoteCoreExts.sig",
+    "bytes": 1831,
+    "sha256": "8a373f4b5478a9ab4f1b34d5f48c44c3ff1ea1c1fe0a6e4f42a98e5c36d9ca39"
+  },
+  {
+    "path": "packages/ADC/Runtime/Runtime.pima",
+    "bytes": 25374915,
+    "sha256": "d37f6651e1e11d697151956eb04e7f799ec932f31d1cc853d3fcae54b67433fa"
+  },
+  {
+    "path": "packages/ADC/Runtime/Runtime.pimx",
+    "bytes": 2592,
+    "sha256": "a50afefb358b111a18568492a546fb8509a610ca5753f21bbb3d17e572cdbfd8"
+  },
+  {
+    "path": "packages/ADC/Runtime/Runtime.sig",
+    "bytes": 1818,
+    "sha256": "87d3d764cc6062edc8083883223aabc2dc297a3f13b864ceb786e2739ed21659"
+  },
+  {
+    "path": "packages/ADC/TCC/TCC.pima",
+    "bytes": 2916568,
+    "sha256": "71a5dbb5b290964008b0844b4c39d2b9e125bb776aa57dc824983b0c4020077d"
+  },
+  {
+    "path": "packages/ADC/TCC/TCC.pimx",
+    "bytes": 3150,
+    "sha256": "67f5628575147eb8d296c7a4395d193ddf6e4151cce82db9603c11eb30219f1d"
+  },
+  {
+    "path": "packages/ADC/TCC/TCC.sig",
+    "bytes": 1809,
+    "sha256": "6dadfbac08c8d10e0cd3f99565c57a0bd0e2c0fa297936e9e3e0448e2e85f10c"
+  },
+  {
+    "path": "packages/ADC64/ADBox/ADBox.pima",
+    "bytes": 60461,
+    "sha256": "849e1837193539585fbe246f114771638f84e538bb79fc644bf485ec1d2c6a27"
+  },
+  {
+    "path": "packages/ADC64/ADBox/ADBox.pimx",
+    "bytes": 1420,
+    "sha256": "2e480a699375900b18f39329a19838977dbde37a4612121ffe5dd2f53c57dd45"
+  },
+  {
+    "path": "packages/ADC64/ADBox/ADBox.sig",
+    "bytes": 1811,
+    "sha256": "1ea835fedde143430daf98ff19ab448e054b605454b79f9f4b69a466ff0482fc"
+  },
+  {
+    "path": "packages/ADC64/CEF64/CEF64.pima",
+    "bytes": 114056380,
+    "sha256": "6966623ef2d41ab6869cf83e1aaae962acca339d6ace72d3f5a99ea61db695b6"
+  },
+  {
+    "path": "packages/ADC64/CEF64/CEF64.pimx",
+    "bytes": 3549,
+    "sha256": "ac9cb5cb1bc5d4f4ffe155f1641fd4b52d0a33b1cd1a9b5c240906a9bb83ac4b"
+  },
+  {
+    "path": "packages/ADC64/CEF64/CEF64.sig",
+    "bytes": 1815,
+    "sha256": "53376c72a2805c83d52cc0d22a2bf6606a85cf8ea777dedfa075d22635ddf3ff"
+  },
+  {
+    "path": "packages/ADC64/Core64/Core64.pima",
+    "bytes": 6010029,
+    "sha256": "6f2f387391369ac30f21a67077085301c73144972b49f0cac8a8a19f2c2f637b"
+  },
+  {
+    "path": "packages/ADC64/Core64/Core64.pimx",
+    "bytes": 3693,
+    "sha256": "01d975626631e26a90abc648b606a0b1097d6e3015a8bd61e629e13a4af222bc"
+  },
+  {
+    "path": "packages/ADC64/Core64/Core64.sig",
+    "bytes": 1815,
+    "sha256": "a962f3c7a94753f05b06b0d5f6e74cf45420eff3c69b3975077a6361d880178f"
+  },
+  {
+    "path": "packages/ADC64/CoreExt64/CoreExt64.pima",
+    "bytes": 1816184,
+    "sha256": "d59fa80cda2f7fc6f2bde62289e0647a37626fcdbdebdde71d12439370bd75c9"
+  },
+  {
+    "path": "packages/ADC64/CoreExt64/CoreExt64.pimx",
+    "bytes": 2998,
+    "sha256": "2a7a31bbaa2187f20c953330fd2e9a66d03233059ceecb665f00e42f8136aafb"
+  },
+  {
+    "path": "packages/ADC64/CoreExt64/CoreExt64.sig",
+    "bytes": 1821,
+    "sha256": "1a2f6afd9135c3174771fc437ea90d6e04c2dcde58e28cda6da74c118d8ed869"
+  },
+  {
+    "path": "packages/ADC64/GrowthSDK/GrowthSDK.pima",
+    "bytes": 2469339,
+    "sha256": "041a58eb8fb00f42332bec9887fd188b5e01ac77d385c2fb40aecd10959aaf67"
+  },
+  {
+    "path": "packages/ADC64/GrowthSDK/GrowthSDK.pimx",
+    "bytes": 1445,
+    "sha256": "0560ae10ca266157b36e5f482ad788a4fe559d467c95392e5c081b135be40a0f"
+  },
+  {
+    "path": "packages/ADC64/GrowthSDK/GrowthSDK.sig",
+    "bytes": 1821,
+    "sha256": "762193c9c7bb4fec32cadc2d9215b3eda0346226da20473b1c4d15c35836091f"
+  },
+  {
+    "path": "packages/ADC64/GrowthSDKHelper/GrowthSDKHelper.pima",
+    "bytes": 523076,
+    "sha256": "31d5607dac8fa8cbf808959d98b8641710b0d61c3f5c641cfa78bd548bf9a6c5"
+  },
+  {
+    "path": "packages/ADC64/GrowthSDKHelper/GrowthSDKHelper.pimx",
+    "bytes": 2274,
+    "sha256": "4925a7cb2746cde7f415c89890eac539d5505b08bf88506c3c11ef32e1ae87a3"
+  },
+  {
+    "path": "packages/ADC64/GrowthSDKHelper/GrowthSDKHelper.sig",
+    "bytes": 1832,
+    "sha256": "bb92f4a72ccaf7bf3d92de9e1bff7926f9e921d91a53e5b7acf3a6f920b21a6c"
+  },
+  {
+    "path": "packages/ADC64/HEX64/HEX64.pima",
+    "bytes": 1221007,
+    "sha256": "3e3c0994104201dfd890af03db2b5b89c9c1c64b7990f63ff23cf28b4fb534ad"
+  },
+  {
+    "path": "packages/ADC64/HEX64/HEX64.pimx",
+    "bytes": 1702,
+    "sha256": "eb28901e1b6dfd403f65c0259d1e4d9dcaeb4688d9e705a2c3f93f797f8a3df7"
+  },
+  {
+    "path": "packages/ADC64/HEX64/HEX64.sig",
+    "bytes": 1813,
+    "sha256": "7f8474c4dcb743fad4fa02f351d9037241a371f38a1b4a775148e8296b91975a"
+  },
+  {
+    "path": "packages/ADC64/LiveType/LiveType.pima",
+    "bytes": 2731214,
+    "sha256": "bcf628d52966825f43725c3d7da39a24f259549e60dde81cb8776d70be811bac"
+  },
+  {
+    "path": "packages/ADC64/LiveType/LiveType.pimx",
+    "bytes": 3157,
+    "sha256": "fa1482bc81e485ec429b01d1504d37c98b0130d547e5750f441a187c5a2bfff6"
+  },
+  {
+    "path": "packages/ADC64/LiveType/LiveType.sig",
+    "bytes": 1819,
+    "sha256": "fe643ec093705af002c7cc3bf50f68c6a55e1303351276bf57afe1b8c02e8442"
+  },
+  {
+    "path": "packages/ADC64/NGL/NGL.pima",
+    "bytes": 1508042,
+    "sha256": "7a83f457d961a2be7b98414e82ce0dc7c036e33f3c6ddca7326e82fad3fe2def"
+  },
+  {
+    "path": "packages/ADC64/NGL/NGL.pimx",
+    "bytes": 1807,
+    "sha256": "5a76f5ddbbf7f47c2aeaacf336b8cd5afae661bdeeba262094dfb3dd3c671296"
+  },
+  {
+    "path": "packages/ADC64/NGL/NGL.sig",
+    "bytes": 1809,
+    "sha256": "9d467e70d7cb25ca329e1af3a34ade9f9fef77de5e3f7c17c668d03920eb3bb1"
+  },
+  {
+    "path": "packages/ADC64/NVP/NVP.pima",
+    "bytes": 607302,
+    "sha256": "d441c22d71f9485b1adefccfc00a41dcd5627e2cf37116a2ba6ec8caf9546e1f"
+  },
+  {
+    "path": "packages/ADC64/NVP/NVP.pimx",
+    "bytes": 2161,
+    "sha256": "9352b750f5b10acb72fc64171e0ba3d13c2721dd687fa6edcd5614d2ac2962de"
+  },
+  {
+    "path": "packages/ADC64/NVP/NVP.sig",
+    "bytes": 1808,
+    "sha256": "ba5e34b39fb8105ab9a2a8cd5a016eef8d3b31dbfeb9e55756aed0efe24fe4b1"
+  },
+  {
+    "path": "packages/ADC64/TCC64/TCC64.pima",
+    "bytes": 3361534,
+    "sha256": "d354ca122b99083dc197e2b206482df721a3e5fb84d1bdd07cc05982a57c2a95"
+  },
+  {
+    "path": "packages/ADC64/TCC64/TCC64.pimx",
+    "bytes": 3154,
+    "sha256": "c35dc2c5fceb9d782f487bb9ca95451cf8f46e61f6844801910617e2f5975ee1"
+  },
+  {
+    "path": "packages/ADC64/TCC64/TCC64.sig",
+    "bytes": 1813,
+    "sha256": "ccec3eedaa14d524a9ecc6b609b9219251cf29c32c1635f7cab20e29058860ef"
+  },
+  {
+    "path": "packages/ADC64/UpdateNotifier/UpdateNotifier.pima",
+    "bytes": 855946,
+    "sha256": "c201c573eabe3f470ee16b7fdd93adca339835173d4477a5d4f345a906c6be4a"
+  },
+  {
+    "path": "packages/ADC64/UpdateNotifier/UpdateNotifier.pimx",
+    "bytes": 2264,
+    "sha256": "eef13aa3b795c291f6637d882a61509741045adca8f02524ab42ed65972ee69d"
+  },
+  {
+    "path": "packages/ADC64/UpdateNotifier/UpdateNotifier.sig",
+    "bytes": 1830,
+    "sha256": "58030976ff00d5df4ec5d570c1e1d95219360965def4c172c217c7eb1b7716ca"
+  },
+  {
+    "path": "packages/ADC64/UPI64/UPI64.pima",
+    "bytes": 10547584,
+    "sha256": "89dbda725f1e75931fdf5723335d5e128101893eb7951ba146d7187e1da125bd"
+  },
+  {
+    "path": "packages/ADC64/UPI64/UPI64.pimx",
+    "bytes": 6850,
+    "sha256": "69acf50d906c8b16f21fce984beff7026f312b3150f74eef5d89e44a49782322"
+  },
+  {
+    "path": "packages/ADC64/UPI64/UPI64.sig",
+    "bytes": 1814,
+    "sha256": "30fddef1c07abcc1c5da7a71cb0e4e9f28e0b3b14be05ac8f40b9017f59d7647"
+  },
+  {
+    "path": "packages/ApplicationInfo.xml",
+    "bytes": 39173,
+    "sha256": "d495ec46fa0e826d7595f9e0a54941655a978d9a1d1ca4f51adefc4e3da608a0"
+  },
+  {
+    "path": "resources/AdobePIM.dll",
+    "bytes": 2472928,
+    "sha256": "b2513a44ea9652d10e66d2fa870adc0815944b5a2f75d3974dc912c18fd50ae2"
+  },
+  {
+    "path": "resources/UpdateRedirector.dat",
+    "bytes": 237432,
+    "sha256": "a66ca398a3eed2e3ed235045ad97e845e5ad2dabbda5bc5a4fec93bf4005f482"
+  },
+  {
+    "path": "Set-up.exe",
+    "bytes": 3313624,
+    "sha256": "1647412d83e4062f6378405ea67f032871fa59a3c97ec33a4f7c3365e43417f0"
+  }
+]

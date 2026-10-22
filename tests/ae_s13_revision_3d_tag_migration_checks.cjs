@@ -51,7 +51,7 @@ function frameFiles(version) {
 
 function makeHost() {
     const controls = [], alerts = [], confirms = [], projectItems = [], dialogQueue = [];
-    const diskFiles = new Set([...frameFiles(1), ...frameFiles(2), ...frameFiles(3)]);
+    const diskFiles = new Set([...frameFiles(1), ...frameFiles(2), ...frameFiles(3), ...frameFiles(4)]);
     const normalize = value => path.posix.normalize(String(value).replaceAll("\\", "/"));
 
     function Folder(value) {
@@ -207,9 +207,12 @@ function makeHost() {
 
     function ImportOptions(file) { this.file = file; this.sequence = false; this.forceAlphabetical = true; this.importAs = null; }
     ImportOptions.prototype.canImportAs = () => true;
+    const messages = [];
     function Window() { this.layout = {resize() {}, layout() {}}; }
     Window.prototype.add = function(type, unused, text) {
         const control = {type, text, graphics: {font: {name: "Arial"}}, preferredSize: {}};
+        control.add = Window.prototype.add;
+        if (type === "edittext") { let value = ""; Object.defineProperty(control, "text", {get() { return value; }, set(text) { value = String(text); messages.push(value); }}); }
         if (type === "button") controls.push(control);
         return control;
     };
@@ -219,7 +222,7 @@ function makeHost() {
     const runtime = {
         File, Folder, Window, Panel, FolderItem, FootageItem, CompItem, AVLayer, CameraLayer, ImportOptions,
         ImportAsType: {FOOTAGE: 1}, ScriptUI: {newFont() {}}, CutBridgeRevisionManager: Revision, CutBridgeQCPlus: QCPlus,
-        alert: message => alerts.push(String(message)), confirm: message => { confirms.push(String(message)); return true; },
+        alert: message => { alerts.push(String(message)); messages.push(String(message)); }, confirm: message => { confirms.push(String(message)); return true; },
         $: {writeln() {}}, app: {project, beginUndoGroup() {}, endUndoGroup() {}, newProject() {}}
     };
     vm.createContext(runtime);
@@ -235,7 +238,7 @@ function makeHost() {
     }
     function comps() { return projectItems.filter(x => x instanceof CompItem); }
     function layerByName(comp, name) { return comp._layers.find(layer => layer.name === name); }
-    return {runtime, alerts, confirms, queue, click, comps, layerByName};
+    return {runtime, messages, alerts, confirms, queue, click, comps, layerByName};
 }
 
 const host = makeHost();
@@ -294,7 +297,7 @@ assert.strictEqual(state.layers[Contract.managedTag("null", v2, "S13_Null")], nu
 assert.equal(state.layers[Contract.managedTag("camera", v1, "S13_Camera")], undefined);
 assert.equal(state.layers[Contract.managedTag("null", v1, "S13_Null")], undefined);
 host.click("Run QC");
-assert.match(host.alerts.at(-1), /CutBridge QC — PASS/, "V002 QC must have zero stale managed tags");
+assert.match(host.messages.at(-1), /CutBridge QC — PASS/, "V002 QC must have zero stale managed tags");
 
 host.queue(v3); host.click("Update Revision");
 assert.equal(camera.comment, Contract.managedTag("camera", v3, "S13_Camera"), "camera ownership must migrate V002→V003");
@@ -309,8 +312,22 @@ assert.strictEqual(state.layers[Contract.managedTag("camera", v3, "S13_Camera")]
 assert.strictEqual(state.layers[Contract.managedTag("null", v3, "S13_Null")], nullLayer);
 assert.equal(comp.numLayers, 3, "revision chaining must not duplicate managed 3D layers");
 host.click("Run QC");
-assert.match(host.alerts.at(-1), /CutBridge QC — PASS/, "V003 QC must have zero stale managed tags");
+assert.match(host.messages.at(-1), /CutBridge QC — PASS/, "V003 QC must have zero stale managed tags");
 assert.ok(!host.alerts.some(x => /stale or foreign CutBridge-managed tag/i.test(x)), "no stale-tag diagnostic may remain after migration");
+
+// A native manager survives panel/project reloads in $.global. Its originally
+// captured contract can refer to a closed project's invalid comp. The current
+// adapter must supply the active comp/state rather than dereference that handle.
+Contract.getState = () => { throw new ReferenceError("Object is invalid: retired panel/project state"); };
+const v4 = manifest(4);
+v4.passes[0].required = false;
+host.queue(v4); host.click("Update Revision");
+assert.equal(camera.comment, Contract.managedTag("camera", v4, "S13_Camera"));
+assert.equal(nullLayer.comment, Contract.managedTag("null", v4, "S13_Null"));
+assert.equal(beauty.comment, Contract.managedTag("layer", v4, "BEAUTY"));
+assert.deepEqual(Array.from(camera.position.keys.at(-1).value), [1002, 540, -1000]);
+assert.match(host.confirms.at(-1), /Required\/optional status changed/);
+assert.doesNotMatch(host.messages.at(-1), /Revision failed|ROLLBACK INCOMPLETE/);
 
 assert.match(revisionSource, /transform\.property\(1\)/, "revision manager must resolve Camera POI by numeric Transform property index");
 assert.doesNotMatch(revisionSource, /transform\.property\("ADBE Anchor Point"\)/, "revision manager must never query Camera Anchor Point by name in native revision context");

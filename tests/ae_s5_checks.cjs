@@ -50,9 +50,12 @@ function host(m, files, options = {}) {
   File.decode = decodeURIComponent;
   File.openDialog = () => ({parent: new Folder(packageRoot), open: () => true, read: () => JSON.stringify(m), close() {}});
 
-  function Window() { this.layout = {resize() {}, layout() {}}; }
+  const messages = [];
+    function Window() { this.layout = {resize() {}, layout() {}}; }
   Window.prototype.add = function(type, unused, text) {
     const control = {type, text, graphics: {font: {name: 'Arial'}}, preferredSize: {}};
+        control.add = Window.prototype.add;
+        if (type === "edittext") { let value = ""; Object.defineProperty(control, "text", {get() { return value; }, set(text) { value = String(text); messages.push(value); }}); }
     controls.push(control); return control;
   };
   Window.prototype.center = Window.prototype.show = function() {};
@@ -111,8 +114,9 @@ function host(m, files, options = {}) {
   function ImportOptions(file) { this.file = file; this.sequence = false; this.forceAlphabetical = true; }
   ImportOptions.prototype.canImportAs = () => true;
   const runtime = {File, Folder, Window, Panel, FolderItem, FootageItem, CompItem, AVLayer: Layer, ImportOptions, ImportAsType: {FOOTAGE: 1},
-    ScriptUI: {newFont() {}}, CutBridgeQCPlus: QCPlus, alert: message => alerts.push(String(message)), $: {writeln() {}},
+    ScriptUI: {newFont() {}}, CutBridgeQCPlus: QCPlus, alert: message => { alerts.push(String(message)); messages.push(String(message)); }, $: {writeln() {}},
     app: {project, beginUndoGroup() {}, endUndoGroup() {}, newProject() {}}};
+  if (options.isValid) runtime.isValid = options.isValid;
   vm.createContext(runtime); vm.runInContext(source, runtime);
 
   function reloadScript() { controls.length = 0; vm.runInContext(source, runtime); }
@@ -176,7 +180,7 @@ function host(m, files, options = {}) {
     item._conformGetterThrows = mode === 'throw';
     item._conformUnavailable = mode === 'unavailable';
   }
-  return {click, reloadScript, seedArtistWork, moveLayer, movePackageRoot, duplicateFootage, alerts, imports, projectItems, comps, footage, compFolder, renderFolder, seedManualComp, seedWrongTypeFootageTag, driftFootageSource, breakFootageFpsRead};
+  return {click, reloadScript, seedArtistWork, moveLayer, movePackageRoot, duplicateFootage, messages, alerts, imports, projectItems, comps, footage, compFolder, renderFolder, seedManualComp, seedWrongTypeFootageTag, driftFootageSource, breakFootageFpsRead};
 }
 
 const beautyFiles = [1, 2, 3].map(n => `/packages/桜/render/beauty/C001_BEAUTY_000${n}.png`);
@@ -237,7 +241,7 @@ check('repeated Build is idempotent for managed comp footage and layer', () => {
   assert.equal(h.comps().length, 1);
   assert.equal(h.footage().length, 1);
   assert.equal(h.comps()[0].numLayers, 1);
-  assert.match(h.alerts.at(-1), /reused safely/);
+  assert.match(h.messages.at(-1), /reused safely/);
 });
 
 check('reload then Build rediscovers managed project items instead of duplicating', () => {
@@ -263,7 +267,7 @@ check('moved managed comp fails closed without creating a replacement', () => {
     h.click('Build');
     assert.equal(h.comps().length, 1);
     assert.deepEqual(h.projectItems, beforeItems);
-    assert.match(h.alerts.at(-1), /project-root folder.*not (?:uniquely )?verified|managed comp ownership.*expected comp folder/i);
+    assert.match(h.messages.at(-1), /project-root folder.*not (?:uniquely )?verified|managed comp ownership.*expected comp folder/i);
   }
 });
 
@@ -278,7 +282,7 @@ check('duplicate managed comp tags fail closed before build mutation', () => {
     h.click('Build');
     assert.equal(h.comps().length, 2);
     assert.deepEqual(h.projectItems, beforeItems);
-    assert.match(h.alerts.at(-1), /duplicate managed comp ownership|not uniquely verified/i);
+    assert.match(h.messages.at(-1), /duplicate managed comp ownership|not uniquely verified/i);
   }
 });
 
@@ -286,42 +290,42 @@ check('managed comp metadata drift blocks silent destructive correction', () => 
   const h = host(manifest(), beautyFiles); h.click('Build');
   h.comps()[0].frameRate = 30; h.click('Build');
   assert.equal(h.comps().length, 1); assert.equal(h.footage().length, 1); assert.equal(h.comps()[0].numLayers, 1);
-  assert.match(h.alerts.at(-1), /metadata no longer matches.*frame rate/);
+  assert.match(h.messages.at(-1), /metadata no longer matches.*frame rate/);
 });
 
 check('QC rediscovers managed comp metadata after script reload', () => {
   const h = host(manifest(), beautyFiles); h.click('Build');
   h.comps()[0].frameRate = 30; h.click('QC');
-  assert.match(h.alerts.at(-1), /ERR.*Managed comp metadata mismatch.*frame rate/);
+  assert.match(h.messages.at(-1), /ERR.*Managed comp metadata mismatch.*frame rate/);
   h.reloadScript(); h.click('QC');
-  assert.match(h.alerts.at(-1), /ERR.*Managed comp metadata mismatch.*frame rate/);
-  assert.doesNotMatch(h.alerts.at(-1), /QC — PASS\b/);
+  assert.match(h.messages.at(-1), /ERR.*Managed comp metadata mismatch.*frame rate/);
+  assert.doesNotMatch(h.messages.at(-1), /QC — PASS\b/);
 });
 
 check('QC reports missing managed comp after script reload', () => {
   const h = host(manifest(), beautyFiles); h.click('Build');
   const comp = h.comps()[0]; h.projectItems.splice(h.projectItems.indexOf(comp), 1);
   h.reloadScript(); h.click('QC');
-  assert.match(h.alerts.at(-1), /ERR.*Managed comp is missing from the expected comp folder/);
-  assert.doesNotMatch(h.alerts.at(-1), /QC — PASS\b/);
+  assert.match(h.messages.at(-1), /ERR.*Managed comp is missing from the expected comp folder/);
+  assert.doesNotMatch(h.messages.at(-1), /QC — PASS\b/);
 });
 
 check('QC reports missing required managed footage after script reload', () => {
   const h = host(manifest(), beautyFiles); h.click('Build');
   h.footage()[0].remove(); h.reloadScript(); h.click('QC');
-  assert.match(h.alerts.at(-1), /ERR.*required managed footage is missing/);
-  assert.doesNotMatch(h.alerts.at(-1), /QC — PASS\b/);
+  assert.match(h.messages.at(-1), /ERR.*required managed footage is missing/);
+  assert.doesNotMatch(h.messages.at(-1), /QC — PASS\b/);
 });
 
 check('QC remains package-only before any managed project state exists', () => {
   const h = host(manifest(), beautyFiles); h.click('QC');
-  assert.match(h.alerts.at(-1), /QC — PASS\b/);
+  assert.match(h.messages.at(-1), /QC — PASS\b/);
 });
 
 check('wrong-type project item carrying managed footage tag fails closed', () => {
   const h = host(manifest(), beautyFiles); h.seedWrongTypeFootageTag(); h.click('Build');
   assert.equal(h.imports.length, 0);
-  assert.match(h.alerts.at(-1), /managed footage no longer matches.*item type/);
+  assert.match(h.messages.at(-1), /managed footage no longer matches.*item type/);
 });
 
 check('managed footage source drift fails closed without replacement or duplicate layer', () => {
@@ -332,7 +336,7 @@ check('managed footage source drift fails closed without replacement or duplicat
   assert.equal(h.imports.length, 1);
   assert.equal(h.footage().length, 1);
   assert.equal(h.comps()[0].numLayers, 1);
-  assert.match(h.alerts.at(-1), /managed footage no longer matches.*source path/);
+  assert.match(h.messages.at(-1), /managed footage no longer matches.*source path/);
 });
 
 check('managed footage conform FPS drift fails closed', () => {
@@ -341,7 +345,7 @@ check('managed footage conform FPS drift fails closed', () => {
   h.click('Build');
   assert.equal(h.imports.length, 1);
   assert.equal(h.comps()[0].numLayers, 1);
-  assert.match(h.alerts.at(-1), /managed footage no longer matches.*frame rate/);
+  assert.match(h.messages.at(-1), /managed footage no longer matches.*frame rate/);
 });
 
 check('combined cached footage drift fails closed without importing a replacement', () => {
@@ -351,7 +355,7 @@ check('combined cached footage drift fails closed without importing a replacemen
   h.click('Build');
   assert.equal(h.imports.length, 1);
   assert.deepEqual(h.projectItems, beforeItems);
-  assert.match(h.alerts.at(-1), /managed footage no longer matches|cached managed footage no longer proves ownership/i);
+  assert.match(h.messages.at(-1), /managed footage no longer matches|cached managed footage no longer proves ownership/i);
 });
 
 check('combined cached layer drift fails closed without adding a replacement', () => {
@@ -363,7 +367,7 @@ check('combined cached layer drift fails closed without adding a replacement', (
   assert.deepEqual(h.projectItems, beforeItems);
   assert.equal(h.comps()[0]._layers.length, beforeLayers.length);
   beforeLayers.forEach((beforeLayer, index) => assert.strictEqual(h.comps()[0]._layers[index], beforeLayer));
-  assert.match(h.alerts.at(-1), /cached managed layer no longer proves ownership/i);
+  assert.match(h.messages.at(-1), /cached managed layer no longer proves ownership/i);
 });
 
 check('combined footage drift after script reload fails before replacement import', () => {
@@ -373,7 +377,7 @@ check('combined footage drift after script reload fails before replacement impor
   assert.equal(h.imports.length, 1);
   assert.equal(h.footage().length, 1);
   assert.equal(h.comps()[0].numLayers, 1);
-  assert.match(h.alerts.at(-1), /managed footage no longer matches.*source path/i);
+  assert.match(h.messages.at(-1), /managed footage no longer matches.*source path/i);
 });
 
 check('combined layer drift after script reload fails before adding a replacement', () => {
@@ -384,7 +388,7 @@ check('combined layer drift after script reload fails before adding a replacemen
   assert.equal(h.imports.length, 1);
   assert.equal(h.comps()[0]._layers.length, beforeLayers.length);
   beforeLayers.forEach((beforeLayer, index) => assert.strictEqual(h.comps()[0]._layers[index], beforeLayer));
-  assert.match(h.alerts.at(-1), /managed layer ownership is ambiguous/i);
+  assert.match(h.messages.at(-1), /managed layer ownership is ambiguous/i);
 });
 
 check('late build failure rolls back newly created footage and layers', () => {
@@ -392,14 +396,14 @@ check('late build failure rolls back newly created footage and layers', () => {
   assert.equal(h.imports.length, 1);
   assert.equal(h.footage().length, 0);
   assert.equal(h.comps()[0].numLayers, 0);
-  assert.match(h.alerts.at(-1), /mock layer move failure/);
-  assert.match(h.alerts.at(-1), /newly created managed objects were rolled back/i);
+  assert.match(h.messages.at(-1), /mock layer move failure/);
+  assert.match(h.messages.at(-1), /newly created managed objects were rolled back/i);
 });
 
 check('QC reports tagged managed comp outside the expected package root after reload', () => {
   const h = host(manifest(), beautyFiles); h.click('Build'); h.movePackageRoot(); h.reloadScript(); h.click('QC');
-  assert.match(h.alerts.at(-1), /Managed comp validation failed/);
-  assert.doesNotMatch(h.alerts.at(-1), /QC — PASS\b/);
+  assert.match(h.messages.at(-1), /Managed comp validation failed/);
+  assert.doesNotMatch(h.messages.at(-1), /QC — PASS\b/);
 });
 
 check('managed footage throwing FPS getter fails closed without replacement and QC does not pass footage', () => {
@@ -409,10 +413,10 @@ check('managed footage throwing FPS getter fails closed without replacement and 
   assert.equal(h.imports.length, 1);
   assert.equal(h.footage().length, 1);
   assert.equal(h.comps()[0].numLayers, 1);
-  assert.match(h.alerts.at(-1), /managed footage no longer matches.*frame rate/);
+  assert.match(h.messages.at(-1), /managed footage no longer matches.*frame rate/);
   h.click('QC');
-  assert.match(h.alerts.at(-1), /managed footage validation failed/);
-  assert.doesNotMatch(h.alerts.at(-1), /PASS BEAUTY: managed footage source\/FPS matches manifest/);
+  assert.match(h.messages.at(-1), /managed footage validation failed/);
+  assert.doesNotMatch(h.messages.at(-1), /PASS BEAUTY: managed footage source\/FPS matches manifest/);
 });
 
 check('managed footage unavailable FPS fails closed without replacement and QC does not pass footage', () => {
@@ -422,10 +426,10 @@ check('managed footage unavailable FPS fails closed without replacement and QC d
   assert.equal(h.imports.length, 1);
   assert.equal(h.footage().length, 1);
   assert.equal(h.comps()[0].numLayers, 1);
-  assert.match(h.alerts.at(-1), /managed footage no longer matches.*frame rate/);
+  assert.match(h.messages.at(-1), /managed footage no longer matches.*frame rate/);
   h.click('QC');
-  assert.match(h.alerts.at(-1), /managed footage validation failed/);
-  assert.doesNotMatch(h.alerts.at(-1), /PASS BEAUTY: managed footage source\/FPS matches manifest/);
+  assert.match(h.messages.at(-1), /managed footage validation failed/);
+  assert.doesNotMatch(h.messages.at(-1), /PASS BEAUTY: managed footage source\/FPS matches manifest/);
 });
 
 check('initial conform FPS setter failure rolls back only the new import across retries', () => {
@@ -441,8 +445,8 @@ check('initial conform FPS setter failure rolls back only the new import across 
   assert.equal(h.footage().length, 0);
   assert.equal(h.projectItems.length, afterFirstFailure);
   assert.equal(h.comps()[0].numLayers, 0);
-  assert.doesNotMatch(h.alerts.at(-1), /comp built/);
-  assert.match(h.alerts.at(-1), /could not conform imported footage.*Build stopped/);
+  assert.doesNotMatch(h.messages.at(-1), /comp built/);
+  assert.match(h.messages.at(-1), /could not conform imported footage.*Build stopped/);
 });
 
 check('initial conform FPS readback mismatch rolls back only the new import across retries', () => {
@@ -458,8 +462,8 @@ check('initial conform FPS readback mismatch rolls back only the new import acro
   assert.equal(h.footage().length, 0);
   assert.equal(h.projectItems.length, afterFirstFailure);
   assert.equal(h.comps()[0].numLayers, 0);
-  assert.doesNotMatch(h.alerts.at(-1), /comp built/);
-  assert.match(h.alerts.at(-1), /timing\/source could not be verified.*frame rate/);
+  assert.doesNotMatch(h.messages.at(-1), /comp built/);
+  assert.match(h.messages.at(-1), /timing\/source could not be verified.*frame rate/);
 });
 
 check('initial managed layer order is deterministic', () => {
@@ -481,7 +485,7 @@ check('skipped optional pass is not reused or reordered as a verified layer', ()
   assert.deepEqual(comp._layers.map(x => x.name), ['LINE', 'BEAUTY']);
   line.source = null; files.splice(3);
   h.reloadScript(); h.click('Build');
-  assert.match(h.alerts.at(-1), /optional pass skipped/);
+  assert.match(h.messages.at(-1), /optional pass skipped/);
   assert.deepEqual(comp._layers.map(x => x.name), ['BEAUTY', 'LINE']);
   assert.equal(line.source, null);
 });
@@ -491,7 +495,7 @@ for (const kind of ['footage', 'layer']) {
   for (const drift of ['removed', 'changed', 'moved', 'unreadable', 'wrong-type', 'wrong-container']) {
     check(`${kind} ${drift} ownership blocks same-session and actual script reload without duplicates`, () => {
       const h = host(manifest(), beautyFiles); h.click('Build');
-      assert.match(h.alerts.at(-1), /comp built/);
+      assert.match(h.messages.at(-1), /comp built/);
       const comp = h.comps()[0], footage = h.footage()[0], layer = comp.layer(1);
       const target = kind === 'footage' ? footage : layer;
       if (drift === 'removed') target.comment = '';
@@ -510,8 +514,8 @@ for (const kind of ['footage', 'layer']) {
       for (const reload of [false, true, false]) {
         if (reload) h.reloadScript();
         h.click('Build');
-        assert.doesNotMatch(h.alerts.at(-1), /comp built|reused safely/, `${kind} ${drift} must fail closed`);
-        assert.match(h.alerts.at(-1), /ownership|ambiguous|managed.*folder|expected comp|item type/i);
+        assert.doesNotMatch(h.messages.at(-1), /comp built|reused safely/, `${kind} ${drift} must fail closed`);
+        assert.match(h.messages.at(-1), /ownership|ambiguous|managed.*folder|expected comp|item type/i);
         if (drift !== 'unreadable') assert.equal(target.comment, comment, 'must not reclaim/re-tag artist-edited object');
         assert.deepEqual(h.projectItems, beforeItems, 'no duplicate footage or project mutations');
         assert.deepEqual(comp._layers, beforeLayers, 'no duplicate layers or reordering on rejection');
@@ -520,8 +524,8 @@ for (const kind of ['footage', 'layer']) {
         assert.equal(artistLayer.source, artistFootage);
         if (kind === 'footage') {
           h.click('QC');
-          assert.match(h.alerts.at(-1), /managed footage validation failed/);
-          assert.doesNotMatch(h.alerts.at(-1), /PASS BEAUTY: managed footage source/);
+          assert.match(h.messages.at(-1), /managed footage validation failed/);
+          assert.doesNotMatch(h.messages.at(-1), /PASS BEAUTY: managed footage source/);
         }
       }
     });
@@ -536,7 +540,7 @@ check('valid live fallback survives replacing a cached reference and actual scri
   for (const reload of [false, true]) {
     if (reload) h.reloadScript();
     h.click('Build');
-    assert.match(h.alerts.at(-1), /reused safely/);
+    assert.match(h.messages.at(-1), /reused safely/);
     assert.equal(h.projectItems.length, count);
     assert.equal(comp.numLayers, 2);
     assert.equal(comp._layers.find(x => x.name === 'BEAUTY').source, replacement);
@@ -554,7 +558,7 @@ check('live layer lookup discards a cached layer no longer in the comp', () => {
   for (const reload of [false, true]) {
     if (reload) h.reloadScript();
     h.click('Build');
-    assert.match(h.alerts.at(-1), /reused safely/);
+    assert.match(h.messages.at(-1), /reused safely/);
     assert.equal(comp.numLayers, 2);
     assert.equal(comp._layers.find(x => x.name === 'BEAUTY'), replacement);
     assert.equal(artist.layer.source, artist.item);
@@ -572,10 +576,25 @@ for (const kind of ['footage', 'layer']) {
     for (const reload of [false, true]) {
       if (reload) h.reloadScript();
       h.click('Build');
-      assert.match(h.alerts.at(-1), /duplicate managed.*ownership/i);
+      assert.match(h.messages.at(-1), /duplicate managed.*ownership/i);
       assert.equal(h.projectItems.length, count);
       assert.deepEqual(comp._layers, layers);
     }
   });
 }
 console.log(`PASS: ${checks} S5 AE import/comp reliability groups (Node mocks; AE GUI not executed)`);
+
+// Panel results retain full diagnostics without routine completion dialogs.
+{
+  const h = host(manifest(), beautyFiles.slice());
+  h.click('Build');
+  assert.match(h.messages.at(-1), /comp built/);
+  assert.equal(h.alerts.length, 0, 'successful panel Build must not open an alert');
+  h.click('QC');
+  assert.match(h.messages.at(-1), /CutBridge QC — PASS/);
+  assert.match(h.messages.at(-1), /CBQ-SEQ-COMPLETE/);
+  assert.equal(h.alerts.length, 0, 'routine panel QC must stay in Results');
+  h.comps()[0].frameRate = 30; h.click('QC');
+  assert.match(h.messages.at(-1), /CBQ-COMP-DRIFT-FRAME-RATE/);
+  assert.equal(h.alerts.length, 0, 'QC diagnostics remain selectable in Results');
+}

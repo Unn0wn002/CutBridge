@@ -1,0 +1,38 @@
+{
+  "candidate_sha": "5293cd46a819debfe8ecf41f740c4e94806dd89c",
+  "archive_sha256": "427a36ba8638e88940b18f9daa34537c7e41ad939f3b81fddb50a3812d691268",
+  "method": "Exact ZIP extraction with four adjacent runtime files; native evalFile/Run Script path; dockable menu installation not claimed",
+  "host_expected": "26.5x89",
+  "files": [
+    {
+      "path": "CutBridge.jsx",
+      "sha256": "ca8f7049fad8c0b93b3753ce520852d4b0c2f6d120e2c75a01f9aa2fc3743082",
+      "bytes": 126600
+    },
+    {
+      "path": "revision_manager.js",
+      "sha256": "ca9df1b6678eeaa1bebf03a5ba8e35253f0a9984a8891d0f00cc01bbc222a097",
+      "bytes": 43408
+    },
+    {
+      "path": "qc_plus.js",
+      "sha256": "054b8f0a2239c28020f758dab19049c1e4a8d74170c16a42e2aa8d4eee222cb8",
+      "bytes": 15087
+    },
+    {
+      "path": "localization.js",
+      "sha256": "413f6cd969e928bbc6c55efb5125003d62f314ba4b7424c29ed4dfe32cff5b0e",
+      "bytes": 15045
+    },
+    {
+      "path": "INSTALL.md",
+      "sha256": "defe6e087bbcb9bc2e4947352583f1b5f1c245f794ae6261a3f56693ecf20214",
+      "bytes": 7519
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "bytes": 35149
+    }
+  ]
+}

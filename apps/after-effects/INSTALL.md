@@ -9,24 +9,23 @@ CutBridge After Effects packages use **four adjacent runtime files**:
 
 **Keep these files together.** All four files should remain adjacent for normal use. `revision_manager.js` and `qc_plus.js` are safety-critical runtime sidecars. `localization.js` is UX-only: if it cannot be loaded, the panel must fall back deterministically to English without weakening Build/QC/Revision validation.
 
-## First-run smoke test
+## Install and open the dockable panel (recommended)
 
-1. Keep `CutBridge.jsx`, `revision_manager.js`, `qc_plus.js`, and `localization.js` in the same directory.
-2. In After Effects choose **File > Scripts > Run Script File...**.
-3. Select `CutBridge.jsx`.
-4. Confirm the panel opens in Japanese by default and can switch explicitly to English.
-5. Load a representative CutBridge package, Build, run QC, and smoke-test compatible revision behavior.
-6. If the package contains a valid S10C `handoff_3d` block, confirm the CutBridge-managed camera/3D Null subset is reconstructed without adopting unmanaged same-name artist layers.
+1. Verify the ZIP's SHA-256 against both `SHA256SUMS.txt` and `release-metadata.json`, then extract it to a fresh directory.
+2. Copy **all four** runtime files from that same package into your installed After Effects version's `Scripts/ScriptUI Panels` directory. On Windows the usual location is `C:\Program Files\Adobe\Adobe After Effects 2026\Support Files\Scripts\ScriptUI Panels`; use the corresponding folder for your version. On macOS use the installed application's `Scripts/ScriptUI Panels` folder. Installation may require normal administrator access.
+3. Restart After Effects and open **Window > CutBridge** (some hosts display the `.jsx` suffix).
+4. Drag the CutBridge tab into your workspace to dock it. Resize it as needed; use Japanese or English from the language selector. Save your workspace using AE's normal workspace controls if desired.
+5. Load `cutbridge.json`, Build, then run QC+. Routine Build/QC results appear in the selectable, scrollable **Results** field. Review warnings and `CBQ-*` codes there. Revision confirmations and blocking operation errors still use dialogs.
 
-`Run Script File...` is the least ambiguous first test because Adobe script-install paths vary by After Effects version and operating system.
+Do not mix sidecars from different packages. Missing safety sidecars must not silently downgrade validation. Host compatibility and native acceptance remain limited to the exact evidence in the tagged readiness record.
 
-## Dockable panel
+## Optional floating fallback
 
-1. Copy all four files into the installed After Effects version's `Scripts/ScriptUI Panels` directory.
-2. Restart After Effects.
-3. Open **Window > CutBridge**.
+Keep the same four files together in an extracted directory. Choose **File > Scripts > Run Script File...**, then select `CutBridge.jsx`. This opens a resizable floating palette. It does not install the panel into the Window menu. Avoid opening multiple CutBridge instances for the same project.
 
-Do not separate the runtime sidecars from the JSX panel file.
+## Remove or update
+
+Close CutBridge and After Effects. Remove only `CutBridge.jsx`, `revision_manager.js`, `qc_plus.js`, and `localization.js` from the folder where you installed them, then restart AE. For an update, replace all four together with the verified new package while AE is closed. Never remove artist projects, source packages, renders, or unrelated scripts. Existing AE project content remains in the saved project. For floating use, remove only the extracted CutBridge runtime copy when no longer needed.
 
 ## Japanese / English UX
 
@@ -61,13 +60,16 @@ When `cutbridge.json` contains a valid optional `handoff_3d` block, S10C can rec
 
 - one CutBridge-managed perspective camera;
 - CutBridge-managed 3D Null layers for serialized Blender Empties;
-- baked position/orientation/projection timing from the producer contract.
+- Camera Position, Point of Interest derived from `forward`, and Zoom at sample times;
+- Null Position and supplied Scale at sample times.
+
+Camera `up`/basis and Null basis data are serialized but are not applied to AE Orientation or rotation channels. Camera roll and Empty rotation are not reconstructed. QC+ checks manifest/sequence/comp/managed render state and obsolete managed tags; it does not check expected Camera/Null completeness, channel values/keyframes, or projection parity. Inspect the supported channels separately rather than treating a clean QC report as 3D transform acceptance.
 
 CutBridge validates the handoff contract before project mutation. Ownership is identity-based, not visible-name-only. Repeated Build must be idempotent. A same-name unmanaged artist camera/null must cause fail-closed collision handling instead of adoption or overwrite.
 
 S10C does **not** provide geometry transfer, light transfer, bones, arbitrary Blender hierarchy recreation, or general scene synchronization.
 
-See `../../docs/HANDOFF_3D.md`.
+See `../../docs/HANDOFF_3D.md` in the source tree corresponding to the package tag. Source-tree `../../docs/` paths below are reference locations; those files are not included in the AE ZIP. The release-readiness link at the end of this guide is pinned to that tag during packaging.
 
 ## Native validation status
 
@@ -91,7 +93,7 @@ Recorded S10C evidence:
 - unmanaged camera/null name collisions: fail-closed PASS;
 - project persistence: PASS.
 
-This validates the bounded S10C scope in the named real host. It does **not** certify every After Effects 2024–2026 version, OS, camera configuration, or production workflow.
+These historical measurements cover the recorded fixture in the named real host. The projection measurement is separate from QC+ and does not establish camera-roll or Empty-rotation support. This evidence does **not** certify every After Effects 2024–2026 version, OS, camera configuration, production workflow, or later candidate package.
 
 ## Validation boundary
 

@@ -1,0 +1,5 @@
+$.evalFile(new File('C:/CutBridgeNativeRepair/common.jsx'));
+var r={host:app.version,temp:$.getenv('TEMP'),status:'IN_PROGRESS'};
+try{var c=cbComp();r.version=CutBridgeContract.getState().manifest.version;r.layers=cbSnapshot();r.itemCount=app.project.numItems;r.qc=CutBridgeContract.runQC();r.handoff=cbHandoff(CutBridgeContract.getState().manifest);r.status=r.version===4&&!r.qc.report.summary.ERROR?'PASS':'FAIL';app.project.save(new File('C:/CutBridgeNativeRepairEvidence/native025-guarded-V004.aep'));}catch(e){r.status='FAIL';r.error=String(e);}cbSave('repair-native-compatibility-final',r);
+var o={status:'IN_PROGRESS'};
+try{var comp=cbComp(),depth=comp.layer('DEPTH');if(CutBridgeContract.getState().manifest.version!==4)throw Error('Expected owned V004 fixture');depth.remove();o.layers=cbSnapshot();o.qc=CutBridgeContract.runQC();o.status=o.qc.report.summary.ERROR===0&&o.qc.report.summary.WARNING>0?'PASS':'FAIL';app.project.save(new File('C:/CutBridgeNativeRepairEvidence/native025-optional-layer-absent.aep'));}catch(e){o.status='FAIL';o.error=String(e);}cbSave('repair-native-optional-layer-absent',o);

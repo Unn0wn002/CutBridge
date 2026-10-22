@@ -1,0 +1,28 @@
+{
+  "observed_utc": "2026-10-21T11:17:26.1086651Z",
+  "operator_report": "Done: Quick Create opened manually",
+  "window_title": "Create Virtual Machine",
+  "window_app": "C:\\Program Files\\Hyper-V\\VMCreate.exe",
+  "window_id": 723400,
+  "visible_choices": [
+    "Windows 10 MSIX packaging environment",
+    "Ubuntu 18.04 LTS",
+    "Ubuntu 20.04 LTS",
+    "Ubuntu 22.04 LTS",
+    "Windows 11 dev environment",
+    "Local installation source"
+  ],
+  "current_selection": "Local installation source",
+  "floating_overlay": "Hide menu / More actions / Send to Copilot / Copy / Search",
+  "automated_actions": [
+    "Click blank area: no visible change",
+    "Escape: no visible change"
+  ],
+  "create_button": "Disabled in observed current local-source state",
+  "selected_image_details": "NOT_OBSERVED",
+  "immediate_operator_action": "Dismiss floating menu and select Windows 11 dev environment; leave creation unclicked pending version/expiry/source inspection",
+  "candidate_execution": "NOT_EXECUTED",
+  "guest_created": false,
+  "standalone_launcher_retry": 0,
+  "sandbox_retry": 0
+}

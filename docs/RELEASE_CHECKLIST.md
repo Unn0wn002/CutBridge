@@ -1,18 +1,50 @@
 # Release Checklist
 
+**Non-VM preparation: NOT_INSTALLED / NOT_ACCEPTED.** Fixture transfer is verified at a111c61 (all 53 harness/fixture inputs). The owner approved [Sandboxie-Plus 1.18.8 laptop preparation](NON_VM_NATIVE_CONFIGURATION_2026-10-22.md#approved-preparation-and-laptop-handoff) on 22 October. Preparation approval covers the named facility and separate test identity; installation and effective controls are not yet observed. Continue in laptop Codex; this desktop session cannot control that laptop. Native controls and AE provenance remain unaccepted. No VM investigation, candidate execution or release occurred.
+
+## Laptop fixture receipt — 22 October 2026
+
+**Fixture transfer verified and staged; native verdict remains INSUFFICIENT EVIDENCE / HOLD RELEASE.** The laptop ZIP matches SHA-256 `d355a28913c12e7f65f9a8ddd126b62e1381c7ebdf92b36a2ef208ffb37f94b4`. All 39 fixture sizes/hashes match in fresh archive extraction, the owner's extracted folder and the operator packet. Added 39 files with zero conflicts/overwrites; all 24 prior packet files remain unchanged. The packet now has **63/73 exact historical entries**, including **53/53 harness/fixture inputs**; 10 historical root/review metadata entries remain explicitly accounted for, without relabeling old environment receipts.
+
+[Actual laptop receipt, inventories and next prerequisite](evidence/20261022-pr114-laptop-fixture-transfer/README.md). Transport is complete. Next operator action: supply the actual non-VM execution configuration and control evidence for acceptance (owner-file/credential denial, network denial, read-only inputs, confined writable profiles/outputs and watchdog). AE vendor provenance remains separately unresolved. No CutBridge candidate code/test, application launch or VM investigation occurred during transfer. Frozen runtime/packages, release authorization false and production v0.2.3 remain unchanged. Earlier missing-fixture statements below describe preserved checkpoints.
+
+## Laptop direct-host checkpoint — 22 October 2026
+
+**INSUFFICIENT EVIDENCE / HOLD RELEASE.** Direct blank startup completed on laptop AYAKUMI_NOZOMI_: Blender **5.2.3 LTS / e13b728c6880**, RTX 3050 Ti / OpenGL 4.6 NVIDIA 617.42, PID 5608, normal exit 0; AE **26.5.0 Build 89**, empty workspace, no compatibility conflicts, CUDA selected, PID 4176, normal exit 0. Both installed application-tree inventories are unchanged. AE's core DLL still reports **HashMismatch**, cause unknown. No CutBridge/probe/native campaign was executed.
+
+[The laptop evidence and exact next prerequisite](evidence/20261022-pr114-laptop-direct/README.md) supersede earlier environment actions: the owner requires direct applications and **no further Hyper-V, VMware or Sandbox creation, launch or troubleshooting**. The missing non-VM boundary is enforced separation from owner credentials/HOME/private files, effective network denial, immutable read-only inputs and confined output/temp/profile/cache writes. Temporary profile redirection alone is insufficient. Accepted AE vendor provenance also remains unresolved. No machine security/licensing settings were changed.
+
+The original artifact is now on the laptop: outer SHA-256 and all 48 evidence sums, bootstrap, four repeated assets and recorded input inventories verify. Exact AE/Blender ZIP hashes remain frozen to source `5aa2da24fc8be41626ee84178c7fdce05d02eebc`. Fourteen retained harness/config files recovered exactly. The desktop has now verified and packaged all **39 missing fixture files** (three manifests, 36 renders) without regeneration; [the exact transfer ZIP and owner copy step](evidence/20261022-pr114-desktop-fixture-transfer/README.md) are ready. Laptop delivery and all 39 laptop-side checks remain unobserved. The partial packet has 24/73 exact historical handoff entries. No fixture regeneration, new product rerun or runtime change occurred. All open current-package native/release gates remain unexecuted; release authorization is false, v0.2.4 immutable/held, production v0.2.3.
+
+## Prior desktop checkpoints (preserved)
+
 Before tagging a CutBridge release:
+
+**Current environment verdict: INSUFFICIENT EVIDENCE.** VMware Tools is now **ok/current** (legacy integer 13344), SVGA WDDM **9.17.11.0003 build 25171296** is loaded, and vendor logs confirm a guest restart after installation. The owner’s one post-Tools launch reaches **Blender 5.2.2 — Platform Unsupported**, reporting VMware SVGA3D / OpenGL 4.3 Core / Mesa 24.1.0. This changed rejection supersedes the missing-driver hypothesis; its exact failing capability remains undetermined. [The actual post-Tools record](evidence/20261021-pr114-guest-provisioning/vmware-post-tools-r11/OPERATOR_ACTION.md) preserves both failures. The owner reports a second laptop with Blender/AE and requested [the laptop continuation prompt](LAPTOP_NATIVE_HANDOFF_2026-10-22.md). Its actual versions, blank startup and isolation remain unverified. No current candidate native/release gate passed or CutBridge defect observed; frozen bytes, ancestry, prior evidence and artist work remain preserved.
+
+Latest guest preparation: Quick Create is open; select its Windows 11 entry for inspection before creation. Gallery evaluation validity is unknown, and Chrome blocked the independent current Windows ISO request. [The exact record](evidence/20261021-pr114-guest-provisioning/quick-create-r3/OPERATOR_ACTION.md) supersedes earlier consent/launch checkpoints. No guest, host-installation, native acceptance or release box is complete from these observations.
+
+Current exact setup boundary: local Hyper-V host selection is observed and its VM list is empty. Microsoft's signed Quick Create launcher is waiting for protected Windows consent; [the immediate action](evidence/20261021-pr114-guest-provisioning/quick-create-r2/OPERATOR_ACTION.md) is approval of that specific launcher prompt. Earlier host-selection requests below are historical checkpoints; native acceptance and release authorization stay incomplete.
+
+Latest provisioning checkpoint: one fresh Sandbox creation failed before a usable guest; official signed installers are staged. The immediate operator handoff is selection of the local host in the open elevated Hyper-V Manager, as [recorded here](evidence/20261021-pr114-guest-provisioning/OPERATOR_ACTION.md). Provisioning and every still-open native acceptance box remain incomplete; no completed implementation/automation/download/AI-review gate is reopened.
+
+PR #114 continuation, 21 October: exact candidate packages have been retrieved to the PC and their SHA-256 values verified; raw-source AE/GPL binding and 53 unchanged harness/fixture files are recorded in [the current packet](evidence/20261021-pr114-native-continuation/OPERATOR_HANDOFF.md). Tested runtime remains `5aa2da24fc8be41626ee84178c7fdce05d02eebc`; documentation-only follow-up does not rename that evidence. Native installation/UI/revisions/preservation/negative/rollback/fresh-reopen and actual screenshots remain NOT_EXECUTED. Release authorization remains false. The next operator action is provision of the suitable isolated native environment; no representative-user research prerequisite is added. The published-release download check below still applies after future publication.
+
+For the owner-confirmed 25 October 2026 free-release target (Asia/Jakarta), use [SUBMISSION_DEMO_CHECKLIST.md](SUBMISSION_DEMO_CHECKLIST.md) to assemble the review packet and native execution record. Submission readiness and public-release readiness are separate decisions; neither follows from green CI alone.
 
 - [ ] Review the live `main`/`develop` relationship and promote the verified candidate through a PR.
 - [ ] Run every command in [CONTRIBUTING.md](CONTRIBUTING.md); all authoritative tests and CI jobs pass on the exact candidate commit.
 - [ ] `version.py` (`__version__` and `VERSION`), `blender_manifest.toml`, `bl_info`, generated `cutbridge.json`, README, changelog and `CutBridge.jsx` `PRODUCT_VERSION` agree on the numeric product version.
 - [ ] Manifest schema compatibility is preserved or a schema change is intentional and supported by both apps.
 - [ ] Both versioned ZIPs contain the full LICENSE; no private client assets, credentials, or production data are included.
-- [ ] The After Effects ZIP contains `CutBridge.jsx`, `revision_manager.js`, `INSTALL.md`, and `LICENSE`; do not publish an AE artifact with the revision sidecar or two-file installation guidance missing.
+- [ ] The After Effects ZIP contains `CutBridge.jsx`, `revision_manager.js`, `qc_plus.js`, `localization.js`, `INSTALL.md`, and `LICENSE`; all four runtime files stay adjacent and the packaged guide links to the source tag's readiness record.
 - [ ] Recompute SHA-256 values and compare them with both `SHA256SUMS.txt` and `release-metadata.json`.
-- [ ] Repeat the build with the same toolchain; artifacts are identical despite source timestamp/permission changes.
+- [ ] Repeat the build with the same toolchain; complete output inventories and every output file (ZIPs, checksums and metadata) are identical despite source timestamp/permission changes. Retain both output inventories and hashes.
+- [ ] Retain independently trusted orchestration identity, exact candidate/base/merge-base, archive-to-Git inventory/byte/mode comparison, isolation policy/settings, all verification inputs, logs and unchanged before/after source manifests. Stage upload artifacts through trusted path/type validation. A missing dependency/host or unproven isolation boundary is INSUFFICIENT EVIDENCE; an integrity violation is INVALID.
 - [ ] Record Blender version, OS, GUI installation, panel, Validate Cut and Build Package results.
 - [ ] Record After Effects version and OS, installation/launch method, manifest import, comp setup, sequence import, QC, and revision-manager loading results.
 - [ ] In a real After Effects desktop host, perform V001 → V002 → V003 on a representative package and verify only CutBridge-managed sources/metadata change.
+- [ ] If optional 3D handoff is included, inspect Camera Position/Point of Interest/Zoom and Null Position/Scale against manifest samples, expected Camera/Null counts, ownership and repeat-Build behavior. QC+ does not verify these transforms or expected completeness. State that camera roll and Empty rotation are not reconstructed.
 - [ ] During the real revision test, verify effects, masks, transforms, parenting, timing, layer order, artist-added layers, unrelated footage/comps/folders, and artist/studio package-root notes are preserved.
 - [ ] Save the revised AE project, close/reopen it, reload CutBridge, then run Build Comp and QC again; record the result.
 - [ ] In a disposable real-AE copy, delete and separately de-tag a required managed layer while its managed footage and comp remain valid; QC must fail closed on managed-layer ownership/source instead of reporting PASS. Also verify an unambiguous complete optional managed layer can be absent with a warning, and an unavailable optional source sequence remains warning/skip only.
@@ -20,9 +52,10 @@ Before tagging a CutBridge release:
 - [ ] Exercise at least one incompatible geometry/timing revision (for example FPS/frame-range/pixel-aspect/resolution drift) and confirm fail-closed behavior.
 - [ ] Exercise candidate removal of an optional pass and confirm source-only revision blocks **before** confirmation, import, `replaceSource()`, or package/tag migration; verify the original package remains coherent for reload, Build and QC. Added-pass and required-pass-removal cases must also remain fail-closed.
 - [ ] Exercise a missing/duplicate deterministic managed-folder condition in a safe test project and confirm Build/revision/QC do not silently choose, recreate, or mutate ambiguous structure.
+- [ ] In disposable AE copies, inject a late import/validation failure and a source-replacement failure. Verify captured imported IDs are cleaned up, invalid native handles are rejected, prior sources/ownership/root notes and unrelated objects are preserved, and Build/QC/reload remain coherent after rollback. Retain the injection method and before/after state.
 - [ ] Complete a real Blender → package → After Effects smoke test. Do not replace it with headless or host-shaped evidence.
 - [ ] Update compatibility records and changelog release status with actual evidence.
-- [ ] Obtain the required independent review(s) for the exact release candidate and resolve all review findings before promotion/tagging.
+- [ ] Complete a separate exact-candidate AI code/evidence review and resolve findings before promotion/tagging for this bounded free release, as authorized in [FREE_RELEASE_2026-10-25.md](FREE_RELEASE_2026-10-25.md). Preserve enforced GitHub approval requirements and historical reviews.
 - [ ] Keep root `release-authorization.json` unapproved while any release gate is incomplete.
 - [ ] Decide the intended publication class and exact tag: stable `vX.Y.Z`, beta validation `vX.Y.Z-rc.N`/`vX.Y.Z-beta.N`, or development validation `vX.Y.Z-dev.N`.
 - [ ] On the validated current `main` candidate, change `release-authorization.json` to explicitly approve that exact tag, matching `channel` and `prerelease`; review/test that authorization commit as part of the release candidate.
@@ -32,7 +65,7 @@ Before tagging a CutBridge release:
 - [ ] For the intended Japanese-first market, complete the planned native-user/terminology validation appropriate to the release claim before describing the product as production-ready for Japanese animation/content teams.
 - [ ] Create the authorized tag only after all preceding gates are recorded.
 - [ ] Confirm the Release workflow publishes both ZIPs, checksums and metadata from the authorized `main` HEAD.
-- [ ] Download the published assets, verify the AE ZIP still contains both scripts plus `INSTALL.md` and `LICENSE`, and recompute checksums before distribution.
+- [ ] Download the published assets, verify the AE ZIP still contains all four runtime files plus `INSTALL.md` and `LICENSE`, and recompute checksums before distribution.
 - [ ] If the publication is an RC/beta/development GitHub prerelease, install/test the downloaded artifacts deliberately. Do not claim in-plugin beta distribution until a matching external index entry and publication path are deployed and verified.
 - [ ] Before any stable distribution, mirror only the deliberately approved stable artifacts/update metadata to the separate production distribution endpoint; never use source-repository hosting itself as the client update endpoint.
 

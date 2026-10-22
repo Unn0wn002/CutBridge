@@ -1,0 +1,62 @@
+[
+    {
+        "exit_code":  0,
+        "pid":  8920,
+        "method":  "Normal application process exit; no force termination",
+        "name":  "official-package-validator",
+        "exited":  true,
+        "started_utc":  "2026-10-16T08:35:57.2195030Z",
+        "command_arguments":  "--command extension validate C:\\Artifacts\\CutBridge-Blender-v0.2.5.zip",
+        "finished_utc":  "2026-10-16T08:36:07.6963359Z"
+    },
+    {
+        "exit_code":  0,
+        "pid":  9192,
+        "method":  "Normal application process exit; no force termination",
+        "name":  "official-repository-generator",
+        "exited":  true,
+        "started_utc":  "2026-10-16T08:36:07.7124592Z",
+        "command_arguments":  "--command extension server-generate --repo-dir C:\\Evidence\\verification-output\\native-blender\\repository",
+        "finished_utc":  "2026-10-16T08:36:18.0186516Z"
+    },
+    {
+        "exit_code":  0,
+        "pid":  9016,
+        "method":  "Normal application process exit; no force termination",
+        "name":  "extension-repo-add",
+        "exited":  true,
+        "started_utc":  "2026-10-16T08:36:18.0237741Z",
+        "command_arguments":  "--command extension repo-add cutbridge_candidate --name CutBridgeCandidate --directory C:\\Evidence\\verification-output\\extensions\\candidate",
+        "finished_utc":  "2026-10-16T08:36:28.5319585Z"
+    },
+    {
+        "exit_code":  0,
+        "pid":  9060,
+        "method":  "Normal application process exit; no force termination",
+        "name":  "extension-install-enable",
+        "exited":  true,
+        "started_utc":  "2026-10-16T08:36:28.5478882Z",
+        "command_arguments":  "--command extension install-file -r cutbridge_candidate --enable C:\\Artifacts\\CutBridge-Blender-v0.2.5.zip",
+        "finished_utc":  "2026-10-16T08:36:41.4618305Z"
+    },
+    {
+        "exit_code":  0,
+        "pid":  4948,
+        "method":  "Normal application process exit; no force termination",
+        "name":  "native-blender-campaign",
+        "exited":  true,
+        "started_utc":  "2026-10-16T08:36:41.4854893Z",
+        "command_arguments":  "--python-exit-code 1 --python C:\\NativeBlenderInput\\native_blender.py",
+        "finished_utc":  "2026-10-16T08:37:36.5910963Z"
+    },
+    {
+        "exit_code":  0,
+        "pid":  4956,
+        "method":  "Normal application process exit; no force termination",
+        "name":  "native-blender-fresh-reopen",
+        "exited":  true,
+        "started_utc":  "2026-10-16T08:37:36.7796709Z",
+        "command_arguments":  "--python-exit-code 1 --python C:\\NativeBlenderInput\\reopen_blender.py",
+        "finished_utc":  "2026-10-16T08:37:55.0969459Z"
+    }
+]

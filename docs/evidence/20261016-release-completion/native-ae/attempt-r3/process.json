@@ -1,0 +1,9 @@
+{
+    "launcher_exited":  true,
+    "exit_code":  -1058471934,
+    "script_result":  "NOT_EXECUTED",
+    "timestamp_utc":  "2026-10-16T13:30:01.1992622Z",
+    "pid":  8704,
+    "normal_ae_exit":  "Requires native process/quit record; .com launch exit alone is insufficient",
+    "scope":  "Scripted native exact-package tests; no S14B or visual installer sign-off"
+}

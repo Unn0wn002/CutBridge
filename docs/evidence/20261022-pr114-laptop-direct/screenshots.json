@@ -1,0 +1,32 @@
+[
+  {
+    "path": "C:\\Temp\\CutBridge-laptop-qualification-20261022\\blank-blender\\blank-workspace.jpg",
+    "bytes": 190260,
+    "sha256": "c19c38c47aed5792da3a06f23af5d12a79f609e1c785e8423032cb437791cbb6",
+    "scope": "Blank vendor startup observation; no CutBridge loaded"
+  },
+  {
+    "path": "C:\\Temp\\CutBridge-laptop-qualification-20261022\\blank-ae\\about-build.jpg",
+    "bytes": 104492,
+    "sha256": "8f2937eeffa121d85e9a4cc897b451918688ea7e057077ed6d0dcf3dd32dfae9",
+    "scope": "Blank vendor startup observation; no CutBridge loaded"
+  },
+  {
+    "path": "C:\\Temp\\CutBridge-laptop-qualification-20261022\\blank-ae\\blank-workspace.jpg",
+    "bytes": 108956,
+    "sha256": "933ce584c31e55fc85aacff542ef7db3d502ebeb9900741a8220a0ac3bde4f00",
+    "scope": "Blank vendor startup observation; no CutBridge loaded"
+  },
+  {
+    "path": "C:\\Temp\\CutBridge-laptop-qualification-20261022\\blank-ae\\compatibility.jpg",
+    "bytes": 94765,
+    "sha256": "d349af9bcdf9d866b31dd9a9558d5eb001e6a8b4f82cbdefcf3e7b765396702b",
+    "scope": "Blank vendor startup observation; no CutBridge loaded"
+  },
+  {
+    "path": "C:\\Temp\\CutBridge-laptop-qualification-20261022\\blank-ae\\gpu-mode.jpg",
+    "bytes": 100791,
+    "sha256": "df2a617be43efd322741fb00533d3f843fa3f2a8dc2813c95516d6656c658eff",
+    "scope": "Blank vendor startup observation; no CutBridge loaded"
+  }
+]

@@ -55,13 +55,13 @@ for (const defect of ['stale orphan layer', 'duplicate footage', 'live comp drif
         assert.equal(comp.comment, before.compTag);
         assert.equal(layer.comment, before.layerTag);
         assert.equal(source.comment, before.footageTag);
-        assert.match(h.alerts.at(-1), /ownership|stale|metadata|drift/i);
+        assert.match(h.messages.at(-1), /ownership|stale|metadata|drift/i);
         restore();
         h.queue(v3); h.click('Update Revision');
-        assert.match(h.alerts.at(-1), /revision updated to V003/);
+        assert.match(h.messages.at(-1), /revision updated to V003/);
         h.reload(); h.queue(v3); h.click('Import Package');
         h.click('Build Comp'); h.click('Run QC');
-        assert.match(h.alerts.at(-1), /CutBridge QC — PASS/);
+        assert.match(h.messages.at(-1), /CutBridge QC — PASS/);
         assert.equal(h.footage()[0].comment, Contract.managedTag('footage', v1, 'BEAUTY'));
         assert.equal(source.comment, before.footageTag, 'historical footage provenance remains');
         console.log('PASS revision preflight: ' + defect);

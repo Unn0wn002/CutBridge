@@ -1,0 +1,402 @@
+{
+  "candidate_sha": "c234d1f42d7cdff10170289c0cbd35b4a007d8c6",
+  "host": "5.2.2 LTS",
+  "host_build_hash": "d13f752e3b9c",
+  "host_binary": "C:\\Blender\\blender.exe",
+  "python": "3.13.13 (main, May  8 2026, 12:37:03) [MSC v.1944 64 bit (AMD64)]",
+  "background": false,
+  "method": "Native scripted API/operators invoked by the Blender GUI timer event loop",
+  "isolation_evidence": "Launcher policy/runtime records required separately; script does not establish isolation",
+  "gui_visual_inspection": "NOT_EXECUTED",
+  "install_dialog_inspection": "NOT_EXECUTED",
+  "direct_panel_button_clicks": "NOT_EXECUTED",
+  "fresh_process_reopen": "NOT_EXECUTED; this script covers same-process open_mainfile only",
+  "ae_execution": "NOT_EXECUTED",
+  "overall_scope_result": "PASS",
+  "stage": "locale_and_save_reopen",
+  "results": {
+    "exact_zip_install_enable_and_panel_registration": {
+      "result": "PASS",
+      "evidence": {
+        "installed_root": "C:\\Evidence\\verification-output\\extensions\\candidate\\cutbridge",
+        "version": "0.2.5",
+        "scope": "CLI install/enable persistence and RNA, not install-dialog or visual UI inspection"
+      }
+    },
+    "startup_scheduler_disabled": {
+      "result": "PASS",
+      "evidence": null
+    },
+    "V001_native_build_render_handoff_and_safety": {
+      "result": "PASS",
+      "evidence": {
+        "outputs": 12,
+        "manifest_sha256": "e2ebb3ab79199af023d15e2028e66079219735e6fe92c5f260cae3b67179e9f7"
+      }
+    },
+    "V002_native_build_render_handoff_and_safety": {
+      "result": "PASS",
+      "evidence": {
+        "outputs": 12,
+        "manifest_sha256": "68e134b7ed199fb2475da61ef44b36c61e44789b584047495085a93a8f736e07"
+      }
+    },
+    "V003_native_build_render_handoff_and_safety": {
+      "result": "PASS",
+      "evidence": {
+        "outputs": 12,
+        "manifest_sha256": "6aa730ce0a518831f968e7cfeb34396faf72cf19efc8b64cdc9eda58ec841835"
+      }
+    },
+    "native_fault_injection_mapping_rollback": {
+      "result": "PASS",
+      "evidence": {
+        "injection": "Temporary in-memory missing LINE socket; original function restored in finally"
+      }
+    },
+    "locale_identity_preservation": {
+      "result": "PASS",
+      "evidence": {
+        "scope": "RNA state only; visual JP/EN inspection NOT_EXECUTED"
+      }
+    },
+    "same_process_save_and_reopen": {
+      "result": "PASS",
+      "evidence": {
+        "fixture": "C:\\Evidence\\verification-output\\native-blender\\fixtures\\reopen-V003.blend",
+        "sha256": "75767c361c7c873a5b2e86810dbc359aab99d14b84e1321b22f4f820b8dc2fdb",
+        "fresh_process": "NOT_EXECUTED"
+      }
+    }
+  },
+  "packages": [
+    {
+      "version": 1,
+      "root": "C:\\Evidence\\verification-output\\native-blender\\packages\\Native025_EP01_SC010_C001_T01_V001",
+      "manifest_sha256": "e2ebb3ab79199af023d15e2028e66079219735e6fe92c5f260cae3b67179e9f7",
+      "fixture_sha256": "7d2f7e12758243d00ad11440981fdb51be81d413fe3f8277332fca6c28345f57",
+      "handoff_comparison_sha256": "f0d89d97608a254fa3ae6f885a5e1a9e507ae31c42446d1bd4b75688f7ac6cb1",
+      "rendered": [
+        "render/beauty/C001_BEAUTY_0001.png",
+        "render/beauty/C001_BEAUTY_0002.png",
+        "render/beauty/C001_BEAUTY_0003.png",
+        "render/depth/C001_DEPTH_0001.exr",
+        "render/depth/C001_DEPTH_0002.exr",
+        "render/depth/C001_DEPTH_0003.exr",
+        "render/line/C001_LINE_0001.png",
+        "render/line/C001_LINE_0002.png",
+        "render/line/C001_LINE_0003.png",
+        "render/shadow/C001_SHADOW_0001.png",
+        "render/shadow/C001_SHADOW_0002.png",
+        "render/shadow/C001_SHADOW_0003.png"
+      ],
+      "files": {
+        "cutbridge.json": {
+          "bytes": 7477,
+          "sha256": "e2ebb3ab79199af023d15e2028e66079219735e6fe92c5f260cae3b67179e9f7"
+        },
+        "render/beauty/C001_BEAUTY_0001.png": {
+          "bytes": 40084,
+          "sha256": "4d22d39f2bca9d3692fe2892495b9696c2f5cbe71c7facbbc13085bd9fc10c22"
+        },
+        "render/beauty/C001_BEAUTY_0002.png": {
+          "bytes": 40152,
+          "sha256": "f626915d719b38500c7f15693a215ffbc457e1fa9a71ae2b34d6285d1a518d03"
+        },
+        "render/beauty/C001_BEAUTY_0003.png": {
+          "bytes": 40081,
+          "sha256": "79d54e0f582bbff8bedd7cba7e7994becb56900355efb6350c941fa309c79fdb"
+        },
+        "render/depth/C001_DEPTH_0001.exr": {
+          "bytes": 925192,
+          "sha256": "72636760f4627082e41cec666fa3910c94cad843ce792a729dd5b25e423358af"
+        },
+        "render/depth/C001_DEPTH_0002.exr": {
+          "bytes": 925192,
+          "sha256": "33d68ae7c5b4dac0ad9c417fa2cc57598bca4c06dccc5c2c657787d759095285"
+        },
+        "render/depth/C001_DEPTH_0003.exr": {
+          "bytes": 925192,
+          "sha256": "5f4571b1ae0330a92b96703726164ef4f3822d355c473987a48570d708e92b0e"
+        },
+        "render/line/C001_LINE_0001.png": {
+          "bytes": 23982,
+          "sha256": "d639195e25da0bf30f326057d98d3e6f02e124359d5a6096a7180d7f7e7e3acb"
+        },
+        "render/line/C001_LINE_0002.png": {
+          "bytes": 24176,
+          "sha256": "f9c01145b3dd3afb96816070b24dbf423ffa3fc997bbe8c6a5fede6a5e5ba3e6"
+        },
+        "render/line/C001_LINE_0003.png": {
+          "bytes": 24009,
+          "sha256": "232c7e5819f8c2f681f6920830e68e60438a945aa1ac77b6cc42b51d2fbc1c0f"
+        },
+        "render/shadow/C001_SHADOW_0001.png": {
+          "bytes": 34272,
+          "sha256": "ff6d512bfcc6c0696ae4c8cb99dc3f0a97e124c7e39b9b1858b98a37184c7497"
+        },
+        "render/shadow/C001_SHADOW_0002.png": {
+          "bytes": 34213,
+          "sha256": "91cb8ce851bed0dfc14bda9cd1bf32944d97d054216011988955d09f983607d8"
+        },
+        "render/shadow/C001_SHADOW_0003.png": {
+          "bytes": 34303,
+          "sha256": "2ace0b35d698c5b5b07f1ee37f161f279faae00630e2828e1505573d3e4b49ca"
+        }
+      },
+      "overwrite": {
+        "result": "RuntimeError from cancelled operator",
+        "message": "Error: Existing Package Is Protected: This version already contains render/user data, so Build Package will not overwrite it. Why: CutBridge protects completed or in-progress package payload from destructive same-version rebuilds. Can I continue? Yes for rendering the already-built package; no for rebuilding this same version. Fix: Continue Render Animation without Build Package, or increment Version for a new revision. [EN] Package Native025_EP01_SC010_C001_T01_V001 contains render/user data (render/beauty/C001_BEAUTY_0001.png) and will not be overwritten. Fix: For a new revision, increment Version. To keep rendering this already-built version, do not run Build Package again.\n"
+      },
+      "mismatch_build": {
+        "result": "RuntimeError from cancelled operator",
+        "message": "Error: Existing Package Is Protected: This version already contains render/user data, so Build Package will not overwrite it. Why: CutBridge protects completed or in-progress package payload from destructive same-version rebuilds. Can I continue? Yes for rendering the already-built package; no for rebuilding this same version. Fix: Continue Render Animation without Build Package, or increment Version for a new revision. [EN] Package Native025_EP01_SC010_C001_T01_V001 contains render/user data (render/beauty/C001_BEAUTY_0001.png) and will not be overwritten. Fix: For a new revision, increment Version. To keep rendering this already-built version, do not run Build Package again.\n"
+      }
+    },
+    {
+      "version": 2,
+      "root": "C:\\Evidence\\verification-output\\native-blender\\packages\\Native025_EP01_SC010_C001_T01_V002",
+      "manifest_sha256": "68e134b7ed199fb2475da61ef44b36c61e44789b584047495085a93a8f736e07",
+      "fixture_sha256": "841df0e8f22e5ce7b4e2a3a5af58716eb5c6ddf6cc90622c49266c6bf4bea892",
+      "handoff_comparison_sha256": "bcef0878cff2a4c34700f45e2f20c22edf63fc22c859547fd896d86e8a58c95d",
+      "rendered": [
+        "render/beauty/C001_BEAUTY_0001.png",
+        "render/beauty/C001_BEAUTY_0002.png",
+        "render/beauty/C001_BEAUTY_0003.png",
+        "render/depth/C001_DEPTH_0001.exr",
+        "render/depth/C001_DEPTH_0002.exr",
+        "render/depth/C001_DEPTH_0003.exr",
+        "render/line/C001_LINE_0001.png",
+        "render/line/C001_LINE_0002.png",
+        "render/line/C001_LINE_0003.png",
+        "render/shadow/C001_SHADOW_0001.png",
+        "render/shadow/C001_SHADOW_0002.png",
+        "render/shadow/C001_SHADOW_0003.png"
+      ],
+      "files": {
+        "cutbridge.json": {
+          "bytes": 7477,
+          "sha256": "68e134b7ed199fb2475da61ef44b36c61e44789b584047495085a93a8f736e07"
+        },
+        "render/beauty/C001_BEAUTY_0001.png": {
+          "bytes": 40113,
+          "sha256": "bb91d570f741e83ee3f830df9fec77a637f7140edca979d1096e30dd7df04a97"
+        },
+        "render/beauty/C001_BEAUTY_0002.png": {
+          "bytes": 40327,
+          "sha256": "2dcf8451a2f186195a44978fbd1850573c193f2716cd39084357b79f3ccd5832"
+        },
+        "render/beauty/C001_BEAUTY_0003.png": {
+          "bytes": 40073,
+          "sha256": "96404bb9fd78e12850d41985631533ae081dddb3c701cdd1e4733047b22c3a24"
+        },
+        "render/depth/C001_DEPTH_0001.exr": {
+          "bytes": 925192,
+          "sha256": "80626263cdf8ae442a0010e6affd70994cc2888f1e45b0ab8cda06d1bed1da93"
+        },
+        "render/depth/C001_DEPTH_0002.exr": {
+          "bytes": 925192,
+          "sha256": "2c0cfb40a249dbc0b4912996b48107f1ca8d3edb6f38cf6f35b01156654f34c4"
+        },
+        "render/depth/C001_DEPTH_0003.exr": {
+          "bytes": 925192,
+          "sha256": "2253d7f70f2239d7e5b7c78f83154ef8e9fae10548783b1dc3a3ac70c34a91ab"
+        },
+        "render/line/C001_LINE_0001.png": {
+          "bytes": 24163,
+          "sha256": "322a7c5d0a3517b0cdfd3ad9271127dc52b979a96a87102e8e10747345a97d06"
+        },
+        "render/line/C001_LINE_0002.png": {
+          "bytes": 23964,
+          "sha256": "02cafdfd753d82c0ae1deeefc5ec3f49f75d42bfefab22caa935e64e09346c5d"
+        },
+        "render/line/C001_LINE_0003.png": {
+          "bytes": 24262,
+          "sha256": "87bb4dd976e7ac4db7b3871bd4cbbbc8e79db82e387b83b6e02b1dc5092f76ae"
+        },
+        "render/shadow/C001_SHADOW_0001.png": {
+          "bytes": 34228,
+          "sha256": "e4ef34aa694e1bd238c6df2dfe0463f69ad4be9d0560789668f8cc46686d65fc"
+        },
+        "render/shadow/C001_SHADOW_0002.png": {
+          "bytes": 34310,
+          "sha256": "2ee89cfd70e1bf20dec35245a0c784ac6760755b6fb9885a60f5d3b140e326bc"
+        },
+        "render/shadow/C001_SHADOW_0003.png": {
+          "bytes": 34329,
+          "sha256": "b39529b27826b9eaee1204bc2b35bcf337210887d9b8834391c162d231a72f56"
+        }
+      },
+      "overwrite": {
+        "result": "RuntimeError from cancelled operator",
+        "message": "Error: Existing Package Is Protected: This version already contains render/user data, so Build Package will not overwrite it. Why: CutBridge protects completed or in-progress package payload from destructive same-version rebuilds. Can I continue? Yes for rendering the already-built package; no for rebuilding this same version. Fix: Continue Render Animation without Build Package, or increment Version for a new revision. [EN] Package Native025_EP01_SC010_C001_T01_V002 contains render/user data (render/beauty/C001_BEAUTY_0001.png) and will not be overwritten. Fix: For a new revision, increment Version. To keep rendering this already-built version, do not run Build Package again.\n"
+      },
+      "mismatch_build": {
+        "result": "RuntimeError from cancelled operator",
+        "message": "Error: Existing Package Is Protected: This version already contains render/user data, so Build Package will not overwrite it. Why: CutBridge protects completed or in-progress package payload from destructive same-version rebuilds. Can I continue? Yes for rendering the already-built package; no for rebuilding this same version. Fix: Continue Render Animation without Build Package, or increment Version for a new revision. [EN] Package Native025_EP01_SC010_C001_T01_V002 contains render/user data (render/beauty/C001_BEAUTY_0001.png) and will not be overwritten. Fix: For a new revision, increment Version. To keep rendering this already-built version, do not run Build Package again.\n"
+      }
+    },
+    {
+      "version": 3,
+      "root": "C:\\Evidence\\verification-output\\native-blender\\packages\\Native025_EP01_SC010_C001_T01_V003",
+      "manifest_sha256": "6aa730ce0a518831f968e7cfeb34396faf72cf19efc8b64cdc9eda58ec841835",
+      "fixture_sha256": "8784d61f96f7cfe86810f37e8b2a13458328ec2610b370e7def646bd49f4d022",
+      "handoff_comparison_sha256": "8108318270afd4267e127d075d74b6118dc76160e0a16b0280374ee681ba1fd7",
+      "rendered": [
+        "render/beauty/C001_BEAUTY_0001.png",
+        "render/beauty/C001_BEAUTY_0002.png",
+        "render/beauty/C001_BEAUTY_0003.png",
+        "render/depth/C001_DEPTH_0001.exr",
+        "render/depth/C001_DEPTH_0002.exr",
+        "render/depth/C001_DEPTH_0003.exr",
+        "render/line/C001_LINE_0001.png",
+        "render/line/C001_LINE_0002.png",
+        "render/line/C001_LINE_0003.png",
+        "render/shadow/C001_SHADOW_0001.png",
+        "render/shadow/C001_SHADOW_0002.png",
+        "render/shadow/C001_SHADOW_0003.png"
+      ],
+      "files": {
+        "cutbridge.json": {
+          "bytes": 7485,
+          "sha256": "6aa730ce0a518831f968e7cfeb34396faf72cf19efc8b64cdc9eda58ec841835"
+        },
+        "render/beauty/C001_BEAUTY_0001.png": {
+          "bytes": 39917,
+          "sha256": "bc83ebe4120baebc5c772d1b301455c7531d9afb59a0ee26d80c4be810c5d9d0"
+        },
+        "render/beauty/C001_BEAUTY_0002.png": {
+          "bytes": 39933,
+          "sha256": "1ed433a266a0a2b59f7bcb1b3ad23d9807592edf0f4d35372b554829bd30ec09"
+        },
+        "render/beauty/C001_BEAUTY_0003.png": {
+          "bytes": 40452,
+          "sha256": "cba39269d268778325a5fd992b4081d533d1732f5e8cf1918e58da6297c254fa"
+        },
+        "render/depth/C001_DEPTH_0001.exr": {
+          "bytes": 925192,
+          "sha256": "c5ef6977de283c9d5b6cf3115bd9434753888b4b9431bbcaaa00d96dae09a36c"
+        },
+        "render/depth/C001_DEPTH_0002.exr": {
+          "bytes": 925192,
+          "sha256": "c7d22301e9f0b935bfa593e014da039a5509c326a0beb0498e968f99767ea905"
+        },
+        "render/depth/C001_DEPTH_0003.exr": {
+          "bytes": 925192,
+          "sha256": "2ce1075e89ab7cdf8803f4fbe6a8c6401d838fb923e5b3990d3374115cbfb832"
+        },
+        "render/line/C001_LINE_0001.png": {
+          "bytes": 23974,
+          "sha256": "e38d4f10de9b055c7fe1d42876927a26125204ed111f6c7c0a5619d4989bba14"
+        },
+        "render/line/C001_LINE_0002.png": {
+          "bytes": 24227,
+          "sha256": "e5074385c3f6a2eed736bde292913d027997925a2bdda8470093234f8816e2e9"
+        },
+        "render/line/C001_LINE_0003.png": {
+          "bytes": 24079,
+          "sha256": "0f67f3c6a0ae55ef150a94fd5ea567deb47ddab97d6f7783938b40b32a47b6e4"
+        },
+        "render/shadow/C001_SHADOW_0001.png": {
+          "bytes": 34281,
+          "sha256": "541e02731fec604d19bf1b003766fe59e072f737889895ee5a2cbc9167f90b79"
+        },
+        "render/shadow/C001_SHADOW_0002.png": {
+          "bytes": 34237,
+          "sha256": "df25f4fc6298c9547350ad2bd5518cf0fceec79e0d296109196487332ad62c36"
+        },
+        "render/shadow/C001_SHADOW_0003.png": {
+          "bytes": 34246,
+          "sha256": "2fa8560d5d58a18093308cf5a88113651f491bdb97036f144a162453dfe8bee0"
+        }
+      },
+      "overwrite": {
+        "result": "RuntimeError from cancelled operator",
+        "message": "Error: Existing Package Is Protected: This version already contains render/user data, so Build Package will not overwrite it. Why: CutBridge protects completed or in-progress package payload from destructive same-version rebuilds. Can I continue? Yes for rendering the already-built package; no for rebuilding this same version. Fix: Continue Render Animation without Build Package, or increment Version for a new revision. [EN] Package Native025_EP01_SC010_C001_T01_V003 contains render/user data (render/beauty/C001_BEAUTY_0001.png) and will not be overwritten. Fix: For a new revision, increment Version. To keep rendering this already-built version, do not run Build Package again.\n"
+      },
+      "mismatch_build": {
+        "result": "RuntimeError from cancelled operator",
+        "message": "Error: Existing Package Is Protected: This version already contains render/user data, so Build Package will not overwrite it. Why: CutBridge protects completed or in-progress package payload from destructive same-version rebuilds. Can I continue? Yes for rendering the already-built package; no for rebuilding this same version. Fix: Continue Render Animation without Build Package, or increment Version for a new revision. [EN] Package Native025_EP01_SC010_C001_T01_V003 contains render/user data (render/beauty/C001_BEAUTY_0001.png) and will not be overwritten. Fix: For a new revision, increment Version. To keep rendering this already-built version, do not run Build Package again.\n"
+      }
+    }
+  ],
+  "inputs": {
+    "candidate_json": {
+      "path": "C:\\Review\\candidate.json",
+      "sha256": "76993e7ed5801168037a0d06b16f66501f96750a3c350b482f5bffb8da4b16eb"
+    },
+    "blender_zip": {
+      "path": "C:\\Artifacts\\CutBridge-Blender-v0.2.5.zip",
+      "sha256": "864131a58a1c56e4364c3e435ef1433fbda415515be7292770212bfdc4c31bfe"
+    },
+    "harness": {
+      "path": "C:\\NativeBlenderInput\\native_blender.py",
+      "sha256": "037592c7bc7b7fb91273aec067a3b643f125e72ca31277249dcd97edb7c077dd"
+    },
+    "host_binary_sha256": "f141a3c5754500e6f84361099a4cd53f0bb7662b6a0d2cfaaa8fbb63e92234a0",
+    "installed_files": {
+      "__init__.py": "e0d29c3f36edacc5d4a8e85e97399ee2375c5af7230bbc8a413083900b709889",
+      "blender_manifest.toml": "19df7cd0f3fd5ebbc3978c669cdd83cb540c9055779cd208b09cffd39300e2ee",
+      "camera_handoff.py": "996a5b84c7c940959c2cab0ee6078bc5ae56f98b1dd07cfe3b7f81abd464a7a6",
+      "core.py": "7d3cbfcc100f07c1c4209819bc19852542c52b04bc082bec692581828139c3a1",
+      "diagnostics.py": "ec01a5ae0aed2baf908eceaf3a214b6b36cbdfcd38456b16f4356363ff650f1b",
+      "environment.py": "ceee2249a62fc8e40dd4433ae269e67278691cd144eb714be3961eb41c4ec48f",
+      "handoff_3d.py": "b0d28034e9bc93fa76b4adf85a22f46a038fd32711fbc9afc67ff33db71f2076",
+      "help_content.py": "6739995fde6acc74df40a4b148d2a7233c48cbb4606d683bc512eb27fb06f4f4",
+      "help_ops.py": "7ebe72560f48ea98ca321d3b56c7956238fb16a273e8b6ad09f67302efb35508",
+      "line_preflight.py": "c0635aa8357cdcc11bcd983c6a07495deafce53f232f753aa9e08b32cfdd7f65",
+      "localization.py": "315260adf43d69bac6984758b9ea1820bb28f10b8c97bc75ab07aa252182f174",
+      "operators.py": "e7650ff5dd9a1b039805f31c2ef745cb592e8003c858a3d7c01f08759876a798",
+      "package_safety.py": "0136901157867702f108c7e163714c96ca323956ffee13f16c9d775309d1b648",
+      "preferences.py": "79c8c88826102047187d5ed45b9145ac8e0156dd66bdd23fcb6db0f7bc3acb61",
+      "presets.py": "f7a75014da711138ea122ad74a87284d306a23e8da9724a1b7098b5afb8d1ad2",
+      "properties.py": "0f7a5b9c6364135c4af7cb4297d48b76af9afbace2e153f9a2953bbd29ad5b73",
+      "shadow_preflight.py": "d804f09c05f1eae57dd75d66462ccd3769b2f63b90ca5a4c26bbdf12a93910bf",
+      "ui.py": "a3a9a8e6f86437bffc0f5441e5287f01fac94f9c2eae8d710229a2d91d68bad7",
+      "update_ops.py": "49ccd26a555abe3c8a457bc76462cd0cb6646d2bb8616f78c611507e9f0c797f",
+      "updates.py": "806535075c34bf65d24bf3d544ca0ffc8232a3e144374a61270e844a090cccac",
+      "version.py": "90b27cae138562519d6e62dce0de06a1ce633fad90827b358d513cde49ffd08f",
+      "LICENSE": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    }
+  },
+  "report_time_utc": "2026-10-16T08:37:36.107712+00:00",
+  "writable_environment_paths": {
+    "PYTHONPYCACHEPREFIX": "C:\\Evidence\\verification-output\\pycache",
+    "TEMP": "C:\\Evidence\\verification-output\\tmp",
+    "TMP": "C:\\Evidence\\verification-output\\tmp",
+    "TMPDIR": "C:\\Evidence\\verification-output\\tmp",
+    "BLENDER_USER_CONFIG": "C:\\Evidence\\verification-output\\config",
+    "BLENDER_USER_DATAFILES": "C:\\Evidence\\verification-output\\data",
+    "BLENDER_USER_EXTENSIONS": "C:\\Evidence\\verification-output\\extensions"
+  },
+  "python_pycache_prefix": null,
+  "mapping_fault_message": "LINE mapping is unavailable for render engine BLENDER_EEVEE; expected Render Layers output Freestyle. Disable the pass or change renderer/View Layer settings.",
+  "fixture_files": {
+    "fixture-V001.blend": {
+      "bytes": 102455,
+      "sha256": "7d2f7e12758243d00ad11440981fdb51be81d413fe3f8277332fca6c28345f57"
+    },
+    "fixture-V002.blend": {
+      "bytes": 104422,
+      "sha256": "841df0e8f22e5ce7b4e2a3a5af58716eb5c6ddf6cc90622c49266c6bf4bea892"
+    },
+    "fixture-V003.blend": {
+      "bytes": 104507,
+      "sha256": "8784d61f96f7cfe86810f37e8b2a13458328ec2610b370e7def646bd49f4d022"
+    },
+    "reopen-V003.blend": {
+      "bytes": 104395,
+      "sha256": "75767c361c7c873a5b2e86810dbc359aab99d14b84e1321b22f4f820b8dc2fdb"
+    }
+  },
+  "fixture_contract_sha256": "95c7e654ffb6269444483c8fce67b6e9d790d599bd265bc374af03855d5b82b4",
+  "scope_limitations": [
+    "Scripted native scope only",
+    "GUI visual/install-dialog/direct-button inspection NOT_EXECUTED",
+    "Fresh-process reopen NOT_EXECUTED",
+    "AE execution and S14B NOT_EXECUTED",
+    "Launcher must independently validate isolation, input manifests and actual normal exit"
+  ],
+  "normal_quit_requested_utc": "2026-10-16T08:37:36.107687+00:00",
+  "normal_exit_observed": "Launcher must record actual exit code; request is not exit evidence"
+}

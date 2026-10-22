@@ -15,17 +15,18 @@ function makeRuntime({injectLocalization = true, savedLocale = null} = {}) {
   let projectMutationCount = 0;
 
   function attachContainerApi(control) {
-    control.add = function(type, unused, textOrItems) { return makeControl(type, textOrItems); };
+    control.add = function(type, unused, textOrItems, properties) { return makeControl(type, textOrItems, properties); };
     return control;
   }
 
-  function makeControl(type, textOrItems) {
+  function makeControl(type, textOrItems, properties) {
     const control = {
       type,
       text: Array.isArray(textOrItems) ? '' : String(textOrItems == null ? '' : textOrItems),
       items: Array.isArray(textOrItems) ? textOrItems.map((text, index) => ({text, index})) : [],
       graphics: {font: {name: 'Arial'}},
       preferredSize: {},
+      properties,
       alignment: null,
       alignChildren: [],
       orientation: '',
@@ -54,7 +55,7 @@ function makeRuntime({injectLocalization = true, savedLocale = null} = {}) {
     this.spacing = 0;
     this.margins = 0;
   }
-  Window.prototype.add = function(type, unused, textOrItems) { return makeControl(type, textOrItems); };
+  Window.prototype.add = function(type, unused, textOrItems, properties) { return makeControl(type, textOrItems, properties); };
   Window.prototype.center = function() {};
   Window.prototype.show = function() {};
   function Panel() {}
@@ -107,7 +108,11 @@ function makeRuntime({injectLocalization = true, savedLocale = null} = {}) {
   assert.ok(h.staticTexts().includes('パッケージ'), 'package section heading must be visible');
   assert.ok(h.staticTexts().includes('ワークフロー'), 'workflow section heading must be visible');
   assert.ok(h.staticTexts().some((text) => text.includes('状態: 警告 / WARNING')), 'initial status hierarchy must be visible');
-  assert.ok(h.staticTexts().some((text) => text.includes('読み込みだけではAEプロジェクトのBuildや変更は行いません')), 'Load description must explain consequence');
+  assert.ok(h.controls.some((c) => (c.helpTip || '').includes('読み込みだけではAEプロジェクトのBuildや変更は行いません')), 'Load description must explain consequence');
+  const results = h.controls.find(c => c.type === 'edittext');
+  assert.ok(results.properties.multiline && results.properties.readonly && results.properties.scrolling);
+  assert.deepEqual(Array.from(results.alignment), ['fill', 'fill']);
+  assert.equal(h.controls.filter(c => c.type === 'group').length, 4, 'four compact workflow rows');
   assert.equal(h.projectMutationCount(), 0, 'opening the panel must not mutate project state');
 
   h.helpButtons()[0].onClick();
@@ -120,7 +125,7 @@ function makeRuntime({injectLocalization = true, savedLocale = null} = {}) {
   assert.deepEqual(h.buttonTexts(), ['1. Import Package', '2. Build Comp', '3. Run QC', '4. Update Revision']);
   assert.equal(h.settingsStore['CutBridge:ui_locale'], 'EN');
   assert.ok(h.staticTexts().some((text) => text.includes('Status: WARNING')), 'English status hierarchy must refresh');
-  assert.ok(h.staticTexts().some((text) => text.includes('Loading reads package metadata')), 'English descriptions must refresh');
+  assert.ok(h.controls.some((c) => (c.helpTip || '').includes('Loading reads package metadata')), 'English descriptions must refresh');
   assert.equal(h.projectMutationCount(), 0, 'locale switch must remain UX-only');
 }
 

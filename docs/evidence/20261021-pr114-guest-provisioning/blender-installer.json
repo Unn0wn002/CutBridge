@@ -1,0 +1,10 @@
+{
+  "source": "https://download.blender.org/release/Blender5.2/blender-5.2.2-windows-x64.msi",
+  "path": "C:\\Temp\\CutBridge-guest-setup-20261021-r1\\installers\\blender-5.2.2-windows-x64.msi",
+  "bytes": 364822528,
+  "sha256": "8dac2751ebe8e3867327eec52f1ef9b344c0a27499bb6221a301b4b35f2828d1",
+  "signature": "Valid",
+  "signature_message": "Signature verified.",
+  "signer": "CN=Blender Foundation, O=Blender Foundation, L=Amsterdam, S=Noord-Holland, C=NL",
+  "executed": false
+}

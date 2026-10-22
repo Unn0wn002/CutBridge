@@ -1,6 +1,8 @@
 # S10A — Camera / Null Handoff Contract Investigation
 
-Status: **investigation / contract only**
+Status: **historical S10A investigation / design rationale**
+
+For the shipped manifest shape and implemented channels, use [HANDOFF_3D.md](HANDOFF_3D.md). The proposal and advancement rules below record the earlier investigation, not a claim that every proposed feature shipped. Current AE writes Camera Position/Point of Interest/Zoom and Null Position/Scale; it does not reconstruct camera roll or Empty rotation. QC+ does not validate those channel values or projection parity.
 
 This document records the evidence-backed contract CutBridge will use before any Blender → After Effects camera/null importer behavior is allowed to ship.
 

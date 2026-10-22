@@ -1,0 +1,894 @@
+[
+  {
+    "FullName": "packages/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/AAM/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/AAM/IPC/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ACC/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ACC/ACCC/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ACC64/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ACC64/3DI/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ACC64/ACCC64/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ACC64/Apps/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ACC64/Assets/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ACC64/CCDContainer/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ACC64/CCDContainerJS/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ACC64/CCLibs/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ACC64/CloudDocs/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ACC64/CloudSync/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ACC64/Diagnostics/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ACC64/Fonts/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ACC64/Home/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ACC64/LocalFiles/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ACC64/OneUp/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ACC64/Plugins/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ACC64/ShareSheet/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ACC64/Stock/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ACC64/StockAssets/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ACC64/UAM/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ACC64/WebFS/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC/ADCUtils/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC/AdobeGenuineClient/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC/ADS/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC/AppsPanel/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC/Core/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC/CoreExt/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC/DEBox/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC/ElevationManager/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC/FilesPanel/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC/FontsPanel/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC/HDBox/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC/IPCBox/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC/LCC/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC/NHEX/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC/Notifications/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC/RemoteCoreExts/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC/Runtime/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC/TCC/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC64/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC64/ADBox/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC64/CEF64/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC64/Core64/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC64/CoreExt64/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC64/GrowthSDK/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC64/GrowthSDKHelper/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC64/HEX64/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC64/LiveType/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC64/NGL/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC64/NVP/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC64/TCC64/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC64/UpdateNotifier/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/ADC64/UPI64/",
+    "Length": 0
+  },
+  {
+    "FullName": "resources/",
+    "Length": 0
+  },
+  {
+    "FullName": "packages/AAM/IPC/IPC.pima",
+    "Length": 635567
+  },
+  {
+    "FullName": "packages/AAM/IPC/IPC.pimx",
+    "Length": 58852
+  },
+  {
+    "FullName": "packages/AAM/IPC/IPC.sig",
+    "Length": 1809
+  },
+  {
+    "FullName": "packages/ACC/ACCC/ACCC.pima",
+    "Length": 2930639
+  },
+  {
+    "FullName": "packages/ACC/ACCC/ACCC.pimx",
+    "Length": 23411
+  },
+  {
+    "FullName": "packages/ACC/ACCC/ACCC.sig",
+    "Length": 1812
+  },
+  {
+    "FullName": "packages/ACC64/3DI/3DI.pima",
+    "Length": 1601798
+  },
+  {
+    "FullName": "packages/ACC64/3DI/3DI.pimx",
+    "Length": 1057
+  },
+  {
+    "FullName": "packages/ACC64/3DI/3DI.sig",
+    "Length": 1809
+  },
+  {
+    "FullName": "packages/ACC64/ACCC64/ACCC64.pima",
+    "Length": 19458191
+  },
+  {
+    "FullName": "packages/ACC64/ACCC64/ACCC64.pimx",
+    "Length": 4399
+  },
+  {
+    "FullName": "packages/ACC64/ACCC64/ACCC64.sig",
+    "Length": 1816
+  },
+  {
+    "FullName": "packages/ACC64/Apps/Apps.pima",
+    "Length": 4254750
+  },
+  {
+    "FullName": "packages/ACC64/Apps/Apps.pimx",
+    "Length": 1060
+  },
+  {
+    "FullName": "packages/ACC64/Apps/Apps.sig",
+    "Length": 1811
+  },
+  {
+    "FullName": "packages/ACC64/Assets/Assets.pima",
+    "Length": 698436
+  },
+  {
+    "FullName": "packages/ACC64/Assets/Assets.pimx",
+    "Length": 1065
+  },
+  {
+    "FullName": "packages/ACC64/Assets/Assets.sig",
+    "Length": 1814
+  },
+  {
+    "FullName": "packages/ACC64/CCDContainer/CCDContainer.pima",
+    "Length": 488814
+  },
+  {
+    "FullName": "packages/ACC64/CCDContainer/CCDContainer.pimx",
+    "Length": 1776
+  },
+  {
+    "FullName": "packages/ACC64/CCDContainer/CCDContainer.sig",
+    "Length": 1826
+  },
+  {
+    "FullName": "packages/ACC64/CCDContainerJS/CCDContainerJS.pima",
+    "Length": 6588156
+  },
+  {
+    "FullName": "packages/ACC64/CCDContainerJS/CCDContainerJS.pimx",
+    "Length": 1085
+  },
+  {
+    "FullName": "packages/ACC64/CCDContainerJS/CCDContainerJS.sig",
+    "Length": 1831
+  },
+  {
+    "FullName": "packages/ACC64/CCLibs/CCLibs.pima",
+    "Length": 11209195
+  },
+  {
+    "FullName": "packages/ACC64/CCLibs/CCLibs.pimx",
+    "Length": 1074
+  },
+  {
+    "FullName": "packages/ACC64/CCLibs/CCLibs.sig",
+    "Length": 1816
+  },
+  {
+    "FullName": "packages/ACC64/CloudDocs/CloudDocs.pima",
+    "Length": 1733490
+  },
+  {
+    "FullName": "packages/ACC64/CloudDocs/CloudDocs.pimx",
+    "Length": 1074
+  },
+  {
+    "FullName": "packages/ACC64/CloudDocs/CloudDocs.sig",
+    "Length": 1821
+  },
+  {
+    "FullName": "packages/ACC64/CloudSync/CloudSync.pima",
+    "Length": 204685
+  },
+  {
+    "FullName": "packages/ACC64/CloudSync/CloudSync.pimx",
+    "Length": 1073
+  },
+  {
+    "FullName": "packages/ACC64/CloudSync/CloudSync.sig",
+    "Length": 1820
+  },
+  {
+    "FullName": "packages/ACC64/Diagnostics/Diagnostics.pima",
+    "Length": 1943853
+  },
+  {
+    "FullName": "packages/ACC64/Diagnostics/Diagnostics.pimx",
+    "Length": 1859
+  },
+  {
+    "FullName": "packages/ACC64/Diagnostics/Diagnostics.sig",
+    "Length": 1825
+  },
+  {
+    "FullName": "packages/ACC64/Fonts/Fonts.pima",
+    "Length": 616199
+  },
+  {
+    "FullName": "packages/ACC64/Fonts/Fonts.pimx",
+    "Length": 1062
+  },
+  {
+    "FullName": "packages/ACC64/Fonts/Fonts.sig",
+    "Length": 1812
+  },
+  {
+    "FullName": "packages/ACC64/Home/Home.pima",
+    "Length": 1019565
+  },
+  {
+    "FullName": "packages/ACC64/Home/Home.pimx",
+    "Length": 1059
+  },
+  {
+    "FullName": "packages/ACC64/Home/Home.sig",
+    "Length": 1811
+  },
+  {
+    "FullName": "packages/ACC64/LocalFiles/LocalFiles.pima",
+    "Length": 1024236
+  },
+  {
+    "FullName": "packages/ACC64/LocalFiles/LocalFiles.pimx",
+    "Length": 1077
+  },
+  {
+    "FullName": "packages/ACC64/LocalFiles/LocalFiles.sig",
+    "Length": 1823
+  },
+  {
+    "FullName": "packages/ACC64/OneUp/OneUp.pima",
+    "Length": 10660348
+  },
+  {
+    "FullName": "packages/ACC64/OneUp/OneUp.pimx",
+    "Length": 1063
+  },
+  {
+    "FullName": "packages/ACC64/OneUp/OneUp.sig",
+    "Length": 1814
+  },
+  {
+    "FullName": "packages/ACC64/Plugins/Plugins.pima",
+    "Length": 1278589
+  },
+  {
+    "FullName": "packages/ACC64/Plugins/Plugins.pimx",
+    "Length": 1068
+  },
+  {
+    "FullName": "packages/ACC64/Plugins/Plugins.sig",
+    "Length": 1817
+  },
+  {
+    "FullName": "packages/ACC64/ShareSheet/ShareSheet.pima",
+    "Length": 11751
+  },
+  {
+    "FullName": "packages/ACC64/ShareSheet/ShareSheet.pimx",
+    "Length": 1083
+  },
+  {
+    "FullName": "packages/ACC64/ShareSheet/ShareSheet.sig",
+    "Length": 1821
+  },
+  {
+    "FullName": "packages/ACC64/Stock/Stock.pima",
+    "Length": 576155
+  },
+  {
+    "FullName": "packages/ACC64/Stock/Stock.pimx",
+    "Length": 1060
+  },
+  {
+    "FullName": "packages/ACC64/Stock/Stock.sig",
+    "Length": 1812
+  },
+  {
+    "FullName": "packages/ACC64/StockAssets/StockAssets.pima",
+    "Length": 976124
+  },
+  {
+    "FullName": "packages/ACC64/StockAssets/StockAssets.pimx",
+    "Length": 1080
+  },
+  {
+    "FullName": "packages/ACC64/StockAssets/StockAssets.sig",
+    "Length": 1824
+  },
+  {
+    "FullName": "packages/ACC64/UAM/UAM.pima",
+    "Length": 1118419
+  },
+  {
+    "FullName": "packages/ACC64/UAM/UAM.pimx",
+    "Length": 1063
+  },
+  {
+    "FullName": "packages/ACC64/UAM/UAM.sig",
+    "Length": 1809
+  },
+  {
+    "FullName": "packages/ACC64/WebFS/WebFS.pima",
+    "Length": 811956
+  },
+  {
+    "FullName": "packages/ACC64/WebFS/WebFS.pimx",
+    "Length": 1441
+  },
+  {
+    "FullName": "packages/ACC64/WebFS/WebFS.sig",
+    "Length": 1812
+  },
+  {
+    "FullName": "packages/ADC/ADCUtils/ADCUtils.pima",
+    "Length": 6450494
+  },
+  {
+    "FullName": "packages/ADC/ADCUtils/ADCUtils.pimx",
+    "Length": 4580
+  },
+  {
+    "FullName": "packages/ADC/ADCUtils/ADCUtils.sig",
+    "Length": 1819
+  },
+  {
+    "FullName": "packages/ADC/AdobeGenuineClient/AdobeGenuineClient.pima",
+    "Length": 5208428
+  },
+  {
+    "FullName": "packages/ADC/AdobeGenuineClient/AdobeGenuineClient.pimx",
+    "Length": 2328
+  },
+  {
+    "FullName": "packages/ADC/AdobeGenuineClient/AdobeGenuineClient.sig",
+    "Length": 1839
+  },
+  {
+    "FullName": "packages/ADC/ADS/ADS.pima",
+    "Length": 6234327
+  },
+  {
+    "FullName": "packages/ADC/ADS/ADS.pimx",
+    "Length": 4361
+  },
+  {
+    "FullName": "packages/ADC/ADS/ADS.sig",
+    "Length": 1809
+  },
+  {
+    "FullName": "packages/ADC/AppsPanel/AppsPanel.pima",
+    "Length": 3841239
+  },
+  {
+    "FullName": "packages/ADC/AppsPanel/AppsPanel.pimx",
+    "Length": 18829
+  },
+  {
+    "FullName": "packages/ADC/AppsPanel/AppsPanel.sig",
+    "Length": 1822
+  },
+  {
+    "FullName": "packages/ADC/Core/Core.pima",
+    "Length": 1533553
+  },
+  {
+    "FullName": "packages/ADC/Core/Core.pimx",
+    "Length": 1768
+  },
+  {
+    "FullName": "packages/ADC/Core/Core.sig",
+    "Length": 1811
+  },
+  {
+    "FullName": "packages/ADC/CoreExt/CoreExt.pima",
+    "Length": 1616140
+  },
+  {
+    "FullName": "packages/ADC/CoreExt/CoreExt.pimx",
+    "Length": 2994
+  },
+  {
+    "FullName": "packages/ADC/CoreExt/CoreExt.sig",
+    "Length": 1817
+  },
+  {
+    "FullName": "packages/ADC/DEBox/DEBox.pima",
+    "Length": 12383948
+  },
+  {
+    "FullName": "packages/ADC/DEBox/DEBox.pimx",
+    "Length": 10410
+  },
+  {
+    "FullName": "packages/ADC/DEBox/DEBox.sig",
+    "Length": 1815
+  },
+  {
+    "FullName": "packages/ADC/ElevationManager/ElevationManager.pima",
+    "Length": 1313488
+  },
+  {
+    "FullName": "packages/ADC/ElevationManager/ElevationManager.pimx",
+    "Length": 2925
+  },
+  {
+    "FullName": "packages/ADC/ElevationManager/ElevationManager.sig",
+    "Length": 1835
+  },
+  {
+    "FullName": "packages/ADC/FilesPanel/FilesPanel.pima",
+    "Length": 2745489
+  },
+  {
+    "FullName": "packages/ADC/FilesPanel/FilesPanel.pimx",
+    "Length": 20228
+  },
+  {
+    "FullName": "packages/ADC/FilesPanel/FilesPanel.sig",
+    "Length": 1824
+  },
+  {
+    "FullName": "packages/ADC/FontsPanel/FontsPanel.pima",
+    "Length": 1217726
+  },
+  {
+    "FullName": "packages/ADC/FontsPanel/FontsPanel.pimx",
+    "Length": 18478
+  },
+  {
+    "FullName": "packages/ADC/FontsPanel/FontsPanel.sig",
+    "Length": 1824
+  },
+  {
+    "FullName": "packages/ADC/HDBox/HDBox.pima",
+    "Length": 14795357
+  },
+  {
+    "FullName": "packages/ADC/HDBox/HDBox.pimx",
+    "Length": 7199
+  },
+  {
+    "FullName": "packages/ADC/HDBox/HDBox.sig",
+    "Length": 1814
+  },
+  {
+    "FullName": "packages/ADC/IPCBox/IPCBox.pima",
+    "Length": 1832051
+  },
+  {
+    "FullName": "packages/ADC/IPCBox/IPCBox.pimx",
+    "Length": 3339
+  },
+  {
+    "FullName": "packages/ADC/IPCBox/IPCBox.sig",
+    "Length": 1815
+  },
+  {
+    "FullName": "packages/ADC/LCC/LCC.pima",
+    "Length": 11688491
+  },
+  {
+    "FullName": "packages/ADC/LCC/LCC.pimx",
+    "Length": 4861
+  },
+  {
+    "FullName": "packages/ADC/LCC/LCC.sig",
+    "Length": 1810
+  },
+  {
+    "FullName": "packages/ADC/NHEX/NHEX.pima",
+    "Length": 329353
+  },
+  {
+    "FullName": "packages/ADC/NHEX/NHEX.pimx",
+    "Length": 1706
+  },
+  {
+    "FullName": "packages/ADC/NHEX/NHEX.sig",
+    "Length": 1810
+  },
+  {
+    "FullName": "packages/ADC/Notifications/Notifications.pima",
+    "Length": 4707787
+  },
+  {
+    "FullName": "packages/ADC/Notifications/Notifications.pimx",
+    "Length": 4146
+  },
+  {
+    "FullName": "packages/ADC/Notifications/Notifications.sig",
+    "Length": 1829
+  },
+  {
+    "FullName": "packages/ADC/RemoteCoreExts/RemoteCoreExts.pima",
+    "Length": 2313404
+  },
+  {
+    "FullName": "packages/ADC/RemoteCoreExts/RemoteCoreExts.pimx",
+    "Length": 1826
+  },
+  {
+    "FullName": "packages/ADC/RemoteCoreExts/RemoteCoreExts.sig",
+    "Length": 1831
+  },
+  {
+    "FullName": "packages/ADC/Runtime/Runtime.pima",
+    "Length": 25374915
+  },
+  {
+    "FullName": "packages/ADC/Runtime/Runtime.pimx",
+    "Length": 2592
+  },
+  {
+    "FullName": "packages/ADC/Runtime/Runtime.sig",
+    "Length": 1818
+  },
+  {
+    "FullName": "packages/ADC/TCC/TCC.pima",
+    "Length": 2916568
+  },
+  {
+    "FullName": "packages/ADC/TCC/TCC.pimx",
+    "Length": 3150
+  },
+  {
+    "FullName": "packages/ADC/TCC/TCC.sig",
+    "Length": 1809
+  },
+  {
+    "FullName": "packages/ADC64/ADBox/ADBox.pima",
+    "Length": 60461
+  },
+  {
+    "FullName": "packages/ADC64/ADBox/ADBox.pimx",
+    "Length": 1420
+  },
+  {
+    "FullName": "packages/ADC64/ADBox/ADBox.sig",
+    "Length": 1811
+  },
+  {
+    "FullName": "packages/ADC64/CEF64/CEF64.pima",
+    "Length": 114056380
+  },
+  {
+    "FullName": "packages/ADC64/CEF64/CEF64.pimx",
+    "Length": 3549
+  },
+  {
+    "FullName": "packages/ADC64/CEF64/CEF64.sig",
+    "Length": 1815
+  },
+  {
+    "FullName": "packages/ADC64/Core64/Core64.pima",
+    "Length": 6010029
+  },
+  {
+    "FullName": "packages/ADC64/Core64/Core64.pimx",
+    "Length": 3693
+  },
+  {
+    "FullName": "packages/ADC64/Core64/Core64.sig",
+    "Length": 1815
+  },
+  {
+    "FullName": "packages/ADC64/CoreExt64/CoreExt64.pima",
+    "Length": 1816184
+  },
+  {
+    "FullName": "packages/ADC64/CoreExt64/CoreExt64.pimx",
+    "Length": 2998
+  },
+  {
+    "FullName": "packages/ADC64/CoreExt64/CoreExt64.sig",
+    "Length": 1821
+  },
+  {
+    "FullName": "packages/ADC64/GrowthSDK/GrowthSDK.pima",
+    "Length": 2469339
+  },
+  {
+    "FullName": "packages/ADC64/GrowthSDK/GrowthSDK.pimx",
+    "Length": 1445
+  },
+  {
+    "FullName": "packages/ADC64/GrowthSDK/GrowthSDK.sig",
+    "Length": 1821
+  },
+  {
+    "FullName": "packages/ADC64/GrowthSDKHelper/GrowthSDKHelper.pima",
+    "Length": 523076
+  },
+  {
+    "FullName": "packages/ADC64/GrowthSDKHelper/GrowthSDKHelper.pimx",
+    "Length": 2274
+  },
+  {
+    "FullName": "packages/ADC64/GrowthSDKHelper/GrowthSDKHelper.sig",
+    "Length": 1832
+  },
+  {
+    "FullName": "packages/ADC64/HEX64/HEX64.pima",
+    "Length": 1221007
+  },
+  {
+    "FullName": "packages/ADC64/HEX64/HEX64.pimx",
+    "Length": 1702
+  },
+  {
+    "FullName": "packages/ADC64/HEX64/HEX64.sig",
+    "Length": 1813
+  },
+  {
+    "FullName": "packages/ADC64/LiveType/LiveType.pima",
+    "Length": 2731214
+  },
+  {
+    "FullName": "packages/ADC64/LiveType/LiveType.pimx",
+    "Length": 3157
+  },
+  {
+    "FullName": "packages/ADC64/LiveType/LiveType.sig",
+    "Length": 1819
+  },
+  {
+    "FullName": "packages/ADC64/NGL/NGL.pima",
+    "Length": 1508042
+  },
+  {
+    "FullName": "packages/ADC64/NGL/NGL.pimx",
+    "Length": 1807
+  },
+  {
+    "FullName": "packages/ADC64/NGL/NGL.sig",
+    "Length": 1809
+  },
+  {
+    "FullName": "packages/ADC64/NVP/NVP.pima",
+    "Length": 607302
+  },
+  {
+    "FullName": "packages/ADC64/NVP/NVP.pimx",
+    "Length": 2161
+  },
+  {
+    "FullName": "packages/ADC64/NVP/NVP.sig",
+    "Length": 1808
+  },
+  {
+    "FullName": "packages/ADC64/TCC64/TCC64.pima",
+    "Length": 3361534
+  },
+  {
+    "FullName": "packages/ADC64/TCC64/TCC64.pimx",
+    "Length": 3154
+  },
+  {
+    "FullName": "packages/ADC64/TCC64/TCC64.sig",
+    "Length": 1813
+  },
+  {
+    "FullName": "packages/ADC64/UpdateNotifier/UpdateNotifier.pima",
+    "Length": 855946
+  },
+  {
+    "FullName": "packages/ADC64/UpdateNotifier/UpdateNotifier.pimx",
+    "Length": 2264
+  },
+  {
+    "FullName": "packages/ADC64/UpdateNotifier/UpdateNotifier.sig",
+    "Length": 1830
+  },
+  {
+    "FullName": "packages/ADC64/UPI64/UPI64.pima",
+    "Length": 10547584
+  },
+  {
+    "FullName": "packages/ADC64/UPI64/UPI64.pimx",
+    "Length": 6850
+  },
+  {
+    "FullName": "packages/ADC64/UPI64/UPI64.sig",
+    "Length": 1814
+  },
+  {
+    "FullName": "packages/ApplicationInfo.xml",
+    "Length": 39173
+  },
+  {
+    "FullName": "resources/AdobePIM.dll",
+    "Length": 2472928
+  },
+  {
+    "FullName": "resources/UpdateRedirector.dat",
+    "Length": 237432
+  },
+  {
+    "FullName": "Set-up.exe",
+    "Length": 3313624
+  }
+]

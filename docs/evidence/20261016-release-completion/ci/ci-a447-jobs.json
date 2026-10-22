@@ -1,0 +1,317 @@
+{
+  "total_count": 2,
+  "jobs": [
+    {
+      "id": 117002751003,
+      "run_id": 38909885640,
+      "workflow_name": "CI",
+      "head_branch": "fix/current-release-completion-20261016",
+      "run_url": "https://api.github.com/repos/Unn0wn002/CutBridge/actions/runs/38909885640",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOUL_85s8AAAAbPehMGw",
+      "head_sha": "a44792099b3b5f5b7a2f69a41061268fe59586b3",
+      "url": "https://api.github.com/repos/Unn0wn002/CutBridge/actions/jobs/117002751003",
+      "html_url": "https://github.com/Unn0wn002/CutBridge/actions/runs/38909885640/job/117002751003",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-10-16T13:42:09Z",
+      "started_at": "2026-10-16T13:42:12Z",
+      "completed_at": "2026-10-16T13:42:45Z",
+      "name": "blender-52-rna-runtime",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-16T13:42:13Z",
+          "completed_at": "2026-10-16T13:42:14Z"
+        },
+        {
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-16T13:42:14Z",
+          "completed_at": "2026-10-16T13:42:15Z"
+        },
+        {
+          "name": "Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-16T13:42:15Z",
+          "completed_at": "2026-10-16T13:42:16Z"
+        },
+        {
+          "name": "Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-16T13:42:16Z",
+          "completed_at": "2026-10-16T13:42:16Z"
+        },
+        {
+          "name": "Install Blender integration test dependencies",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-16T13:42:16Z",
+          "completed_at": "2026-10-16T13:42:33Z"
+        },
+        {
+          "name": "Register, unregister, and re-register CutBridge in Blender RNA",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-16T13:42:33Z",
+          "completed_at": "2026-10-16T13:42:34Z"
+        },
+        {
+          "name": "Run the complete suite including Blender package integration",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-16T13:42:34Z",
+          "completed_at": "2026-10-16T13:42:41Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-10-16T13:42:41Z",
+          "completed_at": "2026-10-16T13:42:41Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-16T13:42:41Z",
+          "completed_at": "2026-10-16T13:42:41Z"
+        },
+        {
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-10-16T13:42:41Z",
+          "completed_at": "2026-10-16T13:42:41Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-10-16T13:42:41Z",
+          "completed_at": "2026-10-16T13:42:42Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/Unn0wn002/CutBridge/check-runs/117002751003",
+      "labels": [
+        "ubuntu-latest"
+      ],
+      "runner_id": 1000002828,
+      "runner_name": "GitHub Actions 1000002828",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 117002751426,
+      "run_id": 38909885640,
+      "workflow_name": "CI",
+      "head_branch": "fix/current-release-completion-20261016",
+      "run_url": "https://api.github.com/repos/Unn0wn002/CutBridge/actions/runs/38909885640",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOUL_85s8AAAAbPehNwg",
+      "head_sha": "a44792099b3b5f5b7a2f69a41061268fe59586b3",
+      "url": "https://api.github.com/repos/Unn0wn002/CutBridge/actions/jobs/117002751426",
+      "html_url": "https://github.com/Unn0wn002/CutBridge/actions/runs/38909885640/job/117002751426",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-10-16T13:42:09Z",
+      "started_at": "2026-10-16T13:42:12Z",
+      "completed_at": "2026-10-16T13:42:27Z",
+      "name": "static-validation",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-16T13:42:13Z",
+          "completed_at": "2026-10-16T13:42:14Z"
+        },
+        {
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-16T13:42:14Z",
+          "completed_at": "2026-10-16T13:42:15Z"
+        },
+        {
+          "name": "Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-16T13:42:15Z",
+          "completed_at": "2026-10-16T13:42:16Z"
+        },
+        {
+          "name": "Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-16T13:42:16Z",
+          "completed_at": "2026-10-16T13:42:16Z"
+        },
+        {
+          "name": "Install test dependencies",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-16T13:42:16Z",
+          "completed_at": "2026-10-16T13:42:18Z"
+        },
+        {
+          "name": "Run tests",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-16T13:42:18Z",
+          "completed_at": "2026-10-16T13:42:21Z"
+        },
+        {
+          "name": "Simulate release packaging",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-16T13:42:21Z",
+          "completed_at": "2026-10-16T13:42:21Z"
+        },
+        {
+          "name": "Run S6 revision contract checks",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-10-16T13:42:21Z",
+          "completed_at": "2026-10-16T13:42:21Z"
+        },
+        {
+          "name": "Run S7 QC+ diagnostic checks",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-10-16T13:42:21Z",
+          "completed_at": "2026-10-16T13:42:21Z"
+        },
+        {
+          "name": "Run S8 localization checks",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-10-16T13:42:21Z",
+          "completed_at": "2026-10-16T13:42:22Z"
+        },
+        {
+          "name": "Run S10C reconstruction checks",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-10-16T13:42:22Z",
+          "completed_at": "2026-10-16T13:42:22Z"
+        },
+        {
+          "name": "Run S13 3D revision native-host regression",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-10-16T13:42:22Z",
+          "completed_at": "2026-10-16T13:42:22Z"
+        },
+        {
+          "name": "Check ExtendScript syntax with Node parser",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-16T13:42:22Z",
+          "completed_at": "2026-10-16T13:42:22Z"
+        },
+        {
+          "name": "Stage artifact-action smoke file",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-10-16T13:42:22Z",
+          "completed_at": "2026-10-16T13:42:22Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-10-16T13:42:22Z",
+          "completed_at": "2026-10-16T13:42:23Z"
+        },
+        {
+          "name": "Run actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-10-16T13:42:23Z",
+          "completed_at": "2026-10-16T13:42:23Z"
+        },
+        {
+          "name": "Verify CI artifact-action round trip",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-10-16T13:42:23Z",
+          "completed_at": "2026-10-16T13:42:23Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 32,
+          "started_at": "2026-10-16T13:42:23Z",
+          "completed_at": "2026-10-16T13:42:24Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 33,
+          "started_at": "2026-10-16T13:42:24Z",
+          "completed_at": "2026-10-16T13:42:24Z"
+        },
+        {
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 34,
+          "started_at": "2026-10-16T13:42:24Z",
+          "completed_at": "2026-10-16T13:42:24Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 35,
+          "started_at": "2026-10-16T13:42:24Z",
+          "completed_at": "2026-10-16T13:42:24Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/Unn0wn002/CutBridge/check-runs/117002751426",
+      "labels": [
+        "ubuntu-latest"
+      ],
+      "runner_id": 1000002829,
+      "runner_name": "GitHub Actions 1000002829",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    }
+  ]
+}

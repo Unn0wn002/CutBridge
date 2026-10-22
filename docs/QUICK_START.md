@@ -99,6 +99,8 @@ Supported producer subset:
 
 Unsupported Camera/transform cases fail closed. Parenting, constraints, and drivers may influence the evaluated Blender world transform, but CutBridge does not recreate the Blender hierarchy in AE.
 
+AE reconstructs only Camera Position/Point of Interest/Zoom and Null Position/Scale. It does not apply Camera `up`/basis or Null basis to Orientation/rotation, so accepted producer data does not imply camera-roll or Empty-rotation parity.
+
 See [HANDOFF_3D.md](HANDOFF_3D.md) before enabling this workflow.
 
 ## 4. Validate Cut
@@ -174,13 +176,9 @@ Current development packages use **four adjacent runtime files**:
 
 Keep them together.
 
-First test:
+Install all four files from the same verified ZIP into your AE version's `Scripts/ScriptUI Panels` directory. Restart After Effects, then open **Window > CutBridge** and dock its tab. Confirm the JA/EN selector works. Build/QC details stay in the panel's scrollable Results field; keep revision confirmations and errors visible.
 
-1. In After Effects choose **File > Scripts > Run Script File...**.
-2. Select `CutBridge.jsx`.
-3. Confirm the panel opens and the JA/EN selector works.
-
-For a dockable panel, place all four files in the appropriate `Scripts/ScriptUI Panels` directory and restart After Effects.
+Optional floating fallback: choose **File > Scripts > Run Script File...**, then select the extracted `CutBridge.jsx` with its three adjacent sidecars. For removal or updates, close AE and remove or replace only these four installed runtime files; preserve artist projects and footage.
 
 If `localization.js` is missing or invalid, CutBridge must fall back to coherent English UI without weakening Build/QC/Revision safety. The safety-critical revision and QC sidecars must remain available.
 
@@ -215,9 +213,9 @@ QC checks include, where inspectable:
 - required/optional sequence availability and unexpected matching files;
 - comp resolution, pixel aspect, FPS, and duration;
 - managed footage/layer ownership and sources;
-- managed S10C Camera/Null state where present;
 - stale/foreign/ambiguous managed state;
-- revision compatibility boundaries.
+
+The stale-tag scan includes existing Camera/Null layers. QC does not verify expected Camera/Null completeness, transform values/keyframes or projection parity. Inspect the supported channels separately. Revision compatibility is assessed by the revision workflow.
 
 QC is diagnostic-only. It must not silently adopt, import, move, retag, replace sources, or auto-repair ownership state.
 

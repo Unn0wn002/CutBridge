@@ -1,0 +1,5 @@
+# Validation follow-up — 17 October 2026
+
+Overall verdict: INSUFFICIENT EVIDENCE. assessment.json records the elapsed startup timebox, no newly accepted native execution, unreadable AE preparation input/signature observation, and the incomplete Blender-only control. Causes are not inferred. Both exact control policies/scripts are retained; r1 was not launched, r2 produced no guest evidence. The 7,511 before/after records match; full inventories remain outside Git at the location in retained-inputs.json.
+
+BASELINE_639374c_VERIFICATION.json is the unchanged completed 396-test engineering receipt. No existing automated or bounded native Blender result is reassigned. README_ENCODING_REPAIR.json records the original packet catalog verification and byte-preserved original README. Current packet hashes inventory the amendment separately. harness-configuration-change.json identifies the one-field native verification config change; product runtime and packages remain frozen. Review/acceptance forms are NOT_RECEIVED. No reviewer was contacted; no release, permission or security setting changed.

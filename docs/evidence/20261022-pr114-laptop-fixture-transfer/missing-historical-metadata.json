@@ -1,0 +1,52 @@
+[
+  {
+    "path": "environment-acceptance.json",
+    "bytes": 538,
+    "sha256": "61ba9431538decff2b5b3cc16a6f0a50a76078d5c82de12143b265aed23cd318"
+  },
+  {
+    "path": "OPERATOR_HANDOFF.md",
+    "bytes": 6223,
+    "sha256": "af93b3d1be744cf3d424824b6237bc90260e2afa33b386542ccebd21cfd548e8"
+  },
+  {
+    "path": "review/candidate.json",
+    "bytes": 724,
+    "sha256": "0d52e1fd16176f938903cd2948f07959e70f542886cb1c5be7bdb14e14178474"
+  },
+  {
+    "path": "review/environment-preflight.json",
+    "bytes": 2614,
+    "sha256": "f249888ca4608f02ac9ddc11bb815d15cd75842ebe59ad880902fcc7dfce34ce"
+  },
+  {
+    "path": "review/harness-fixture-reuse.json",
+    "bytes": 11004,
+    "sha256": "04e4fea07a0ddfae73130d43609e7d3f240414f5325c4a64d96ed747c3b15701"
+  },
+  {
+    "path": "review/historical-source-replacement-preparation.json",
+    "bytes": 4702,
+    "sha256": "b61b9c209335e784d86e485937cce7de4d12c4ccb098e4197e2a84c68f9f8d56"
+  },
+  {
+    "path": "review/installation.json",
+    "bytes": 1216,
+    "sha256": "4b53f70e1634b5e24f473826692f017fa5403bbd4db0aa3780309ac24453e88d"
+  },
+  {
+    "path": "review/PC_PACKAGE_RECEIPT.json",
+    "bytes": 1161,
+    "sha256": "e54d7ea6dd18376740b8ee16a56469725c1dcffd4829fe61668643820bc9630b"
+  },
+  {
+    "path": "review/source-bindings.json",
+    "bytes": 860,
+    "sha256": "62809e02928027130b6791d425e950478d41ce0093954182503949c3bba9cfce"
+  },
+  {
+    "path": "review/user-reported-download-verification.json",
+    "bytes": 1188,
+    "sha256": "13e7ccc97ba22e8b9b73baeef7af66b149b14c80d24956c75c1ae12086d28ca4"
+  }
+]

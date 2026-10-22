@@ -1,0 +1,9 @@
+{
+  "pid": 4176,
+  "exe": "C:\\Program Files\\Adobe\\Adobe After Effects 2026\\Support Files\\AfterFX.exe",
+  "arguments": "-m",
+  "started_utc": "2026-10-22T10:27:43.5918963Z",
+  "candidate_mapped": false,
+  "deadline_utc": "2026-10-22T11:27:43.5953505Z",
+  "scope": "Vendor-only blank startup in existing owner profile; HashMismatch is unresolved; not candidate isolation"
+}

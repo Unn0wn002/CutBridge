@@ -95,6 +95,8 @@ empty["cutbridge_handoff_3d"] = True
 
 未対応 Camera / Transform は Fail-Closed します。Parent / Constraint / Driver は Blender 側の Evaluated World Result に反映できますが、Blender Hierarchy 自体を AE に再構築しません。
 
+AE が再構築する Channel は Camera の Position / Point of Interest / Zoom と Null の Position / Scale です。Camera の `up` / Basis や Null の Basis は Orientation / Rotation に適用しません。Producer が受理した Data でも、Camera Roll や Empty Rotation の一致は保証しません。
+
 有効化前に [HANDOFF_3D.md](HANDOFF_3D.md) を確認してください。
 
 ## 4. Validate Cut
@@ -171,9 +173,9 @@ CutBridge Output へ必要な Pass をレンダーします。AE へ渡す前に
 - `qc_plus.js`
 - `localization.js`
 
-最初は **File > Scripts > Run Script File...** から `CutBridge.jsx` を実行できます。
+同じ検証済みZIPの4ファイルすべてを、対象AEの `Scripts/ScriptUI Panels` に配置します。AEを再起動し、**Window > CutBridge** で開いてタブをドッキングしてください。Build/QCの結果はパネル内のスクロール可能な「結果」に表示されます。差し替えの確認と停止エラーのダイアログは保持します。
 
-Dockable Panel として使用する場合は 4 ファイルすべてを `Scripts/ScriptUI Panels` に配置して AE を再起動します。
+フローティング表示が必要な場合は、4ファイルを隣接させたまま **File > Scripts > Run Script File... > CutBridge.jsx** を使用できます。更新・削除時はAEを終了し、この4ファイルだけを置き換えるか削除してください。制作プロジェクトや素材は削除しません。
 
 `localization.js` が欠けている場合は安全に English Fallback へ移行しますが、Build / QC / Revision Safety は弱くなりません。
 
@@ -198,7 +200,7 @@ Native AE 2026 Build 87 の S10C 検証では、テスト Fixture の最大 2D P
 
 Build 後や Project 変更後に **QC** を実行します。
 
-QC+ は Stable `CBQ-*` Code を使い、Package / Sequence / Comp / Ownership / Revision State、および該当する場合は Managed S10C Camera / Null State を診断します。
+QC+ は Stable `CBQ-*` Code を使い、Package / Sequence / Comp / Managed Render Footage・Layer の Ownership と古い Managed Tag を診断します。既存 Camera / Null の古い Tag も検出対象ですが、必要な Camera / Null の存在、Transform 値・Keyframe、Projection Parity は検証しません。対応 Channel は実 AE で別途確認してください。Revision Compatibility は Revision Workflow で判定します。
 
 QC は診断専用です。Object の自動採用、Import、Move、Retag、Source Replace、自動修復は行いません。
 

@@ -1,0 +1,8 @@
+2026-10-22T07:45:05.008Z -INFO vmware-vmx.exe 36168 [ws@4413 threadName="vmx"] SVGA3dCaps: host, at power on (3d enabled)
+2026-10-22T07:48:39.655Z -INFO vmware-vmx.exe 36168 [ws@4413 threadName="vmx"] TOOLS setting legacy tools version to '13344' type 1, manifest status is 9
+2026-10-22T07:49:35.406Z -INFO vmware-vmx.exe 36168 [ws@4413 threadName="vcpu-0"] Chipset: The guest has requested that the virtual machine be hard reset.
+2026-10-22T07:49:40.045Z -INFO vmware-vmx.exe 36168 [ws@4413 threadName="vcpu-0"] Guest: About to do EFI boot: Windows Boot Manager
+2026-10-22T07:49:50.076Z -INFO vmware-vmx.exe 36168 [ws@4413 threadName="vcpu-3"] Guest: vm3d: SVGA WDDM Full Display driver, Version: 9.17.11.0003, Build Number: 25171296 Device: SVGA2
+2026-10-22T07:49:50.076Z -INFO vmware-vmx.exe 36168 [ws@4413 threadName="vcpu-3"] Guest: vm3d: WDDM OS version: 10.0, build number: 26300, service pack version: 0.0, platform Id: 2, product type: 1, suite mask: 0x110
+2026-10-22T07:49:50.094Z -INFO vmware-vmx.exe 36168 [ws@4413 threadName="vcpu-3"] Guest: vm3d: WDDM 3D is on.
+2026-10-22T07:49:53.526Z -INFO vmware-vmx.exe 36168 [ws@4413 threadName="vmx"] VMXVmdb_SetToolsVersionStatus: status value set to 'ok', 'current', install possible

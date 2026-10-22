@@ -1,0 +1,4 @@
+Accessibility is limited because the target window has higher Windows integrity than the Computer Use helper.
+Window: "Hyper-V Manager", App: mmc.exe.
+	0 window Hyper-V Manager Secondary Actions: Raise
+		1 title bar (settable, string) Value: Hyper-V Manager

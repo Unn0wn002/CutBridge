@@ -160,6 +160,8 @@ S10B coverage retains:
 
 S10C native evidence remains bounded to Adobe After Effects 2026 Build 87 (`26.3x87`) on Windows 11 using Blender 5.2.1-produced handoff data. Recorded results include maximum projection error `0.00018066 px`, QC+ 10/10, zero duplicates on repeated Build, collision rejection, and persistence.
 
+The implemented AE channels are Camera Position/Point of Interest/Zoom and Null Position/Scale. Camera roll and Empty rotation are not reconstructed. Test channel values, expected Camera/Null presence, keyframe times, ownership and fixture projection separately: QC+ only includes the existing-layer stale-tag scan and does not inspect expected 3D completeness or transform/projection parity. Historical projection measurements do not expand that channel scope. Use [the current submission/native checklist](SUBMISSION_DEMO_CHECKLIST.md) for exact-candidate installation, preservation, failure injection and reopen execution; historical v0.2.5 native observations with incomplete isolation provenance do not close those gates.
+
 ## 9. S12 release-target end-to-end gate
 
 Status: **PASS after S13F repair chain**.

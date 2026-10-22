@@ -1,0 +1,37 @@
+[
+  {
+    "path": "C:\\Temp\\CutBridge-laptop-qualification-20261022\\blank-blender\\system-info.txt",
+    "bytes": 22244,
+    "sha256": "a8d960228b6d8d95967c1ac6f506fdd27fd225f68a70b7f3958ae3813981eda9"
+  },
+  {
+    "path": "C:\\Temp\\CutBridge-laptop-qualification-20261022\\blank-blender\\stdout.log",
+    "bytes": 34475,
+    "sha256": "18d5a18c5c7faec4e0d7117a42678116b8272157b753340e77f37b3786836668"
+  },
+  {
+    "path": "C:\\Temp\\CutBridge-laptop-qualification-20261022\\blank-blender\\stderr.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "C:\\Temp\\CutBridge-laptop-qualification-20261022\\blender-vendor-before.json",
+    "bytes": 1434605,
+    "sha256": "b70f763bc64d96b9868776e2a908edb61eee41c621eed91662bffe3170e679dd"
+  },
+  {
+    "path": "C:\\Temp\\CutBridge-laptop-qualification-20261022\\blender-vendor-after.json",
+    "bytes": 1434605,
+    "sha256": "b70f763bc64d96b9868776e2a908edb61eee41c621eed91662bffe3170e679dd"
+  },
+  {
+    "path": "C:\\Temp\\CutBridge-laptop-qualification-20261022\\ae-vendor-before.json",
+    "bytes": 2035621,
+    "sha256": "86d63e985a83084738a189d31102c8fd8ae9f3bf32a1591fd636a97e6bdad0ec"
+  },
+  {
+    "path": "C:\\Temp\\CutBridge-laptop-qualification-20261022\\ae-vendor-after.json",
+    "bytes": 2035621,
+    "sha256": "86d63e985a83084738a189d31102c8fd8ae9f3bf32a1591fd636a97e6bdad0ec"
+  }
+]

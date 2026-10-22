@@ -169,8 +169,8 @@ def handoff_3d_issues(context) -> list[dict]:
         {
             "level": "WARNING",
             "code": "HANDOFF_PRODUCER_ONLY",
-            "message": "3D handoff producer data is enabled; the current After Effects importer does not create camera/null layers yet.",
-            "fix": "Use this data for S10 validation only until native AE reconstruction is approved.",
+            "message": "3D handoff is enabled for supported perspective Camera and marked Empty samples; After Effects can reconstruct Camera Position/Point of Interest/Zoom and Null Position/Scale only.",
+            "fix": "Inspect those channels in the exact After Effects host after Build. Camera roll and Empty rotation are not reconstructed; QC does not inspect these transforms.",
         }
     ]
 
@@ -267,8 +267,9 @@ def _camera_sample(camera, depsgraph, *, frame: int, frame_start: int, fps: floa
     sample["horizontal_fov_radians"] = _clean_number(fov)
     sample["ae_zoom"] = _clean_number(zoom)
     # Camera object scale is not an AE camera property. It is retained in the
-    # generic transform sample for auditability, but the future importer must
-    # reconstruct projection only from position/orientation/FOV/Zoom.
+    # generic transform sample for auditability. The current AE consumer uses
+    # position, forward-derived Point of Interest and
+    # Zoom; serialized up/basis data does not reconstruct camera roll.
     return sample
 
 

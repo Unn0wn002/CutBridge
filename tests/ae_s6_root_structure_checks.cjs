@@ -112,9 +112,12 @@ function makeHost() {
     function ImportOptions(file) { this.file = file; this.sequence = false; this.forceAlphabetical = true; this.importAs = null; }
     ImportOptions.prototype.canImportAs = () => true;
 
+    const messages = [];
     function Window() { this.layout = {resize() {}, layout() {}}; }
     Window.prototype.add = function(type, unused, text) {
         const control = {type, text, graphics: {font: {name: "Arial"}}, preferredSize: {}};
+        control.add = Window.prototype.add;
+        if (type === "edittext") { let value = ""; Object.defineProperty(control, "text", {get() { return value; }, set(text) { value = String(text); messages.push(value); }}); }
         if (type === "button") controls.push(control);
         return control;
     };
@@ -124,7 +127,7 @@ function makeHost() {
     const runtime = {
         File, Folder, Window, Panel, FolderItem, FootageItem, CompItem, AVLayer, ImportOptions,
         ImportAsType: {FOOTAGE: 1}, ScriptUI: {newFont() {}}, CutBridgeQCPlus: QCPlus,
-        alert: message => alerts.push(String(message)), $: {writeln() {}},
+        alert: message => { alerts.push(String(message)); messages.push(String(message)); }, $: {writeln() {}},
         app: {project, beginUndoGroup() {}, endUndoGroup() {}, newProject() {}}
     };
     vm.createContext(runtime);
@@ -150,7 +153,7 @@ function makeHost() {
         before.forEach((item, index) => assert.strictEqual(projectItems[index], item, message + " (identity at " + index + ")"));
     }
 
-    return {alerts, imports, projectItems, click, topRoot, childFolders, addChild, snapshot, assertSameItems};
+    return {messages, alerts, imports, projectItems, click, topRoot, childFolders, addChild, snapshot, assertSameItems};
 }
 
 const h = makeHost();
@@ -170,11 +173,11 @@ h.click("Build Comp");
 h.assertSameItems(afterRemoval, "missing child folder retry must not mutate the project");
 assert.equal(h.imports.length, importsBeforeMissingRetry, "missing child folder retry must not import footage");
 assert.equal(h.childFolders(root).filter(folder => folder.name === "03_PRECOMP").length, 0, "Build must not recreate missing managed folder implicitly");
-assert.match(h.alerts.at(-1), /03_PRECOMP.*must exist exactly once|must exist exactly once.*03_PRECOMP/i);
+assert.match(h.messages.at(-1), /03_PRECOMP.*must exist exactly once|must exist exactly once.*03_PRECOMP/i);
 h.click("Run QC");
 h.assertSameItems(afterRemoval, "QC on missing managed folder must remain read-only");
-assert.doesNotMatch(h.alerts.at(-1), /QC — PASS\b/);
-assert.match(h.alerts.at(-1), /03_PRECOMP.*must exist exactly once|must exist exactly once.*03_PRECOMP/i);
+assert.doesNotMatch(h.messages.at(-1), /QC — PASS\b/);
+assert.match(h.messages.at(-1), /03_PRECOMP.*must exist exactly once|must exist exactly once.*03_PRECOMP/i);
 
 // Restore the deliberately removed folder, then prove duplicate deterministic children also fail before mutation.
 h.projectItems.push(missingPrecomp);
@@ -186,10 +189,10 @@ h.click("Build Comp");
 h.assertSameItems(afterDuplicate, "duplicate child folder retry must not mutate the project");
 assert.equal(h.imports.length, importsBeforeDuplicateRetry, "duplicate child folder retry must not import footage");
 assert.equal(h.childFolders(root).filter(folder => folder.name === "02_RENDER").length, 2);
-assert.match(h.alerts.at(-1), /02_RENDER.*must exist exactly once|must exist exactly once.*02_RENDER/i);
+assert.match(h.messages.at(-1), /02_RENDER.*must exist exactly once|must exist exactly once.*02_RENDER/i);
 h.click("Run QC");
 h.assertSameItems(afterDuplicate, "QC on duplicate managed folder must remain read-only");
-assert.doesNotMatch(h.alerts.at(-1), /QC — PASS\b/);
-assert.match(h.alerts.at(-1), /02_RENDER.*must exist exactly once|must exist exactly once.*02_RENDER/i);
+assert.doesNotMatch(h.messages.at(-1), /QC — PASS\b/);
+assert.match(h.messages.at(-1), /02_RENDER.*must exist exactly once|must exist exactly once.*02_RENDER/i);
 
 console.log("S6 package-root structure: PASS (Build/QC reject missing/duplicate managed folders; real AE MANUAL NOT EXECUTED)");

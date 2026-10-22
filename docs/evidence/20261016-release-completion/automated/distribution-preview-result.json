@@ -1,0 +1,9 @@
+{
+  "candidate_version": "0.2.5",
+  "schema": "PASS",
+  "retained_previous_entries": "PASS",
+  "v023_update_selection": "PASS",
+  "no_downgrade": "PASS",
+  "official_blender_generator_comparison": "NOT_EXECUTED",
+  "publication": "NOT_EXECUTED"
+}

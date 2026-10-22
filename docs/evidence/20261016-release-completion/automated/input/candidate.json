@@ -1,0 +1,7 @@
+{
+  "sha": "5293cd46a819debfe8ecf41f740c4e94806dd89c",
+  "develop_sha": "8cc5a4fe19e97c2f83105b888f96ccf1b423e8fd",
+  "merge_base": "8cc5a4fe19e97c2f83105b888f96ccf1b423e8fd",
+  "inventory_count": 385,
+  "snapshot_method": "Exact Git blobs; no archive, checkout filters, substitutions, or owner files"
+}

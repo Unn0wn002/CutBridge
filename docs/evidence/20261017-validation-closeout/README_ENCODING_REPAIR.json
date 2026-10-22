@@ -1,0 +1,14 @@
+{
+  "prior_catalog_files_verified": 63,
+  "original_readme_sha256": "5535d29a0cc1d39d66b757ad170fbddb65f91bfbb0fa6be8894573a0836a2bdd",
+  "repaired_readme_sha256": "548f83fbd32d5f2f528377ac3b350bd39632e450a9b51f77a65dc38a4f9e5e0b",
+  "replacement_counts": {
+    "'\\xe2\\u2020\\u2019'": 4,
+    "'\\xe2\\u20ac\\u201c'": 1
+  },
+  "encoding": "UTF-8; ASCII navigation/range punctuation",
+  "final_head_receipt_modified": false,
+  "runtime_or_package_bytes_modified": false,
+  "prior_catalog_retained": "C:\\Temp\\CutBridge-validation-closeout-20261016\\packet-amendment\\PACKET_SHA256SUMS.before-amendment.txt",
+  "note": "Regenerate packet catalog only after all closeout documents are added. Keep original 396-test receipt immutable."
+}

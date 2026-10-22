@@ -1,0 +1,57 @@
+{
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "phase": "VM_CREATED_HARDWARE_SAVED_OWNER_INSTALLS_WINDOWS",
+  "observed_utc": "2026-10-22T06:29:52.446Z",
+  "documentation_base": "a76707b59f89a188db0506e152bfb5d89da1b571",
+  "runtime_source": "5aa2da24fc8be41626ee84178c7fdce05d02eebc",
+  "vm": {
+    "name": "AI Native Test - VMware",
+    "state": "Powered off",
+    "memory_mb": 16384,
+    "processor_sockets": 1,
+    "cores_per_socket": 4,
+    "total_cores": 4,
+    "disk_max_gb": 200,
+    "disk_current_mb": 18,
+    "disk_preallocated": false,
+    "disk_multiple_files": true,
+    "tpm": "Present",
+    "network": "NAT for dependency preparation only",
+    "accelerate_3d_checked": true,
+    "graphics_memory_gb": 8,
+    "display_warning": "You must update Tools to enable 3D acceleration in this virtual machine.",
+    "graphics_accepted": false
+  },
+  "media": {
+    "path": "C:\\Users\\unn0w\\Downloads\\Windows11_Client_x64_en-us_26300_9457.iso",
+    "sha256": "bd4307df32bc8af33b39ccecb1174aeb345386630f89a2b86c7a4e36b55ea650",
+    "hash_scope": "Reuse r6 full-file comparison; attached in saved CD/DVD settings, connect at power on"
+  },
+  "operator_step": {
+    "owner_choice": "I’ll install Windows myself",
+    "action": "Power on AI Native Test - VMware, boot the attached ISO and install Windows to the new 200 GB virtual disk; personally handle license/account/privacy/security steps; leave desktop open afterward.",
+    "agent_powered_on": false,
+    "agent_installed_windows": false,
+    "credential_action_by_agent": false
+  },
+  "screenshots": [
+    {
+      "file": "C:/Temp/CutBridge-vmware-provisioning-20261022-r9/created-hardware-saved.jpg",
+      "sha256": "d2b623ef5b90aedff6518bb143f181d9ddbd6a97caa30939d5940393657007b6",
+      "bytes": 89261
+    },
+    {
+      "file": "C:/Temp/CutBridge-vmware-provisioning-20261022-r9/display-before-tools.jpg",
+      "sha256": "12f56bbddb7899d5046863379a52f214bfe47216fb39f2aba82e32d8a36aa6b4",
+      "bytes": 78862
+    }
+  ],
+  "candidate_mapped_or_executed": false,
+  "native_acceptance": "NOT_EXECUTED",
+  "qualified_screenshots": "NONE",
+  "host_reboot_or_security_change_by_agent": "NONE",
+  "old_hyperv_guest": "Preserved",
+  "historical_hash_mismatch_cause": "UNKNOWN",
+  "sandbox_retried": false,
+  "release_authorization": false
+}

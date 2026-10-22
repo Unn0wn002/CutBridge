@@ -1,0 +1,47 @@
+{
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "phase": "WINDOWS_INSTALLATION_MEDIA_REQUIRED",
+  "pre_checkpoint_head": "f68159c4d7e6e5e3e34f86961ea999952afaae17",
+  "runtime_source": "5aa2da24fc8be41626ee84178c7fdce05d02eebc",
+  "selected_image": {
+    "observed": true,
+    "name": "Windows 11 dev environment",
+    "edition": "Windows 11 Enterprise",
+    "advertised_version": "10.0.22621",
+    "locale": "en-US",
+    "updated": "2024-07-25",
+    "displayed_download": "21.70 GB",
+    "license_statement": "By using the virtual machine, you are accepting the EULAs for all the installed products.",
+    "expiry": "Predetermined expiry mentioned; exact current validity not established",
+    "created": false,
+    "license_accepted_by_agent": false,
+    "screenshot": "windows-gallery-selected.jpg",
+    "screenshot_sha256": "1651f3a0dd7fb0526a85a6e3a6e6b467317ff06439e173d6fdae08098f92872a"
+  },
+  "ae26_requirements": {
+    "source": "https://helpx.adobe.com/after-effects/desktop/get-started/technical-requirements/system-requirements.html",
+    "source_updated": "2026-09-09",
+    "applies_to": "26.5, 26.3, 26.2.1, 26.2, 26.0",
+    "minimum_windows": "Windows 11 v24H2",
+    "inference": "Advertised gallery OS does not establish a suitable as-is AE26.5 test environment; current Windows installation media is preferred",
+    "older_ae_scope": "Different supported AE build remains allowed by owner, but none is installed or qualified in this guest"
+  },
+  "official_current_iso": {
+    "source_page": "https://www.microsoft.com/en-us/software-download/windows11",
+    "generated_filename": "Windows11_Client_x64_en-us_26300_9457.iso",
+    "published_sha256": "bd4307df32bc8af33b39ccecb1174aeb345386630f89a2b86c7a4e36b55ea650",
+    "agent_request": "Blocked by Chrome, ERR_BLOCKED_BY_CLIENT",
+    "downloaded": false,
+    "browser_facilities": "No separate download capability exposed by inspected lists (browser: viewport/management; tab: pageAssets)",
+    "bypass": "NONE",
+    "retries": 0
+  },
+  "immediate_operator_action": "Download official Windows11 multi-edition x64 English ISO through a permitted normal workflow and provide its local path; an existing official Windows11 24H2-or-later ISO path is also acceptable.",
+  "candidate_native_execution": "NOT_EXECUTED",
+  "candidate_mapping": "NONE",
+  "packages_runtime_code": "UNCHANGED",
+  "sandbox_retries": 0,
+  "security_licensing_changes": "NONE",
+  "host_reboot": "NONE",
+  "observed_utc": "2026-10-21T13:35:32.8879763Z"
+}

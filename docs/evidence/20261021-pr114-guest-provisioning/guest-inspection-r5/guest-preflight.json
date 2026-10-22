@@ -1,0 +1,113 @@
+{
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "phase": "GUEST_GRAPHICS_PREFLIGHT_BLOCKED",
+  "observed_utc": "2026-10-21T16:46:09Z",
+  "pre_checkpoint_head": "60692059ed9734e6931a8e56800284906abb3398",
+  "runtime_source": "5aa2da24fc8be41626ee84178c7fdce05d02eebc",
+  "vm": {
+    "name": "AI Native Test",
+    "host": "AYAKUMI_NOZOMI",
+    "observed_state": "Running",
+    "observed_assigned_memory_mb": 32768,
+    "guest_os_exact_build": "NOT_VERIFIED",
+    "media_hash": "NOT_VERIFIED",
+    "operator_report": "Windows, Adobe and Blender installed; Adobe installed through official Creative Cloud"
+  },
+  "host": {
+    "os_caption": "Microsoft Windows 11 Pro",
+    "os_version": "10.0.26300",
+    "gpu": "NVIDIA GeForce RTX 5060 Ti",
+    "gpu_driver_version": "32.0.16.1742",
+    "other_reported_adapters": [
+      "Parsec Virtual Display Adapter 0.45.0.0",
+      "MuMuPlayer Virtual Display Adapter 22.3.52.447"
+    ]
+  },
+  "guest_display": {
+    "observed_adapter": "Microsoft Hyper-V Video",
+    "manufacturer": "Microsoft",
+    "location": "Microsoft Hyper-V Virtual Machine Bus",
+    "device_status": "This device is working properly.",
+    "driver_provider": "Microsoft",
+    "driver_date": "6/21/2006",
+    "driver_version": "10.0.26100.1150",
+    "displayed_digital_signer": "Microsoft Windows",
+    "scope": "Observed Device Manager fields; no complete signature/hash inventory or OpenGL API probe"
+  },
+  "blender": {
+    "menu_label": "Blender 5.2",
+    "exact_build": "NOT_VERIFIED",
+    "agent_launch_attempts": 1,
+    "launch_method": "Guest Start-menu shortcut; no candidate",
+    "result": "Unsupported Graphics Card Configuration: A graphics card and driver with support for OpenGL 4.3 or higher is required.",
+    "required_factory_startup_control": "NOT_EXECUTED",
+    "candidate_acceptance": "NOT_EXECUTED",
+    "pid_exit_evidence": "NOT_CAPTURED"
+  },
+  "ae": {
+    "menu_label": "Adobe After Effects 2026",
+    "exact_build": "NOT_VERIFIED",
+    "agent_launch_attempts": 1,
+    "prior_crash_prompt": "Crash Repair Options says a crash was detected in the last session; cause and prior session not established",
+    "action_taken": "Continue within that one launch; no reset preferences, Safe Mode or plugin changes",
+    "observed_workspace": "Untitled Project.aep visible behind System Compatibility Report",
+    "compatibility_report": "No graphics processor suitable for GPU-accelerated rendering was found. Application will render using software (CPU).",
+    "operator_choice": "Leave the warning open",
+    "current_state": "Continue with known issues NOT_CLICKED; warning left open",
+    "blank_startup_acceptance": "INCOMPLETE",
+    "no_candidate_probe": "NOT_EXECUTED",
+    "pid_exit_evidence": "NOT_CAPTURED"
+  },
+  "isolation": {
+    "agent_mapped_or_executed_candidate": false,
+    "effective_offline_boundary": "NOT_VERIFIED",
+    "credential_boundary": "NOT_VERIFIED",
+    "read_only_inputs_and_writable_outputs": "NOT_ESTABLISHED",
+    "vendor_dependency_hashes_and_provenance": "NOT_VERIFIED; operator reports official Creative Cloud source",
+    "guest_personal_data_inventory": "NOT_PERFORMED"
+  },
+  "unchanged": {
+    "ae_zip_sha256": "5363795c66b1fbb664444fd5346ca9532d99822ce2cf3315193d4abec1789b9c",
+    "blender_zip_sha256": "864131a58a1c56e4364c3e435ef1433fbda415515be7292770212bfdc4c31bfe",
+    "runtime_tree_comparison_exit": 0,
+    "automated_evidence": "RETAINED; no additional product test rerun justified",
+    "host_ae_dll": "Historical AfterFXLib.dll HashMismatch retained; unknown cause; host was not repaired or copied into guest",
+    "sandbox_retry_count": 0,
+    "security_or_licensing_changes": "NONE BY AGENT",
+    "host_reboot": "NONE BY AGENT",
+    "release_authorization": false
+  },
+  "evidence_local_root": "C:\\Temp\\CutBridge-hyperv-guest-inspection-20261021-r5",
+  "screenshots": [
+    {
+      "file": "guest-display-adapter.jpg",
+      "sha256": "4fe8708c47591cfc62db6916660ff8bb6123eb85b8d54fe021c44b2aef268be8",
+      "scope": "Actual guest preflight screenshot; not a qualified CutBridge screenshot"
+    },
+    {
+      "file": "guest-display-driver.jpg",
+      "sha256": "f6dc842c678203a9047952f1cdaa0495545e1487f1eecc2b7bc1f3b6bf4a66ca",
+      "scope": "Actual guest preflight screenshot; not a qualified CutBridge screenshot"
+    },
+    {
+      "file": "blender-blank-start-opengl-error.jpg",
+      "sha256": "83ffdbba47143ade5418c57875e626e6a313832203d0b30db8cca8ad9f0fc580",
+      "scope": "Actual guest preflight screenshot; not a qualified CutBridge screenshot"
+    },
+    {
+      "file": "ae-prior-crash-options.jpg",
+      "sha256": "7e81233e421d1311a56c6a30766c3e688026b00b5720b1615cab648bd9f9f4e3",
+      "scope": "Actual guest preflight screenshot; not a qualified CutBridge screenshot"
+    },
+    {
+      "file": "ae-no-gpu-compatibility-warning.jpg",
+      "sha256": "84f72049f91ba74bd01e72fc26a7de4d8cdddf9409f301f28b7e91dce981d454",
+      "scope": "Actual guest preflight screenshot; not a qualified CutBridge screenshot"
+    }
+  ],
+  "sources": [
+    "https://learn.microsoft.com/en-us/troubleshoot/windows-server/virtualization/troubleshoot-hyper-v-gpu-assignment-partitioning-passthrough-issues",
+    "https://helpx.adobe.com/after-effects/desktop/get-started/technical-requirements/system-requirements.html"
+  ],
+  "next_dependency": "A separately approved graphics-capable isolated route is needed for Blender GUI qualification. No supported GPU-P/DDA route is established on this Windows 11 Pro host. AE warning stays open per owner instruction."
+}

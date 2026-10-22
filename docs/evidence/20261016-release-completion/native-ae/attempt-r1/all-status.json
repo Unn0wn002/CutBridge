@@ -1,0 +1,1 @@
+{"status":"INSUFFICIENT EVIDENCE","phases":[{"phase":"campaign","status":"FAIL"},{"phase":"negative","status":"INSUFFICIENT EVIDENCE"},{"phase":"rollback","status":"INSUFFICIENT EVIDENCE"},{"phase":"reopen","status":"INSUFFICIENT EVIDENCE"}],"normal_quit_requested":true}

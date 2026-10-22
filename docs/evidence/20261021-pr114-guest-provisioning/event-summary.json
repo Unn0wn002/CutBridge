@@ -1,0 +1,28 @@
+{
+  "source": "Local read-only Windows Event Log observation",
+  "time_range": "2026-10-21 17:22 Asia/Jakarta",
+  "crash": {
+    "provider": "Windows Error Reporting",
+    "event_id": 1001,
+    "event_name": "ContainerCrashDump",
+    "P1": "59",
+    "P2": "3221225477",
+    "dump": "C:\\ProgramData\\Microsoft\\Windows\\Containers\\Dumps\\06968013-d9e1-412c-b786-67bcd9cc12c4.dmp",
+    "cause": "UNKNOWN"
+  },
+  "protected_logs": [
+    {
+      "log": "Microsoft-Windows-Hyper-V-Compute-Admin",
+      "error": "To access the 'Microsoft-Windows-Hyper-V-Compute-Admin' log start PowerShell with elevated user rights.  Error: Attempted to perform an unauthorized operation."
+    },
+    {
+      "log": "Microsoft-Windows-Hyper-V-Worker-Admin",
+      "error": "To access the 'Microsoft-Windows-Hyper-V-Worker-Admin' log start PowerShell with elevated user rights.  Error: Attempted to perform an unauthorized operation."
+    },
+    {
+      "log": "Microsoft-Windows-Hyper-V-VMMS-Admin",
+      "error": "To access the 'Microsoft-Windows-Hyper-V-VMMS-Admin' log start PowerShell with elevated user rights.  Error: Attempted to perform an unauthorized operation."
+    }
+  ],
+  "raw_observations": "Retained locally outside Git in event-observations.json; no dump or unrelated system/application records uploaded"
+}

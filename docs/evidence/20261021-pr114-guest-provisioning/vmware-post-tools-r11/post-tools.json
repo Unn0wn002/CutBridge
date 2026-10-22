@@ -1,0 +1,61 @@
+{
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "phase": "TOOLS_INSTALLED_RESTARTED_BLENDER_PLATFORM_UNSUPPORTED",
+  "observed_utc": "2026-10-22T07:58:52.998Z",
+  "documentation_base": "b37efcddd23ca9954d8b3949b52db02ab805933e",
+  "runtime_source": "5aa2da24fc8be41626ee84178c7fdce05d02eebc",
+  "tools": {
+    "status": "ok/current",
+    "legacy_version_integer": 13344,
+    "reported_utc": "2026-10-22T07:49:53.526Z",
+    "scope": "VMware vendor log; full installed dependency inventory not performed"
+  },
+  "guest_driver": {
+    "name": "SVGA WDDM Full Display driver",
+    "version": "9.17.11.0003",
+    "build": 25171296,
+    "device": "SVGA2",
+    "reported_utc": "2026-10-22T07:49:50.076Z",
+    "reported_os_build": 26300
+  },
+  "guest_restart": {
+    "requested_utc": "2026-10-22T07:49:35.406Z",
+    "windows_boot_manager_utc": "2026-10-22T07:49:40.045Z",
+    "scope": "Guest reset and Windows boot observed in vendor log after Tools installation; no host reboot"
+  },
+  "blank_blender": {
+    "owner_launched": true,
+    "agent_double_click": "No visible launch; owner performed one post-Tools launch",
+    "window_title": "(Unsaved) - Blender 5.2.2 LTS",
+    "dialog": "Blender - Platform Unsupported",
+    "message": "Your graphics card or driver version is not supported.",
+    "graphics_string": "VMware, Inc. SVGA3D; build: RELEASE; LLVM; 4.3 (Core Profile) Mesa 24.1.0",
+    "workspace_initialized": false,
+    "exact_binary_hash_pid_and_exit": "NOT_RECORDED",
+    "cutbridge_loaded": false,
+    "limitation": "Changed failure after driver install: OpenGL 4.3 context reported but Blender platform check rejects it; exact failing capability not measured."
+  },
+  "screenshot": {
+    "path": "C:/Temp/CutBridge-vmware-post-tools-20261022-r11/platform-unsupported-after-tools.jpg",
+    "sha256": "2140434d113e6baa06e55298b3347a6f0400a939d329acb99dbf9e20810698a3",
+    "scope": "Actual post-Tools vendor startup rejection; not qualified CutBridge screenshot"
+  },
+  "second_pc": {
+    "owner_reports_available": true,
+    "owner_reports": "Laptop has same Blender, AE and Premiere; exact builds, provenance, blank startup and isolation remain unverified.",
+    "requested_handoff": "Owner will use Codex on laptop; executable task handoff in docs/LAPTOP_NATIVE_HANDOFF_2026-10-22.md",
+    "candidate_transfer_or_execution_on_laptop": "NOT_OBSERVED"
+  },
+  "prior_ci": {
+    "head": "b37efcddd23ca9954d8b3949b52db02ab805933e",
+    "push": 39741804490,
+    "pull_request": 39741811295,
+    "result": "success"
+  },
+  "candidate_mapped_or_executed": false,
+  "remaining_candidate_native_cases": "NOT_EXECUTED",
+  "cutbridge_defect_observed": false,
+  "release_authorization": false,
+  "host_security_licensing_changes_dll_substitution_or_reboot": "NONE by agent",
+  "historical_host_ae_hash_mismatch_cause": "UNKNOWN"
+}

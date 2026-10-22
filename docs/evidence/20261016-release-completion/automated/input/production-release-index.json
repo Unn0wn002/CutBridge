@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-22T01:48:52Z",
+  "releases": [
+    {
+      "version": "0.2.3",
+      "channel": "stable",
+      "blender_version_min": "4.2.0",
+      "release_page_url": "https://unn0wn002.github.io/cutbridge-distribution/releases/v0.2.3/",
+      "download_url": "https://unn0wn002.github.io/cutbridge-distribution/releases/v0.2.3/CutBridge-Blender-v0.2.3.zip",
+      "sha256": "d665f5a20de7cbdd054a181c74b42c2d8bc68ce5e754592dc63d3d098b0c173c"
+    }
+  ]
+}

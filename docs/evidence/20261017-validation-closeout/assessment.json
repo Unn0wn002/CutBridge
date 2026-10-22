@@ -1,0 +1,56 @@
+{
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "record_date": "2026-10-17",
+  "engineering_baseline_sha": "639374ce5f1b5f0d36847258d052c36ab21dd208",
+  "diagnosis_timebox": {
+    "started_utc": "2026-10-16T15:55:38Z",
+    "deadline_utc": "2026-10-16T16:55:38Z",
+    "resumed_after_deadline_utc": "2026-10-17T00:47:41Z",
+    "new_startup_attempts_after_resume": 0,
+    "note": "The control remained incomplete during the interrupted turn. No claim is made that its VM stopped at the deadline. Post-resume work collected existing state and completed documentation only."
+  },
+  "controls_r1": {
+    "launched": false,
+    "reason": "Full AE tree inventory raised OSError22 reading AfterFXLib.dll.bak; active AfterFXLib.dll Authenticode status HashMismatch. Installation was not treated as a clean approved control and was not altered.",
+    "ae_full_inventory": "INCOMPLETE",
+    "root_cause": "NOT_ESTABLISHED"
+  },
+  "controls_r2": {
+    "policy_static_review": "ACCEPTED_FOR_VENDOR_ONLY_CONTROLS",
+    "policy_sha256": "b62f9c73f27852816fbae2b9674fbb418d7b25f966724b4f3dba51932ea2a9d1",
+    "launcher_sha256": "d7d3db46457896cd4551efdfb67ac0e398497454bfded1680e36d75a1e9f51b5",
+    "launched_utc": "2026-10-16T16:04:21.4841333Z",
+    "candidate_inputs": "NOT_MAPPED",
+    "ae": "NOT_MAPPED",
+    "input_inventory_records": 7511,
+    "input_inventory_comparison": "IDENTICAL",
+    "guest_output_files": 0,
+    "guest_isolation_record": "NOT_PRODUCED",
+    "native_process_records": "NOT_PRODUCED",
+    "native_availability": "NOT_PROVEN",
+    "existing_ui_observation": "Sandbox desktop only; no native workspace/result establishes availability. Observed after resumption; no additional startup was launched.",
+    "execution_policy_override": "NONE",
+    "normal_native_exit": "NOT_ESTABLISHED"
+  },
+  "causation": "Neither prior exit0xc0e90002, prior rpds ApplicationControl block, current signature mismatch nor absent guest output establishes a common root cause.",
+  "candidate_execution": "NOT_EXECUTED",
+  "native_ae_assertions_accepted": 0,
+  "native_manual_visual_update": "NOT_EXECUTED",
+  "independent_release_review": "NOT_RECEIVED",
+  "demonstrated_scope_acceptance": "NOT_RECEIVED",
+  "S14B": "NOT_EXECUTED",
+  "runtime_or_package_bytes_changed": false,
+  "release_authorization": false,
+  "production_version": "0.2.3",
+  "closed_out_utc": "2026-10-17T00:51:39.893505+00:00",
+  "full_manifest_files": {
+    "controls-r2-before.json": {
+      "path": "C:\\Temp\\CutBridge-validation-closeout-20261016\\manifests\\controls-r2-before.json",
+      "sha256": "c54299162e1583665f4a7903519d7d652c0881f3f7f3d1d53a4d9f7588e3eb9b"
+    },
+    "controls-r2-after.json": {
+      "path": "C:\\Temp\\CutBridge-validation-closeout-20261016\\manifests\\controls-r2-after.json",
+      "sha256": "fdd1da8e43009048e06145ca848de48280ede8ac09039467fc9606b6c757f870"
+    }
+  }
+}

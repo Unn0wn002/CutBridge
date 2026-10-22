@@ -85,10 +85,10 @@ class CUTBRIDGE_PG_Settings(bpy.types.PropertyGroup):
     pass_depth: BoolProperty(name="Depth", default=False)
 
     # S10B producer setting. It intentionally remains off and is not exposed as
-    # a normal user-facing workflow until native AE reconstruction is validated.
+    # a normal user-facing workflow; the AE consumer has a bounded channel scope.
     handoff_3d_enabled: BoolProperty(
         name="3D Handoff Data",
-        description="Write experimental producer-only camera/null samples into cutbridge.json. Current AE import does not create camera/null layers",
+        description="Write samples for AE Camera Position/Point of Interest/Zoom and Null Position/Scale; no camera roll or Empty rotation. Inspect channels in the exact AE host; QC does not inspect these transforms",
         default=False,
     )
     handoff_3d_pixels_per_blender_unit: FloatProperty(

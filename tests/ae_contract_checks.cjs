@@ -146,8 +146,11 @@ function host(m, files, aliases = []) {
     function File(value) { this.fsName = normalize(value); this.name = encodeURIComponent(path.posix.basename(this.fsName)); this.exists = files.includes(this.fsName); this.alias = aliases.includes(this.fsName); }
     File.decode = decodeURIComponent;
     File.openDialog = () => ({parent: new Folder(packageRoot), open: () => true, read: () => JSON.stringify(m), close() {}});
+    const messages = [];
     function Window() { this.layout = {resize() {}, layout() {}}; }
-    Window.prototype.add = function(type, unused, text) { const control = {type, text, graphics: {font: {name: 'Arial'}}, preferredSize: {}}; controls.push(control); return control; };
+    Window.prototype.add = function(type, unused, text) { const control = {type, text, graphics: {font: {name: 'Arial'}}, preferredSize: {}};
+        control.add = Window.prototype.add;
+        if (type === "edittext") { let value = ""; Object.defineProperty(control, "text", {get() { return value; }, set(text) { value = String(text); messages.push(value); }}); } controls.push(control); return control; };
     Window.prototype.center = Window.prototype.show = function() {};
     function FolderItem(name) { this.name = name; }
     function FootageItem(file) { this.file = file; this.mainSource = {conformFrameRate: 0}; this.comment = ''; this.parentFolder = null; this.name = ''; }
@@ -161,10 +164,10 @@ function host(m, files, aliases = []) {
     }, importFile(io) { imports.push(io); const item = new FootageItem(io.file); footageItems.push(item); project.numItems++; return item; }};
     const runtime = {File, Folder, Window, Panel: function() {}, FolderItem, FootageItem, CompItem,
         ImportOptions: function(file) {this.file = file;}, ImportAsType: {FOOTAGE: 1}, ScriptUI: {newFont() {}}, CutBridgeQCPlus: QCPlus,
-        alert: message => alerts.push(message), $: {writeln() {}},
+        alert: message => { alerts.push(String(message)); messages.push(String(message)); }, $: {writeln() {}},
         app: {project, beginUndoGroup() {}, endUndoGroup() {}}};
     vm.createContext(runtime); vm.runInContext(source, runtime);
-    return {click: word => controls.find(x => x.type === 'button' && x.text.includes(word)).onClick(), alerts, imports, comps};
+    return {click: word => controls.find(x => x.type === 'button' && x.text.includes(word)).onClick(), messages, alerts, imports, comps};
 }
 const beautyFiles = [1, 2, 3].map(n => `/packages/桜/render/beauty/C001_BEAUTY_000${n}.png`);
 check('required missing frames block actual host-adapter import', () => {
@@ -175,7 +178,7 @@ check('optional absent/incomplete passes warn and skip; required default blocks'
     for (const files of [beautyFiles, [...beautyFiles, '/packages/桜/render/line/C001_LINE_0001.png']]) {
         const m = manifest(); m.passes.push({name: 'LINE', path: 'render/line', sequence_pattern: 'C001_LINE_####.png', required: false});
         const h = host(m, files); h.click('Build'); h.click('QC');
-        assert.equal(h.imports.length, 1); assert.match(h.alerts.join(' '), /optional pass skipped/); assert.match(h.alerts.at(-1), /warning/);
+        assert.equal(h.imports.length, 1); assert.match(h.messages.join(' '), /optional pass skipped/); assert.match(h.messages.at(-1), /warning/);
     }
     const m = manifest(); delete m.passes[0].required;
     const h = host(m, []); h.click('Build'); assert.equal(h.imports.length, 0); assert.match(h.alerts.join(' '), /required pass/);

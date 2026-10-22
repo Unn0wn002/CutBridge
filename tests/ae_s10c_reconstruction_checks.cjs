@@ -182,10 +182,13 @@ function createMockHost(m, files = []) {
         close() {}
     });
 
+    const messages = [];
     function Window() { this.layout = { resize() {}, layout() {} }; }
     Window.prototype.add = function(type, u, text) {
         const c = { type, text, graphics: { font: { name: "Arial" } }, preferredSize: {} };
-        controls.push(c);
+        c.add = Window.prototype.add;
+        if (type === "edittext") { let value = ""; Object.defineProperty(c, "text", {get() { return value; }, set(text) { value = String(text); messages.push(value); }}); }
+                controls.push(c);
         return c;
     };
     Window.prototype.center = Window.prototype.show = function() {};
@@ -359,7 +362,7 @@ function createMockHost(m, files = []) {
         Window,
         Panel,
         ScriptUI: { newFont: () => {} },
-        alert: msg => alerts.push(String(msg)),
+        alert: message => { alerts.push(String(message)); messages.push(String(message)); },
         confirm: () => true,
         $: { writeln() {} }
     };

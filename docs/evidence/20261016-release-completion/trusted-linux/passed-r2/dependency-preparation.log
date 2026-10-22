@@ -1,0 +1,417 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 572B 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:22-bookworm-slim
+#2 ...
+
+#3 [auth] library/node:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#4 [auth] library/python:pull token for registry-1.docker.io
+#4 DONE 0.0s
+
+#5 [internal] load metadata for docker.io/library/python:3.13-bookworm
+#5 DONE 1.0s
+
+#2 [internal] load metadata for docker.io/library/node:22-bookworm-slim
+#2 DONE 1.0s
+
+#6 [internal] load .dockerignore
+#6 transferring context: 2B done
+#6 DONE 0.0s
+
+#7 [node 1/1] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#7 resolve docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392 done
+#7 sha256:d0a16be756b6ec6658aecb8b7bcf87fa6c7d0d7fcc6ca53ad14bb49a4c90bdd7 6.77kB / 6.77kB done
+#7 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 0B / 28.25MB 0.1s
+#7 sha256:f0400f4b55b0ad346bf6167a1b64a258e4d73db608c457798ce35e4ffeebfaaf 0B / 3.31kB 0.1s
+#7 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 0B / 49.84MB 0.1s
+#7 sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392 5.22kB / 5.22kB done
+#7 sha256:efd0ab5780c2d9ab1f0f869571a00d5edb17793bff4cce4a2792e3eb0ffc7562 1.93kB / 1.93kB done
+#7 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 28.25MB / 28.25MB 0.2s
+#7 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 28.25MB / 28.25MB 0.2s done
+#7 sha256:f0400f4b55b0ad346bf6167a1b64a258e4d73db608c457798ce35e4ffeebfaaf 3.31kB / 3.31kB 0.2s done
+#7 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 28.31MB / 49.84MB 0.3s
+#7 extracting sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 0.1s
+#7 sha256:a8de9fa052209313d8e45435a8486e29b20eebaa820e2e7f63a7c3c94b4fa567 0B / 448B 0.3s
+#7 sha256:2cfab517365cfc6b4bd1f8c4cb01754884ef75bc38758b3c41e291c696f019f5 1.71MB / 1.71MB 0.3s
+#7 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 49.84MB / 49.84MB 0.5s
+#7 sha256:a8de9fa052209313d8e45435a8486e29b20eebaa820e2e7f63a7c3c94b4fa567 448B / 448B 0.5s
+#7 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 49.84MB / 49.84MB 0.6s done
+#7 sha256:a8de9fa052209313d8e45435a8486e29b20eebaa820e2e7f63a7c3c94b4fa567 448B / 448B 0.6s done
+#7 sha256:2cfab517365cfc6b4bd1f8c4cb01754884ef75bc38758b3c41e291c696f019f5 1.71MB / 1.71MB 0.6s done
+#7 extracting sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 1.8s done
+#7 extracting sha256:f0400f4b55b0ad346bf6167a1b64a258e4d73db608c457798ce35e4ffeebfaaf done
+#7 extracting sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856
+#7 extracting sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 1.5s done
+#7 extracting sha256:2cfab517365cfc6b4bd1f8c4cb01754884ef75bc38758b3c41e291c696f019f5 0.0s done
+#7 extracting sha256:a8de9fa052209313d8e45435a8486e29b20eebaa820e2e7f63a7c3c94b4fa567 done
+#7 DONE 6.4s
+
+#8 [stage-1 1/6] FROM docker.io/library/python:3.13-bookworm@sha256:073ffebb96ae4d0ed73ccad59f08c47bd84af8a79f5258130f8458ac50ad9ff4
+#8 resolve docker.io/library/python:3.13-bookworm@sha256:073ffebb96ae4d0ed73ccad59f08c47bd84af8a79f5258130f8458ac50ad9ff4 done
+#8 sha256:073ffebb96ae4d0ed73ccad59f08c47bd84af8a79f5258130f8458ac50ad9ff4 6.51kB / 6.51kB done
+#8 sha256:b1029db400b3f9fbcb116ca35b48862f4e18db863c7b7f85466b41a20c073375 2.33kB / 2.33kB done
+#8 sha256:2a66f41838f79d3cd5c7eb749304d18d6660d0cf8547f6f38a258ffa2854ed4e 6.41kB / 6.41kB done
+#8 sha256:8cb71386cfcfc55b27b559f73c6d5c0cdcb93b83be8281314116e271cc42cea6 48.52MB / 48.52MB 0.8s done
+#8 sha256:a4edf9c328e814bd91b20c8e2211065489ebf15a16c7663d68a880660dfc897d 23.87MB / 23.87MB 0.9s done
+#8 sha256:c6c71fff0869aa9bd48cf80d66e30b83adc9a3fe5e77dd9aaf266282c6ec64ff 66.72MB / 66.72MB 1.0s done
+#8 extracting sha256:8cb71386cfcfc55b27b559f73c6d5c0cdcb93b83be8281314116e271cc42cea6 2.5s done
+#8 sha256:610dc773fbd71198e96c7a8710abfd1661f14d776d7169b4ef525d8eb30e1b03 211.71MB / 211.71MB 1.8s done
+#8 sha256:452dd3e2e5d15af56b0b904e51f931640571d75bc1712e974bfefbf71ed585b0 6.16MB / 6.16MB 1.0s done
+#8 sha256:22442471ae3f0e8e579741e64b7d89ac31e6806b3167607ccb93eb681e37d427 27.84MB / 27.84MB 1.2s done
+#8 sha256:28c2d1c51380d231154db49c43c9a489ea5bafeceacd013326d65d5725248b42 249B / 249B 1.1s done
+#8 extracting sha256:a4edf9c328e814bd91b20c8e2211065489ebf15a16c7663d68a880660dfc897d 0.7s done
+#8 extracting sha256:c6c71fff0869aa9bd48cf80d66e30b83adc9a3fe5e77dd9aaf266282c6ec64ff 0.6s
+#8 extracting sha256:c6c71fff0869aa9bd48cf80d66e30b83adc9a3fe5e77dd9aaf266282c6ec64ff 2.5s done
+#8 extracting sha256:610dc773fbd71198e96c7a8710abfd1661f14d776d7169b4ef525d8eb30e1b03
+#8 extracting sha256:610dc773fbd71198e96c7a8710abfd1661f14d776d7169b4ef525d8eb30e1b03 5.2s
+#8 extracting sha256:610dc773fbd71198e96c7a8710abfd1661f14d776d7169b4ef525d8eb30e1b03 5.2s done
+#8 extracting sha256:452dd3e2e5d15af56b0b904e51f931640571d75bc1712e974bfefbf71ed585b0
+#8 extracting sha256:452dd3e2e5d15af56b0b904e51f931640571d75bc1712e974bfefbf71ed585b0 0.2s done
+#8 extracting sha256:22442471ae3f0e8e579741e64b7d89ac31e6806b3167607ccb93eb681e37d427 0.1s
+#8 extracting sha256:22442471ae3f0e8e579741e64b7d89ac31e6806b3167607ccb93eb681e37d427 0.7s done
+#8 extracting sha256:28c2d1c51380d231154db49c43c9a489ea5bafeceacd013326d65d5725248b42 done
+#8 DONE 15.9s
+
+#9 [stage-1 2/6] COPY --from=node /usr/local/bin/node /usr/local/bin/node
+#9 DONE 0.2s
+
+#10 [stage-1 3/6] RUN apt-get update && apt-get install -y --no-install-recommends  libgl1 libegl1 libxrender1 libxi6 libxfixes3 libxkbcommon0  libsm6 libice6 libwayland-client0 && rm -rf /var/lib/apt/lists/*
+#10 0.226 Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+#10 0.243 Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+#10 0.249 Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [34.8 kB]
+#10 0.306 Get:4 http://deb.debian.org/debian bookworm/main amd64 Packages [8790 kB]
+#10 0.377 Get:5 http://deb.debian.org/debian bookworm-updates/main amd64 Packages [6924 B]
+#10 0.406 Get:6 http://deb.debian.org/debian-security bookworm-security/main amd64 Packages [353 kB]
+#10 1.138 Fetched 9391 kB in 1s (9849 kB/s)
+#10 1.138 Reading package lists...
+#10 1.541 Reading package lists...
+#10 1.944 Building dependency tree...
+#10 2.036 Reading state information...
+#10 2.127 libxrender1 is already the newest version (1:0.9.10-1.1).
+#10 2.127 libxrender1 set to manually installed.
+#10 2.127 libsm6 is already the newest version (2:1.2.3-1).
+#10 2.127 libsm6 set to manually installed.
+#10 2.127 libice6 is already the newest version (2:1.0.10-1).
+#10 2.127 libice6 set to manually installed.
+#10 2.127 The following additional packages will be installed:
+#10 2.127   libdrm-amdgpu1 libdrm-common libdrm-intel1 libdrm-nouveau2 libdrm-radeon1
+#10 2.127   libdrm2 libegl-mesa0 libgbm1 libgl1-mesa-dri libglapi-mesa libglvnd0
+#10 2.127   libglx-mesa0 libglx0 libllvm15 libpciaccess0 libsensors-config libsensors5
+#10 2.127   libwayland-server0 libx11-xcb1 libxcb-dri2-0 libxcb-dri3-0 libxcb-glx0
+#10 2.127   libxcb-present0 libxcb-randr0 libxcb-sync1 libxcb-xfixes0 libxshmfence1
+#10 2.128   libxxf86vm1 libz3-4 xkb-data
+#10 2.128 Suggested packages:
+#10 2.128   pciutils lm-sensors
+#10 2.272 The following NEW packages will be installed:
+#10 2.272   libdrm-amdgpu1 libdrm-common libdrm-intel1 libdrm-nouveau2 libdrm-radeon1
+#10 2.272   libdrm2 libegl-mesa0 libegl1 libgbm1 libgl1 libgl1-mesa-dri libglapi-mesa
+#10 2.272   libglvnd0 libglx-mesa0 libglx0 libllvm15 libpciaccess0 libsensors-config
+#10 2.272   libsensors5 libwayland-client0 libwayland-server0 libx11-xcb1 libxcb-dri2-0
+#10 2.272   libxcb-dri3-0 libxcb-glx0 libxcb-present0 libxcb-randr0 libxcb-sync1
+#10 2.272   libxcb-xfixes0 libxfixes3 libxi6 libxkbcommon0 libxshmfence1 libxxf86vm1
+#10 2.273   libz3-4 xkb-data
+#10 2.303 0 upgraded, 36 newly installed, 0 to remove and 8 not upgraded.
+#10 2.303 Need to get 40.4 MB of archives.
+#10 2.303 After this operation, 180 MB of additional disk space will be used.
+#10 2.303 Get:1 http://deb.debian.org/debian bookworm/main amd64 libdrm-common all 2.4.114-1 [7112 B]
+#10 2.309 Get:2 http://deb.debian.org/debian bookworm/main amd64 libdrm2 amd64 2.4.114-1+b1 [37.5 kB]
+#10 2.310 Get:3 http://deb.debian.org/debian bookworm/main amd64 libdrm-amdgpu1 amd64 2.4.114-1+b1 [20.9 kB]
+#10 2.313 Get:4 http://deb.debian.org/debian bookworm/main amd64 libpciaccess0 amd64 0.17-2 [51.4 kB]
+#10 2.314 Get:5 http://deb.debian.org/debian bookworm/main amd64 libdrm-intel1 amd64 2.4.114-1+b1 [64.0 kB]
+#10 2.319 Get:6 http://deb.debian.org/debian bookworm/main amd64 libdrm-nouveau2 amd64 2.4.114-1+b1 [19.1 kB]
+#10 2.319 Get:7 http://deb.debian.org/debian bookworm/main amd64 libdrm-radeon1 amd64 2.4.114-1+b1 [21.8 kB]
+#10 2.323 Get:8 http://deb.debian.org/debian bookworm/main amd64 libwayland-server0 amd64 1.21.0-1 [35.9 kB]
+#10 2.323 Get:9 http://deb.debian.org/debian bookworm/main amd64 libgbm1 amd64 22.3.6-1+deb12u2 [38.1 kB]
+#10 2.324 Get:10 http://deb.debian.org/debian bookworm/main amd64 libglapi-mesa amd64 22.3.6-1+deb12u2 [35.9 kB]
+#10 2.324 Get:11 http://deb.debian.org/debian bookworm/main amd64 libwayland-client0 amd64 1.21.0-1 [28.3 kB]
+#10 2.325 Get:12 http://deb.debian.org/debian bookworm/main amd64 libx11-xcb1 amd64 2:1.8.4-2+deb12u2 [192 kB]
+#10 2.330 Get:13 http://deb.debian.org/debian bookworm/main amd64 libxcb-dri2-0 amd64 1.15-1 [107 kB]
+#10 2.333 Get:14 http://deb.debian.org/debian bookworm/main amd64 libxcb-dri3-0 amd64 1.15-1 [107 kB]
+#10 2.333 Get:15 http://deb.debian.org/debian bookworm/main amd64 libxcb-present0 amd64 1.15-1 [105 kB]
+#10 2.336 Get:16 http://deb.debian.org/debian bookworm/main amd64 libxcb-randr0 amd64 1.15-1 [117 kB]
+#10 2.337 Get:17 http://deb.debian.org/debian bookworm/main amd64 libxcb-sync1 amd64 1.15-1 [109 kB]
+#10 2.338 Get:18 http://deb.debian.org/debian bookworm/main amd64 libxcb-xfixes0 amd64 1.15-1 [109 kB]
+#10 2.339 Get:19 http://deb.debian.org/debian bookworm/main amd64 libxshmfence1 amd64 1.3-1 [8820 B]
+#10 2.339 Get:20 http://deb.debian.org/debian bookworm/main amd64 libegl-mesa0 amd64 22.3.6-1+deb12u2 [114 kB]
+#10 2.341 Get:21 http://deb.debian.org/debian bookworm/main amd64 libglvnd0 amd64 1.6.0-1 [51.8 kB]
+#10 2.342 Get:22 http://deb.debian.org/debian bookworm/main amd64 libxcb-glx0 amd64 1.15-1 [122 kB]
+#10 2.343 Get:23 http://deb.debian.org/debian bookworm/main amd64 libxfixes3 amd64 1:6.0.0-2 [22.7 kB]
+#10 2.343 Get:24 http://deb.debian.org/debian bookworm/main amd64 libxxf86vm1 amd64 1:1.1.4-1+b2 [20.8 kB]
+#10 2.344 Get:25 http://deb.debian.org/debian bookworm/main amd64 libz3-4 amd64 4.8.12-3.1 [7216 kB]
+#10 2.374 Get:26 http://deb.debian.org/debian bookworm/main amd64 libllvm15 amd64 1:15.0.6-4+b1 [23.1 MB]
+#10 2.453 Get:27 http://deb.debian.org/debian bookworm/main amd64 libsensors-config all 1:3.6.0-7.1 [14.3 kB]
+#10 2.453 Get:28 http://deb.debian.org/debian bookworm/main amd64 libsensors5 amd64 1:3.6.0-7.1 [34.2 kB]
+#10 2.454 Get:29 http://deb.debian.org/debian bookworm/main amd64 libgl1-mesa-dri amd64 22.3.6-1+deb12u2 [7240 kB]
+#10 2.479 Get:30 http://deb.debian.org/debian bookworm/main amd64 libglx-mesa0 amd64 22.3.6-1+deb12u2 [148 kB]
+#10 2.479 Get:31 http://deb.debian.org/debian bookworm/main amd64 libglx0 amd64 1.6.0-1 [34.4 kB]
+#10 2.480 Get:32 http://deb.debian.org/debian bookworm/main amd64 libgl1 amd64 1.6.0-1 [88.4 kB]
+#10 2.480 Get:33 http://deb.debian.org/debian bookworm/main amd64 libxi6 amd64 2:1.8-1+b1 [84.2 kB]
+#10 2.481 Get:34 http://deb.debian.org/debian bookworm/main amd64 xkb-data all 2.35.1-1 [764 kB]
+#10 2.483 Get:35 http://deb.debian.org/debian bookworm/main amd64 libxkbcommon0 amd64 1.5.0-1 [106 kB]
+#10 2.484 Get:36 http://deb.debian.org/debian bookworm/main amd64 libegl1 amd64 1.6.0-1 [33.7 kB]
+#10 2.593 debconf: delaying package configuration, since apt-utils is not installed
+#10 2.615 Fetched 40.4 MB in 0s (196 MB/s)
+#10 2.628 Selecting previously unselected package libdrm-common.
+#10 2.628 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 23978 files and directories currently installed.)
+#10 2.650 Preparing to unpack .../00-libdrm-common_2.4.114-1_all.deb ...
+#10 2.651 Unpacking libdrm-common (2.4.114-1) ...
+#10 2.667 Selecting previously unselected package libdrm2:amd64.
+#10 2.669 Preparing to unpack .../01-libdrm2_2.4.114-1+b1_amd64.deb ...
+#10 2.671 Unpacking libdrm2:amd64 (2.4.114-1+b1) ...
+#10 2.687 Selecting previously unselected package libdrm-amdgpu1:amd64.
+#10 2.689 Preparing to unpack .../02-libdrm-amdgpu1_2.4.114-1+b1_amd64.deb ...
+#10 2.690 Unpacking libdrm-amdgpu1:amd64 (2.4.114-1+b1) ...
+#10 2.705 Selecting previously unselected package libpciaccess0:amd64.
+#10 2.707 Preparing to unpack .../03-libpciaccess0_0.17-2_amd64.deb ...
+#10 2.708 Unpacking libpciaccess0:amd64 (0.17-2) ...
+#10 2.725 Selecting previously unselected package libdrm-intel1:amd64.
+#10 2.727 Preparing to unpack .../04-libdrm-intel1_2.4.114-1+b1_amd64.deb ...
+#10 2.728 Unpacking libdrm-intel1:amd64 (2.4.114-1+b1) ...
+#10 2.746 Selecting previously unselected package libdrm-nouveau2:amd64.
+#10 2.748 Preparing to unpack .../05-libdrm-nouveau2_2.4.114-1+b1_amd64.deb ...
+#10 2.749 Unpacking libdrm-nouveau2:amd64 (2.4.114-1+b1) ...
+#10 2.765 Selecting previously unselected package libdrm-radeon1:amd64.
+#10 2.768 Preparing to unpack .../06-libdrm-radeon1_2.4.114-1+b1_amd64.deb ...
+#10 2.769 Unpacking libdrm-radeon1:amd64 (2.4.114-1+b1) ...
+#10 2.784 Selecting previously unselected package libwayland-server0:amd64.
+#10 2.787 Preparing to unpack .../07-libwayland-server0_1.21.0-1_amd64.deb ...
+#10 2.787 Unpacking libwayland-server0:amd64 (1.21.0-1) ...
+#10 2.804 Selecting previously unselected package libgbm1:amd64.
+#10 2.806 Preparing to unpack .../08-libgbm1_22.3.6-1+deb12u2_amd64.deb ...
+#10 2.807 Unpacking libgbm1:amd64 (22.3.6-1+deb12u2) ...
+#10 2.824 Selecting previously unselected package libglapi-mesa:amd64.
+#10 2.826 Preparing to unpack .../09-libglapi-mesa_22.3.6-1+deb12u2_amd64.deb ...
+#10 2.827 Unpacking libglapi-mesa:amd64 (22.3.6-1+deb12u2) ...
+#10 2.845 Selecting previously unselected package libwayland-client0:amd64.
+#10 2.847 Preparing to unpack .../10-libwayland-client0_1.21.0-1_amd64.deb ...
+#10 2.848 Unpacking libwayland-client0:amd64 (1.21.0-1) ...
+#10 2.863 Selecting previously unselected package libx11-xcb1:amd64.
+#10 2.865 Preparing to unpack .../11-libx11-xcb1_2%3a1.8.4-2+deb12u2_amd64.deb ...
+#10 2.866 Unpacking libx11-xcb1:amd64 (2:1.8.4-2+deb12u2) ...
+#10 2.885 Selecting previously unselected package libxcb-dri2-0:amd64.
+#10 2.888 Preparing to unpack .../12-libxcb-dri2-0_1.15-1_amd64.deb ...
+#10 2.889 Unpacking libxcb-dri2-0:amd64 (1.15-1) ...
+#10 2.909 Selecting previously unselected package libxcb-dri3-0:amd64.
+#10 2.911 Preparing to unpack .../13-libxcb-dri3-0_1.15-1_amd64.deb ...
+#10 2.912 Unpacking libxcb-dri3-0:amd64 (1.15-1) ...
+#10 2.933 Selecting previously unselected package libxcb-present0:amd64.
+#10 2.935 Preparing to unpack .../14-libxcb-present0_1.15-1_amd64.deb ...
+#10 2.936 Unpacking libxcb-present0:amd64 (1.15-1) ...
+#10 2.956 Selecting previously unselected package libxcb-randr0:amd64.
+#10 2.958 Preparing to unpack .../15-libxcb-randr0_1.15-1_amd64.deb ...
+#10 2.959 Unpacking libxcb-randr0:amd64 (1.15-1) ...
+#10 2.980 Selecting previously unselected package libxcb-sync1:amd64.
+#10 2.982 Preparing to unpack .../16-libxcb-sync1_1.15-1_amd64.deb ...
+#10 2.983 Unpacking libxcb-sync1:amd64 (1.15-1) ...
+#10 3.007 Selecting previously unselected package libxcb-xfixes0:amd64.
+#10 3.009 Preparing to unpack .../17-libxcb-xfixes0_1.15-1_amd64.deb ...
+#10 3.010 Unpacking libxcb-xfixes0:amd64 (1.15-1) ...
+#10 3.030 Selecting previously unselected package libxshmfence1:amd64.
+#10 3.033 Preparing to unpack .../18-libxshmfence1_1.3-1_amd64.deb ...
+#10 3.033 Unpacking libxshmfence1:amd64 (1.3-1) ...
+#10 3.048 Selecting previously unselected package libegl-mesa0:amd64.
+#10 3.051 Preparing to unpack .../19-libegl-mesa0_22.3.6-1+deb12u2_amd64.deb ...
+#10 3.052 Unpacking libegl-mesa0:amd64 (22.3.6-1+deb12u2) ...
+#10 3.074 Selecting previously unselected package libglvnd0:amd64.
+#10 3.076 Preparing to unpack .../20-libglvnd0_1.6.0-1_amd64.deb ...
+#10 3.077 Unpacking libglvnd0:amd64 (1.6.0-1) ...
+#10 3.098 Selecting previously unselected package libxcb-glx0:amd64.
+#10 3.100 Preparing to unpack .../21-libxcb-glx0_1.15-1_amd64.deb ...
+#10 3.101 Unpacking libxcb-glx0:amd64 (1.15-1) ...
+#10 3.133 Selecting previously unselected package libxfixes3:amd64.
+#10 3.135 Preparing to unpack .../22-libxfixes3_1%3a6.0.0-2_amd64.deb ...
+#10 3.136 Unpacking libxfixes3:amd64 (1:6.0.0-2) ...
+#10 3.152 Selecting previously unselected package libxxf86vm1:amd64.
+#10 3.154 Preparing to unpack .../23-libxxf86vm1_1%3a1.1.4-1+b2_amd64.deb ...
+#10 3.155 Unpacking libxxf86vm1:amd64 (1:1.1.4-1+b2) ...
+#10 3.170 Selecting previously unselected package libz3-4:amd64.
+#10 3.172 Preparing to unpack .../24-libz3-4_4.8.12-3.1_amd64.deb ...
+#10 3.173 Unpacking libz3-4:amd64 (4.8.12-3.1) ...
+#10 3.599 Selecting previously unselected package libllvm15:amd64.
+#10 3.601 Preparing to unpack .../25-libllvm15_1%3a15.0.6-4+b1_amd64.deb ...
+#10 3.602 Unpacking libllvm15:amd64 (1:15.0.6-4+b1) ...
+#10 4.307 Selecting previously unselected package libsensors-config.
+#10 4.309 Preparing to unpack .../26-libsensors-config_1%3a3.6.0-7.1_all.deb ...
+#10 4.310 Unpacking libsensors-config (1:3.6.0-7.1) ...
+#10 4.325 Selecting previously unselected package libsensors5:amd64.
+#10 4.327 Preparing to unpack .../27-libsensors5_1%3a3.6.0-7.1_amd64.deb ...
+#10 4.352 Unpacking libsensors5:amd64 (1:3.6.0-7.1) ...
+#10 4.369 Selecting previously unselected package libgl1-mesa-dri:amd64.
+#10 4.371 Preparing to unpack .../28-libgl1-mesa-dri_22.3.6-1+deb12u2_amd64.deb ...
+#10 4.376 Unpacking libgl1-mesa-dri:amd64 (22.3.6-1+deb12u2) ...
+#10 4.786 Selecting previously unselected package libglx-mesa0:amd64.
+#10 4.789 Preparing to unpack .../29-libglx-mesa0_22.3.6-1+deb12u2_amd64.deb ...
+#10 4.790 Unpacking libglx-mesa0:amd64 (22.3.6-1+deb12u2) ...
+#10 4.814 Selecting previously unselected package libglx0:amd64.
+#10 4.817 Preparing to unpack .../30-libglx0_1.6.0-1_amd64.deb ...
+#10 4.817 Unpacking libglx0:amd64 (1.6.0-1) ...
+#10 4.835 Selecting previously unselected package libgl1:amd64.
+#10 4.838 Preparing to unpack .../31-libgl1_1.6.0-1_amd64.deb ...
+#10 4.839 Unpacking libgl1:amd64 (1.6.0-1) ...
+#10 4.859 Selecting previously unselected package libxi6:amd64.
+#10 4.861 Preparing to unpack .../32-libxi6_2%3a1.8-1+b1_amd64.deb ...
+#10 4.862 Unpacking libxi6:amd64 (2:1.8-1+b1) ...
+#10 4.880 Selecting previously unselected package xkb-data.
+#10 4.882 Preparing to unpack .../33-xkb-data_2.35.1-1_all.deb ...
+#10 4.882 Unpacking xkb-data (2.35.1-1) ...
+#10 5.004 Selecting previously unselected package libxkbcommon0:amd64.
+#10 5.006 Preparing to unpack .../34-libxkbcommon0_1.5.0-1_amd64.deb ...
+#10 5.007 Unpacking libxkbcommon0:amd64 (1.5.0-1) ...
+#10 5.028 Selecting previously unselected package libegl1:amd64.
+#10 5.030 Preparing to unpack .../35-libegl1_1.6.0-1_amd64.deb ...
+#10 5.031 Unpacking libegl1:amd64 (1.6.0-1) ...
+#10 5.062 Setting up libxcb-dri3-0:amd64 (1.15-1) ...
+#10 5.064 Setting up libwayland-server0:amd64 (1.21.0-1) ...
+#10 5.066 Setting up libx11-xcb1:amd64 (2:1.8.4-2+deb12u2) ...
+#10 5.068 Setting up libpciaccess0:amd64 (0.17-2) ...
+#10 5.070 Setting up libxcb-xfixes0:amd64 (1.15-1) ...
+#10 5.072 Setting up libxi6:amd64 (2:1.8-1+b1) ...
+#10 5.074 Setting up libglvnd0:amd64 (1.6.0-1) ...
+#10 5.076 Setting up libxcb-glx0:amd64 (1.15-1) ...
+#10 5.078 Setting up libsensors-config (1:3.6.0-7.1) ...
+#10 5.081 Setting up xkb-data (2.35.1-1) ...
+#10 5.083 Setting up libxxf86vm1:amd64 (1:1.1.4-1+b2) ...
+#10 5.085 Setting up libxcb-present0:amd64 (1.15-1) ...
+#10 5.087 Setting up libz3-4:amd64 (4.8.12-3.1) ...
+#10 5.089 Setting up libxfixes3:amd64 (1:6.0.0-2) ...
+#10 5.091 Setting up libxcb-sync1:amd64 (1.15-1) ...
+#10 5.093 Setting up libsensors5:amd64 (1:3.6.0-7.1) ...
+#10 5.095 Setting up libglapi-mesa:amd64 (22.3.6-1+deb12u2) ...
+#10 5.098 Setting up libxcb-dri2-0:amd64 (1.15-1) ...
+#10 5.100 Setting up libxshmfence1:amd64 (1.3-1) ...
+#10 5.102 Setting up libxcb-randr0:amd64 (1.15-1) ...
+#10 5.104 Setting up libllvm15:amd64 (1:15.0.6-4+b1) ...
+#10 5.106 Setting up libdrm-common (2.4.114-1) ...
+#10 5.109 Setting up libxkbcommon0:amd64 (1.5.0-1) ...
+#10 5.111 Setting up libwayland-client0:amd64 (1.21.0-1) ...
+#10 5.113 Setting up libdrm2:amd64 (2.4.114-1+b1) ...
+#10 5.115 Setting up libdrm-amdgpu1:amd64 (2.4.114-1+b1) ...
+#10 5.117 Setting up libdrm-nouveau2:amd64 (2.4.114-1+b1) ...
+#10 5.120 Setting up libgbm1:amd64 (22.3.6-1+deb12u2) ...
+#10 5.122 Setting up libdrm-radeon1:amd64 (2.4.114-1+b1) ...
+#10 5.129 Setting up libdrm-intel1:amd64 (2.4.114-1+b1) ...
+#10 5.143 Setting up libgl1-mesa-dri:amd64 (22.3.6-1+deb12u2) ...
+#10 5.160 Setting up libegl-mesa0:amd64 (22.3.6-1+deb12u2) ...
+#10 5.162 Setting up libegl1:amd64 (1.6.0-1) ...
+#10 5.165 Setting up libglx-mesa0:amd64 (22.3.6-1+deb12u2) ...
+#10 5.167 Setting up libglx0:amd64 (1.6.0-1) ...
+#10 5.169 Setting up libgl1:amd64 (1.6.0-1) ...
+#10 5.171 Processing triggers for libc-bin (2.36-9+deb12u14) ...
+#10 DONE 5.3s
+
+#11 [stage-1 4/6] RUN python -m pip install --no-cache-dir pytest jsonschema bpy==5.2.1
+#11 1.646 Collecting pytest
+#11 1.720   Downloading pytest-9.1.1-py3-none-any.whl.metadata (7.6 kB)
+#11 1.749 Collecting jsonschema
+#11 1.757   Downloading jsonschema-4.26.0-py3-none-any.whl.metadata (7.6 kB)
+#11 1.779 Collecting bpy==5.2.1
+#11 1.787   Downloading bpy-5.2.1-cp313-cp313-manylinux_2_28_x86_64.whl.metadata (2.0 kB)
+#11 1.803 Collecting cattrs (from bpy==5.2.1)
+#11 1.810   Downloading cattrs-26.2.1-py3-none-any.whl.metadata (8.5 kB)
+#11 2.053 Collecting cython (from bpy==5.2.1)
+#11 2.061   Downloading cython-3.3.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (28 kB)
+#11 2.274 Collecting numpy<3.0,>=2.2 (from bpy==5.2.1)
+#11 2.288   Downloading numpy-2.5.4-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)
+#11 2.312 Collecting requests (from bpy==5.2.1)
+#11 2.319   Downloading requests-2.34.2-py3-none-any.whl.metadata (4.8 kB)
+#11 2.386 Collecting zstandard (from bpy==5.2.1)
+#11 2.394   Downloading zstandard-0.25.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (3.3 kB)
+#11 2.405 Collecting iniconfig>=1.0.1 (from pytest)
+#11 2.412   Downloading iniconfig-2.3.1-py3-none-any.whl.metadata (2.8 kB)
+#11 2.427 Collecting packaging>=22 (from pytest)
+#11 2.434   Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+#11 2.445 Collecting pluggy<2,>=1.5 (from pytest)
+#11 2.452   Downloading pluggy-1.7.0-py3-none-any.whl.metadata (5.0 kB)
+#11 2.469 Collecting pygments>=2.7.2 (from pytest)
+#11 2.476   Downloading pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+#11 2.490 Collecting attrs>=22.2.0 (from jsonschema)
+#11 2.497   Downloading attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+#11 2.509 Collecting jsonschema-specifications>=2023.03.6 (from jsonschema)
+#11 2.516   Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl.metadata (2.9 kB)
+#11 2.535 Collecting referencing>=0.28.4 (from jsonschema)
+#11 2.543   Downloading referencing-0.37.0-py3-none-any.whl.metadata (2.8 kB)
+#11 2.805 Collecting rpds-py>=0.25.0 (from jsonschema)
+#11 2.812   Downloading rpds_py-2026.9.1-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.1 kB)
+#11 2.834 Collecting typing-extensions>=4.14.0 (from cattrs->bpy==5.2.1)
+#11 2.840   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+#11 2.962 Collecting charset_normalizer<4,>=2 (from requests->bpy==5.2.1)
+#11 2.970   Downloading charset_normalizer-3.5.2-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (46 kB)
+#11 2.987 Collecting idna<4,>=2.5 (from requests->bpy==5.2.1)
+#11 2.994   Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+#11 3.014 Collecting urllib3<3,>=1.26 (from requests->bpy==5.2.1)
+#11 3.022   Downloading urllib3-2.8.0-py3-none-any.whl.metadata (7.4 kB)
+#11 3.039 Collecting certifi>=2023.5.7 (from requests->bpy==5.2.1)
+#11 3.046   Downloading certifi-2026.7.22-py3-none-any.whl.metadata (2.5 kB)
+#11 3.058 Downloading bpy-5.2.1-cp313-cp313-manylinux_2_28_x86_64.whl (401.7 MB)
+#11 5.896    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 401.7/401.7 MB 150.2 MB/s  0:00:02
+#11 5.904 Downloading numpy-2.5.4-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.7 MB)
+#11 5.931    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 680.2 MB/s  0:00:00
+#11 5.938 Downloading pytest-9.1.1-py3-none-any.whl (386 kB)
+#11 5.946 Downloading pluggy-1.7.0-py3-none-any.whl (27 kB)
+#11 5.953 Downloading jsonschema-4.26.0-py3-none-any.whl (90 kB)
+#11 5.960 Downloading attrs-26.1.0-py3-none-any.whl (67 kB)
+#11 5.967 Downloading iniconfig-2.3.1-py3-none-any.whl (7.6 kB)
+#11 5.975 Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)
+#11 5.982 Downloading packaging-26.3-py3-none-any.whl (129 kB)
+#11 5.989 Downloading pygments-2.21.0-py3-none-any.whl (1.3 MB)
+#11 5.992    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 751.7 MB/s  0:00:00
+#11 6.000 Downloading referencing-0.37.0-py3-none-any.whl (26 kB)
+#11 6.007 Downloading rpds_py-2026.9.1-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (370 kB)
+#11 6.015 Downloading cattrs-26.2.1-py3-none-any.whl (74 kB)
+#11 6.022 Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+#11 6.030 Downloading cython-3.3.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (3.4 MB)
+#11 6.040    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.4/3.4 MB 377.8 MB/s  0:00:00
+#11 6.047 Downloading requests-2.34.2-py3-none-any.whl (73 kB)
+#11 6.055 Downloading charset_normalizer-3.5.2-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (254 kB)
+#11 6.063 Downloading idna-3.20-py3-none-any.whl (69 kB)
+#11 6.070 Downloading urllib3-2.8.0-py3-none-any.whl (135 kB)
+#11 6.077 Downloading certifi-2026.7.22-py3-none-any.whl (136 kB)
+#11 6.085 Downloading zstandard-0.25.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.5 MB)
+#11 6.096    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.5/5.5 MB 598.4 MB/s  0:00:00
+#11 6.586 Installing collected packages: zstandard, urllib3, typing-extensions, rpds-py, pygments, pluggy, packaging, numpy, iniconfig, idna, cython, charset_normalizer, certifi, attrs, requests, referencing, pytest, cattrs, jsonschema-specifications, bpy, jsonschema
+#11 15.68 
+#11 15.68 Successfully installed attrs-26.1.0 bpy-5.2.1 cattrs-26.2.1 certifi-2026.7.22 charset_normalizer-3.5.2 cython-3.3.0 idna-3.20 iniconfig-2.3.1 jsonschema-4.26.0 jsonschema-specifications-2025.9.1 numpy-2.5.4 packaging-26.3 pluggy-1.7.0 pygments-2.21.0 pytest-9.1.1 referencing-0.37.0 requests-2.34.2 rpds-py-2026.9.1 typing-extensions-4.16.0 urllib3-2.8.0 zstandard-0.25.0
+#11 15.68 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#11 DONE 18.1s
+
+#12 [stage-1 5/6] RUN python -I -c 'import bpy, pytest, jsonschema; assert bpy.app.version == (5, 2, 1)'
+#12 0.314 00:00.063  system.path      | WARNING Could not get a list of mounted file-systems
+#12 DONE 0.9s
+
+#13 [stage-1 6/6] RUN node --version && python --version && python -m pip freeze
+#13 0.124 v22.23.3
+#13 0.126 Python 3.13.16
+#13 0.355 attrs==26.1.0
+#13 0.355 bpy==5.2.1
+#13 0.355 cattrs==26.2.1
+#13 0.355 certifi==2026.7.22
+#13 0.355 charset-normalizer==3.5.2
+#13 0.355 Cython==3.3.0
+#13 0.355 idna==3.20
+#13 0.355 iniconfig==2.3.1
+#13 0.355 jsonschema==4.26.0
+#13 0.355 jsonschema-specifications==2025.9.1
+#13 0.355 numpy==2.5.4
+#13 0.355 packaging==26.3
+#13 0.355 pluggy==1.7.0
+#13 0.355 Pygments==2.21.0
+#13 0.355 pytest==9.1.1
+#13 0.355 referencing==0.37.0
+#13 0.355 requests==2.34.2
+#13 0.355 rpds-py==2026.9.1
+#13 0.355 typing_extensions==4.16.0
+#13 0.355 urllib3==2.8.0
+#13 0.355 zstandard==0.25.0
+#13 DONE 0.4s
+
+#14 exporting to image
+#14 exporting layers
+#14 exporting layers 4.6s done
+#14 writing image sha256:92eb13d9218e0bbae65eb01a1251d095752da3bfc2d4840f2bb4298208cda76d done
+#14 naming to docker.io/library/cutbridge-verifier:a6ee2445f81906c024fd5b9e1689faac017f198a done
+#14 DONE 4.6s

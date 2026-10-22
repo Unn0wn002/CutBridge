@@ -1,0 +1,34 @@
+{
+  "tree": "ArtistCompositor025",
+  "rgb": {
+    "name": "ArtistRGB025",
+    "label": "Artist node must survive",
+    "location": [
+      -500.0,
+      400.0
+    ],
+    "mute": false,
+    "value": [
+      0.125,
+      0.25,
+      0.5,
+      1.0
+    ],
+    "note": "Artist sentinel / preserved note"
+  },
+  "reroute": {
+    "name": "ArtistReroute025",
+    "location": [
+      -200.0,
+      400.0
+    ]
+  },
+  "links": [
+    [
+      "ArtistRGB025",
+      "Color",
+      "ArtistReroute025",
+      "Input"
+    ]
+  ]
+}

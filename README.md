@@ -1,5 +1,7 @@
 # CutBridge
 
+v0.2.5 is the bounded **free release candidate**, targeted for **Sunday, 25 October 2026 (Asia/Jakarta)**. Feature scope is frozen; a qualified published release ends feature development, with critical defects only afterward. Current verdict: **INSUFFICIENT EVIDENCE** until exact-package native acceptance completes. Candidate `5aa2da2` passed 396 tests + 2 subtests, CI and reviewed isolated verification. The [AI code/evidence review](docs/AI_RELEASE_REVIEW_2026-10-21.md) records package hashes, download limitations and the native blocker; see [completion status](docs/COMPLETION_STATUS.md). No v0.2.5 release is published.
+
 **CutBridge is a Blender → After Effects production handoff tool for animation cuts.**
 
 It standardizes cut metadata, render-pass packaging, versioning, `cutbridge.json` handoff, After Effects project setup, QC, controlled revision handling, Japanese-first workflow UX, Studio Presets, and an optional bounded Camera/3D Null handoff.
@@ -48,6 +50,8 @@ CutBridge currently provides:
 - optional bounded Blender Camera / Empty → AE Camera / 3D Null handoff.
 
 ## Current development status
+
+The [v0.2.5 release-preparation record](docs/RELEASE_PREPARATION_v0.2.5.md) tracks the independent v0.2.4 audit, preserved distribution hold, candidate verification, and remaining release gates.
 
 Engineering/native-host validation is complete through **S13**. **S14A**, the Japanese target-user validation protocol and fail-closed evidence tooling, is integrated. The v0.2.3 release-facing Japanese claim scope was deliberately narrowed instead of claiming S14B completion. **S14B remains NOT_EXECUTED** and is reserved for a future release or claim that needs representative Japanese target-user usability evidence.
 
@@ -184,15 +188,9 @@ localization.js
 
 **Keep all four files together.**
 
-For a first test:
+Install all four adjacent runtime files from one verified package into the installed AE version's `Scripts/ScriptUI Panels` directory. Restart AE, then open **Window > CutBridge** and dock the tab in your workspace. Routine Build/QC completion and full diagnostics appear in the panel's scrollable Results field; revision confirmation and blocking errors remain visible.
 
-1. Open After Effects.
-2. Choose **File → Scripts → Run Script File...**.
-3. Select `CutBridge.jsx`.
-4. Confirm the CutBridge panel opens.
-5. Use the Japanese / English selector as needed.
-
-For a dockable panel, place all four files in the installed After Effects version's `Scripts/ScriptUI Panels` directory, restart After Effects, then open **Window → CutBridge**.
+Optional floating fallback: keep the files together and choose **File > Scripts > Run Script File... > CutBridge.jsx**. Removal and update instructions are in the installation guide.
 
 See [`apps/after-effects/INSTALL.md`](apps/after-effects/INSTALL.md).
 
@@ -220,8 +218,9 @@ QC+ reports deterministic PASS / WARNING / ERROR diagnostics using stable `CBQ-*
 - comp resolution, pixel aspect, FPS, and duration;
 - managed footage/layer ownership;
 - source consistency;
-- Camera/Null state where applicable;
-- revision compatibility boundaries.
+- obsolete managed-version tags on existing layers, including Camera/Null layers.
+
+QC does not verify expected Camera/Null completeness, their transform values/keyframes, or projection parity. Revision compatibility is assessed by the revision workflow. Inspect the supported Camera Position/Point of Interest/Zoom and Null Position/Scale channels separately when demonstrating 3D handoff.
 
 QC is **diagnostic-only**. It does not silently repair ownership, replace sources, or mutate unrelated artist content.
 
@@ -271,6 +270,8 @@ AE time = (frame - frame_start) / fps
 ```
 
 Supported producer scope includes the active perspective camera and explicitly marked Blender Empties under the documented constraints.
+
+AE writes Camera Position, Point of Interest from the sampled forward vector, and Zoom; Nulls receive Position and supplied Scale. Serialized up/basis data is not applied to Orientation/rotation. Camera roll and Empty rotation are not reconstructed. The producer opt-in remains an engineering setting, outside the normal N-panel controls; see the [channel and QC boundary](docs/HANDOFF_3D.md#after-effects-reconstruction-boundary).
 
 CutBridge does **not** promise arbitrary geometry, lights, bones, rigs, hierarchy recreation, or full-scene synchronization.
 
@@ -360,6 +361,7 @@ Project safety, branch, and verification rules are in [`AGENTS.md`](AGENTS.md).
 - [Compatibility](docs/COMPATIBILITY.md)
 - [S14 Japanese Target-User Validation](docs/S14_JP_USER_VALIDATION.md)
 - [Release Readiness](docs/RELEASE_READINESS.md)
+- [Submission and demo checklist](docs/SUBMISSION_DEMO_CHECKLIST.md)
 - [Completion Status](docs/COMPLETION_STATUS.md)
 - [S12/S13 Evidence Summary](docs/S12_S13_EVIDENCE_SUMMARY.md)
 - [Technical Debt](docs/TECHNICAL_DEBT.md)

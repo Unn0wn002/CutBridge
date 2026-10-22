@@ -1,0 +1,52 @@
+{
+  "observed_utc": "2026-10-21T10:08:46.6472711Z",
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "applications": [
+    {
+      "path": "C:\\Program Files\\Adobe\\Adobe After Effects 2026\\Support Files\\AfterFX.exe",
+      "file_version": "26.5",
+      "product_version": "26.5",
+      "bytes": 5727752,
+      "sha256": "013e7fa7232368c05dd14e5cae694ad7d5cb0d260a9d5956bfcfe20e4860c06f",
+      "signature_status": "Valid",
+      "signature_message": "Signature verified."
+    },
+    {
+      "path": "C:\\Program Files\\Adobe\\Adobe After Effects 2026\\Support Files\\AfterFXLib.dll",
+      "file_version": "26.5.0.89",
+      "product_version": "26.5.0",
+      "bytes": 49345032,
+      "sha256": "39cd58ef58211b00720ee27cfcd243332fb6d289d37582c8fc2ba1679255b87d",
+      "signature_status": "HashMismatch",
+      "signature_message": "The contents of file C:\\Program Files\\Adobe\\Adobe After Effects 2026\\Support Files\\AfterFXLib.dll might have been changed by an unauthorized user or process, because the hash of the file does not match the hash stored in the digital signature. The script cannot run on the specified system. For more information, run Get-Help about_Signing."
+    },
+    {
+      "path": "C:\\Program Files\\Blender Foundation\\Blender 5.2\\blender.exe",
+      "file_version": "5.2",
+      "product_version": "5.2",
+      "bytes": 113022936,
+      "sha256": "f141a3c5754500e6f84361099a4cd53f0bb7662b6a0d2cfaaa8fbb63e92234a0",
+      "signature_status": "Valid",
+      "signature_message": "Signature verified."
+    },
+    {
+      "path": "C:\\Windows\\System32\\WindowsSandbox.exe",
+      "file_version": "10.0.26100.1 (WinBuild.160101.0800)",
+      "product_version": "10.0.26100.1",
+      "bytes": 1088872,
+      "sha256": "5a6d57196de4b73ac252c0bb88426701be76fcee1a91acdb5f642ae3754687a1",
+      "signature_status": "Valid",
+      "signature_message": "Signature verified."
+    }
+  ],
+  "ae_cause": "UNKNOWN; no inference from HashMismatch",
+  "isolated_environment": "No suitable guest established",
+  "hyperv_inventory": "Get-VM permission denied; availability unknown",
+  "wsl": "Not installed",
+  "docker_podman": "Unavailable",
+  "prior_sandbox": "19 October Font Preflight guest is no longer available",
+  "candidate_execution": "NOT_EXECUTED",
+  "new_startup_attempts": 0,
+  "security_licensing_changes": "NONE",
+  "operator_action": "Provide a disposable Windows VM with normally Adobe-provisioned AE 26.5.0 Build 89, accepted vendor provenance and approved offline/read-only/credential boundaries, initialized without candidate code."
+}

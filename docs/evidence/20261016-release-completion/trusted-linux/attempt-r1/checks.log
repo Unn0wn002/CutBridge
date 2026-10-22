@@ -1,0 +1,128 @@
+........................................................................ [ 18%]
+........................................................................ [ 36%]
+........................................................................ [ 54%]
+........................................................................ [ 72%]
+..........F....FF......F.............................................. [ 90%]
+.....................................                                    [100%]
+=================================== FAILURES ===================================
+____ ReleaseHygieneTests.test_ae_version_mismatch_is_rejected_before_output ____
+
+self = <test_release_hygiene.ReleaseHygieneTests testMethod=test_ae_version_mismatch_is_rejected_before_output>
+
+    def test_ae_version_mismatch_is_rejected_before_output(self):
+        source = self.builder.AE_SCRIPT
+>       source.write_text(source.read_text(encoding="utf-8").replace(
+            'var PRODUCT_VERSION = "0.2.5";', 'var PRODUCT_VERSION = "0.2.2";'), encoding="utf-8")
+
+tests/test_release_hygiene.py:96: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/local/lib/python3.13/pathlib/_local.py:555: in write_text
+    return PathBase.write_text(self, data, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:651: in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/candidate/verification-output/tmp/tmpxe6s9opa/source/apps/after-effects/CutBridge.jsx')
+mode = 'w', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       PermissionError: [Errno 13] Permission denied: '/candidate/verification-output/tmp/tmpxe6s9opa/source/apps/after-effects/CutBridge.jsx'
+
+/usr/local/lib/python3.13/pathlib/_local.py:537: PermissionError
+_ ReleaseHygieneTests.test_missing_localization_sidecar_is_rejected_before_output _
+
+self = <test_release_hygiene.ReleaseHygieneTests testMethod=test_missing_localization_sidecar_is_rejected_before_output>
+
+    def test_missing_localization_sidecar_is_rejected_before_output(self):
+>       self.builder.AE_LOCALIZATION.unlink()
+
+tests/test_release_hygiene.py:109: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/candidate/verification-output/tmp/tmpnuf_gyjj/source/apps/after-effects/localization.js')
+missing_ok = False
+
+    def unlink(self, missing_ok=False):
+        """
+        Remove this file or link.
+        If the path is a directory, use rmdir() instead.
+        """
+        try:
+>           os.unlink(self)
+E           PermissionError: [Errno 13] Permission denied: '/candidate/verification-output/tmp/tmpnuf_gyjj/source/apps/after-effects/localization.js'
+
+/usr/local/lib/python3.13/pathlib/_local.py:746: PermissionError
+__ ReleaseHygieneTests.test_missing_qc_plus_sidecar_is_rejected_before_output __
+
+self = <test_release_hygiene.ReleaseHygieneTests testMethod=test_missing_qc_plus_sidecar_is_rejected_before_output>
+
+    def test_missing_qc_plus_sidecar_is_rejected_before_output(self):
+>       self.builder.AE_QC_PLUS.unlink()
+
+tests/test_release_hygiene.py:103: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/candidate/verification-output/tmp/tmp720f5qx4/source/apps/after-effects/qc_plus.js')
+missing_ok = False
+
+    def unlink(self, missing_ok=False):
+        """
+        Remove this file or link.
+        If the path is a directory, use rmdir() instead.
+        """
+        try:
+>           os.unlink(self)
+E           PermissionError: [Errno 13] Permission denied: '/candidate/verification-output/tmp/tmp720f5qx4/source/apps/after-effects/qc_plus.js'
+
+/usr/local/lib/python3.13/pathlib/_local.py:746: PermissionError
+________ ReleaseHygieneTests.test_version_constant_mismatch_is_rejected ________
+
+self = <test_release_hygiene.ReleaseHygieneTests testMethod=test_version_constant_mismatch_is_rejected>
+
+    def test_version_constant_mismatch_is_rejected(self):
+        source = self.builder.BLENDER_ROOT / "version.py"
+>       source.write_text(source.read_text().replace("VERSION = (0, 2, 5)", "VERSION = (0, 2, 2)"))
+
+tests/test_release_hygiene.py:89: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/local/lib/python3.13/pathlib/_local.py:555: in write_text
+    return PathBase.write_text(self, data, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:651: in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/candidate/verification-output/tmp/tmplvahu2m9/source/apps/blender/cutbridge/version.py')
+mode = 'w', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       PermissionError: [Errno 13] Permission denied: '/candidate/verification-output/tmp/tmplvahu2m9/source/apps/blender/cutbridge/version.py'
+
+/usr/local/lib/python3.13/pathlib/_local.py:537: PermissionError
+=========================== short test summary info ============================
+FAILED tests/test_release_hygiene.py::ReleaseHygieneTests::test_ae_version_mismatch_is_rejected_before_output
+FAILED tests/test_release_hygiene.py::ReleaseHygieneTests::test_missing_localization_sidecar_is_rejected_before_output
+FAILED tests/test_release_hygiene.py::ReleaseHygieneTests::test_missing_qc_plus_sidecar_is_rejected_before_output
+FAILED tests/test_release_hygiene.py::ReleaseHygieneTests::test_version_constant_mismatch_is_rejected
+4 failed, 391 passed, 2 subtests passed in 4.67s

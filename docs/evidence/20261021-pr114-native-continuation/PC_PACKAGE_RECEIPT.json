@@ -1,0 +1,20 @@
+{
+  "status": "VERIFIED_PACKAGE_DATA_ONLY",
+  "runtime_source": "5aa2da24fc8be41626ee84178c7fdce05d02eebc",
+  "review_head": "ac71996ebcc8a522e05cc1e511457ac1e116efa3",
+  "artifact_id": 12334183017,
+  "original_run": 39575739610,
+  "transfer_run": 39581132797,
+  "transfer_commit": "91289713cfc7e19ed47007113d113e2c2b22b073",
+  "transport": "Read-only Actions API; hash-pinned archive; connector-readable log chunks; PC decode",
+  "outer_sha256_validated_on_transfer_runner": "04ef1fe67cd580200c4af6604c825680986745e4f56fc8184455166a566014cd",
+  "actual_outer_zip_on_pc": false,
+  "all_transferred_file_hashes_verified_on_pc": true,
+  "both_release_checksums_verified_on_pc": true,
+  "bootstrap_checksum_verified_on_pc": true,
+  "source_binding": "All four AE runtime files and GPL match immutable raw Git archive (core.autocrlf=false); INSTALL matches pinned tag-link rendering. Initial checkout-converted CRLF archive was not used for acceptance.",
+  "native_execution": "NOT_EXECUTED",
+  "human_review": "NOT_CLAIMED",
+  "original_json": "Not accessible; user summary retained separately",
+  "created_utc": "2026-10-21T10:02:56.5339159Z"
+}

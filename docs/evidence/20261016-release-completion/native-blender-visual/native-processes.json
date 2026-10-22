@@ -1,0 +1,10 @@
+{
+    "exit_code":  -1058471934,
+    "pid":  8920,
+    "method":  "Normal application process exit; no force termination",
+    "name":  "official-package-validator",
+    "exited":  true,
+    "started_utc":  "2026-10-16T13:42:44.4399255Z",
+    "command_arguments":  "--command extension validate C:\\Artifacts\\CutBridge-Blender-v0.2.5.zip",
+    "finished_utc":  "2026-10-16T13:42:45.4845224Z"
+}

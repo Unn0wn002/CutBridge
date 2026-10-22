@@ -7,8 +7,8 @@ const vm = require('node:vm');
 const root = path.resolve(__dirname, '..');
 const source = fs.readFileSync(path.join(root, 'apps/after-effects/CutBridge.jsx'), 'utf8');
 
-const buildStart = source.indexOf('    function buildComp() {');
-const buildEnd = source.indexOf('\n    function runQC()', buildStart);
+const buildStart = source.indexOf('    function buildComp(onResult) {');
+const buildEnd = source.indexOf('\n    function runQC(onResult)', buildStart);
 assert.ok(buildStart >= 0 && buildEnd > buildStart, 'buildComp function must exist');
 const buildSource = source.slice(buildStart, buildEnd);
 assert.match(buildSource, /\n\s*orderManagedLayers\(comp, m, verifiedPasses\);/,
@@ -22,7 +22,7 @@ vm.runInContext(source, contractContext);
 const contract = contractContext.module.exports;
 
 const orderStart = source.indexOf('    function orderManagedLayers(comp, manifest, verifiedPasses) {');
-const orderEnd = source.indexOf('\n    function buildComp()', orderStart);
+const orderEnd = source.indexOf('\n    function buildComp(onResult)', orderStart);
 assert.ok(orderStart >= 0 && orderEnd > orderStart, 'orderManagedLayers function must exist');
 const orderSource = source.slice(orderStart, orderEnd);
 

@@ -1,0 +1,267 @@
+[
+  {
+    "path": "native-ae-input/campaign.jsx",
+    "size": 4308,
+    "sha256": "62b12b710c5b2bf36cc439fcf79624d3cb2f44c2dcb238239f6bd14be15de154"
+  },
+  {
+    "path": "native-ae-input/common.jsx",
+    "size": 20520,
+    "sha256": "509273dc0788b1060253923e22ed6415cb731c43e89e834922a1f327cf2ba324"
+  },
+  {
+    "path": "native-ae-input/config.json",
+    "size": 424,
+    "sha256": "c0026f4e41b45b56628e29ea08b428320eb716d24ed8685387e736e2bdfef59a"
+  },
+  {
+    "path": "native-ae-input/fresh_reopen.jsx",
+    "size": 451,
+    "sha256": "c9f9c65a458750fbc398132ae7378a12702c66bdba3898d3c0595b29fed33f12"
+  },
+  {
+    "path": "native-ae-input/negative.jsx",
+    "size": 5703,
+    "sha256": "de672fe968bba14846bf502fceb0c1508ff3ac9c96284e09596caaddcac1987f"
+  },
+  {
+    "path": "native-ae-input/probe.jsx",
+    "size": 1145,
+    "sha256": "67409615e912ca337498a19e63b2d2d495e5b18d7eae5065a8d4b1077089b0e4"
+  },
+  {
+    "path": "native-ae-input/README.md",
+    "size": 6735,
+    "sha256": "d6dc9341eced0d05bc48d82cc0da105f03dc2281c33bc1a467d7075f77e7bc8e"
+  },
+  {
+    "path": "native-ae-input/reopen.jsx",
+    "size": 959,
+    "sha256": "ff1d05274f47f7ab5f9db0f81702f2285d1d3ff4bee1be1d8a573065b5722fd0"
+  },
+  {
+    "path": "native-ae-input/rollback.jsx",
+    "size": 4985,
+    "sha256": "2cfac923fa60bca22af4909810f44f7bc30b8a6136dd430a4d857f8530d7b0a5"
+  },
+  {
+    "path": "native-ae-input/run_all.jsx",
+    "size": 1507,
+    "sha256": "df82d8e3a1c871fdd992633e9846badd59c0665608bf10c37f425e404af836a1"
+  },
+  {
+    "path": "native-ae-input/source_replacement_rollback.jsx",
+    "size": 9840,
+    "sha256": "332dfcf34551caabd741e4cc6b31216d36a11899e7af1aae1ac30148ad97e54d"
+  },
+  {
+    "path": "native-blender-visual-input/input-manifest.sha256",
+    "size": 160,
+    "sha256": "de8451a74a8cc2a381fccf5bdc315e755d5f6ae5c252c1a61cd094567585d712"
+  },
+  {
+    "path": "native-blender-visual-input/README.md",
+    "size": 3602,
+    "sha256": "8f5d4024045c7fbfe97f1ee2398a15f7db45160d1522a3540512eb52f1b65c60"
+  },
+  {
+    "path": "native-blender-visual-input/visual_blender.py",
+    "size": 14644,
+    "sha256": "3ff8d35ca28910f966c2b50ed7348fe8ffbeef4158b66100ea6ff4a2e8fb6042"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V001/cutbridge.json",
+    "size": 7477,
+    "sha256": "e2ebb3ab79199af023d15e2028e66079219735e6fe92c5f260cae3b67179e9f7"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V001/render/beauty/C001_BEAUTY_0001.png",
+    "size": 40084,
+    "sha256": "4d22d39f2bca9d3692fe2892495b9696c2f5cbe71c7facbbc13085bd9fc10c22"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V001/render/beauty/C001_BEAUTY_0002.png",
+    "size": 40152,
+    "sha256": "f626915d719b38500c7f15693a215ffbc457e1fa9a71ae2b34d6285d1a518d03"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V001/render/beauty/C001_BEAUTY_0003.png",
+    "size": 40081,
+    "sha256": "79d54e0f582bbff8bedd7cba7e7994becb56900355efb6350c941fa309c79fdb"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V001/render/depth/C001_DEPTH_0001.exr",
+    "size": 925192,
+    "sha256": "72636760f4627082e41cec666fa3910c94cad843ce792a729dd5b25e423358af"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V001/render/depth/C001_DEPTH_0002.exr",
+    "size": 925192,
+    "sha256": "33d68ae7c5b4dac0ad9c417fa2cc57598bca4c06dccc5c2c657787d759095285"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V001/render/depth/C001_DEPTH_0003.exr",
+    "size": 925192,
+    "sha256": "5f4571b1ae0330a92b96703726164ef4f3822d355c473987a48570d708e92b0e"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V001/render/line/C001_LINE_0001.png",
+    "size": 23982,
+    "sha256": "d639195e25da0bf30f326057d98d3e6f02e124359d5a6096a7180d7f7e7e3acb"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V001/render/line/C001_LINE_0002.png",
+    "size": 24176,
+    "sha256": "f9c01145b3dd3afb96816070b24dbf423ffa3fc997bbe8c6a5fede6a5e5ba3e6"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V001/render/line/C001_LINE_0003.png",
+    "size": 24009,
+    "sha256": "232c7e5819f8c2f681f6920830e68e60438a945aa1ac77b6cc42b51d2fbc1c0f"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V001/render/shadow/C001_SHADOW_0001.png",
+    "size": 34272,
+    "sha256": "ff6d512bfcc6c0696ae4c8cb99dc3f0a97e124c7e39b9b1858b98a37184c7497"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V001/render/shadow/C001_SHADOW_0002.png",
+    "size": 34213,
+    "sha256": "91cb8ce851bed0dfc14bda9cd1bf32944d97d054216011988955d09f983607d8"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V001/render/shadow/C001_SHADOW_0003.png",
+    "size": 34303,
+    "sha256": "2ace0b35d698c5b5b07f1ee37f161f279faae00630e2828e1505573d3e4b49ca"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V002/cutbridge.json",
+    "size": 7477,
+    "sha256": "68e134b7ed199fb2475da61ef44b36c61e44789b584047495085a93a8f736e07"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V002/render/beauty/C001_BEAUTY_0001.png",
+    "size": 40113,
+    "sha256": "bb91d570f741e83ee3f830df9fec77a637f7140edca979d1096e30dd7df04a97"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V002/render/beauty/C001_BEAUTY_0002.png",
+    "size": 40327,
+    "sha256": "2dcf8451a2f186195a44978fbd1850573c193f2716cd39084357b79f3ccd5832"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V002/render/beauty/C001_BEAUTY_0003.png",
+    "size": 40073,
+    "sha256": "96404bb9fd78e12850d41985631533ae081dddb3c701cdd1e4733047b22c3a24"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V002/render/depth/C001_DEPTH_0001.exr",
+    "size": 925192,
+    "sha256": "80626263cdf8ae442a0010e6affd70994cc2888f1e45b0ab8cda06d1bed1da93"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V002/render/depth/C001_DEPTH_0002.exr",
+    "size": 925192,
+    "sha256": "2c0cfb40a249dbc0b4912996b48107f1ca8d3edb6f38cf6f35b01156654f34c4"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V002/render/depth/C001_DEPTH_0003.exr",
+    "size": 925192,
+    "sha256": "2253d7f70f2239d7e5b7c78f83154ef8e9fae10548783b1dc3a3ac70c34a91ab"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V002/render/line/C001_LINE_0001.png",
+    "size": 24163,
+    "sha256": "322a7c5d0a3517b0cdfd3ad9271127dc52b979a96a87102e8e10747345a97d06"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V002/render/line/C001_LINE_0002.png",
+    "size": 23964,
+    "sha256": "02cafdfd753d82c0ae1deeefc5ec3f49f75d42bfefab22caa935e64e09346c5d"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V002/render/line/C001_LINE_0003.png",
+    "size": 24262,
+    "sha256": "87bb4dd976e7ac4db7b3871bd4cbbbc8e79db82e387b83b6e02b1dc5092f76ae"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V002/render/shadow/C001_SHADOW_0001.png",
+    "size": 34228,
+    "sha256": "e4ef34aa694e1bd238c6df2dfe0463f69ad4be9d0560789668f8cc46686d65fc"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V002/render/shadow/C001_SHADOW_0002.png",
+    "size": 34310,
+    "sha256": "2ee89cfd70e1bf20dec35245a0c784ac6760755b6fb9885a60f5d3b140e326bc"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V002/render/shadow/C001_SHADOW_0003.png",
+    "size": 34329,
+    "sha256": "b39529b27826b9eaee1204bc2b35bcf337210887d9b8834391c162d231a72f56"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V003/cutbridge.json",
+    "size": 7485,
+    "sha256": "6aa730ce0a518831f968e7cfeb34396faf72cf19efc8b64cdc9eda58ec841835"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V003/render/beauty/C001_BEAUTY_0001.png",
+    "size": 39917,
+    "sha256": "bc83ebe4120baebc5c772d1b301455c7531d9afb59a0ee26d80c4be810c5d9d0"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V003/render/beauty/C001_BEAUTY_0002.png",
+    "size": 39933,
+    "sha256": "1ed433a266a0a2b59f7bcb1b3ad23d9807592edf0f4d35372b554829bd30ec09"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V003/render/beauty/C001_BEAUTY_0003.png",
+    "size": 40452,
+    "sha256": "cba39269d268778325a5fd992b4081d533d1732f5e8cf1918e58da6297c254fa"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V003/render/depth/C001_DEPTH_0001.exr",
+    "size": 925192,
+    "sha256": "c5ef6977de283c9d5b6cf3115bd9434753888b4b9431bbcaaa00d96dae09a36c"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V003/render/depth/C001_DEPTH_0002.exr",
+    "size": 925192,
+    "sha256": "c7d22301e9f0b935bfa593e014da039a5509c326a0beb0498e968f99767ea905"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V003/render/depth/C001_DEPTH_0003.exr",
+    "size": 925192,
+    "sha256": "2ce1075e89ab7cdf8803f4fbe6a8c6401d838fb923e5b3990d3374115cbfb832"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V003/render/line/C001_LINE_0001.png",
+    "size": 23974,
+    "sha256": "e38d4f10de9b055c7fe1d42876927a26125204ed111f6c7c0a5619d4989bba14"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V003/render/line/C001_LINE_0002.png",
+    "size": 24227,
+    "sha256": "e5074385c3f6a2eed736bde292913d027997925a2bdda8470093234f8816e2e9"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V003/render/line/C001_LINE_0003.png",
+    "size": 24079,
+    "sha256": "0f67f3c6a0ae55ef150a94fd5ea567deb47ddab97d6f7783938b40b32a47b6e4"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V003/render/shadow/C001_SHADOW_0001.png",
+    "size": 34281,
+    "sha256": "541e02731fec604d19bf1b003766fe59e072f737889895ee5a2cbc9167f90b79"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V003/render/shadow/C001_SHADOW_0002.png",
+    "size": 34237,
+    "sha256": "df25f4fc6298c9547350ad2bd5518cf0fceec79e0d296109196487332ad62c36"
+  },
+  {
+    "path": "real-blender-input/packages/Native025_EP01_SC010_C001_T01_V003/render/shadow/C001_SHADOW_0003.png",
+    "size": 34246,
+    "sha256": "2fa8560d5d58a18093308cf5a88113651f491bdb97036f144a162453dfe8bee0"
+  }
+]

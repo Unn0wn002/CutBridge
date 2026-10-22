@@ -1,0 +1,5 @@
+{
+  "verdict": "INSUFFICIENT EVIDENCE",
+  "reason": "No native script or AfterFX.exe process record after host launcher; stopped task-owned disposable Sandbox client to retry with direct executable and diagnostics. No native behavior or normal exit claimed.",
+  "utc": "2026-10-16T13:32:11.7814115Z"
+}

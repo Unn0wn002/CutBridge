@@ -1,10 +1,24 @@
 # Changelog
 
+## Bounded v0.2.5 free-release candidate — 21 October 2026
+
+- Make installation of four adjacent runtime files in Scripts/ScriptUI Panels and Window > CutBridge the primary workflow; retain floating fallback and add removal/update instructions.
+- Use compact workflow rows with localized tooltips/help and scrollable, selectable in-panel Build/QC results. Preserve revision confirmations and blocking errors.
+- Freeze scope for Sunday, 25 October 2026, Asia/Jakarta; explicitly document AI administrative review and unexecuted native gates.
+
+
 All notable CutBridge changes are tracked here.
 
 ## [0.2.5] - Unreleased
 
+### Release preparation
+- Added opt-in offline container verification from an independently reviewed orchestration pin, exact Git input inventories, retained source/diff/index evidence, safe artifact staging, complete repeated-package comparison and separate infrastructure verdicts. Actual trusted workflow execution remains a required verification step.
+- Recorded the independent v0.2.4 download audit and confirmed Issue #99 distribution hold; preparation targets corrected v0.2.5 without changing published releases or production distribution.
+- Historical AE 26.5x89 observations informed cached-object repairs. Missing retained isolation provenance prevents those native observations from closing release gates; fresh exact-package native acceptance remains required. Historical failures and reports are preserved.
+
 ### Fixed
+- Bind AE 3D revision migration to the executing adapter's current project state, verify removed replacement footage by captured item ID, and reject deleted cached native handles before ownership membership comparisons. Direct adapter regressions now exercise failure after import, invalid handles, removal refusal, preservation and retry.
+- Scope Camera/Null guidance to implemented channels and direct sample inspection; do not imply orientation reconstruction or transform/projection QC.
 - Made the packaged After Effects `INSTALL.md` release-state-neutral after Issue #99 found stale pre-publication wording in the immutable v0.2.4 AE ZIP.
 - Added source-level and built-ZIP regression coverage so future AE release packages cannot silently restore version-specific development/publication claims.
 - Avoided deprecated `Scene.use_nodes` reads and writes on Blender's modern compositor path while retaining the Blender 4.x compatibility path.
