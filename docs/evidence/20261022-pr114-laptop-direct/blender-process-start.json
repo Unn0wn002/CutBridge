@@ -1,0 +1,9 @@
+{
+  "pid": 5608,
+  "exe": "C:\\Program Files\\Blender Foundation\\Blender 5.2\\blender.exe",
+  "arguments": "--factory-startup --disable-autoexec --debug-gpu",
+  "started_utc": "2026-10-22T10:27:00.5822357Z",
+  "candidate_mapped": false,
+  "deadline_utc": "2026-10-22T11:27:00.5862008Z",
+  "scope": "Vendor-only blank startup, owner OS context; not candidate isolation"
+}

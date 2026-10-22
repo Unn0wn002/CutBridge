@@ -1,6 +1,14 @@
 # Native validation operator handoff — PR #114
 
-## Active bounded free release — 21 October 2026
+## Laptop direct-host checkpoint — 22 October 2026
+
+**INSUFFICIENT EVIDENCE / HOLD RELEASE.** Direct blank startup completed on laptop AYAKUMI_NOZOMI_: Blender **5.2.3 LTS / e13b728c6880**, RTX 3050 Ti / OpenGL 4.6 NVIDIA 617.42, PID 5608, normal exit 0; AE **26.5.0 Build 89**, empty workspace, no compatibility conflicts, CUDA selected, PID 4176, normal exit 0. Both installed application-tree inventories are unchanged. AE's core DLL still reports **HashMismatch**, cause unknown. No CutBridge/probe/native campaign was executed.
+
+[The laptop evidence and exact next prerequisite](evidence/20261022-pr114-laptop-direct/README.md) supersede earlier environment actions: the owner requires direct applications and **no further Hyper-V, VMware or Sandbox creation, launch or troubleshooting**. The missing non-VM boundary is enforced separation from owner credentials/HOME/private files, effective network denial, immutable read-only inputs and confined output/temp/profile/cache writes. Temporary profile redirection alone is insufficient. Accepted AE vendor provenance also remains unresolved. No machine security/licensing settings were changed.
+
+The original artifact is now on the laptop: outer SHA-256 and all 48 evidence sums, bootstrap, four repeated assets and recorded input inventories verify. Exact AE/Blender ZIP hashes remain frozen to source `5aa2da24fc8be41626ee84178c7fdce05d02eebc`. Fourteen retained harness/config files recovered exactly; **39 fixture files** (three manifests, 36 renders) still require data-only transfer from the desktop packet. The partial packet has 24/73 exact historical handoff entries. No fixture regeneration, new product rerun or runtime change occurred. All open current-package native/release gates remain unexecuted; release authorization is false, v0.2.4 immutable/held, production v0.2.3.
+
+## Prior desktop checkpoints (preserved)
 
 **Current environment verdict: INSUFFICIENT EVIDENCE.** VMware Tools is now **ok/current** (legacy integer 13344), SVGA WDDM **9.17.11.0003 build 25171296** is loaded, and vendor logs confirm a guest restart after installation. The owner’s one post-Tools launch reaches **Blender 5.2.2 — Platform Unsupported**, reporting VMware SVGA3D / OpenGL 4.3 Core / Mesa 24.1.0. This changed rejection supersedes the missing-driver hypothesis; its exact failing capability remains undetermined. [The actual post-Tools record](evidence/20261021-pr114-guest-provisioning/vmware-post-tools-r11/OPERATOR_ACTION.md) preserves both failures. The owner reports a second laptop with Blender/AE and requested [the laptop continuation prompt](LAPTOP_NATIVE_HANDOFF_2026-10-22.md). Its actual versions, blank startup and isolation remain unverified. No current candidate native/release gate passed or CutBridge defect observed; frozen bytes, ancestry, prior evidence and artist work remain preserved.
 

@@ -1,0 +1,21 @@
+========================================
+= Blender 5.2.3 LTS System Information =
+========================================
+
+
+Blender:
+========================================
+
+version: 5.2.3 LTS, branch: blender-v5.2-release, commit date: 2026-10-21 09:21, hash: e13b728c6880, type: Release
+build date: 2026-10-22, 01:37:16
+platform: 'Windows-11-10.0.26300-SP0'
+binary path: 'C:\\Program Files\\Blender Foundation\\Blender 5.2\\blender.exe'
+
+GPU:
+========================================
+
+renderer:	'NVIDIA GeForce RTX 3050 Ti Laptop GPU/PCIe/SSE2'
+vendor:		'NVIDIA Corporation'
+version:	'4.6.0 NVIDIA 617.42'
+device type:	'NVIDIA'
+backend type:	'OPENGL'

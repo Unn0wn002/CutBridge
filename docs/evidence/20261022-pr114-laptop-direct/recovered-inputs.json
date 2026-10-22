@@ -1,0 +1,122 @@
+[
+  {
+    "path": "ae-runtime/CutBridge.jsx",
+    "bytes": 128099,
+    "sha256": "161ce665f317053b0fab6c3d754c07f1ed893289d1a75b7121e0bef5215e48c3"
+  },
+  {
+    "path": "ae-runtime/INSTALL.md",
+    "bytes": 8573,
+    "sha256": "408013bf1c151ff4af009e0f4fbc0ececba9cf8d8a2b470b844b224f685759f2"
+  },
+  {
+    "path": "ae-runtime/LICENSE",
+    "bytes": 35149,
+    "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+  },
+  {
+    "path": "ae-runtime/localization.js",
+    "bytes": 15045,
+    "sha256": "413f6cd969e928bbc6c55efb5125003d62f314ba4b7424c29ed4dfe32cff5b0e"
+  },
+  {
+    "path": "ae-runtime/qc_plus.js",
+    "bytes": 15087,
+    "sha256": "054b8f0a2239c28020f758dab19049c1e4a8d74170c16a42e2aa8d4eee222cb8"
+  },
+  {
+    "path": "ae-runtime/revision_manager.js",
+    "bytes": 43408,
+    "sha256": "ca9df1b6678eeaa1bebf03a5ba8e35253f0a9984a8891d0f00cc01bbc222a097"
+  },
+  {
+    "path": "artifacts/CutBridge-AfterEffects-v0.2.5.zip",
+    "bytes": 60408,
+    "sha256": "5363795c66b1fbb664444fd5346ca9532d99822ce2cf3315193d4abec1789b9c"
+  },
+  {
+    "path": "artifacts/CutBridge-Blender-v0.2.5.zip",
+    "bytes": 63682,
+    "sha256": "864131a58a1c56e4364c3e435ef1433fbda415515be7292770212bfdc4c31bfe"
+  },
+  {
+    "path": "artifacts/release-metadata.json",
+    "bytes": 674,
+    "sha256": "7c4a62d1b2602aa4f471e6e02bf743e4e0f70632de57d542e2e795853b2c21ec"
+  },
+  {
+    "path": "artifacts/SHA256SUMS.txt",
+    "bytes": 195,
+    "sha256": "75e998bcfc3302a1c20229cbf2a642b3eab4988ec545f7d265cd7812871b5ede"
+  },
+  {
+    "path": "native-ae-input/campaign.jsx",
+    "bytes": 4308,
+    "sha256": "62b12b710c5b2bf36cc439fcf79624d3cb2f44c2dcb238239f6bd14be15de154"
+  },
+  {
+    "path": "native-ae-input/common.jsx",
+    "bytes": 20520,
+    "sha256": "509273dc0788b1060253923e22ed6415cb731c43e89e834922a1f327cf2ba324"
+  },
+  {
+    "path": "native-ae-input/config.json",
+    "bytes": 424,
+    "sha256": "c0026f4e41b45b56628e29ea08b428320eb716d24ed8685387e736e2bdfef59a"
+  },
+  {
+    "path": "native-ae-input/fresh_reopen.jsx",
+    "bytes": 451,
+    "sha256": "c9f9c65a458750fbc398132ae7378a12702c66bdba3898d3c0595b29fed33f12"
+  },
+  {
+    "path": "native-ae-input/negative.jsx",
+    "bytes": 5703,
+    "sha256": "de672fe968bba14846bf502fceb0c1508ff3ac9c96284e09596caaddcac1987f"
+  },
+  {
+    "path": "native-ae-input/probe.jsx",
+    "bytes": 1145,
+    "sha256": "67409615e912ca337498a19e63b2d2d495e5b18d7eae5065a8d4b1077089b0e4"
+  },
+  {
+    "path": "native-ae-input/README.md",
+    "bytes": 6735,
+    "sha256": "d6dc9341eced0d05bc48d82cc0da105f03dc2281c33bc1a467d7075f77e7bc8e"
+  },
+  {
+    "path": "native-ae-input/reopen.jsx",
+    "bytes": 959,
+    "sha256": "ff1d05274f47f7ab5f9db0f81702f2285d1d3ff4bee1be1d8a573065b5722fd0"
+  },
+  {
+    "path": "native-ae-input/rollback.jsx",
+    "bytes": 4985,
+    "sha256": "2cfac923fa60bca22af4909810f44f7bc30b8a6136dd430a4d857f8530d7b0a5"
+  },
+  {
+    "path": "native-ae-input/run_all.jsx",
+    "bytes": 1507,
+    "sha256": "df82d8e3a1c871fdd992633e9846badd59c0665608bf10c37f425e404af836a1"
+  },
+  {
+    "path": "native-ae-input/source_replacement_rollback.jsx",
+    "bytes": 9840,
+    "sha256": "332dfcf34551caabd741e4cc6b31216d36a11899e7af1aae1ac30148ad97e54d"
+  },
+  {
+    "path": "native-blender-visual-input/input-manifest.sha256",
+    "bytes": 160,
+    "sha256": "de8451a74a8cc2a381fccf5bdc315e755d5f6ae5c252c1a61cd094567585d712"
+  },
+  {
+    "path": "native-blender-visual-input/README.md",
+    "bytes": 3602,
+    "sha256": "8f5d4024045c7fbfe97f1ee2398a15f7db45160d1522a3540512eb52f1b65c60"
+  },
+  {
+    "path": "native-blender-visual-input/visual_blender.py",
+    "bytes": 14644,
+    "sha256": "3ff8d35ca28910f966c2b50ed7348fe8ffbeef4158b66100ea6ff4a2e8fb6042"
+  }
+]
