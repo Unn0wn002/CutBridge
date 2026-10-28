@@ -1,6 +1,6 @@
 # CutBridge native install and restart checklist
 
-Status: **PROCEDURE ONLY. Every native row below is `NOT_RUN`** until an operator records it. This page grants no release, install or compatibility approval. Existing evidence is scoped in [RELEASE_READINESS.md](RELEASE_READINESS.md) and the `docs/evidence/v0.2.5/` records; its After Effects reopen checks are **same-process** reopens, not a full quit and relaunch.
+Status: **Procedure, with one recorded run on 2026-10-28** (`docs/evidence/v0.2.5/native-install-qa-20261028/README.md`). Rows not listed as recorded stay `NOT_RUN`. This page grants no release, install or compatibility approval. Existing evidence is scoped in [RELEASE_READINESS.md](RELEASE_READINESS.md) and the `docs/evidence/v0.2.5/` records; its After Effects reopen checks are **same-process** reopens, not a full quit and relaunch.
 
 ## 0. Identify the candidate before installing anything
 
@@ -62,14 +62,14 @@ Build V002 from a package whose content changed, then V003. Confirm V001/V002/V0
 
 | ID | Case | Expected | Status |
 | --- | --- | --- | --- |
-| P1 | Clean install from verified Blender ZIP | Enables, panel visible | NOT_RUN |
-| P2 | Export V001, import and Build in AE | Range, FPS, media match manifest | NOT_RUN |
-| P3 | Full AE quit, relaunch, reopen | Range, linking, artist state preserved | NOT_RUN |
-| P4 | V002 then V003 revisions | Correct revision tags, artist state kept | NOT_RUN |
+| P1 | Clean install from verified Blender ZIP | Enables, panel visible | PASS 2026-10-28 (CLI install, isolated profile; GUI dialog not exercised) |
+| P2 | Export V001, import and Build in AE | Range, FPS, media match manifest | PASS 2026-10-28 |
+| P3 | Full AE quit, relaunch, reopen | Range, linking, artist state preserved | PASS 2026-10-28 |
+| P4 | V002 then V003 revisions | Correct revision tags, artist state kept | PASS 2026-10-28 |
 | P5 | Optional camera/Null (only if handoff enabled) | Managed camera/Null reconstructed | NOT_RUN |
-| N1 | Bad or missing `cutbridge.json` field | Import rejected before any project change | NOT_RUN |
-| N2 | FPS or range mismatch vs manifest | Rejected or flagged, no silent change | NOT_RUN |
-| N3 | Missing or changed required pass | Rejected, nothing created | NOT_RUN |
+| N1 | Bad or missing `cutbridge.json` field | Import rejected before any project change | PASS 2026-10-28 (missing `fps`) |
+| N2 | FPS or range mismatch vs manifest | Rejected or flagged, no silent change | PASS 2026-10-28 (FPS, via revision swap; range not tested) |
+| N3 | Missing or changed required pass | Rejected, nothing created | PASS 2026-10-28 (missing frame, rejected at apply with rollback; missing pass not tested) |
 | N4 | Optional pass removed | Warning only, no error | NOT_RUN |
 | N5 | Unexpected revision (skip V002 to V003) | Rejected | NOT_RUN |
 | N6 | Same-name unmanaged camera/Null | Fail closed, no adoption | NOT_RUN |
