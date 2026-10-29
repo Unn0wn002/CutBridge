@@ -73,6 +73,7 @@ Build V002 from a package whose content changed, then V003. Confirm V001/V002/V0
 | N4 | Optional pass removed | Warning only, no error | NOT_RUN |
 | N5 | Unexpected revision (skip V002 to V003) | Rejected | NOT_RUN |
 | N6 | Same-name unmanaged camera/Null | Fail closed, no adoption | NOT_RUN |
+| P6 | Dockable `ScriptUI Panels` install (Window menu, dock, relaunch) | Appears, docks, layout survives AE restart | PASS 2026-10-29 (see `docs/evidence/v0.2.5/dockable-install-qa-20261029/`; docked by hand; panel functions not exercised) |
 
 Automated Node and pytest coverage for several rows exists but does not substitute for these native results. After a run, copy the recorded values into a dated evidence folder; do not edit existing evidence.
 
