@@ -1,0 +1,1 @@
+Snapshot made on the host with: git -c core.autocrlf=false archive --format=tar a48646d857fbe4f40b894ff4d0be8cd1d82328fe, extracted with tar; 563 files (snapshot-manifest.sha256, taken after the Sandbox run; the folder was mapped read-only).
