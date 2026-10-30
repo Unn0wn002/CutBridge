@@ -1,0 +1,1 @@
+Recorded from the launching command's output (task b9mt6cj85): before starting phase C, 'AE running: 0' (no AfterFX process); AE then started and became ready ('AE ready: True'); the harness ran in that new process. The pid was not captured.

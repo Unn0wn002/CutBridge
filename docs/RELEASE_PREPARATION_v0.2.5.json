@@ -13,7 +13,8 @@
     "native_rerun_host": "Blender 5.2.2 LTS, AE 26.5x89 (owner host, not isolated)",
     "native_p5_n4_n5_n6": "PASS",
     "orientation_fail_closed": "PASS: rolled camera, rotated Empty and later-keyed rotation refused with no package written; level control builds",
-    "not_repeated_on_these_bytes": "P1 GUI dialog, P3 full relaunch, N1-N3, P6, S14B"
+    "remaining_rows_on_these_bytes": "PASS: P1 GUI (owner clicks), P2, P3 full quit/relaunch, P4 V002 then V003 with artist work, N1, N2, N3; P6 bound by byte-identical installed files (not re-docked); evidence/v0.2.5/candidate-efa64cd-remaining-rows-20261030/",
+    "not_repeated_on_these_bytes": "S14B (NOT_EXECUTED)"
   },
   "automated_verification": {
     "candidate_sha": "049c095258f9fc2dd89cbf8f1d7b2b3114d80296",
