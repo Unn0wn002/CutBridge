@@ -88,7 +88,7 @@ class CUTBRIDGE_PG_Settings(bpy.types.PropertyGroup):
     # a normal user-facing workflow until native AE reconstruction is validated.
     handoff_3d_enabled: BoolProperty(
         name="3D Handoff Data",
-        description="Write perspective Camera and marked Empty samples into cutbridge.json. AE applies camera position, aim and zoom and Empty position and scale; camera roll and Empty rotation are not transferred",
+        description="Write perspective Camera and marked Empty samples into cutbridge.json. AE applies camera position, aim and zoom and Empty position and scale; a rolled camera or rotated Empty stops Validate and Build",
         default=False,
     )
     handoff_3d_pixels_per_blender_unit: FloatProperty(
