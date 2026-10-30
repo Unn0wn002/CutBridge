@@ -1,0 +1,32 @@
+PASS producer-style V001/V002/V003 names can differ for the same cut
+PASS revision rule is newer-only: skips apply, same or older revisions block before mutation
+PASS all tuple fields reject drift despite equal package_name
+PASS delimiter tuples and ownership keys cannot collide
+PASS canonical revision token helper rejects malformed values
+PASS duplicate candidate numbers cannot select by input order
+PASS malformed manifests fail closed through the existing AE contract
+PASS malformed, duplicate and unsafe passes fail closed
+PASS prototype pass names remain valid
+PASS media changes follow conservative source-only compatibility policy
+PASS all validation and rollback callbacks are mandatory
+PASS successful source-only transaction preserves mock layer properties and ordering
+PASS warnings require explicit confirmation even if public ticket is modified
+PASS forged tickets and caller changes cannot redirect a plan
+PASS live host ownership rejects forged records, tag/type/container/source and tuple drift
+PASS duplicate or missing required live layers block
+PASS ownership is checked again after planning and before importing
+PASS tag drift during import blocks all source swaps and removes staged imports
+PASS validation failure cleans the failing import as well as earlier staged imports
+PASS import allocation then throw is cleaned via mandatory tracking
+PASS multi-action mutate-then-throw restores every attempted layer
+PASS silent swap failure is detected and restored
+PASS restore failure retains all replacements and prevents retry
+PASS cleanup failure is explicit and cleanup continues for remaining imports
+PASS commit failure rolls back all swapped sources and staged replacements
+PASS unprintable removal errors cannot interrupt cleanup or bypass poisoning
+PASS unprintable restore and original errors preserve subsequent recovery attempts
+PASS malformed schema coercion cannot abort valid candidate discovery
+PASS removed optional pass blocks source-only revision before mutation
+PASS missing optional layer promoted to required blocks
+PASS browser/ExtendScript-style loading fails closed without the contract
+S6 revision checks: PASS (31 groups; native AE MANUAL NOT EXECUTED)

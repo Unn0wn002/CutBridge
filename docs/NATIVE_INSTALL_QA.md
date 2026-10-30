@@ -1,6 +1,6 @@
 # CutBridge native install and restart checklist
 
-Status: **Procedure, with recorded runs on 2026-10-28** (`docs/evidence/v0.2.5/native-install-qa-20261028/README.md`), **2026-10-29** (P6) **and 2026-10-30** (P5, N4, N5, N6: `docs/evidence/v0.2.5/native-rows-p5-n4-n5-n6-20261030/README.md`). Rows not listed as recorded stay `NOT_RUN`. This page grants no release, install or compatibility approval. Existing evidence is scoped in [RELEASE_READINESS.md](RELEASE_READINESS.md) and the `docs/evidence/v0.2.5/` records; its After Effects reopen checks are **same-process** reopens, not a full quit and relaunch.
+Status: **Procedure, with recorded runs on 2026-10-28** (`docs/evidence/v0.2.5/native-install-qa-20261028/README.md`), **2026-10-29** (P6) **and 2026-10-30** (P5, N4, N5, N6: `docs/evidence/v0.2.5/native-rows-p5-n4-n5-n6-20261030/README.md`, then a clean single-pass retest that supersedes it for these rows: `docs/evidence/v0.2.5/native-retest-p5-n4-n5-n6-20261030/README.md`). Rows not listed as recorded stay `NOT_RUN`. This page grants no release, install or compatibility approval. Existing evidence is scoped in [RELEASE_READINESS.md](RELEASE_READINESS.md) and the `docs/evidence/v0.2.5/` records; its After Effects reopen checks are **same-process** reopens, not a full quit and relaunch.
 
 ## 0. Identify the candidate before installing anything
 
@@ -66,13 +66,13 @@ Build V002 from a package whose content changed, then V003. Confirm V001/V002/V0
 | P2 | Export V001, import and Build in AE | Range, FPS, media match manifest | PASS 2026-10-28 |
 | P3 | Full AE quit, relaunch, reopen | Range, linking, artist state preserved | PASS 2026-10-28 |
 | P4 | V002 then V003 revisions | Correct revision tags, artist state kept | PASS 2026-10-28 |
-| P5 | Optional camera/Null (only if handoff enabled) | Managed camera/Null reconstructed | PASS 2026-10-30 (one camera, one 3D Null; keys and ownership tags checked, camera projection parity not measured) |
+| P5 | Optional camera/Null (only if handoff enabled) | Managed camera/Null reconstructed | PASS 2026-10-30 retest (moving, turning camera and one 3D Null; ownership tags checked; Null projection matches Blender within 0.000013 px after Build and after revision; rendered pixels not compared) |
 | N1 | Bad or missing `cutbridge.json` field | Import rejected before any project change | PASS 2026-10-28 (missing `fps`) |
 | N2 | FPS or range mismatch vs manifest | Rejected or flagged, no silent change | PASS 2026-10-28 (FPS, via revision swap; range not tested) |
 | N3 | Missing or changed required pass | Rejected, nothing created | PASS 2026-10-28 (missing frame, rejected at apply with rollback; missing pass not tested) |
-| N4 | Optional pass removed | Warning only, no error | PASS 2026-10-30 (LINE frames removed before import) |
-| N5 | Skipped revision (V001 to V003, V002 never applied) | Applied after confirmation: the rule is "Candidate must be a newer revision" (`revision_manager.js`), matching README "newer package"; same or older revisions are rejected | PASS 2026-10-30 against this corrected expectation. Until 2026-10-30 this row expected "Rejected"; the run applied V001 to V003 and the original expectation was corrected, not the code (see the correction note below). Rejection of a same or older revision was not run natively; it is covered by the Node check "revision rule is newer-only" in `tests/ae_s6_revision_checks.cjs` |
-| N6 | Same-name unmanaged camera/Null | Fail closed, no adoption | PASS 2026-10-30 (Null only; same-name unmanaged camera not run) |
+| N4 | Optional pass removed | Warning only, no error | PASS 2026-10-30 retest (LINE frames removed before import) |
+| N5 | Skipped revision (V001 to V003, V002 never applied) | Applied after confirmation: the rule is "Candidate must be a newer revision" (`revision_manager.js`), matching README "newer package"; same or older revisions are rejected | PASS 2026-10-30 retest against this corrected expectation: V001 to V003 applied; V003 to V002 and V003 to V003 rejected with the project unchanged. Until 2026-10-30 this row expected "Rejected"; the first run applied V001 to V003 and the original expectation was corrected, not the code (see the correction note below). Also covered by the Node check "revision rule is newer-only" in `tests/ae_s6_revision_checks.cjs`, mutation-tested offline |
+| N6 | Same-name unmanaged camera/Null | Fail closed, no adoption | PASS 2026-10-30 retest (same-name Null and same-name Camera both refused, project unchanged) |
 | P6 | Dockable `ScriptUI Panels` install (Window menu, dock, relaunch) | Appears, docks, layout survives AE restart | PASS 2026-10-29 (see `docs/evidence/v0.2.5/dockable-install-qa-20261029/`; docked by hand; panel functions not exercised) |
 
 N5 correction (2026-10-30): the original "Rejected" expectation required sequential revisions, which no user-facing document or code path specifies; the product contract is newer-only. Changing the code instead would have altered the verified v0.2.5 candidate. If sequential revisions are wanted, that is a product change needing its own test and native run.
