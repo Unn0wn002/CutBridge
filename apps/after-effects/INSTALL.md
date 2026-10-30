@@ -61,7 +61,9 @@ When `cutbridge.json` contains a valid optional `handoff_3d` block, S10C can rec
 
 - one CutBridge-managed perspective camera;
 - CutBridge-managed 3D Null layers for serialized Blender Empties;
-- baked position/orientation/projection timing from the producer contract.
+- baked camera position, aim (point of interest) and zoom, and Null position and scale, with the producer's timing.
+
+Camera roll and Empty rotation are serialized by Blender but not applied by the importer. QC does not check the managed Camera or 3D Nulls; inspect them in the comp after Build.
 
 CutBridge validates the handoff contract before project mutation. Ownership is identity-based, not visible-name-only. Repeated Build must be idempotent. A same-name unmanaged artist camera/null must cause fail-closed collision handling instead of adoption or overwrite.
 
