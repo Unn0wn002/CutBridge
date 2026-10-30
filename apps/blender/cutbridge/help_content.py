@@ -132,12 +132,12 @@ HELP_CONTENT = {
         "EN": ("Camera", (
             ("What is this?", "The active Blender scene camera recorded in the package metadata."),
             ("Required", "A scene camera is required for a valid production cut."),
-            ("3D handoff", "The advanced control remains hidden. AE rebuilds camera position, aim and zoom and marked Empty position and scale; camera roll and Empty rotation are not transferred. Inspect the Camera and 3D Null layers in the comp after Build; QC does not check them."),
+            ("3D handoff", "The advanced control remains hidden. AE rebuilds camera position, aim and zoom and marked Empty position and scale; a rolled camera or rotated Empty is rejected by Validate and Build because it cannot be transferred. Inspect the Camera and 3D Null layers in the comp after Build; QC does not check them."),
         )),
         "JA": ("カメラ", (
             ("これは何？", "パッケージメタデータに記録されるBlender Sceneのアクティブカメラです。"),
             ("必須", "有効なプロダクションカットにはSceneカメラが必要です。"),
-            ("3Dハンドオフ", "高度な設定は非表示のままです。AEではCameraの位置・注視点・ズームと、マーク付きEmptyの位置・スケールを再現します。Cameraのロール（回転）とEmptyの回転は転送されません。Build後にコンポ内のCameraと3D Nullレイヤーを確認してください。QCはこれらを検査しません。"),
+            ("3Dハンドオフ", "高度な設定は非表示のままです。AEではCameraの位置・注視点・ズームと、マーク付きEmptyの位置・スケールを再現します。転送できないため、ロールしたCameraや回転したEmptyは検証とBuildで停止します。Build後にコンポ内のCameraと3D Nullレイヤーを確認してください。QCはこれらを検査しません。"),
         )),
     },
     "output_path": {
@@ -156,12 +156,12 @@ HELP_CONTENT = {
         "EN": ("Camera / 3D Handoff", (
             ("Status", "Advanced bounded handoff; the control intentionally remains hidden and disabled by default."),
             ("What it can contain", "Perspective Camera and marked Empty samples. AE applies camera position, aim (point of interest) and zoom, and Empty position and scale."),
-            ("Limitation", "Camera roll and Empty rotation are exported but not applied in AE, so avoid them or set them by hand. QC does not check the Camera or 3D Nulls; inspect them in the comp on the exact AE host. Compatibility claims are limited to recorded native validation."),
+            ("Limitation", "Camera roll and Empty rotation (including rotation inherited from a parent) cannot be applied in AE, so Validate and Build stop on them at any baked frame. QC does not check the Camera or 3D Nulls; inspect them in the comp on the exact AE host. Compatibility claims are limited to recorded native validation."),
         )),
         "JA": ("Camera / 3Dハンドオフ", (
             ("状態", "範囲を限定した高度なハンドオフです。設定は意図的に非表示で、初期値は無効です。"),
             ("含められるもの", "透視投影Cameraとマーク付きEmptyのサンプルです。AEはCameraの位置・注視点・ズームと、Emptyの位置・スケールを適用します。"),
-            ("制限", "Cameraのロール（回転）とEmptyの回転は書き出されますがAEでは適用されません。使わないか、手動で設定してください。QCはCameraと3D Nullを検査しないため、実際のAEホストでコンポ内を確認してください。互換性の主張は記録済みのネイティブ検証範囲に限定されます。"),
+            ("制限", "Cameraのロール（回転）とEmptyの回転（親から継承した回転を含む）はAEで適用できないため、いずれかの書き出しフレームで検出されると検証とBuildが停止します。QCはCameraと3D Nullを検査しないため、実際のAEホストでコンポ内を確認してください。互換性の主張は記録済みのネイティブ検証範囲に限定されます。"),
         )),
     },
 }

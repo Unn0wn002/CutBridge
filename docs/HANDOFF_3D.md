@@ -132,7 +132,7 @@ S10C validates the `handoff_3d` contract before project mutation. For the suppor
 - CutBridge-managed 3D Null layers for serialized Blender Empties;
 - baked camera position, aim (point of interest) and zoom, and Null position and scale, with the manifest's timing.
 
-The importer does not apply the serialized `up`/`basis` orientation: camera roll and Empty rotation are not transferred. QC does not check the managed Camera or 3D Nulls; inspect them in the comp after Build.
+The importer does not apply the serialized `up`/`basis` orientation, so the producer fails closed instead: a rolled or upside-down camera (`HANDOFF_CAMERA_ROLL_UNSUPPORTED`) or a rotated marked Empty, including rotation inherited from a parent (`HANDOFF_NULL_ROTATION_UNSUPPORTED`), stops Validate at the current frame and Build at any baked frame. A camera aimed straight up or down is not checked for roll. QC does not check the managed Camera or 3D Nulls; inspect them in the comp after Build.
 
 Ownership remains identity-based rather than name-only. Repeated Build is idempotent, and same-name unmanaged artist camera/null collisions fail closed instead of being adopted or overwritten.
 
