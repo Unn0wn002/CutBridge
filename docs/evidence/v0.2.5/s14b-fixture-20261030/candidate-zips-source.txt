@@ -1,0 +1,1 @@
+Candidate ZIPs downloaded from GitHub Actions run 41029569642 (Isolated candidate verification, develop 3e90b30), artifact cutbridge-candidate-87a94895712228401ef0c4850ce78cada529c522-1, path verification-output/dist-ci/; hashes checked against docs/evidence/v0.2.5/candidate-efa64cd-20261030/README.md before use.

@@ -20,7 +20,7 @@ Do not write names, email addresses, employers, studio names or account IDs anyw
 | Blender ZIP SHA-256 checked on this machine | `abf5882d…` matches: yes / no |
 | AE ZIP SHA-256 checked on this machine | `ecfb26ce…` matches: yes / no |
 | Clean state confirmed (how) | |
-| Fixture ID and SHA-256 | |
+| Fixture archive SHA-256 checked | `S14B-FX01-20261030.zip`, `7e5d5dc9…` matches: yes / no |
 | Candidate source SHA | `efa64cd0aaa489495430090cdd8fe68648a28e5d` |
 
 If either ZIP hash does not match, stop here and record the session as `BLOCKED`.
