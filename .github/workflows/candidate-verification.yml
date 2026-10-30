@@ -1,5 +1,9 @@
 name: Isolated candidate verification
 
+# Scope: GitHub runs this workflow file from the candidate revision itself (push and same-repository
+# pull_request events), so a candidate that edits this file can change its own orchestration. The
+# container boundary below therefore guards against accidental contamination and candidate test code,
+# not against an author who rewrites the workflow. Review workflow diffs before trusting a PASS.
 on:
   push:
     branches: ['feature/**', 'fix/**']
@@ -41,13 +45,24 @@ jobs:
           set -euo pipefail
           SNAPSHOT="$RUNNER_TEMP/cutbridge-snapshot"
           mkdir "$SNAPSHOT"
+          # git archive honours export-ignore/export-subst, which would let the snapshot differ from the tree.
+          TRANSFORMED="$(git ls-tree -r --name-only HEAD | git check-attr --stdin export-ignore export-subst | grep -v ': unspecified$' || true)"
+          if [[ -n "$TRANSFORMED" ]]; then
+            echo "Archive-transforming attributes are not allowed in candidates:"; echo "$TRANSFORMED"; exit 1
+          fi
           git archive HEAD | tar -x -C "$SNAPSHOT"
-          git diff "${BASE_SHA:-origin/develop}" HEAD > "$SNAPSHOT/candidate.diff"
+          # Symlinks are not covered by the regular-file manifest and could pull unhashed bytes into the run.
+          if find "$SNAPSHOT" -type l | grep -q .; then
+            echo "Symlinks are not allowed in candidate snapshots:"; find "$SNAPSHOT" -type l; exit 1
+          fi
+          BASE="${BASE_SHA:-$(git merge-base origin/develop HEAD)}"
+          git diff "$BASE" HEAD > "$SNAPSHOT/candidate.diff"
           curl --fail --silent --show-error --proto '=https' \
             https://unn0wn002.github.io/cutbridge-distribution/cutbridge/release-index.json \
             --output "$SNAPSHOT/production-release-index.json"
           mkdir -p "$SNAPSHOT/verification-output"/{pycache,tmp,home}
           git rev-parse HEAD > "$SNAPSHOT/verification-output/candidate-sha.txt"
+          git rev-parse "$BASE" > "$SNAPSHOT/verification-output/candidate-base-sha.txt"
           docker image inspect cutbridge-verifier > "$SNAPSHOT/verification-output/image.json"
           (
             cd "$SNAPSHOT"
@@ -115,6 +130,7 @@ jobs:
               python tools/build_release.py --tag "v${VERSION}" --output "$OUT/dist-ci"
               python tools/build_release.py --tag "v${VERSION}" --output "$OUT/dist-repeat"
               (cd "$OUT/dist-ci" && sha256sum --check SHA256SUMS.txt)
+              diff <(cd "$OUT/dist-ci" && ls -A | sort) <(cd "$OUT/dist-repeat" && ls -A | sort)
               for artifact in "$OUT/dist-ci/"*; do
                 cmp "$artifact" "$OUT/dist-repeat/$(basename "$artifact")"
               done
@@ -179,7 +195,13 @@ jobs:
           START_EXIT=${PIPESTATUS[0]}
           set -e
           CHECK_EXIT="$(docker inspect --format '{{.State.ExitCode}}' cutbridge-candidate)"
-          if [[ "$START_EXIT" -ne 0 && "$CHECK_EXIT" -eq 0 ]]; then CHECK_EXIT="$START_EXIT"; fi
+          STARTED_AT="$(docker inspect --format '{{.State.StartedAt}}' cutbridge-candidate)"
+          OOM_KILLED="$(docker inspect --format '{{.State.OOMKilled}}' cutbridge-candidate)"
+          # Runner or container problems (never started, start error, OOM, entrypoint not runnable) are not
+          # candidate failures; AGENTS.md maps them to INSUFFICIENT EVIDENCE.
+          UNAVAILABLE=0
+          if [[ "$STARTED_AT" == 0001-* || "$OOM_KILLED" == true || "$CHECK_EXIT" -eq 125 || "$CHECK_EXIT" -eq 126 ]]; then UNAVAILABLE=1; fi
+          if [[ "$START_EXIT" -ne 0 && "$CHECK_EXIT" -eq 0 ]]; then UNAVAILABLE=1; CHECK_EXIT="$START_EXIT"; fi
           (
             cd "$SNAPSHOT"
             find . -path './verification-output' -prune -o -type f -print0 |
@@ -190,25 +212,49 @@ jobs:
             echo INVALID > "$SNAPSHOT/verification-output/verdict.txt"
             exit 1
           fi
+          if [[ "$UNAVAILABLE" -eq 1 ]]; then
+            echo INSUFFICIENT_EVIDENCE > "$SNAPSHOT/verification-output/verdict.txt"
+            exit 1
+          fi
           if [[ "$CHECK_EXIT" -ne 0 ]]; then
             echo FAIL > "$SNAPSHOT/verification-output/verdict.txt"
             exit "$CHECK_EXIT"
           fi
           echo PASS > "$SNAPSHOT/verification-output/verdict.txt"
+      - name: Stage regular evidence files for upload
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          SNAPSHOT="$RUNNER_TEMP/cutbridge-snapshot"
+          STAGE="$RUNNER_TEMP/evidence-upload"
+          mkdir -p "$STAGE"
+          cd "$SNAPSHOT"
+          PATHS=()
+          for path in candidate.diff production-release-index.json \
+              verification-output/candidate-sha.txt verification-output/candidate-base-sha.txt \
+              verification-output/image.json verification-output/isolation.json \
+              verification-output/manifest-before.sha256 verification-output/manifest-after.sha256 \
+              verification-output/checks.log verification-output/pytest.xml verification-output/verdict.txt \
+              verification-output/dist-ci verification-output/distribution-preview; do
+            if [[ -e "$path" || -L "$path" ]]; then PATHS+=("$path"); fi
+          done
+          [[ ${#PATHS[@]} -gt 0 ]] || { echo "No evidence files to stage"; exit 1; }
+          # The container user owns verification-output. Scan exactly the paths that will be uploaded, never
+          # follow their symlinks into the host upload step, and treat an unreadable path as a failure.
+          if ! LINKS="$(find "${PATHS[@]}" -type l)"; then
+            echo "Could not scan every evidence path for symlinks; not trusting the outputs"; exit 1
+          fi
+          if [[ -n "$LINKS" ]]; then
+            echo "Symlinks found in candidate-owned outputs; not uploading them:"; echo "$LINKS"; FOUND_LINKS=1
+          fi
+          find "${PATHS[@]}" -type f -print0 | xargs -0 --no-run-if-empty cp --parents --no-dereference -t "$STAGE"
+          if [[ -n "${FOUND_LINKS:-}" ]]; then exit 1; fi
       - name: Retain candidate packages and verification evidence
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: cutbridge-candidate-${{ github.sha }}-${{ github.run_attempt }}
-          path: |
-            ${{ runner.temp }}/cutbridge-snapshot/verification-output/candidate-sha.txt
-            ${{ runner.temp }}/cutbridge-snapshot/verification-output/image.json
-            ${{ runner.temp }}/cutbridge-snapshot/verification-output/isolation.json
-            ${{ runner.temp }}/cutbridge-snapshot/verification-output/manifest-*.sha256
-            ${{ runner.temp }}/cutbridge-snapshot/verification-output/checks.log
-            ${{ runner.temp }}/cutbridge-snapshot/verification-output/pytest.xml
-            ${{ runner.temp }}/cutbridge-snapshot/verification-output/verdict.txt
-            ${{ runner.temp }}/cutbridge-snapshot/verification-output/dist-ci/*
-            ${{ runner.temp }}/cutbridge-snapshot/verification-output/distribution-preview/**
+          path: ${{ runner.temp }}/evidence-upload/
           if-no-files-found: error
           retention-days: 30
