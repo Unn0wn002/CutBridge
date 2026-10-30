@@ -1,0 +1,1 @@
+Recorded from the launching command's output: a new empty folder was created and counted ('profile files: 0'), BLENDER_USER_RESOURCES was set to it, and Blender 5.2.2 was started from that shell (window '(Unsaved) - Blender 5.2.2 LTS', pid 39668).

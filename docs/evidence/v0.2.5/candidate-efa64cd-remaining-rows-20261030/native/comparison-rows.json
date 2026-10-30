@@ -1,0 +1,13 @@
+{
+ "N1: project unchanged by the rejected load (00-empty == 01-after-N1)": true,
+ "N2: refused revision left the project unchanged (05 == 06)": true,
+ "N3: failed revision rolled back completely (05 == 07)": true,
+ "P3: saving did not change project state (05 == 08)": true,
+ "P3: state after full quit + relaunch + reopen equals state before quit (08 == 09)": true,
+ "P3: artist null and its note survived": true,
+ "P3: artist comp marker survived": true,
+ "P3: managed BEAUTY layer still tagged": true,
+ "P3: no missing footage after relaunch": true,
+ "P3: comp range and FPS unchanged": true,
+ "P3: state after QC in the relaunched panel equals state after relaunch (09 == 12)": true
+}
