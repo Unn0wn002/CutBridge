@@ -1,6 +1,6 @@
 # CutBridge native install and restart checklist
 
-Status: **Procedure, with recorded runs on 2026-10-28** (`docs/evidence/v0.2.5/native-install-qa-20261028/README.md`), **2026-10-29** (P6) **and 2026-10-30** (P5, N4, N5, N6: `docs/evidence/v0.2.5/native-rows-p5-n4-n5-n6-20261030/README.md`, then a clean single-pass retest that supersedes it for these rows: `docs/evidence/v0.2.5/native-retest-p5-n4-n5-n6-20261030/README.md`). Rows not listed as recorded stay `NOT_RUN`. This page grants no release, install or compatibility approval. Existing evidence is scoped in [RELEASE_READINESS.md](RELEASE_READINESS.md) and the `docs/evidence/v0.2.5/` records; its After Effects reopen checks are **same-process** reopens, not a full quit and relaunch.
+Status: **Procedure, with recorded runs on 2026-10-28** (`docs/evidence/v0.2.5/native-install-qa-20261028/README.md`), **2026-10-29** (P6) **and 2026-10-30** (P5, N4, N5, N6: `docs/evidence/v0.2.5/native-rows-p5-n4-n5-n6-20261030/README.md`, then a clean single-pass retest that supersedes it for these rows: `docs/evidence/v0.2.5/native-retest-p5-n4-n5-n6-20261030/README.md`; P1 GUI: `docs/evidence/v0.2.5/native-p1-gui-install-20261030/README.md`). Rows not listed as recorded stay `NOT_RUN`. This page grants no release, install or compatibility approval. Existing evidence is scoped in [RELEASE_READINESS.md](RELEASE_READINESS.md) and the `docs/evidence/v0.2.5/` records; its After Effects reopen checks are **same-process** reopens, not a full quit and relaunch.
 
 ## 0. Identify the candidate before installing anything
 
@@ -62,7 +62,7 @@ Build V002 from a package whose content changed, then V003. Confirm V001/V002/V0
 
 | ID | Case | Expected | Status |
 | --- | --- | --- | --- |
-| P1 | Clean install from verified Blender ZIP | Enables, panel visible | PASS 2026-10-28 (CLI install, isolated profile; GUI dialog not exercised) |
+| P1 | Clean install from verified Blender ZIP | Enables, panel visible | PASS 2026-10-28 (CLI install, isolated profile); GUI Install from Disk PASS 2026-10-30 (performed by the owner in an isolated profile; files, enabled state and panel registration checked, `docs/evidence/v0.2.5/native-p1-gui-install-20261030/`) |
 | P2 | Export V001, import and Build in AE | Range, FPS, media match manifest | PASS 2026-10-28 |
 | P3 | Full AE quit, relaunch, reopen | Range, linking, artist state preserved | PASS 2026-10-28 |
 | P4 | V002 then V003 revisions | Correct revision tags, artist state kept | PASS 2026-10-28 |
