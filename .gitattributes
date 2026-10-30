@@ -1,4 +1,5 @@
 docs/evidence/v0.2.5/89b1dab-native-ae/** -text
 docs/evidence/v0.2.5/049c095-native-ae/** -text
+docs/evidence/v0.2.5/candidate-efa64cd-20261030/** -text
 # Archived review diffs are hashed by their manifests; keep their bytes exactly (0c1938a lost CRLFs on commit).
 docs/evidence/**/*.diff -text

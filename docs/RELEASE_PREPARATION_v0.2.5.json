@@ -3,9 +3,20 @@
   "record_date": "2026-10-04",
   "product_version": "0.2.5",
   "release_readiness_verdict": "INSUFFICIENT EVIDENCE",
-  "candidate_sha": "049c095258f9fc2dd89cbf8f1d7b2b3114d80296",
+  "candidate_sha": "efa64cd0aaa489495430090cdd8fe68648a28e5d",
+  "candidate_note": "Rebuilt 2026-10-30 after PRs #116 and #118 changed packaged text; see candidate_efa64cd_verification. The 049c095 records below keep their own candidate SHA.",
   "base_sha": "8cc5a4fe19e97c2f83105b888f96ccf1b423e8fd",
+  "candidate_efa64cd_verification": {
+    "evidence_path": "evidence/v0.2.5/candidate-efa64cd-20261030/",
+    "isolated_build_and_checks": "PASS: offline Windows Sandbox, read-only snapshot, two identical builds, verify_package ok, 325 tests + 2 subtests, bpy 5.2.1 RNA, snapshot manifest identical",
+    "toolchain": "Python 3.13.17, zlib 1.3.1",
+    "native_rerun_host": "Blender 5.2.2 LTS, AE 26.5x89 (owner host, not isolated)",
+    "native_p5_n4_n5_n6": "PASS",
+    "orientation_fail_closed": "PASS: rolled camera, rotated Empty and later-keyed rotation refused with no package written; level control builds",
+    "not_repeated_on_these_bytes": "P1 GUI dialog, P3 full relaunch, N1-N3, P6, S14B"
+  },
   "automated_verification": {
+    "candidate_sha": "049c095258f9fc2dd89cbf8f1d7b2b3114d80296",
     "verdict": "PASS",
     "isolated_run": "https://github.com/Unn0wn002/CutBridge/actions/runs/37180451235",
     "ci_run": "https://github.com/Unn0wn002/CutBridge/actions/runs/37180451191",
@@ -23,6 +34,17 @@
     "source_manifest_sha256": "770536f1162c1e82e7154b8e493e1ee6dc10eb62ef6ada1053fafdf86a148e06"
   },
   "candidate_artifacts": {
+    "blender": {
+      "filename": "CutBridge-Blender-v0.2.5.zip",
+      "sha256": "abf5882d56856d4662e95b2ac1335fb0dc6e818f5f7113235dce0529385b2207"
+    },
+    "after_effects": {
+      "filename": "CutBridge-AfterEffects-v0.2.5.zip",
+      "sha256": "ecfb26ce8e5ad50638e17b35104efc2210d222b4ac8f10fccf0fba2748c17d8f"
+    }
+  },
+  "previous_candidate_artifacts_049c095": {
+    "note": "Verified 2026-10-29 and used by the 2026-10-28/30 native runs; superseded by the efa64cd rebuild",
     "blender": {
       "filename": "CutBridge-Blender-v0.2.5.zip",
       "sha256": "3a53f7af8420909e5ed300440df115dffef2ba1dd196688c7c99789a8a48aa48"
