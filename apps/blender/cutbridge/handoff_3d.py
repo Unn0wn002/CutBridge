@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from math import isfinite
+from math import cos, isfinite
 
 import bpy
 from mathutils import Vector
@@ -23,6 +23,10 @@ MAX_HANDOFF_NULLS = 64
 MAX_HANDOFF_SAMPLES = 100_000
 ORTHOGONAL_TOLERANCE = 1e-5
 AXIS_LENGTH_EPSILON = 1e-9
+# The AE importer rebuilds the camera from position, point of interest and zoom (a level look-at
+# camera) and 3D Nulls from position and scale. Orientation it cannot express fails closed rather
+# than being dropped. About 0.006 degrees.
+ORIENTATION_TOLERANCE = 1e-4
 
 
 def handoff_3d_enabled(settings) -> bool:
@@ -111,6 +115,54 @@ def _validate_frame_budget(scene, null_count: int) -> int:
     return frame_count
 
 
+def _unit_axes(matrix_world):
+    """Normalized world X/Y/Z axes, or None when degenerate or reflected (sampling reports those)."""
+    basis = matrix_world.to_3x3()
+    axes = [basis @ Vector(axis) for axis in ((1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0))]
+    if any(axis.length <= AXIS_LENGTH_EPSILON for axis in axes):
+        return None
+    axes = [axis.normalized() for axis in axes]
+    if axes[0].cross(axes[1]).dot(axes[2]) <= 0:
+        return None
+    return axes
+
+
+def _validate_camera_roll(name: str, matrix_world, frame: int) -> None:
+    axes = _unit_axes(matrix_world)
+    if axes is None:
+        return
+    right, up, back = axes
+    # A camera aimed straight up or down has no defined roll for a look-at camera; leave it as before.
+    vertical = abs(back.z) > 1.0 - ORIENTATION_TOLERANCE
+    if abs(right.z) > ORIENTATION_TOLERANCE or (not vertical and up.z <= 0.0):
+        raise HandoffContractError(
+            "HANDOFF_CAMERA_ROLL_UNSUPPORTED",
+            f"{name} is rolled at frame {frame}. After Effects rebuilds the camera from position, aim and zoom only, "
+            "so the roll would be lost. Level the camera's horizontal axis or disable 3D handoff.",
+        )
+
+
+def _validate_null_rotation(name: str, matrix_world, frame: int) -> None:
+    axes = _unit_axes(matrix_world)
+    if axes is None:
+        return
+    if any(axes[i][i] < cos(ORIENTATION_TOLERANCE) for i in range(3)):
+        raise HandoffContractError(
+            "HANDOFF_NULL_ROTATION_UNSUPPORTED",
+            f"{name} is rotated at frame {frame} (including rotation inherited from a parent). After Effects applies "
+            "only position and scale to 3D Nulls, so the rotation would be lost. Clear the rotation or disable 3D handoff.",
+        )
+
+
+def _validate_orientation_at_current_frame(context, camera, empties) -> None:
+    # Uses the world matrices Blender has already flushed for the current frame: this also runs from
+    # panel draw, where forcing a depsgraph evaluation is not safe.
+    frame = int(context.scene.frame_current)
+    _validate_camera_roll(camera.name, camera.matrix_world, frame)
+    for obj in empties:
+        _validate_null_rotation(obj.name, obj.matrix_world, frame)
+
+
 def _validate_setup(context):
     scene = context.scene
     settings = scene.cutbridge
@@ -132,6 +184,8 @@ def _validate_setup(context):
     scale = _pixels_per_blender_unit(settings)
     empties = _marked_empties(scene)
     frame_count = _validate_frame_budget(scene, len(empties))
+    # Catch static roll/rotation in Validate; animated orientation is checked again on every baked frame.
+    _validate_orientation_at_current_frame(context, scene.camera, empties)
     fps = float(scene.render.fps) / float(scene.render.fps_base or 1.0)
     if not isfinite(fps) or fps <= 0:
         raise HandoffContractError(
@@ -169,8 +223,8 @@ def handoff_3d_issues(context) -> list[dict]:
         {
             "level": "WARNING",
             "code": "HANDOFF_PRODUCER_ONLY",
-            "message": "3D handoff producer data is enabled; the current After Effects importer does not create camera/null layers yet.",
-            "fix": "Use this data for S10 validation only until native AE reconstruction is approved.",
+            "message": "3D handoff is enabled. After Effects rebuilds camera position, aim and zoom and marked Empty position and scale as Camera and 3D Null layers; camera roll and Empty rotation are rejected because they cannot be transferred.",
+            "fix": "Inspect the Camera and 3D Null layers in the comp after Build in the exact After Effects host being used; QC does not check them.",
         }
     ]
 
@@ -260,6 +314,7 @@ def _camera_sample(camera, depsgraph, *, frame: int, frame_start: int, fps: floa
         height=height,
         scale=scale,
     )
+    _validate_camera_roll(camera.name, camera_eval.matrix_world, frame)
     fov = float(getattr(data, "angle_x"))
     zoom = ae_zoom_from_horizontal_fov(width=width, horizontal_fov_radians=fov)
     sample["forward"] = _vec([-value for value in sample["basis"]["z"]])
@@ -274,7 +329,7 @@ def _camera_sample(camera, depsgraph, *, frame: int, frame_start: int, fps: floa
 
 def _null_sample(obj, depsgraph, *, frame: int, frame_start: int, fps: float, width: int, height: int, scale: float) -> dict:
     obj_eval = obj.evaluated_get(depsgraph)
-    return _base_sample(
+    sample = _base_sample(
         obj_eval,
         frame=frame,
         frame_start=frame_start,
@@ -283,6 +338,8 @@ def _null_sample(obj, depsgraph, *, frame: int, frame_start: int, fps: float, wi
         height=height,
         scale=scale,
     )
+    _validate_null_rotation(obj.name, obj_eval.matrix_world, frame)
+    return sample
 
 
 def build_handoff_3d(context) -> dict | None:

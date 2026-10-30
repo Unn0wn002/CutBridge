@@ -1,0 +1,49 @@
+{
+  "candidate_sha": "604714d93627a870326a75564eba0af46e5ee957",
+  "host": "5.2.2 LTS",
+  "background": false,
+  "method": "Scripted operators in a real Blender GUI inside offline Windows Sandbox",
+  "gui_visual_inspection": "NOT_EXECUTED",
+  "extension_manager_install": "NOT_EXECUTED",
+  "ae_execution": "NOT_EXECUTED",
+  "results": {
+    "exact_candidate_enable": "PASS",
+    "startup_scheduler_disabled": "PASS",
+    "bounded_handoff_wording": "PASS",
+    "native_validate_and_build": "PASS",
+    "real_four_pass_render": "PASS",
+    "mixed_png_exr": "PASS",
+    "camera_empty_producer": "PASS",
+    "versions_v001_v002_v003": "PASS",
+    "same_version_overwrite_block": "PASS",
+    "artist_node_preservation": "PASS",
+    "locale_identity_preservation": "PASS"
+  },
+  "packages": [
+    {
+      "version": 1,
+      "root": "C:\\Evidence\\verification-output\\\u30d1\u30c3\u30b1\u30fc\u30b8\\Native025_EP01_SC010_C001_T01_V001",
+      "outputs": 12,
+      "manifest_sha256": "4406c9b1103c04a2d10fb19a8449c912ec7162f92cbbb788680e7185712e0dcb",
+      "same_version_payload_preserved": true
+    },
+    {
+      "version": 2,
+      "root": "C:\\Evidence\\verification-output\\\u30d1\u30c3\u30b1\u30fc\u30b8\\Native025_EP01_SC010_C001_T01_V002",
+      "outputs": 12,
+      "manifest_sha256": "4833cc7f89534d4c6f3812acda65f54148c49786783f457a0b81b7c18db81da1",
+      "same_version_payload_preserved": true
+    },
+    {
+      "version": 3,
+      "root": "C:\\Evidence\\verification-output\\\u30d1\u30c3\u30b1\u30fc\u30b8\\Native025_EP01_SC010_C001_T01_V003",
+      "outputs": 12,
+      "manifest_sha256": "cb91dc86a81001d10f0cebdf20ffee6b5ca4212d3bc75c73bb1e66fe1a5e1197",
+      "same_version_payload_preserved": true
+    }
+  ],
+  "sidebar_open": true,
+  "cutbridge_tab_visually_confirmed": false,
+  "overall_scope_result": "PASS",
+  "fixture_sha256": "50232b5cb6fcf4ab24a961f2877397fb10d6cceb25feb611257d5f8d2363e14d"
+}

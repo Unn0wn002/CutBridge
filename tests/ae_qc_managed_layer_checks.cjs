@@ -65,17 +65,24 @@ function lineFiles() {
 {
   const m = manifestWithOptionalLine();
   const files = beautyFiles.concat(lineFiles());
-  const h = host(m, files);
+  let removedLayer = null;
+  let rejectedDeletedHandle = false;
+  const h = host(m, files, {isValid(item) {
+    if (item === removedLayer) { rejectedDeletedHandle = true; return false; }
+    return true;
+  }});
   h.click('Build');
   const comp = h.comps()[0];
   const line = comp._layers.find(layer => layer.name === 'LINE');
   assert.ok(line, 'fixture should build the complete optional LINE layer');
   line.remove();
+  removedLayer = line;
   h.click('QC');
   const message = h.alerts.at(-1);
   assert.match(message, /^CutBridge QC — WARNING — 1 warning\(s\)/, 'missing complete optional managed layer should warn, not hard-fail');
   assert.match(message, /WARNING \[CBQ-LAYER-OPTIONAL-MISSING\] LINE: optional managed layer is missing/);
   assert.doesNotMatch(message, /ERROR \[[^\]]+\] LINE:/, 'missing optional layer should not become a hard error when ownership is otherwise unambiguous');
+  assert.ok(rejectedDeletedHandle, 'QC must reject the native-invalid cached handle before comparing it with live layers');
 }
 
 {

@@ -1,0 +1,56 @@
+[
+ {
+  "case": "level_control",
+  "handoff_issues": [
+   [
+    "WARNING",
+    "HANDOFF_PRODUCER_ONLY"
+   ]
+  ],
+  "build": [
+   "FINISHED"
+  ],
+  "package_dirs_created": [
+   "QAPROJ_EP01_SC010_C015_T01_V001"
+  ]
+ },
+ {
+  "case": "rolled_camera",
+  "handoff_issues": [
+   [
+    "ERROR",
+    "HANDOFF_CAMERA_ROLL_UNSUPPORTED"
+   ]
+  ],
+  "build": [
+   "RuntimeError: Error: \u30a8\u30e9\u30fc: Camera is rolled at frame 1. After Effects rebuilds the camera from position, aim and zoom only, so the roll would be lost. Level the camera's horizontal axis or disable 3D handoff. Why: \u73fe\u5728\u306e\u8a2d\u5b9a\u3067\u306fCutBridge\u3092\u5b89\u5168\u306b\u7d9a\u884c\u3067\u304d\u307e\u305b\u3093\u3002 Can I continue? \u3044\u3044\u3048\u3002 Fix: Disable 3D handoff or correct the unsupported camera/marker/export setting. [EN] Camera is rolled at frame 1. After Effects rebuilds the camera from position, aim and zoom only, so the roll would be lost. Level the camera's horizontal axis or disable 3D handoff. Fix: Disable 3D handoff or correct the unsupported camera/marker/export setting."
+  ],
+  "package_dirs_created": []
+ },
+ {
+  "case": "rotated_empty",
+  "handoff_issues": [
+   [
+    "ERROR",
+    "HANDOFF_NULL_ROTATION_UNSUPPORTED"
+   ]
+  ],
+  "build": [
+   "RuntimeError: Error: \u30a8\u30e9\u30fc: QA_NULL is rotated at frame 1 (including rotation inherited from a parent). After Effects applies only position and scale to 3D Nulls, so the rotation would be lost. Clear the rotation or disable 3D handoff. Why: \u73fe\u5728\u306e\u8a2d\u5b9a\u3067\u306fCutBridge\u3092\u5b89\u5168\u306b\u7d9a\u884c\u3067\u304d\u307e\u305b\u3093\u3002 Can I continue? \u3044\u3044\u3048\u3002 Fix: Disable 3D handoff or correct the unsupported camera/marker/export setting. [EN] QA_NULL is rotated at frame 1 (including rotation inherited from a parent). After Effects applies only position and scale to 3D Nulls, so the rotation would be lost. Clear the rotation or disable 3D handoff. Fix: Disable 3D handoff or correct the unsupported camera/marker/export setting."
+  ],
+  "package_dirs_created": []
+ },
+ {
+  "case": "rotation_keyed_later",
+  "handoff_issues": [
+   [
+    "WARNING",
+    "HANDOFF_PRODUCER_ONLY"
+   ]
+  ],
+  "build": [
+   "RuntimeError: Error: CutBridge\u30d1\u30c3\u30b1\u30fc\u30b8\u306e\u4f5c\u6210\u306b\u5931\u6557\u3057\u307e\u3057\u305f: QA_NULL is rotated at frame 2 (including rotation inherited from a parent). After Effects applies only position and scale to 3D Nulls, so the rotation would be lost. Clear the rotation or disable 3D handoff."
+  ],
+  "package_dirs_created": []
+ }
+]
