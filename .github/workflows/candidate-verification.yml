@@ -229,22 +229,27 @@ jobs:
           SNAPSHOT="$RUNNER_TEMP/cutbridge-snapshot"
           STAGE="$RUNNER_TEMP/evidence-upload"
           mkdir -p "$STAGE"
-          # The container user owns verification-output. Never follow its symlinks into the host upload step.
-          if [[ -d "$SNAPSHOT/verification-output" ]] && find "$SNAPSHOT/verification-output" -type l | grep -q .; then
-            echo "Symlinks found in candidate-owned outputs; not uploading them:"; find "$SNAPSHOT/verification-output" -type l
-            echo INVALID > "$STAGE/verdict-override.txt"
-          fi
           cd "$SNAPSHOT"
+          PATHS=()
           for path in candidate.diff production-release-index.json \
               verification-output/candidate-sha.txt verification-output/candidate-base-sha.txt \
               verification-output/image.json verification-output/isolation.json \
               verification-output/manifest-before.sha256 verification-output/manifest-after.sha256 \
               verification-output/checks.log verification-output/pytest.xml verification-output/verdict.txt \
               verification-output/dist-ci verification-output/distribution-preview; do
-            [[ -e "$path" ]] || continue
-            find "$path" -type f -print0 | xargs -0 --no-run-if-empty cp --parents --no-dereference -t "$STAGE"
+            if [[ -e "$path" || -L "$path" ]]; then PATHS+=("$path"); fi
           done
-          if [[ -f "$STAGE/verdict-override.txt" ]]; then exit 1; fi
+          [[ ${#PATHS[@]} -gt 0 ]] || { echo "No evidence files to stage"; exit 1; }
+          # The container user owns verification-output. Scan exactly the paths that will be uploaded, never
+          # follow their symlinks into the host upload step, and treat an unreadable path as a failure.
+          if ! LINKS="$(find "${PATHS[@]}" -type l)"; then
+            echo "Could not scan every evidence path for symlinks; not trusting the outputs"; exit 1
+          fi
+          if [[ -n "$LINKS" ]]; then
+            echo "Symlinks found in candidate-owned outputs; not uploading them:"; echo "$LINKS"; FOUND_LINKS=1
+          fi
+          find "${PATHS[@]}" -type f -print0 | xargs -0 --no-run-if-empty cp --parents --no-dereference -t "$STAGE"
+          if [[ -n "${FOUND_LINKS:-}" ]]; then exit 1; fi
       - name: Retain candidate packages and verification evidence
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
