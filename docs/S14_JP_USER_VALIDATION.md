@@ -242,6 +242,8 @@ S14A provides:
 
 Copy the template for a real campaign. Do not edit the committed template into a fake PASS example.
 
+For the v0.2.5 candidate, [S14B_SESSION_KIT_v0.2.5.md](S14B_SESSION_KIT_v0.2.5.md) binds this protocol to the candidate bytes and adds a moderator runbook, a Japanese participant guide and a per-participant record sheet. The kit is preparation only and records no participant result.
+
 ## 12. Release boundary
 
 For v0.2.3, S14B is not a prerequisite for the narrowed release-facing claim defined above. It becomes required again before any broader Japanese target-user production-usability claim is introduced.
