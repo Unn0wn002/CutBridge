@@ -70,6 +70,19 @@ test("producer-style V001/V002/V003 names can differ for the same cut", () => {
     for (const candidates of [[m(2), m(3)], [m(3), m(2)]]) assert.equal(R.selectLatest(m(1), candidates).version, 3);
     assert.equal(R.selectLatest(m(2), [m(1), m(2)]), null);
 });
+test("revision rule is newer-only: skips apply, same or older revisions block before mutation", () => {
+    for (const [from, to] of [[1, 3], [2, 5]]) assert.equal(R.assess(m(from), m(to)).status, "safe");
+    for (const [from, to] of [[2, 2], [3, 2], [3, 1]]) {
+        const assessment = R.assess(m(from), m(to));
+        assert.equal(assessment.status, "incompatible");
+        assert.match(assessment.reasons.join("; "), /Candidate must be a newer revision/);
+    }
+    const f = fixture(); f.next = m(1);
+    assert.throws(() => R.createExecutor(f.adapter).prepare(f.current, f.next), /Candidate must be a newer revision/);
+    assert.equal(f.imports.length, 0);
+    assert.deepEqual(f.layers.map(layer => layer.source), f.sources);
+    assert.equal(f.events.length, 0);
+});
 test("all tuple fields reject drift despite equal package_name", () => {
     for (const field of ["project", "episode", "scene", "cut", "take"]) {
         assert.equal(R.assess(m(1), m(2, {[field]: "OTHER", package_name: m(1).package_name})).status, "incompatible");
