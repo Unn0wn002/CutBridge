@@ -169,8 +169,8 @@ def handoff_3d_issues(context) -> list[dict]:
         {
             "level": "WARNING",
             "code": "HANDOFF_PRODUCER_ONLY",
-            "message": "3D handoff is enabled for supported perspective Camera and marked Empty samples; After Effects can reconstruct these as Camera and 3D Null layers.",
-            "fix": "Use only supported camera/marker settings and verify reconstruction with Build and QC in the exact After Effects host being used.",
+            "message": "3D handoff is enabled. After Effects rebuilds camera position, aim and zoom and marked Empty position and scale as Camera and 3D Null layers; camera roll and Empty rotation are not transferred.",
+            "fix": "Avoid camera roll and Empty rotation, then inspect the Camera and 3D Null layers in the comp after Build in the exact After Effects host being used; QC does not check them.",
         }
     ]
 
