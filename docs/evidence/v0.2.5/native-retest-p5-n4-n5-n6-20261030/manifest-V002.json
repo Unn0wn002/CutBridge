@@ -1,0 +1,314 @@
+{
+  "schema": "cutbridge-manifest",
+  "schema_version": 1,
+  "cutbridge_version": "0.2.5",
+  "project": "QAPROJ",
+  "episode": "EP01",
+  "scene": "SC010",
+  "cut": "C014",
+  "take": "T01",
+  "version": 2,
+  "version_label": "V002",
+  "package_name": "QAPROJ_EP01_SC010_C014_T01_V002",
+  "fps": 24.0,
+  "resolution": {
+    "width": 480,
+    "height": 270,
+    "pixel_aspect": 1.0
+  },
+  "frames": {
+    "start": 1,
+    "end": 3,
+    "count": 3
+  },
+  "camera": "Camera",
+  "source_blend": "QA_retest_v002.blend",
+  "passes": [
+    {
+      "name": "BEAUTY",
+      "path": "render/beauty",
+      "sequence_pattern": "C014_BEAUTY_####.png",
+      "required": true,
+      "image_format": "PNG"
+    },
+    {
+      "name": "LINE",
+      "path": "render/line",
+      "sequence_pattern": "C014_LINE_####.png",
+      "required": false,
+      "image_format": "PNG"
+    }
+  ],
+  "folders": {
+    "render": "render",
+    "preview": "preview",
+    "camera": "camera"
+  },
+  "ae": {
+    "comp_name": "C014_COMP",
+    "layer_order": [
+      "BEAUTY",
+      "LINE"
+    ]
+  },
+  "studio_preset": {
+    "mode": "custom",
+    "schema": "cutbridge-studio-preset",
+    "schema_version": 1,
+    "id": "qa-optional-line",
+    "name": "QA optional LINE"
+  },
+  "handoff_3d": {
+    "schema": "cutbridge-handoff-3d",
+    "schema_version": 1,
+    "space": {
+      "coordinate_system": "after-effects-composition",
+      "axis_map": "blender_xyz_to_ae_x_negz_y",
+      "origin": "composition-center",
+      "position_units": "pixels",
+      "pixels_per_blender_unit": 100.0
+    },
+    "sampling": {
+      "mode": "baked-per-frame",
+      "frame_start": 1,
+      "frame_end": 3,
+      "frame_step": 1
+    },
+    "camera": {
+      "name": "Camera",
+      "type": "PERSP",
+      "samples": [
+        {
+          "frame": 1,
+          "time": 0.0,
+          "position": [
+            975.889148712,
+            -360.830917358,
+            -692.579078674
+          ],
+          "basis": {
+            "x": [
+              0.685920656,
+              0.0,
+              0.727676332
+            ],
+            "y": [
+              -0.324013472,
+              -0.895395637,
+              0.305420846
+            ],
+            "z": [
+              0.65155822,
+              -0.445271403,
+              -0.614170372
+            ]
+          },
+          "scale": [
+            0.999999985,
+            1.0,
+            1.0
+          ],
+          "forward": [
+            -0.65155822,
+            0.445271403,
+            0.614170372
+          ],
+          "up": [
+            -0.324013472,
+            -0.895395637,
+            0.305420846
+          ],
+          "horizontal_fov_radians": 0.691111207,
+          "ae_zoom": 666.666618716
+        },
+        {
+          "frame": 2,
+          "time": 0.041666667,
+          "position": [
+            1005.889120102,
+            -360.830917358,
+            -692.579078674
+          ],
+          "basis": {
+            "x": [
+              0.663784981,
+              0.0,
+              0.747923434
+            ],
+            "y": [
+              -0.333028942,
+              -0.895395637,
+              0.295564473
+            ],
+            "z": [
+              0.66968745,
+              -0.445271462,
+              -0.594350219
+            ]
+          },
+          "scale": [
+            0.999999985,
+            1.000000004,
+            0.99999997
+          ],
+          "forward": [
+            -0.66968745,
+            0.445271462,
+            0.594350219
+          ],
+          "up": [
+            -0.333028942,
+            -0.895395637,
+            0.295564473
+          ],
+          "horizontal_fov_radians": 0.691111207,
+          "ae_zoom": 666.666618716
+        },
+        {
+          "frame": 3,
+          "time": 0.083333333,
+          "position": [
+            1035.889139175,
+            -360.830917358,
+            -692.579078674
+          ],
+          "basis": {
+            "x": [
+              0.641052008,
+              0.0,
+              0.76749748
+            ],
+            "y": [
+              -0.341744691,
+              -0.895395637,
+              0.285442114
+            ],
+            "z": [
+              0.687213898,
+              -0.445271403,
+              -0.573995173
+            ]
+          },
+          "scale": [
+            1.00000003,
+            1.000000004,
+            1.000000015
+          ],
+          "forward": [
+            -0.687213898,
+            0.445271403,
+            0.573995173
+          ],
+          "up": [
+            -0.341744691,
+            -0.895395637,
+            0.285442114
+          ],
+          "horizontal_fov_radians": 0.691111207,
+          "ae_zoom": 666.666618716
+        }
+      ]
+    },
+    "nulls": [
+      {
+        "name": "QA_NULL",
+        "source_type": "EMPTY",
+        "samples": [
+          {
+            "frame": 1,
+            "time": 0.0,
+            "position": [
+              240.0,
+              85.0,
+              0.0
+            ],
+            "basis": {
+              "x": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "y": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "z": [
+                0.0,
+                -1.0,
+                0.0
+              ]
+            },
+            "scale": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          {
+            "frame": 2,
+            "time": 0.041666667,
+            "position": [
+              290.0,
+              85.0,
+              -25.0
+            ],
+            "basis": {
+              "x": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "y": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "z": [
+                0.0,
+                -1.0,
+                0.0
+              ]
+            },
+            "scale": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          {
+            "frame": 3,
+            "time": 0.083333333,
+            "position": [
+              340.0,
+              85.0,
+              -50.0
+            ],
+            "basis": {
+              "x": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "y": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "z": [
+                0.0,
+                -1.0,
+                0.0
+              ]
+            },
+            "scale": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

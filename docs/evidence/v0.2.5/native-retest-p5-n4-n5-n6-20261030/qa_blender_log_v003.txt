@@ -1,0 +1,22 @@
+blender 5.2.2 LTS hash d13f752e3b9c
+installed files compared 21 mismatched []
+scene.cutbridge registered True
+saved QA_retest_v003.blend camera Camera type PERSP lens 50.0 sensor 36.0 AUTO
+projection frame 1 x_px 239.5238 y_px 104.3232 depth 11.0335
+projection frame 2 x_px 254.9507 y_px 112.3401 depth 10.7471
+projection frame 3 x_px 270.0164 y_px 120.9469 depth 10.4558
+validate -> {'FINISHED'}
+build_package -> {'FINISHED'} last_package_path C:\Users\unn0w\Downloads\02_Projects\_cutbridge_retest_20261030\cutbridge_exports\QAPROJ_EP01_SC010_C014_T01_V003
+package dir exists True QAPROJ_EP01_SC010_C014_T01_V003
+render -> {'FINISHED'}
+package files 7
+  file cutbridge.json:6946
+  file render/beauty/C014_BEAUTY_0001.png:109891
+  file render/beauty/C014_BEAUTY_0002.png:109069
+  file render/beauty/C014_BEAUTY_0003.png:109424
+  file render/line/C014_LINE_0001.png:31104
+  file render/line/C014_LINE_0002.png:31008
+  file render/line/C014_LINE_0003.png:30962
+manifest version 3 passes [('BEAUTY', True), ('LINE', False)]
+handoff_3d camera Camera nulls ['QA_NULL']
+manifest sha256 44819321c91dcd6fa6462fe6b997fbc058795113a220ff945d3760fb2892e04d

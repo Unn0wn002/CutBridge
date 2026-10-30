@@ -1,0 +1,10 @@
+started Fri 10/30/2026 11:26:10.48 
+Ping request could not find host github.com. Please check the name and try again.
+network unreachable as configured 
+v24.22.1
+=== unmodified snapshot (read-only) 
+unmodified exit 0 
+=== mutant: newer-only rule weakened from <= to < 
+mutation applied
+mutant exit 1 
+finished Fri 10/30/2026 11:26:15.79 
