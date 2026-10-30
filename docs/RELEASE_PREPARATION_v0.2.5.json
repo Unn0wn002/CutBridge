@@ -33,10 +33,10 @@
     }
   },
   "independent_artifact_checks": {
-    "downloaded_candidate_hashes": "PASS",
-    "ae_guide_and_sidecars": "PASS",
-    "blender_package_validator": "Previous b221a759 candidate PASS; revised candidate validated by canonical isolated builder",
-    "preview_blender_index": "MATCHES official Blender 5.2.2 server-generate entry",
+    "downloaded_candidate_hashes": "NOT_RETAINED: no transcript of the original check was kept; content identity of the current ZIPs is retained in evidence/v0.2.5/sandbox-verification-20261029/",
+    "ae_guide_and_sidecars": "NOT_RETAINED: no transcript was kept",
+    "blender_package_validator": "NOT_RETAINED: no validator output was kept; revised candidate built by the canonical isolated builder (checks.log)",
+    "preview_blender_index": "NOT_RETAINED: no server-generate output or comparison was kept",
     "preview_notification_schema": "PASS",
     "v023_to_v025_selection": "PASS",
     "no_downgrade": "PASS",
@@ -85,7 +85,9 @@
     "input_manifests": "IDENTICAL",
     "normal_exit_code": 0,
     "ae_host_availability": "Available: user-installed Sandbox AE 26.5x89",
-    "native_fault_injection_mapping_rollback": "PASS"
+    "native_fault_injection_mapping_rollback": "PASS",
+    "isolation_boundary": "INSUFFICIENT EVIDENCE: no Sandbox configuration retained; offline state inferred from one blocked endpoint; TMPDIR not redirected. Behaviour results stand; the isolation claim does not",
+    "camera_empty_producer_scope": "fef1023 only checked that handoff_3d was present; Camera/Empty names, keys and projection are checked in evidence/v0.2.5/native-retest-p5-n4-n5-n6-20261030/"
   },
   "s14b": "NOT_EXECUTED",
   "startup_update_scheduling": "DISABLED",
@@ -154,6 +156,7 @@
     "normal_process_exit": "NOT_VERIFIED",
     "input_integrity": "IDENTICAL",
     "exhaustive_preservation_and_remaining_negative_signoff": "PENDING",
-    "japanese_representative_users": "NOT_EXECUTED"
+    "japanese_representative_users": "NOT_EXECUTED",
+    "isolation_boundary": "INSUFFICIENT EVIDENCE: no Sandbox configuration, launcher transcript, mount-permission or credential record retained; network-restored.json describes adapters only after the run. Behaviour results stand and were re-observed on the owner's host in evidence/v0.2.5/native-install-qa-20261028/ and native-retest-p5-n4-n5-n6-20261030/ (not isolated runs)"
   }
 }
