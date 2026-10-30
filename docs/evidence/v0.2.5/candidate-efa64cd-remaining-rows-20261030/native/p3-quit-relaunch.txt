@@ -1,0 +1,3 @@
+quit: AfterFX processes after quit = 0 (waited 3s); qa_p3.aep sha256 before relaunch = c97c2fc2750350a476a8c7fa0df45f8482af5dbb51fcf16408492fdaacdc4b8c
+relaunch: new AfterFX pid 38556 ready after 10s (phase A pid was 34464)
+after phase B (hash taken after phase C, which never opened this file): qa_p3.aep sha256 = c97c2fc2750350a476a8c7fa0df45f8482af5dbb51fcf16408492fdaacdc4b8c (unchanged: True)

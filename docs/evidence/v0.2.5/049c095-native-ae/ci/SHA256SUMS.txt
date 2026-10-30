@@ -1,0 +1,2 @@
+ae9bfb9c2aa36c6764b324ac74ef85cc5022071b04bb7b7695e64a3651f70366  CutBridge-AfterEffects-v0.2.5.zip
+3a53f7af8420909e5ed300440df115dffef2ba1dd196688c7c99789a8a48aa48  CutBridge-Blender-v0.2.5.zip

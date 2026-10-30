@@ -1,0 +1,8 @@
+02:02.515  blend            | Saved session recovery to "C:\Users\unn0w\AppData\Local\Temp\quit.blend"
+02:02.515  blend            | Writing user preferences: "C:\Users\unn0w\Downloads\02_Projects\_cutbridge_gui_a48646d\blender-profile\config\userpref.blend" 
+02:02.531  reports          | Preferences saved
+Repository data: C:\Users\unn0w\Downloads\02_Projects\_cutbridge_gui_a48646d\blender-profile\extensions\blender_org not found, sync required!
+Reloading external rigs...
+Reloading external metarigs...
+
+Blender quit

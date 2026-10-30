@@ -1,0 +1,22 @@
+﻿<Configuration>
+  <Networking>Disable</Networking>
+  <vGPU>Disable</vGPU>
+  <ClipboardRedirection>Disable</ClipboardRedirection>
+  <MappedFolders>
+    <MappedFolder><HostFolder>C:\Users\unn0w\Downloads\02_Projects\_sandbox_qa_20261029\snapshot-a1113a7</HostFolder><SandboxFolder>C:\Users\WDAGUtilityAccount\Desktop\qa\snapshot</SandboxFolder><ReadOnly>true</ReadOnly></MappedFolder>
+    <MappedFolder><HostFolder>C:\Users\unn0w\Downloads\02_Projects\_sandbox_qa_20261029\deps</HostFolder><SandboxFolder>C:\Users\WDAGUtilityAccount\Desktop\qa\deps</SandboxFolder><ReadOnly>true</ReadOnly></MappedFolder>
+    <MappedFolder><HostFolder>C:\Users\unn0w\AppData\Local\Python\pythoncore-3.13-64</HostFolder><SandboxFolder>C:\Users\WDAGUtilityAccount\Desktop\qa\py</SandboxFolder><ReadOnly>true</ReadOnly></MappedFolder>
+    <MappedFolder><HostFolder>C:\Users\unn0w\Downloads\02_Projects\_sandbox_qa_20261029\run</HostFolder><SandboxFolder>C:\Users\WDAGUtilityAccount\Desktop\qa\run</SandboxFolder><ReadOnly>true</ReadOnly></MappedFolder>
+    <MappedFolder><HostFolder>C:\Users\unn0w\Downloads\02_Projects\_sandbox_qa_20261029\out-a1113a7-run5</HostFolder><SandboxFolder>C:\Users\WDAGUtilityAccount\Desktop\qa\out</SandboxFolder><ReadOnly>false</ReadOnly></MappedFolder>
+    <MappedFolder><HostFolder>C:\Users\unn0w\Downloads\02_Projects\_sandbox_qa_20261029\vcrt</HostFolder><SandboxFolder>C:\Users\WDAGUtilityAccount\Desktop\qa\vcrt</SandboxFolder><ReadOnly>true</ReadOnly></MappedFolder>
+    <MappedFolder><HostFolder>C:\Users\unn0w\.cache\codex-runtimes\codex-primary-runtime\dependencies\node\bin</HostFolder><SandboxFolder>C:\Users\WDAGUtilityAccount\Desktop\qa\node</SandboxFolder><ReadOnly>true</ReadOnly></MappedFolder>
+    <MappedFolder><HostFolder>C:\Users\unn0w\Downloads\02_Projects\_sandbox_qa_20261029\zips</HostFolder><SandboxFolder>C:\Users\WDAGUtilityAccount\Desktop\qa\zips</SandboxFolder><ReadOnly>true</ReadOnly></MappedFolder>
+  </MappedFolders>
+  <LogonCommand>
+    <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\Users\WDAGUtilityAccount\Desktop\qa\run\run_qa_run5.ps1</Command>
+  </LogonCommand>
+</Configuration>
+
+
+
+
