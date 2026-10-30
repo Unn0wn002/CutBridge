@@ -33,7 +33,7 @@ Later `develop` commits up to `3e90b30` change only files under `docs/` and the 
 Before handing the ZIPs over, check both hashes on the participant's machine:
 
 ```powershell
-Get-FileHash -Algorithm SHA256 CutBridge-Blender-v0.2.5.zip, CutBridge-AfterEffects-v0.2.5.zip
+Get-FileHash -Algorithm SHA256 CutBridge-Blender-v0.2.5.zip, CutBridge-AfterEffects-v0.2.5.zip, S14B-FX01-20261030.zip
 ```
 
 ## 3. Prerequisites (all must be true before the session starts)
@@ -42,20 +42,21 @@ Get-FileHash -Algorithm SHA256 CutBridge-Blender-v0.2.5.zip, CutBridge-AfterEffe
 2. **Consent** for any screen recording, screenshot or quote is obtained and stored **outside the repository**, together with anything that identifies the participant.
 3. **Hosts**: Blender 4.2 or newer (5.2.x LTS is the automated target) and After Effects 2024–2026 with a working licence on the participant's machine. Record the exact builds and the OS. Results do not extend to other versions.
 4. **Clean state**: CutBridge is not already enabled in Blender, and no CutBridge files exist in the After Effects `Scripts/ScriptUI Panels` folder. Record how this was confirmed.
-5. **Fixture** (section 4) is prepared, its SHA-256 recorded, and its provenance is `synthetic-original` or `user-owned-original`.
+5. **Fixture** S14B-FX01 (section 4) is on the participant's machine and its archive SHA-256 matches.
 6. **Disposable folders**: an empty output folder for packages and a disposable folder for the After Effects project. Never point CutBridge at production data.
 7. **Campaign record**: copy `tools/s14/evidence-template.json` to a new dated evidence folder (for example `docs/evidence/v0.2.5/s14b-<YYYYMMDD>/s14-evidence.json`). Do not edit the committed template. In the copy set `candidate.product_version` to `0.2.5` and fill the candidate block from section 2.
 
 ## 4. Fixture requirements
 
-The protocol needs a prepared fixture; none is committed for v0.2.5. Prepare it before the first session and keep it identical for every participant in the campaign.
+Use fixture **S14B-FX01** for every participant in the campaign: `S14B-FX01-20261030.zip`, SHA-256 `7e5d5dc90b55c091f6edfb3038339eaff9c69bf991c17877d4f998f333477c7d`, provenance `synthetic-original`. How it was built and dry-run against the candidate: `docs/evidence/v0.2.5/s14b-fixture-20261030/README.md`. The archive is kept outside the repository; check its hash before each session.
 
-- A disposable `.blend` of an original, synthetic shot: short frame range starting at frame 0 or later, a camera, and render content for a preset with `BEAUTY` required and at least one **optional** pass (`required: false`), so that JP08 can show a warning.
-- A **task brief** with the target metadata (Project/Episode/Scene/Cut/Take), FPS, resolution, frame range and preset for JP03. Give it to the participant on paper or as a separate file; it must not contain step-by-step UI instructions.
-- Two later states of the same shot for the revisions in JP09 and JP10, for example a changed frame or colour, produced as V002 and V003 packages with the same FPS and range.
-- Pre-made artist-owned state for JP10, or ask the participant to add it in JP07: one unmanaged layer, one effect, one mask, an opacity change and a parenting link.
+- `participant/`: the start `.blend` (its settings deliberately differ from the brief), the custom preset (`BEAUTY` required, `LINE` optional) and the Japanese task brief `task_brief_JA.md`. The brief gives values only, no UI steps, and asks for the JP07 artist work (a layer, an effect, a mask, an opacity change, a parenting link).
+- `moderator/revisions/`: the V002 and V003 packages. Hand over V002 at JP09 and V003 at JP10, not earlier.
+- `moderator/reference/`: a V001 package built with the brief's values, for when the participant's own V001 cannot be used. Handing it over is a moderator intervention.
 
-Record the fixture ID, provenance and SHA-256 of the archived fixture in the campaign record.
+The revisions apply only to a V001 built with exactly the brief's values. A participant V001 with a different identity, FPS, range, resolution or preset is rejected at JP09; record what happened, then decide whether to continue with the reference V001.
+
+Record the fixture ID, provenance and archive SHA-256 in the campaign record.
 
 ## 5. Controlled scenarios the moderator sets up
 
