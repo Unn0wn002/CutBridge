@@ -7,7 +7,8 @@ It assumes you have read the [information and consent form](S14B_CONSENT_FORM_EN
 ## Before you start
 
 - We are testing **CutBridge**, not **you**. Places where you get stuck are the most useful results.
-- There is no help with how to use the tool. Each task gives only the goal; finding out how is part of the test.
+- Each task gives only the goal; finding out how is part of the test.
+- **Questions are welcome by email (【contact】).** For trouble receiving the files or with the hash check, just ask. Questions about installing or using CutBridge are answered if you're stuck, but are recorded as help (that's fine).
 - If you can't finish a task, that's fine. Write on the record sheet where and why you got stuck, then move on.
 - Expect about 90–120 minutes. You can take breaks or split it over several sittings.
 - **Use only the test material.** Don't open your own work files.
