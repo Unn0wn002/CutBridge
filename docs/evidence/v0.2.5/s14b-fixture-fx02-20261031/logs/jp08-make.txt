@@ -1,0 +1,1 @@
+JP08 package = FX01 reference V001 with render/line/C001_LINE_0006.png removed (11 of 12 LINE frames remain; LINE is optional).
