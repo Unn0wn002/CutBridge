@@ -3,7 +3,7 @@
 For: practice runs and general feedback on CutBridge v0.2.5 (development build), English UI
 Version: 1 (2026-10-31)
 
-Please read this before you take part, then answer the questions under "7. Your consent" at the end. If anything is unclear, ask 【contact】 before you decide.
+Please read this before you take part, then answer the questions under "7. Your consent" at the end. If anything is unclear, ask nyxelharuka@gmail.com before you decide.
 
 This form is for testers recruited through the English sign-up form. Those sessions are practice runs and general feedback; they are **not** part of the Japanese user study (S14B) and are never counted as its evidence. The Japanese study uses [S14B_CONSENT_FORM_JA.md](S14B_CONSENT_FORM_JA.md).
 
@@ -24,7 +24,7 @@ There is **no meeting, call or video conference.**
 3. For each task, write in the record sheet what you did, and what confused you or how it felt.
 4. When you're done, send back the record sheet. If you chose to record, send the recording too. You may still decide not to send a recording after choosing one.
 
-Questions are welcome by email (【contact】). We always answer questions about receiving the files or the hash check. Because recording where and why you got stuck is the point of the test, questions about installing or using CutBridge are answered if you're stuck, and are recorded as help. If you can't complete a task, you can also note that and move on.
+Questions are welcome by email (nyxelharuka@gmail.com). We always answer questions about receiving the files or the hash check. Because recording where and why you got stuck is the point of the test, questions about installing or using CutBridge are answered if you're stuck, and are recorded as help. If you can't complete a task, you can also note that and move on.
 
 ## 3. Effects on your computer
 
@@ -53,7 +53,7 @@ Questions are welcome by email (【contact】). We always answer questions about
 ## 5. How we handle it
 
 - **Pseudonymous ID.** Records use an ID such as `EN-P01`. Your contact details are kept separately from your results.
-- **Storage:** your sign-up answers, consent reply, original record sheet, recording and screenshots are kept in a private place only the student running the test can access. **None of these are put anywhere public.**
+- **Storage:** your sign-up answers, consent reply, original record sheet, recording and screenshots are kept in a private place only the student running the test can access. You upload your record sheet and recording to your own private Google Drive folder, which only you and the student can see; as with any Drive upload, your Google account name is shown on the files. **None of these are put anywhere public.**
 - **What becomes public:** CutBridge's development records (a public repository) may include, per pseudonymous ID: task results, a summary of problems found, your experience band (beginner, intermediate or advanced), your role category, and the Blender and After Effects versions and OS you used. Nothing that identifies you, such as your name or contact details. Recordings and screenshots are never published.
 - **Quotes:** text from your record sheet is quoted in the public records only if you answer "Yes" to item 4 under "7. Your consent".
 - **Deletion (two stages):**
@@ -64,7 +64,7 @@ Questions are welcome by email (【contact】). We always answer questions about
 ## 6. Withdrawing and deletion requests
 
 - You can stop at any time without giving a reason.
-- If you contact 【contact】 by 10 January 2027, we will delete your record sheet and recording, and remove your ID's results from the current public records.
+- If you contact nyxelharuka@gmail.com by 10 January 2027, we will delete your record sheet and recording, and remove your ID's results from the current public records.
 - Earlier versions in the public repository's history, and copies other people have made, cannot be removed.
 - After 10 January 2027 we delete the link between your contact details and your ID, so we can no longer tell which records are yours.
 
@@ -88,4 +88,4 @@ Thank you for your help.
 
 ---
 
-Contact: 【contact】
+Contact: nyxelharuka@gmail.com
