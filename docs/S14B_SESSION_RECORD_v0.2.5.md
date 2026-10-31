@@ -24,7 +24,7 @@ Do not write names, email addresses, employers, studio names or account IDs anyw
 | Data archive | `S14B-FX02-data-20261031.zip` |
 | Candidate source SHA | `efa64cd0aaa489495430090cdd8fe68648a28e5d` |
 | Fallback V001 used / fallback 使用 | yes (from which task) / no |
-| Any message sent during the session / 実施中の連絡 | none / exact text, recorded as intervention |
+| Any message sent during the session / 実施中の連絡 | none / exact text; about files or hash check = not an intervention; about installing or using CutBridge = intervention for that task |
 
 If either ZIP hash does not match, the session is `BLOCKED` and not bound to this candidate.
 

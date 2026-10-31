@@ -24,7 +24,7 @@ There is **no meeting, call or video conference.**
 3. For each task, write in the record sheet what you did, and what confused you or how it felt.
 4. When you're done, send back the record sheet. If you chose to record, send the recording too. You may still decide not to send a recording after choosing one.
 
-We don't give help with how to use the tool during the tasks, because recording where and why you got stuck is the point of the test. If you can't complete a task, note that and move on.
+Questions are welcome by email (【contact】). We always answer questions about receiving the files or the hash check. Because recording where and why you got stuck is the point of the test, questions about installing or using CutBridge are answered if you're stuck, and are recorded as help. If you can't complete a task, you can also note that and move on.
 
 ## 3. Effects on your computer
 
@@ -56,15 +56,17 @@ We don't give help with how to use the tool during the tasks, because recording 
 - **Storage:** your sign-up answers, consent reply, original record sheet, recording and screenshots are kept in a private place only the student running the test can access. **None of these are put anywhere public.**
 - **What becomes public:** CutBridge's development records (a public repository) may include, per pseudonymous ID: task results, a summary of problems found, your experience band (beginner, intermediate or advanced), your role category, and the Blender and After Effects versions and OS you used. Nothing that identifies you, such as your name or contact details. Recordings and screenshots are never published.
 - **Quotes:** text from your record sheet is quoted in the public records only if you answer "Yes" to item 4 under "7. Your consent".
-- **Deletion:** your sign-up answers (including contact details), consent reply, original record sheet, recording and screenshots are deleted after testing ends (planned: 【deletion date】).
+- **Deletion (two stages):**
+  - Your sign-up answers (including contact details), consent reply, and the link between your contact details and your ID: deleted **by 10 January 2027** (one month after the test period).
+  - The original record sheet, recording and screenshots: deleted **by 31 March 2027**. Until then they are kept under your ID only.
 - **Third parties:** none. Nothing is shared or sold.
 
 ## 6. Withdrawing and deletion requests
 
 - You can stop at any time without giving a reason.
-- If you contact 【contact】 before 【deletion date】, we will delete your record sheet and recording, and remove your ID's results from the current public records.
+- If you contact 【contact】 by 10 January 2027, we will delete your record sheet and recording, and remove your ID's results from the current public records.
 - Earlier versions in the public repository's history, and copies other people have made, cannot be removed.
-- After 【deletion date】 we delete the link between your contact details and your ID, so we can no longer tell which records are yours.
+- After 10 January 2027 we delete the link between your contact details and your ID, so we can no longer tell which records are yours.
 
 ## 7. Your consent
 
