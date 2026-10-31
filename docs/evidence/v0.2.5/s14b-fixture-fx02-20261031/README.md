@@ -22,17 +22,17 @@ The archive holds data only. The participant guide, record sheet and consent for
 | `S14B_FX01_start.blend`, `studio_preset_s14b_fx01.json` | FX01 `participant/`, unchanged | JP03–JP05 |
 | `task_brief_JA.md` | `participant/task_brief_JA.md` here: FX01's brief with the output folder no longer "prepared by the moderator", and a note that the FX01 file names are expected | JP03–JP05, JP07 |
 | `S14B_FX01_JP04.blend` | new, `scripts/make_jp04_blend.py` | JP04 |
-| `JP08_qc_check/` | new: FX01's reference V001 with `render/line/C001_LINE_0006.png` removed (`build/jp08-make.txt`) | JP08 |
+| `JP08_qc_check/` | new: FX01's reference V001 with `render/line/C001_LINE_0006.png` removed (`logs/jp08-make.txt`) | JP08 |
 | `revisions/` | FX01 `moderator/revisions/`, unchanged | JP09, JP10 |
 | `fallback/` | FX01 `moderator/reference/`, unchanged | only if the participant's own V001 cannot be used |
 
-`build/packed-vs-tested.txt` confirms the packed JP04 file and JP08 package are the same bytes that were dry-run, and that `revisions/` and `fallback/` equal FX01's.
+`logs/packed-vs-tested.txt` confirms the packed JP04 file and JP08 package are the same bytes that were dry-run, and that `revisions/` and `fallback/` equal FX01's.
 
 ## JP04 file (Blender 5.2.2 LTS, owner host, not isolated)
 
-The installed candidate in the empty FX01 profile still matched the ZIP: 21/21 files (`build/installed-vs-zip.txt`). `make_jp04_blend.py` opened FX01's start scene and applied the brief's values. It set the output folder and preset path relative to the `.blend` (`//`), set the UI language to JA, cleared the active camera and saved (`build/jp04-make-log.txt`).
+The installed candidate in the empty FX01 profile still matched the ZIP: 21/21 files (`logs/installed-vs-zip.txt`). `make_jp04_blend.py` opened FX01's start scene and applied the brief's values. It set the output folder and preset path relative to the `.blend` (`//`), set the UI language to JA, cleared the active camera and saved (`logs/jp04-make-log.txt`).
 
-`check_jp04_file.py` then opened a copy placed in a different folder next to the preset (`build/jp04-check.txt`):
+`check_jp04_file.py` then opened a copy placed in a different folder next to the preset (`logs/jp04-check.txt`):
 
 - Validate Cut: **one error only**, `CAMERA_MISSING`, `アクティブカメラが設定されていません。`, fix `Scene Propertiesでアクティブカメラを設定してください。`
 - After assigning `CAM_MAIN`: `検証に合格しました。`
@@ -55,6 +55,10 @@ Observations for the sessions, not findings: the Build alert's warning line (`op
 ## Not re-run
 
 The V001 → V002 → V003 revision chain with artist work was dry-run on FX01's packages (`docs/evidence/v0.2.5/s14b-fixture-20261030/ae-dryrun/`). The same bytes are used here, so it was not repeated.
+
+## FX01 build logs (copies)
+
+The FX01 README cites `build/…` files, but the repository's `.gitignore` excludes every folder named `build/`, so they were never committed with PR #121. To keep FX01's records unedited, their original files from the owner host (written on 2026-10-30 during the third, accepted FX01 build) are copied unchanged into `fx01-build-logs/` here: the empty-profile check, the install output, the start-scene log, the three package build logs (installed-file check, Validate Cut, Build Package, render, per-file SHA-256), the three package manifests and the FX01 JP04 check. This folder uses `logs/` for its own logs for the same reason.
 
 ## Limits
 
