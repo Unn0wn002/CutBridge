@@ -20,7 +20,7 @@ This form is for testers recruited through the English sign-up form. Those sessi
 There is **no meeting, call or video conference.**
 
 1. After we receive your consent reply, we send you a set of files: the two CutBridge ZIPs, test material, a participant guide and a record sheet.
-2. Work through the tasks in the guide on your own computer, whenever suits you. Expect **90–120 minutes**. You can take breaks or split it over several sittings.
+2. Work through the tasks in the guide on your own computer, whenever suits you. Expect **90–150 minutes (2 to 2.5 hours)**. You can take breaks or split it over several sittings.
 3. For each task, write in the record sheet what you did, and what confused you or how it felt.
 4. When you're done, send back the record sheet. If you chose to record, send the recording too. You may still decide not to send a recording after choosing one.
 
