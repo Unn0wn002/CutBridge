@@ -1,0 +1,3 @@
+﻿AE running before: 0
+AE started pid 37112; script sent with -r; done: True
+AfterFX processes after quit: 0
