@@ -61,13 +61,13 @@ The revisions apply only to a V001 built with exactly the brief's values. A part
 
 1. **Participant** fits the protocol section 2 profile; record only an experience band and a role category.
 2. **Consent** is received in writing (the consent form's section 7 answers), before the bundle is sent. Store the reply outside the repository, together with anything that identifies the participant. Note whether they chose screen-and-voice, screen-only or no recording.
-3. **Placeholders** in the consent form and guide are filled in: contact, deletion date and how to return files.
+3. **Return folder:** create one private Google Drive folder per participant (named by their ID, e.g. `JP-U01`), shared with edit access **only** with that participant's email, and send its link with the bundle. Never share one folder between participants. Delete the folders on the consent form's dates. Participants without a Google account email a link to their own cloud storage instead. Contact for questions: nyxelharuka@gmail.com. Deletion dates are fixed in the consent form: contact details, sign-up answers and consent replies by 2027-01-10; record sheets, recordings and screenshots by 2027-03-31.
 4. **Hosts** reported on the sign-up form: Blender 4.2 or newer and After Effects 2024–2026 with a working licence. Results do not extend to other versions.
 5. **Campaign record**: copy `tools/s14/evidence-template.json` to a new dated evidence folder (for example `docs/evidence/v0.2.5/s14b-<YYYYMMDD>/s14-evidence.json`). Do not edit the committed template. In the copy set `candidate.product_version` to `0.2.5`, fill the candidate block from section 2 and the fixture block from section 3 (`S14B-FX02`, `synthetic-original`, the data archive hash).
 
 ## 5. Rules for the session (short form of protocol sections 5 and 13)
 
-- Do not answer how-to questions during the session. If you must reply, write as little as possible, keep the exact text and record it as an intervention on the reviewer sheet.
+- Questions come by email. Answer questions about receiving the files or the hash check freely; they are not interventions. Answer questions about installing or using CutBridge only when the participant is stuck, as briefly as possible; keep the exact text and record it as an intervention on the reviewer sheet for the task it helped.
 - Any extra file or instruction after the bundle is an intervention. So is the participant using `fallback/`.
 - Results that rest only on the record sheet are participant statements, not observations.
 - Statements are paraphrased in the evidence. Quote record-sheet text word for word only if the participant consented to quotes (consent item 4); never quote the voice track word for word.
