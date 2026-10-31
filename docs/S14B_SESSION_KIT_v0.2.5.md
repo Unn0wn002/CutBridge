@@ -71,6 +71,7 @@ The revisions apply only to a V001 built with exactly the brief's values. A part
 - Any extra file or instruction after the bundle is an intervention. So is the participant using `fallback/`.
 - Results that rest only on the record sheet are participant statements, not observations.
 - Statements are paraphrased in the evidence. Quote record-sheet text word for word only if the participant consented to quotes (consent item 4); never quote the voice track word for word.
+- The course report follows the same rules as the public evidence (consent form section 5): only the per-ID public fields, statements paraphrased, record-sheet quotes only with consent item 4, no voice-track quotes, and no names, contact details, recordings or screenshots.
 
 ## 6. Reviewing what comes back
 
