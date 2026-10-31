@@ -55,7 +55,8 @@ Questions are welcome by email (nyxelharuka@gmail.com). We always answer questio
 - **Pseudonymous ID.** Records use an ID such as `EN-P01`. Your contact details are kept separately from your results.
 - **Storage:** your sign-up answers, consent reply, original record sheet, recording and screenshots are kept in a private place only the student running the test can access. You upload your record sheet and recording to your own private Google Drive folder, which only you and the student can see; as with any Drive upload, your Google account name is shown on the files. **None of these are put anywhere public.**
 - **What becomes public:** CutBridge's development records (a public repository) may include, per pseudonymous ID: task results, a summary of problems found, your experience band (beginner, intermediate or advanced), your role category, and the Blender and After Effects versions and OS you used. Nothing that identifies you, such as your name or contact details. Recordings and screenshots are never published.
-- **Quotes:** text from your record sheet is quoted in the public records only if you answer "Yes" to item 4 under "7. Your consent".
+- **Course report:** the student running the test also uses the results in a report for their course. The report contains only the same per-ID information as the public records above. It never includes your name, contact details, recordings or screenshots.
+- **Quotes:** text from your record sheet is quoted in the public records or the course report only if you answer "Yes" to item 4 under "7. Your consent".
 - **Deletion (two stages):**
   - Your sign-up answers (including contact details), consent reply, and the link between your contact details and your ID: deleted **by 10 January 2027** (one month after the test period).
   - The original record sheet, recording and screenshots: deleted **by 31 March 2027**. Until then they are kept under your ID only.
@@ -65,7 +66,7 @@ Questions are welcome by email (nyxelharuka@gmail.com). We always answer questio
 
 - You can stop at any time without giving a reason.
 - If you contact nyxelharuka@gmail.com by 10 January 2027, we will delete your record sheet and recording, and remove your ID's results from the current public records.
-- Earlier versions in the public repository's history, and copies other people have made, cannot be removed.
+- Earlier versions in the public repository's history, and copies other people have made, cannot be removed. A course report that has already been submitted may not be changeable either.
 - After 10 January 2027 we delete the link between your contact details and your ID, so we can no longer tell which records are yours.
 
 ## 7. Your consent
@@ -78,7 +79,7 @@ Please answer each item. Replying by email or message with the numbers and your 
    - I will record and send my screen and voice (thinking aloud)
    - I will record and send my screen only, no voice
    - No recording (record sheet only)
-4. Text from my record sheet may be quoted in the public records under my pseudonymous ID. **(Yes / No)**
+4. Text from my record sheet may be quoted in the public records and the course report under my pseudonymous ID. **(Yes / No)**
 5. I may attach screenshots to my record sheet (they are never published). **(Yes / No)**
 
 Participant ID (filled in by us): `EN-P__`
