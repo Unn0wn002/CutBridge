@@ -1,0 +1,7 @@
+JP04|file C:\Users\unn0w\Downloads\02_Projects\_s14b_fx02_20261031\bundle-test\S14B_FX01_JP04.blend camera None language JA
+[ERROR] CAMERA_MISSING: No active scene camera. Fix: Assign an active camera in Scene Properties.
+Error: CutBridge: エラー 1件 / 警告 0件。エラー: アクティブカメラが設定されていません。 Why: 現在の設定ではCutBridgeを安全に続行できません。 Can I continue? いいえ。 Fix: Scene Propertiesでアクティブカメラを設定してください。 [EN] No active scene camera. Fix: Assign an active camera in Scene Properties.
+JP04|validate raised: Error: CutBridge: エラー 1件 / 警告 0件。エラー: アクティブカメラが設定されていません。 Why: 現在の設定ではCutBridgeを安全に続行できません。 Can I continue? いいえ。 Fix: Scene Propertiesでアクティブカメラを設定してください。 [EN] No active scene camera. Fix: Assign an active camera in Scene Properties. |
+JP04|camera assigned
+Info: CutBridge: 検証に合格しました。パッケージを安全に作成できます。
+JP04|validate -> {'FINISHED'}

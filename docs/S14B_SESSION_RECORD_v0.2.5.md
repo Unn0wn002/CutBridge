@@ -1,6 +1,8 @@
-# S14B session record sheet (v0.2.5) / セッション記録シート
+# S14B reviewer record sheet (v0.2.5, asynchronous) / レビュー記録シート
 
-Blank form. Copy it **for each participant** into the campaign's dated evidence folder (for example `docs/evidence/v0.2.5/s14b-<YYYYMMDD>/JP-U01-record.md`) and fill in the copy. Never fill in this file itself. Rules: [S14B_SESSION_KIT_v0.2.5.md](S14B_SESSION_KIT_v0.2.5.md) and [S14_JP_USER_VALIDATION.md](S14_JP_USER_VALIDATION.md).
+Blank form for the **owner**, filled after a participant's material comes back. Copy it **for each participant** into the campaign's dated evidence folder (for example `docs/evidence/v0.2.5/s14b-<YYYYMMDD>/JP-U01-review.md`) and fill in the copy. Never fill in this file itself. Rules: [S14B_SESSION_KIT_v0.2.5.md](S14B_SESSION_KIT_v0.2.5.md) and [S14_JP_USER_VALIDATION.md](S14_JP_USER_VALIDATION.md), section 13.
+
+Participants fill in their own sheet ([S14B_PARTICIPANT_RECORD_JA.md](S14B_PARTICIPANT_RECORD_JA.md)); that original stays outside the repository. This sheet is what goes into the evidence folder.
 
 Do not write names, email addresses, employers, studio names or account IDs anywhere in this sheet. / 氏名・メール・所属・アカウント ID は記入しないこと。
 
@@ -12,183 +14,56 @@ Do not write names, email addresses, employers, studio names or account IDs anyw
 | Representative per protocol section 2 / 代表性 | yes / no (if no, this is not S14 evidence) |
 | Experience band / 経験 | beginner-production / intermediate-production / advanced-production |
 | Role category / 職種カテゴリ | |
-| Date / 日付 | |
-| Moderator / モデレーター | (role only) |
-| Consent covers / 同意範囲 | recording / screenshots / quotes / none (stored outside the repository) |
-| Blender build and OS | |
-| After Effects build and OS | |
-| Blender ZIP SHA-256 checked on this machine | `abf5882d…` matches: yes / no |
-| AE ZIP SHA-256 checked on this machine | `ecfb26ce…` matches: yes / no |
-| Clean state confirmed (how) | |
-| Fixture archive SHA-256 checked | `S14B-FX01-20261030.zip`, `7e5d5dc9…` matches: yes / no |
+| Date returned / 返送日 | |
+| Consent covers / 同意範囲 | screen and voice / screen only / no recording; quotes yes/no; screenshots yes/no (consent reply stored outside the repository) |
+| Recording received / 録画 | yes (screen and voice / screen only) / no — **no recording means this run is supplementary feedback, not campaign evidence** |
+| Blender build and OS (from participant sheet) | |
+| After Effects build and OS (from participant sheet) | |
+| Blender ZIP hash (participant's check) | `abf5882d…` matches: yes / no |
+| AE ZIP hash (participant's check) | `ecfb26ce…` matches: yes / no |
+| Data archive | `S14B-FX02-data-20261031.zip` |
 | Candidate source SHA | `efa64cd0aaa489495430090cdd8fe68648a28e5d` |
+| Fallback V001 used / fallback 使用 | yes (from which task) / no |
+| Any message sent during the session / 実施中の連絡 | none / exact text, recorded as intervention |
 
-If either ZIP hash does not match, stop here and record the session as `BLOCKED`.
+If either ZIP hash does not match, the session is `BLOCKED` and not bound to this candidate.
 
 ## Tasks
 
-Outcome is `PASS`, `FAIL` or `BLOCKED` (`NOT_RUN` if skipped). A task with any moderator intervention is not unassisted. Evidence is a timestamp, screenshot name or note ID.
+Outcome is `PASS`, `FAIL`, `BLOCKED` or `NOT_RUN`. Observed behaviour comes **only from the recording**; what the participant wrote or said is a statement. A task done with the fallback V001, or after any message from you, is not unassisted. Evidence is a recording timestamp, screenshot name or record-sheet section, always together with this sheet's file name (it stays after recordings are deleted).
 
-### JP01 — Install and open Blender integration
+- Paraphrase statements. Quote record-sheet text word for word only if the participant consented to quotes; never quote the voice track word for word.
+- A task reported as done but not visible in the recording is `NOT_RUN`, with "done per record sheet, not in recording" as the statement.
+
+Repeat this block for JP01–JP11:
+
+### JP__ — 
 
 | Field | Record |
 | --- | --- |
-| Observed behaviour / 観察 | |
-| Participant statement / 発言 | |
-| Moderator intervention (exact words) / 介入 | none |
+| Observed behaviour (from recording, with timestamps) / 観察 | |
+| Participant statement (record sheet, voice) / 発言・記述 | |
+| Intervention (fallback used, or message sent) / 介入 | none |
 | Outcome / 結果 | |
 | Unassisted / 介入なし | yes / no |
 | Evidence / 証跡 | |
 | Terminology confusion / 用語の混乱 | |
 
-### JP02 — Understand Japanese-first core UI
+Task-specific checks:
 
-Check: metadata fields, Validate Cut, Build Package, Studio Preset mode, safety/status messages. Note any materially wrong safety interpretation.
-
-| Field | Record |
-| --- | --- |
-| Observed behaviour / 観察 | |
-| Participant statement / 発言 | |
-| Moderator intervention (exact words) / 介入 | none |
-| Outcome / 結果 | |
-| Unassisted / 介入なし | yes / no |
-| Evidence / 証跡 | |
-| Terminology confusion / 用語の混乱 | |
-
-### JP03 — Configure a representative cut
-
-Check against the task brief: metadata, active camera, FPS, resolution, frame range, output location, preset. No validation bypass.
-
-| Field | Record |
-| --- | --- |
-| Observed behaviour / 観察 | |
-| Participant statement / 発言 | |
-| Moderator intervention (exact words) / 介入 | none |
-| Outcome / 結果 | |
-| Unassisted / 介入なし | yes / no |
-| Evidence / 証跡 | |
-| Terminology confusion / 用語の混乱 | |
-
-### JP04 — Recover from an intentional validation error
-
-Setup done by moderator: active camera cleared (`CAMERA_MISSING`). Record whether the Japanese message led to the right fix.
-
-| Field | Record |
-| --- | --- |
-| Setup confirmed / 準備確認 | yes / no |
-| Observed behaviour / 観察 | |
-| Participant statement / 発言 | |
-| Moderator intervention (exact words) / 介入 | none |
-| Outcome / 結果 | |
-| Unassisted / 介入なし | yes / no |
-| Evidence / 証跡 | |
-| Terminology confusion / 用語の混乱 | |
-
-### JP05 — Build deterministic package safely
-
-Ask after the build: which version is this package, and what happens if you build the same version again?
-
-| Field | Record |
-| --- | --- |
-| Package folder and version | |
-| Observed behaviour / 観察 | |
-| Participant statement / 発言 | |
-| Moderator intervention (exact words) / 介入 | none |
-| Outcome / 結果 | |
-| Unassisted / 介入なし | yes / no |
-| Evidence / 証跡 | |
-| Terminology confusion / 用語の混乱 | |
-
-### JP06 — Transfer/open package in After Effects
-
-| Field | Record |
-| --- | --- |
-| Install route (Run Script File / ScriptUI Panels) | |
-| Observed behaviour / 観察 | |
-| Participant statement / 発言 | |
-| Moderator intervention (exact words) / 介入 | none |
-| Outcome / 結果 | |
-| Unassisted / 介入なし | yes / no |
-| Evidence / 証跡 | |
-| Terminology confusion / 用語の混乱 | |
-
-### JP07 — Build managed AE state
-
-| Field | Record |
-| --- | --- |
-| Artist state added (layer, effect, mask, opacity, parenting) | |
-| Observed behaviour / 観察 | |
-| Participant statement / 発言 | |
-| Moderator intervention (exact words) / 介入 | none |
-| Outcome / 結果 | |
-| Unassisted / 介入なし | yes / no |
-| Evidence / 証跡 | |
-| Terminology confusion / 用語の混乱 | |
-
-### JP08 — Interpret QC+
-
-Clean run first. Then the moderator's warning setup (optional-pass frame moved), and optionally the error setup (comp frame rate changed). Restore both before JP09.
-
-| Field | Record |
-| --- | --- |
-| Clean result understood | yes / no |
-| Warning setup and result | |
-| Error setup and result (optional) | |
-| Assumed QC+ repairs the project? | yes / no |
-| Restored before JP09 | yes / no |
-| Observed behaviour / 観察 | |
-| Participant statement / 発言 | |
-| Moderator intervention (exact words) / 介入 | none |
-| Outcome / 結果 | |
-| Unassisted / 介入なし | yes / no |
-| Evidence / 証跡 | |
-| Terminology confusion / 用語の混乱 | |
-
-### JP09 — Apply V001 to V002 compatible revision
-
-| Field | Record |
-| --- | --- |
-| Confirmation message understood | yes / no |
-| Resulting version | |
-| Observed behaviour / 観察 | |
-| Participant statement / 発言 | |
-| Moderator intervention (exact words) / 介入 | none |
-| Outcome / 結果 | |
-| Unassisted / 介入なし | yes / no |
-| Evidence / 証跡 | |
-| Terminology confusion / 用語の混乱 | |
-
-### JP10 — Continue V002 to V003 and inspect preservation
-
-| Field | Record |
-| --- | --- |
-| Resulting version | |
-| Artist state intact (effect, mask, opacity, manual layer, parenting) | |
-| Observed behaviour / 観察 | |
-| Participant statement / 発言 | |
-| Moderator intervention (exact words) / 介入 | none |
-| Outcome / 結果 | |
-| Unassisted / 介入なし | yes / no |
-| Evidence / 証跡 | |
-| Terminology confusion / 用語の混乱 | |
-
-### JP11 — Save, close, reopen, reload
-
-| Field | Record |
-| --- | --- |
-| No `AfterFX` process after quit | yes / no |
-| Duplicate managed state after reopen | yes / no |
-| Observed behaviour / 観察 | |
-| Participant statement / 発言 | |
-| Moderator intervention (exact words) / 介入 | none |
-| Outcome / 結果 | |
-| Unassisted / 介入なし | yes / no |
-| Evidence / 証跡 | |
-| Terminology confusion / 用語の混乱 | |
+- **JP02:** materially wrong safety interpretation?
+- **JP03:** all brief values set, no validation bypass?
+- **JP04:** did the Japanese `CAMERA_MISSING` message lead to the right fix (assign `CAM_MAIN`)?
+- **JP05:** package version understood; would they overwrite the same version?
+- **JP06 / JP09:** own package or fallback, and from which task?
+- **JP07:** artist work added (layer, effect, mask, opacity, parenting)?
+- **JP08:** clean result understood; for `JP08_qc_check`, the Build warning and the QC+ WARNING `CBQ-SEQ-OPTIONAL-FRAMES-MISSING` interpreted correctly; did they assume QC+ repairs the project?
+- **JP09 / JP10:** confirmation message understood; resulting versions; artist state intact after V003?
+- **JP11:** full quit and reopen; version and QC+ result after reopen; duplicate managed state?
 
 ### JP12 — Optional Camera/3D Null handoff
 
-`NOT_APPLICABLE` for v0.2.5: 3D handoff is enabled only from Blender Python, not from a normal N-panel control (`docs/HANDOFF_3D.md`).
+`NOT_APPLICABLE` for v0.2.5: 3D handoff is enabled only from Blender Python, not from a normal N-panel control (`docs/HANDOFF_3D.md`). In the JSON: `observed_behavior: "Not run: 3D handoff is outside the normal UI in v0.2.5"`, `evidence: ["docs/HANDOFF_3D.md", "S14B_SESSION_KIT_v0.2.5.md section 6"]`.
 
 ## Findings
 
@@ -198,13 +73,15 @@ One row per finding. Severity per protocol section 7; do not downgrade to keep a
 | --- | --- | --- | --- | --- | --- |
 | F-01 | | | | | OPEN |
 
-## Closing questions / 最後の質問
+## Closing answers / 最後の質問
 
-1. 一番わかりにくかった表示や用語 / Most confusing label or term:
-2. 不安になった場面 / Moment of doubt about correctness:
-3. 制作で使う上で足りない・邪魔なもの / Missing or in the way for production use:
-4. その他 / Other:
+Summarise the participant's written answers. Quote them word for word only if they consented to quotes.
 
-## Moderator notes
+1. Most confusing label or term:
+2. Moment of doubt about correctness:
+3. Missing or in the way for production use:
+4. Other:
 
-Breaks, interruptions, environment problems, and anything that could affect the result.
+## Reviewer notes
+
+Breaks or crashes visible in the recording, gaps in the recording, and anything else that could affect the result.
