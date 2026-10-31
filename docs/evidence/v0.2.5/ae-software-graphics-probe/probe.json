@@ -1,0 +1,11 @@
+{
+    "license_files":  "NOT MAPPED",
+    "normal_exit":  false,
+    "exit_code":  null,
+    "owner_environment":  "NOT EXPOSED",
+    "network":  "DISABLED",
+    "script_executed":  false,
+    "scope":  "AE availability only; no candidate runtime",
+    "timestamp_utc":  "2026-10-04T02:07:05.5147007Z",
+    "dependency_method":  "read-only Microsoft signed runtime DLLs"
+}

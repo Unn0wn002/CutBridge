@@ -1,0 +1,107 @@
+node:assert:152
+  throw new AssertionError(obj);
+  ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
++ actual - expected
+
++ {
++   compatibility: {
++     reasons: [],
++     status: 'safe',
++     warnings: []
++   },
++   manifest: {
++     cut: 'C001',
++     cutbridge_version: '0.2.3',
++     episode: 'E01',
++     fps: 24,
++     frames: {
++       count: 24,
++       end: 23,
++       start: 0
++     },
++     package_name: '作品_E01_S001_C001_T01_V002',
++     passes: [
++       {
++         name: 'BEAUTY',
++         path: 'beauty',
++         required: true,
++         sequence_pattern: 'b####.png'
++       },
++       {
++         name: 'LINE',
++         path: 'line',
++         required: false,
++         sequence_pattern: 'l####.png'
++       }
++     ],
++     project: '作品',
++     resolution: {
++       height: 1080,
++       pixel_aspect: 1,
++       width: 1920
++     },
++     scene: 'S001',
++     schema: 'cutbridge-manifest',
++     schema_version: 1,
++     take: 'T01',
++     version: 2
++   },
++   newer: false,
++   version: 2
++ }
+- null
+
+    at C:\mut\tests\ae_s6_revision_checks.cjs:71:12
+    at test (C:\mut\tests\ae_s6_revision_checks.cjs:7:27)
+    at Object.<anonymous> (C:\mut\tests\ae_s6_revision_checks.cjs:68:1)
+    at Module._compile (node:internal/modules/cjs/loader:1929:14)
+    at Object..js (node:internal/modules/cjs/loader:2060:10)
+    at Module.load (node:internal/modules/cjs/loader:1651:32)
+    at Module._load (node:internal/modules/cjs/loader:1443:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: {
+    manifest: {
+      schema: 'cutbridge-manifest',
+      schema_version: 1,
+      cutbridge_version: '0.2.3',
+      project: '作品',
+      episode: 'E01',
+      scene: 'S001',
+      cut: 'C001',
+      take: 'T01',
+      version: 2,
+      fps: 24,
+      frames: { start: 0, end: 23, count: 24 },
+      resolution: { width: 1920, height: 1080, pixel_aspect: 1 },
+      passes: [
+        {
+          name: 'BEAUTY',
+          path: 'beauty',
+          sequence_pattern: 'b####.png',
+          required: true
+        },
+        {
+          name: 'LINE',
+          path: 'line',
+          sequence_pattern: 'l####.png',
+          required: false
+        }
+      ],
+      package_name: '作品_E01_S001_C001_T01_V002'
+    },
+    version: 2,
+    newer: false,
+    compatibility: { status: 'safe', reasons: [], warnings: [] }
+  },
+  expected: null,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.22.1

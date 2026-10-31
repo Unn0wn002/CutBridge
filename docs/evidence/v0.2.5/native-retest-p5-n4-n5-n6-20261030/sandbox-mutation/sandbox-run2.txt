@@ -1,0 +1,11 @@
+started Fri 10/30/2026 11:27:10.31 
+Ping request could not find host github.com. Please check the name and try again.
+network unreachable as configured 
+=== control: line 71 removed, rule unchanged 
+line 71 assertion removed
+control exit 0 
+=== mutant: line 71 removed, rule weakened from <= to < 
+line 71 assertion removed
+mutation applied
+mutant exit 1 
+finished Fri 10/30/2026 11:27:18.57 

@@ -1,0 +1,33 @@
+{
+ "schema": "cutbridge-studio-preset",
+ "schema_version": 1,
+ "id": "s14b-fx01",
+ "name": "S14B FX01 (BEAUTY required, LINE optional)",
+ "naming": {
+  "package": "{project}_{episode}_{scene}_{cut}_{take}_{version}",
+  "sequence": "{cut}_{pass}_####",
+  "ae_comp": "{cut}_COMP"
+ },
+ "folders": {
+  "render": "render",
+  "preview": "preview",
+  "camera": "camera"
+ },
+ "passes": [
+  {
+   "name": "BEAUTY",
+   "required": true
+  },
+  {
+   "name": "LINE",
+   "required": false
+  }
+ ],
+ "output": {
+  "image_format": "PNG"
+ },
+ "versioning": {
+  "prefix": "V",
+  "padding": 3
+ }
+}

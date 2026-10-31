@@ -1,0 +1,3 @@
+$.evalFile(new File('C:/CutBridgeNativeRepair/common.jsx'));
+var cbR={status:'IN_PROGRESS',host:app.version,temp:$.getenv('TEMP')};
+try{if(app.project.numItems)throw Error('Expected empty fresh process');app.open(new File('C:/CutBridgeEvidence/r2/native025-artist-V003.aep'));$.evalFile(new File('C:/CutBridgeNativeRepair/ae/CutBridge.jsx'));CutBridgeContract.loadManifest('C:/CutBridgeInputsR2/\u30d1\u30c3\u30b1\u30fc\u30b8/Native025_EP01_SC010_C001_T01_V003/cutbridge.json');CutBridgeContract.getState().comp=cbComp();cbR.layers=cbSnapshot();cbR.status='PASS';}catch(cbE){cbR.status='FAIL';cbR.error=String(cbE);}cbSave('repair-native-baseline',cbR);

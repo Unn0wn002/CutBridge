@@ -46,7 +46,7 @@ Supported tag/channel mapping:
 
 Other tag forms fail closed.
 
-Version 0.2.3 is released and immutable. Version 0.2.4 is the active unreleased development baseline with fail-closed release authorization. Historical test versions are deliberate update-selection fixtures. `release-index.example.json` uses placeholder URLs/checksums and is not a published release.
+Version 0.2.3 and 0.2.4 are released and immutable. Version 0.2.5 is the active unreleased development baseline with fail-closed release authorization. Historical test versions are deliberate update-selection fixtures. `release-index.example.json` uses placeholder URLs/checksums and is not a published release.
 
 Three schema versions are independent: Blender extension metadata uses `1.0.0`; CutBridge handoff JSON currently emits integer `1`; the update index/release metadata also uses integer `1`. These are not product versions. The shared schema permits integer versions above 1 for future producers; AE explicitly accepts only handoff version 1. S4 narrows supported export frame endpoints to non-negative integers in the schema and both producer/consumer boundaries. This rejects previously inconsistent negative-frame packages; it does not renumber animation.
 

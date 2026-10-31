@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "version": "0.2.5",
+  "product_version": "0.2.5",
+  "tag": "v0.2.5",
+  "channel": "stable",
+  "prerelease": false,
+  "blender_version_min": "4.2.0",
+  "artifacts": {
+    "blender": {
+      "filename": "CutBridge-Blender-v0.2.5.zip",
+      "sha256": "abf5882d56856d4662e95b2ac1335fb0dc6e818f5f7113235dce0529385b2207"
+    },
+    "after_effects": {
+      "filename": "CutBridge-AfterEffects-v0.2.5.zip",
+      "sha256": "ecfb26ce8e5ad50638e17b35104efc2210d222b4ac8f10fccf0fba2748c17d8f"
+    }
+  },
+  "distribution_note": "Mirror release artifacts and a generated update index to a distribution endpoint that is separate from the source repository"
+}

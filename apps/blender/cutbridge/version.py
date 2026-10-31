@@ -3,8 +3,8 @@
 Keep ``__version__`` synchronized with ``blender_manifest.toml``. CI enforces this.
 """
 
-__version__ = "0.2.4"
-VERSION = (0, 2, 4)
+__version__ = "0.2.5"
+VERSION = (0, 2, 5)
 
 BLENDER_VERSION_MIN = (4, 2, 0)
 TARGET_LTS_SERIES = ((4, 2), (4, 5), (5, 2))
