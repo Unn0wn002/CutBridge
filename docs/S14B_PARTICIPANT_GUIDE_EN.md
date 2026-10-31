@@ -7,7 +7,8 @@ It assumes you have read the [information and consent form](S14B_CONSENT_FORM_EN
 ## Before you start
 
 - We are testing **CutBridge**, not **you**. Places where you get stuck are the most useful results.
-- There is no help with how to use the tool. Each task gives only the goal; finding out how is part of the test.
+- Each task gives only the goal; finding out how is part of the test.
+- **Questions are welcome by email (nyxelharuka@gmail.com).** For trouble receiving the files or with the hash check, just ask. Questions about installing or using CutBridge are answered if you're stuck, but are recorded as help (that's fine).
 - If you can't finish a task, that's fine. Write on the record sheet where and why you got stuck, then move on.
 - Expect about 90–120 minutes. You can take breaks or split it over several sittings.
 - **Use only the test material.** Don't open your own work files.
@@ -66,7 +67,7 @@ Compare the output with these values and write the result on the record sheet (u
 - `CutBridge-Blender-v0.2.5.zip`: `abf5882d56856d4662e95b2ac1335fb0dc6e818f5f7113235dce0529385b2207`
 - `CutBridge-AfterEffects-v0.2.5.zip`: `ecfb26ce8e5ad50638e17b35104efc2210d222b4ac8f10fccf0fba2748c17d8f`
 
-**If they don't match, stop here** and tell 【contact】.
+**If they don't match, stop here** and tell nyxelharuka@gmail.com.
 
 ## Task brief
 
@@ -163,7 +164,7 @@ Answer the "Final questions" on the record sheet in writing.
 ## When you're done
 
 1. Stop the recording. If you recorded, check that nothing private is visible before sending. You may still decide not to send it.
-2. Send the record sheet (and the recording) via 【return method】. If you agreed to attach screenshots, list their file names and which task each shows under "Anything else" on the record sheet.
+2. Upload the record sheet (and the recording) to **your own private Google Drive folder**, whose link we send with the files. Only you and the student running the test can see it (you need to sign in with a Google account). If you don't have a Google account, upload to your own cloud storage and email us a link shared only with nyxelharuka@gmail.com. If you agreed to attach screenshots, list their file names and which task each shows under "Anything else" on the record sheet.
 3. **Remove CutBridge**
    - Blender: open **Edit → Preferences → Add-ons**, find CutBridge, open its menu (▾) and choose **Uninstall**.
    - After Effects: delete the four files (`CutBridge.jsx`, `revision_manager.js`, `qc_plus.js`, `localization.js`) wherever you put them. If you copied them into After Effects' `Scripts/ScriptUI Panels` folder, delete them from there (only these four files, not the folder). One harmless display-language setting stays in After Effects' preferences.
@@ -173,4 +174,4 @@ Thank you for your help.
 
 ---
 
-Contact: 【contact】
+Contact: nyxelharuka@gmail.com
