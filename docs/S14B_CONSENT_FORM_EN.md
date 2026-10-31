@@ -33,9 +33,9 @@ We don't give help with how to use the tool during the tasks, because recording 
 - **Use only the test material.** Don't open your own work files or anything confidential. Backing up important files first is a good idea.
 - **CutBridge does not send data automatically.** It contacts the internet only if you press **Check for Updates** in Blender. That fetches a public file from GitHub Pages (github.io), which, like any website, sees your IP address. No test data is sent. You don't need to press it for this test. Blender's CutBridge preferences also show a "Check on Startup" option; in this build it is disabled in code and does nothing.
 - **Removing it afterwards:**
-  - Blender: uninstall CutBridge under **Edit → Preferences → Extensions**.
-  - After Effects: delete the four files (`CutBridge.jsx`, `revision_manager.js`, `qc_plus.js`, `localization.js`), including from the `Scripts/ScriptUI Panels` folder if you copied them there. CutBridge also leaves one harmless display-language setting in After Effects' preferences.
-  - Delete the folders you created during the test (packages and the After Effects project).
+  - Blender: open **Edit → Preferences → Add-ons**, find CutBridge, open its menu (▾) and choose **Uninstall**.
+  - After Effects: delete the four files (`CutBridge.jsx`, `revision_manager.js`, `qc_plus.js`, `localization.js`) wherever you put them. If you copied them into After Effects' `Scripts/ScriptUI Panels` folder, delete them from there (only these four files, not the folder). CutBridge also leaves one harmless display-language setting in After Effects' preferences.
+  - You can also delete the folders you created during the test (packages and the After Effects project).
   - The participant guide repeats these steps.
 
 ## 4. What we collect

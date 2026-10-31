@@ -242,7 +242,7 @@ S14A provides:
 
 Copy the template for a real campaign. Do not edit the committed template into a fake PASS example.
 
-For the v0.2.5 candidate, [S14B_SESSION_KIT_v0.2.5.md](S14B_SESSION_KIT_v0.2.5.md) binds this protocol to the candidate bytes and adds a moderator runbook, a Japanese participant guide and a per-participant record sheet. The kit is preparation only and records no participant result.
+For the v0.2.5 candidate, [S14B_SESSION_KIT_v0.2.5.md](S14B_SESSION_KIT_v0.2.5.md) binds this protocol to the candidate bytes and adds an owner runbook, participant guides and record sheets. Since 2026-10-31 the sessions run asynchronously under section 13. The kit is preparation only and records no participant result.
 
 ## 12. Release boundary
 
@@ -261,3 +261,20 @@ Before RC/stable publication, CutBridge still requires:
 - production update/distribution verification.
 
 Keep `main`, tags, GitHub Releases, and `release-authorization.json` untouched during S14 protocol preparation.
+
+## 13. Asynchronous execution rule (2026-10-31)
+
+This rule amends how section 5 and section 9, condition 8 are applied when no live moderator is present. It is recorded before any participant run. It does not exempt any task from section 9, condition 2: JP01–JP11 must still be PASS for every counted participant. The protocol version recorded in evidence stays 1, and the campaign summary (`summary.limitations` in the JSON) must state that the sessions were run asynchronously.
+
+It applies when an S14B session runs **without a live moderator**: the participant gives written consent, receives the session bundle, works through the participant guide alone on their own computer, and sends back a record sheet and, if they chose to, a screen recording. There is no meeting, call or live observation.
+
+- **Observed behaviour** is only what the owner sees when reviewing the participant's screen recording. A screen-only recording is enough; voice is optional. The owner fills the reviewer record sheet from the recording and uses recording timestamps as evidence references.
+- **Participant statement** is what the participant writes on their record sheet or says on the recording.
+- **Intervention** is anything beyond the bundle and the written guide: answering a question, giving an extra instruction, or sending an extra file. Using the bundled fallback V001 package also counts; tasks done with it cannot be unassisted. Section 5 applies with "moderator intervention" read as this.
+- **Statements are paraphrased** in the evidence. Record-sheet text is quoted word for word only if the participant consented to quotes; the voice track is never quoted word for word.
+- **Not in the recording:** a task the participant reports as done but that is not visible in the recording (paused, or the file was not sent) is `NOT_RUN`, with "done per record sheet, not in recording" as the participant statement. It cannot count as PASS for that participant.
+- **No recording:** a participant who sends no screen recording has no observed behaviour. They are not entered in `participants[]` and cannot count toward the three participants that section 9 requires. Their findings are entered in `findings[]`, with the record sheet as evidence, and count toward section 9, conditions 4 and 5.
+- **Hash mismatch:** a session whose ZIP hashes do not match is not entered in the campaign record. Resend a verified bundle and treat the rerun as a new session.
+- **Retained evidence:** each evidence reference also cites the participant's reviewer sheet in the evidence folder, which remains the retained record after recordings are deleted. The deletion date promised to participants must fall after the campaign is closed.
+- **Controlled scenarios** in JP04 and JP08 are shipped as prepared files in the bundle instead of being set up by a moderator: a scene with the active camera cleared (JP04), and a package with one optional-pass frame missing (JP08).
+- **Candidate check:** the participant checks the ZIP hashes themselves and writes the result on the record sheet. A mismatch stops the session as `BLOCKED`.
