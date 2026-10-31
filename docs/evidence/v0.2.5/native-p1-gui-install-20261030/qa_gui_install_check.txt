@@ -1,0 +1,9 @@
+blender 5.2.2 LTS
+user resources C:\Users\unn0w\Downloads\02_Projects\_cutbridge_gui_install_20261030\blender-profile
+extension dir exists True C:\Users\unn0w\Downloads\02_Projects\_cutbridge_gui_install_20261030\blender-profile\extensions\user_default\cutbridge
+zip entries compared 22 mismatched []
+installed files not in zip (excluding __pycache__) []
+enabled in saved preferences True
+addon_utils.check (default, loaded) True True
+scene.cutbridge registered True
+VIEW_3D panels in the CutBridge sidebar tab ['CutBridge']

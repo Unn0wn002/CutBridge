@@ -1,0 +1,33 @@
+blender 5.2.2 LTS start S14B_FX01_start.blend
+installed files compared 21 mismatched []
+saved S14B_FX01_v003.blend
+validate -> {'FINISHED'}
+build_package -> {'FINISHED'}
+package S14B_EP01_SC001_C001_T01_V003 exists True
+render -> {'FINISHED'}
+  file cutbridge.json 1313 0086aab7859ad01bd5ebf63095f243945b215926335a0d9dd126d764375471f2
+  file render/beauty/C001_BEAUTY_0001.png 633900 a4097cb00f9b2cc37f65a10aa052756e2287f50456a321d0dfab6b7d065f4a6c
+  file render/beauty/C001_BEAUTY_0002.png 634665 496b4247452baba5ebe0b5052038c1bec9ab69d7f8993bbb3a35b9c6f4855299
+  file render/beauty/C001_BEAUTY_0003.png 634967 5f68222cc87e48fbfdf95907c399db628b5cd8ab2befe80d1c31801e4f519441
+  file render/beauty/C001_BEAUTY_0004.png 635783 75013efd9f57c578ff34606e71f383d763da897ad5fdd685ea963c588149a85a
+  file render/beauty/C001_BEAUTY_0005.png 636834 cd2d89a63f3fb5489d29542c6e7bf38ae9a8dea06fa867cbaffe1ce59b901569
+  file render/beauty/C001_BEAUTY_0006.png 636540 7d031e428a194ed871634b4305d914b5a5640e4a3dd064c253d8ca81708ba87b
+  file render/beauty/C001_BEAUTY_0007.png 632691 b51087db9293854eec1225528bb562338573d105c820f980cb3ce3a895f31ebc
+  file render/beauty/C001_BEAUTY_0008.png 627044 010f1a445557362ac11250bec103ac1f7011afd761d6a3b913042e0bad31c92e
+  file render/beauty/C001_BEAUTY_0009.png 636062 c383049cb13c2073013a82c4c856361cc334a741d007e99139a33a8e0e0c5357
+  file render/beauty/C001_BEAUTY_0010.png 636678 c6a92b27277fbc75583fc8ed34003b788c29488367342a3e24e19531b3a09c56
+  file render/beauty/C001_BEAUTY_0011.png 636220 1637970ea25e0493cc0ab6f2f71b948058d9a00a7e519dc07d2f9a52cb2a95cf
+  file render/beauty/C001_BEAUTY_0012.png 635924 3298faccb8daf7fb521d6f9d6a82836639a111673a776eaa586b3a7c79c56e92
+  file render/line/C001_LINE_0001.png 139201 dadf334ec8801b65554d11eddc8c903fdfd2f02e3c702d627bfcee47f7c2220a
+  file render/line/C001_LINE_0002.png 138806 1c4bb095c1cb1ea625daaaea47c43b16a07f1dd3ee343927952f9ea584d9609b
+  file render/line/C001_LINE_0003.png 139054 94c21ffdda94278af15038d057fadc30f3733fc9416b9ae830c0842becc4619a
+  file render/line/C001_LINE_0004.png 139359 904884d5b1ae4d245088397995e74092522c8d56e31d72e2c8418118d4e0fb8a
+  file render/line/C001_LINE_0005.png 139671 6cf16898c8b3adad9257a46e54b766ac161d2157a964bea7a8bca35b5bdb9458
+  file render/line/C001_LINE_0006.png 138880 4619cc8094de562c5aac223e079b5993f6955ab254d77669d410ae789b0d9826
+  file render/line/C001_LINE_0007.png 138397 0366a94b4800118342a37997bec8849604eb5f94a24c46d2f7a7c698985e9150
+  file render/line/C001_LINE_0008.png 137816 a26bfaf7ad7f00ab800fb10c7c14d1eb8420f2b7401efea2c99185c0abeda27f
+  file render/line/C001_LINE_0009.png 138528 72c36456678182d87a2b70d46e2707a7cb28b99b034f15d74ae196e8ae4f068b
+  file render/line/C001_LINE_0010.png 139118 cdceea006fa6a74e8464b14c246bb4094e5e5033e8ad14e1e2555157c7778fca
+  file render/line/C001_LINE_0011.png 139717 72c140e0a9085cfa2728b4168ea30abd90ea3a0540869e9af86aeae6ccd30ec8
+  file render/line/C001_LINE_0012.png 138882 cc9413394fd254b16dff17e0f467a0d9aad1ee83340fb778555351f3d6b6c37d
+manifest S14B_EP01_SC001_C001_T01_V003 version 3 fps 24.0 res 960 540 frames {'start': 1, 'end': 12, 'count': 12} camera CAM_MAIN passes [('BEAUTY', True), ('LINE', False)] preset s14b-fx01 False

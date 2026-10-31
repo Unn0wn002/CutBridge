@@ -1,0 +1,4 @@
+﻿AE running before: 0
+Second attempt: AE started plainly (pid 40932, Start-Process -PassThru), then the script was sent with AfterFX.exe -r.
+AfterFX pids before B: 40932
+AfterFX processes after quit: 0

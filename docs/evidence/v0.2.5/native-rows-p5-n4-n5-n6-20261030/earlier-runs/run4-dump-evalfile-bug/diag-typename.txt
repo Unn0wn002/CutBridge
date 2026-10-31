@@ -1,0 +1,2 @@
+diagC typeName=Composition isComp=true isFolder=false numLayers=0
+diagF typeName=Folder isComp=false isFolder=true numLayers=undefined

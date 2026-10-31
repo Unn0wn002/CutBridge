@@ -1,0 +1,9 @@
+﻿ae-runtime (from verified CutBridge-AfterEffects-v0.2.5.zip ae9bfb9c..., run in place, not committed):
+  ca8f7049fad8c0b93b3753ce520852d4b0c2f6d120e2c75a01f9aa2fc3743082  CutBridge.jsx
+  413f6cd969e928bbc6c55efb5125003d62f314ba4b7424c29ed4dfe32cff5b0e  localization.js
+  054b8f0a2239c28020f758dab19049c1e4a8d74170c16a42e2aa8d4eee222cb8  qc_plus.js
+  ca9df1b6678eeaa1bebf03a5ba8e35253f0a9984a8891d0f00cc01bbc222a097  revision_manager.js
+removed optional LINE frames of V001 (kept outside the package, not committed):
+  b32c234b4257d7259f80bcfc5397b358362393752eb44491c97bb847782277fa  C014_LINE_0001.png
+  54f12a1da43d9a032f9ba2ce2cba3639bd0d0652024ace52e8cf326ba1092a7e  C014_LINE_0002.png
+  25259dda809964496268f51444386b651ed200a45ddc84551a27d7d01bcd869e  C014_LINE_0003.png

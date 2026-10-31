@@ -1,0 +1,11 @@
+{
+ "N6 null: before == after refused Build": true,
+ "N6 camera: before == after refused Build": true,
+ "N5 older: after V003 == after V002 attempt": true,
+ "N5 same: after V003 == after V003 attempt": true,
+ "restored differs from build only by the artist null's solid": true,
+ "P5 one managed Camera after build and after revision": true,
+ "P5 one managed Null after build and after revision": true,
+ "P5 projection parity 03b-after-build (max diff 0.000013 px, limit 0.5 px)": true,
+ "P5 projection parity 13-after-revision (max diff 0.000013 px, limit 0.5 px)": true
+}

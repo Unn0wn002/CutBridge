@@ -1,0 +1,44 @@
+{
+  "tag": "v0.2.5",
+  "artifacts": {
+    "blender": {
+      "content_identical": true,
+      "missing_entries": [],
+      "unexpected_entries": [],
+      "changed_entries": [],
+      "order_differs": false,
+      "duplicate_entries": [],
+      "unsafe_entry_names": [],
+      "entries": 22,
+      "filename": "CutBridge-Blender-v0.2.5.zip",
+      "expected_filename": "CutBridge-Blender-v0.2.5.zip",
+      "zip_sha256": "3a53f7af8420909e5ed300440df115dffef2ba1dd196688c7c99789a8a48aa48",
+      "rebuilt_sha256_this_toolchain": "3a53f7af8420909e5ed300440df115dffef2ba1dd196688c7c99789a8a48aa48",
+      "zip_bytes_identical_to_rebuild": true,
+      "ok": true
+    },
+    "after_effects": {
+      "content_identical": true,
+      "missing_entries": [],
+      "unexpected_entries": [],
+      "changed_entries": [],
+      "order_differs": false,
+      "duplicate_entries": [],
+      "unsafe_entry_names": [],
+      "entries": 6,
+      "filename": "CutBridge-AfterEffects-v0.2.5.zip",
+      "expected_filename": "CutBridge-AfterEffects-v0.2.5.zip",
+      "zip_sha256": "ae9bfb9c2aa36c6764b324ac74ef85cc5022071b04bb7b7695e64a3651f70366",
+      "rebuilt_sha256_this_toolchain": "ae9bfb9c2aa36c6764b324ac74ef85cc5022071b04bb7b7695e64a3651f70366",
+      "zip_bytes_identical_to_rebuild": true,
+      "ok": true
+    }
+  },
+  "ok": true,
+  "source_commit": null,
+  "toolchain": {
+    "python": "3.13.17",
+    "zlib": "1.3.1"
+  },
+  "scope": "Package-to-source content identity only. This is not an install, native-host or release approval."
+}

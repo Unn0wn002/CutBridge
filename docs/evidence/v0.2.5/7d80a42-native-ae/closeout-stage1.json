@@ -1,0 +1,4 @@
+{
+  "verdict": "INVALID",
+  "reason": "The first scripted probe was delivered to the existing AE process, whose inherited TEMP/TMP were not redirected. Raw observations are retained but excluded from release gate evidence."
+}

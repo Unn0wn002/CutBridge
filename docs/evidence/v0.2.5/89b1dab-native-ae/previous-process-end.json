@@ -1,0 +1,5 @@
+{
+    "method":  "forced test-process termination; Sandbox preserved",
+    "pid":  11000,
+    "reason":  "Saved synthetic test/failure state preserved; native exit attempts did not end process"
+}
