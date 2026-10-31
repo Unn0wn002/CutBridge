@@ -42,7 +42,7 @@ Questions are welcome by email (nyxelharuka@gmail.com). We always answer questio
 
 | Information | Used for | Required? |
 | --- | --- | --- |
-| Your sign-up form answers (role, experience, software versions, OS, time zone, availability, contact) | Choosing testers and contacting you, for example to send the files | Yes |
+| Your sign-up form answers (role, experience, software versions, OS, contact, and your other answers on the form) | Choosing testers and contacting you, for example to send the files | Yes |
 | Your consent reply (email or message) | A record that you agreed | Yes |
 | Your record sheet (result of each task, where you got stuck, comments) | Analysing the results | Yes |
 | Screen recording (screen only, or screen and voice) | Seeing steps the record sheet can't show | **Optional**; you choose below |
