@@ -10,7 +10,7 @@ It assumes you have read the [information and consent form](S14B_CONSENT_FORM_EN
 - Each task gives only the goal; finding out how is part of the test.
 - **Questions are welcome by email (nyxelharuka@gmail.com).** For trouble receiving the files or with the hash check, just ask. Questions about installing or using CutBridge are answered if you're stuck, but are recorded as help (that's fine).
 - If you can't finish a task, that's fine. Write on the record sheet where and why you got stuck, then move on.
-- Expect about 90–120 minutes. You can take breaks or split it over several sittings.
+- Expect about 90–150 minutes (2 to 2.5 hours). You can take breaks or split it over several sittings.
 - **Use only the test material.** Don't open your own work files.
 - CutBridge's display language is set in each CutBridge panel. In After Effects the choice is remembered. In Blender it is saved inside each .blend file, so every test file you open (including the JP03 and JP04 files) may start in Japanese again; switch it to English each time. Finding that setting is part of JP01 and JP06.
 
@@ -115,7 +115,7 @@ Looking at the CutBridge panel, write in your own words what each of these is fo
 
 ### JP03 — Set up the cut
 
-Open `S14B_FX01_start.blend` and set the metadata, active camera, FPS, resolution, frame range, output folder and preset as the task brief says. Then **save the file under a new name**; you'll need it in JP05.
+Open `S14B_FX01_start.blend` and set the metadata, active camera, FPS, resolution, frame range, output folder and preset as the **Task brief** section above says. The start file's settings deliberately differ from the brief. **Use the brief's values exactly:** the files for JP09 and JP10 are made for them (`S14B` / `EP01` / `SC001` / `C001` / `T01`, 960 × 540), so with other values those tasks can't be done. Then **save the file under a new name**; you'll need it in JP05.
 
 ### JP04 — Recover from an error
 
