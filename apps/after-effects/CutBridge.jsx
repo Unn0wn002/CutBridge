@@ -1795,6 +1795,17 @@ if (typeof module !== "undefined" && module.exports) {
             return aeUiText("status_warning");
         }
 
+        // Readability: the status line is bold and coloured (READY green, WARNING amber, ERROR red).
+        // Display only; it does not change any status logic.
+        function paintStatusKind(kind) {
+            var rgb = kind === "READY" ? [0.40, 0.85, 0.50] : (kind === "ERROR" ? [1.00, 0.42, 0.42] : [1.00, 0.78, 0.30]);
+            try { statusKind.graphics.font = ScriptUI.newFont(statusKind.graphics.font.name, "BOLD", 14); } catch (statusFontError) {}
+            try {
+                var statusGraphics = statusKind.graphics;
+                statusGraphics.foregroundColor = statusGraphics.newPen(statusGraphics.PenType.SOLID_COLOR, [rgb[0], rgb[1], rgb[2], 1], 1);
+            } catch (statusColourError) {}
+        }
+
         function refreshPackagePanel() {
             var manifest = state.manifest;
             packageHeading.text = aeUiText("package_section");
@@ -1802,6 +1813,7 @@ if (typeof module !== "undefined" && module.exports) {
             packageName.text = aeUiText("package_label") + ": " + (manifest ? (manifest.package_name || manifest.cut || aeUiText("none")) : aeUiText("none"));
             packageMeta.text = packageStatusText(manifest);
             statusKind.text = aeUiText("status_label") + ": " + statusLabelFor(panelStatusKind);
+            paintStatusKind(panelStatusKind);
             statusDetail.text = aeUiText(panelStatusKey);
         }
 
