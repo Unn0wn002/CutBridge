@@ -1,0 +1,1 @@
+FX|saved C:\Users\unn0w\Downloads\02_Projects\_s14b_fx02_20261031\build\S14B_FX01_JP04.blend camera None output_dir //jp04_output preset //studio_preset_s14b_fx01.json

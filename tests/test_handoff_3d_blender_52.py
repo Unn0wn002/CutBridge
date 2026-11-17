@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import pathlib
 import sys
+from math import radians
 
 import bpy
 import pytest
@@ -183,6 +184,88 @@ def test_parented_empty_is_baked_in_evaluated_world_space(configured_scene):
 
     sample = payload["nulls"][0]["samples"][0]
     assert sample["position"][0] == pytest.approx(1560.0)
+
+
+def test_supported_handoff_diagnostic_describes_existing_ae_consumer(configured_scene):
+    issues = handoff_3d_issues(bpy.context)
+
+    assert len(issues) == 1
+    assert issues[0]["level"] == "WARNING"
+    assert issues[0]["code"] == "HANDOFF_PRODUCER_ONLY"
+    assert "camera position, aim and zoom" in issues[0]["message"]
+    assert "camera roll and Empty rotation are rejected" in issues[0]["message"]
+    assert "QC does not check them" in issues[0]["fix"]
+    assert "exact After Effects host" in issues[0]["fix"]
+
+
+def _assert_fails_closed(code):
+    bpy.context.view_layer.update()
+    issues = handoff_3d_issues(bpy.context)
+    assert [item["code"] for item in issues if item["level"] == "ERROR"] == [code]
+    with pytest.raises(HandoffContractError) as excinfo:
+        build_handoff_3d(bpy.context)
+    assert excinfo.value.code == code
+    return excinfo.value
+
+
+def test_level_camera_with_pitch_and_yaw_is_accepted(configured_scene):
+    _, _, camera, _, _, _ = configured_scene
+    camera.rotation_euler = (radians(70.0), 0.0, radians(30.0))
+    bpy.context.view_layer.update()
+
+    assert [item["level"] for item in handoff_3d_issues(bpy.context)] == ["WARNING"]
+    assert len(build_handoff_3d(bpy.context)["camera"]["samples"]) == 3
+
+
+def test_rolled_camera_fails_closed(configured_scene):
+    _, _, camera, _, _, _ = configured_scene
+    # Looking along +Y, then turned 10 degrees about that view axis.
+    camera.rotation_euler = (radians(90.0), radians(10.0), 0.0)
+    error = _assert_fails_closed("HANDOFF_CAMERA_ROLL_UNSUPPORTED")
+    assert "S10B_Camera" in error.message
+
+
+def test_upside_down_camera_fails_closed(configured_scene):
+    _, _, camera, _, _, _ = configured_scene
+    camera.rotation_euler = (radians(90.0), radians(180.0), 0.0)
+    _assert_fails_closed("HANDOFF_CAMERA_ROLL_UNSUPPORTED")
+
+
+def test_rotated_marked_empty_fails_closed(configured_scene):
+    _, _, _, make_empty, _, _ = configured_scene
+    obj = make_empty("S10B_Rotated")
+    obj[MARKER_PROPERTY] = True
+    obj.rotation_euler = (0.0, 0.0, radians(15.0))
+    error = _assert_fails_closed("HANDOFF_NULL_ROTATION_UNSUPPORTED")
+    assert "S10B_Rotated" in error.message
+
+
+def test_rotation_inherited_from_parent_fails_closed(configured_scene):
+    _, _, _, make_empty, _, _ = configured_scene
+    parent = make_empty("S10B_RotatedParent")
+    child = make_empty("S10B_ChildOfRotated")
+    child[MARKER_PROPERTY] = True
+    parent.rotation_euler = (radians(20.0), 0.0, 0.0)
+    child.parent = parent
+    _assert_fails_closed("HANDOFF_NULL_ROTATION_UNSUPPORTED")
+
+
+def test_rotation_animated_after_the_current_frame_fails_during_baking(configured_scene):
+    scene, _, _, make_empty, _, _ = configured_scene
+    obj = make_empty("S10B_TurnsLater")
+    obj[MARKER_PROPERTY] = True
+    obj.rotation_euler = (0.0, 0.0, 0.0)
+    obj.keyframe_insert(data_path="rotation_euler", frame=1)
+    obj.rotation_euler = (0.0, 0.0, radians(30.0))
+    obj.keyframe_insert(data_path="rotation_euler", frame=3)
+    scene.frame_set(1)
+
+    # Frame 1 is level, so Validate passes; baking reaches the rotated frames and stops.
+    assert [item["level"] for item in handoff_3d_issues(bpy.context)] == ["WARNING"]
+    with pytest.raises(HandoffContractError) as excinfo:
+        build_handoff_3d(bpy.context)
+    assert excinfo.value.code == "HANDOFF_NULL_ROTATION_UNSUPPORTED"
+    assert scene.frame_current == 1
 
 
 def test_unsupported_camera_shift_fails_closed(configured_scene):

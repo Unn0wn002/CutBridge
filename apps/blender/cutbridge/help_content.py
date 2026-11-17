@@ -62,13 +62,13 @@ HELP_CONTENT = {
     },
     "sequence_format": {
         "EN": ("Sequence Format", (
-            ("What is this?", "The image-sequence format used by the current v0.2.4 package architecture."),
+            ("What is this?", "The image-sequence format used by CutBridge packages."),
             ("Current behavior", "The global format remains the compatibility fallback. Manual mode can optionally override the format for each enabled pass."),
             ("Recommended", "PNG is practical for Beauty/Line/Shadow; OpenEXR is recommended for accurate Depth data."),
             ("Compatibility", "Older manifests and presets without per-pass format fields continue to use the global format deterministically."),
         )),
         "JA": ("連番形式", (
-            ("これは何？", "現在のv0.2.4パッケージ構成で使用する画像連番形式です。"),
+            ("これは何？", "CutBridgeパッケージで使用する画像連番形式です。"),
             ("現在の動作", "全体形式は互換性用のフォールバックとして残り、手動モードでは有効な各パスを個別形式へ上書きできます。"),
             ("推奨", "Beauty/Line/ShadowはPNG、正確なDepthが必要な場合はOpenEXRを推奨します。"),
             ("互換性", "パスごとの形式フィールドがない旧manifest/プリセットは、従来どおり全体形式を決定的に使用します。"),
@@ -132,12 +132,12 @@ HELP_CONTENT = {
         "EN": ("Camera", (
             ("What is this?", "The active Blender scene camera recorded in the package metadata."),
             ("Required", "A scene camera is required for a valid production cut."),
-            ("3D handoff", "Experimental producer-side Camera/3D sample data remains hidden and is not release-facing until native AE reconstruction is fully validated."),
+            ("3D handoff", "The advanced control remains hidden. AE rebuilds camera position, aim and zoom and marked Empty position and scale; a rolled camera or rotated Empty is rejected by Validate and Build because it cannot be transferred. Inspect the Camera and 3D Null layers in the comp after Build; QC does not check them."),
         )),
         "JA": ("カメラ", (
             ("これは何？", "パッケージメタデータに記録されるBlender Sceneのアクティブカメラです。"),
             ("必須", "有効なプロダクションカットにはSceneカメラが必要です。"),
-            ("3Dハンドオフ", "実験的なCamera/3Dサンプル出力は非表示のままで、AE側のネイティブ再構築検証が完了するまでリリース向け機能として扱いません。"),
+            ("3Dハンドオフ", "高度な設定は非表示のままです。AEではCameraの位置・注視点・ズームと、マーク付きEmptyの位置・スケールを再現します。転送できないため、ロールしたCameraや回転したEmptyは検証とBuildで停止します。Build後にコンポ内のCameraと3D Nullレイヤーを確認してください。QCはこれらを検査しません。"),
         )),
     },
     "output_path": {
@@ -154,14 +154,14 @@ HELP_CONTENT = {
     },
     "three_d_handoff": {
         "EN": ("Camera / 3D Handoff", (
-            ("Status", "Experimental producer-only data path; it is intentionally not a normal release-facing control."),
-            ("What it can contain", "Camera and supported transform samples for controlled Blender-to-AE reconstruction experiments."),
-            ("Limitation", "Do not assume AE Camera/3D Null creation is release-supported until the exact native-host validation gate passes."),
+            ("Status", "Advanced bounded handoff; the control intentionally remains hidden and disabled by default."),
+            ("What it can contain", "Perspective Camera and marked Empty samples. AE applies camera position, aim (point of interest) and zoom, and Empty position and scale."),
+            ("Limitation", "Camera roll and Empty rotation (including rotation inherited from a parent) cannot be applied in AE, so Validate and Build stop on them at any baked frame. QC does not check the Camera or 3D Nulls; inspect them in the comp on the exact AE host. Compatibility claims are limited to recorded native validation."),
         )),
         "JA": ("Camera / 3Dハンドオフ", (
-            ("状態", "実験的なproducer-onlyデータ経路で、通常のリリース向け操作としては意図的に表示していません。"),
-            ("含められるもの", "管理されたBlender→AE再構築試験用のCameraおよび対応トランスフォームサンプルです。"),
-            ("制限", "正確なネイティブホスト検証ゲートを通るまでは、AE Camera/3D Null生成をリリース対応と見なさないでください。"),
+            ("状態", "範囲を限定した高度なハンドオフです。設定は意図的に非表示で、初期値は無効です。"),
+            ("含められるもの", "透視投影Cameraとマーク付きEmptyのサンプルです。AEはCameraの位置・注視点・ズームと、Emptyの位置・スケールを適用します。"),
+            ("制限", "Cameraのロール（回転）とEmptyの回転（親から継承した回転を含む）はAEで適用できないため、いずれかの書き出しフレームで検出されると検証とBuildが停止します。QCはCameraと3D Nullを検査しないため、実際のAEホストでコンポ内を確認してください。互換性の主張は記録済みのネイティブ検証範囲に限定されます。"),
         )),
     },
 }

@@ -1,0 +1,18 @@
+[
+  {
+    "version": 2,
+    "status": "PASS",
+    "inspected_artist_state_unchanged": true,
+    "handoff_pass": true,
+    "source_count": 4,
+    "correct_sources": true
+  },
+  {
+    "version": 3,
+    "status": "PASS",
+    "inspected_artist_state_unchanged": true,
+    "handoff_pass": true,
+    "source_count": 4,
+    "correct_sources": true
+  }
+]

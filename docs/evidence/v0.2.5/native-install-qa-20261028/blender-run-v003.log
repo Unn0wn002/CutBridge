@@ -1,0 +1,21 @@
+blender 5.2.2 LTS hash d13f752e3b9c
+extension dir exists True
+installed files compared 21 mismatched []
+addon enabled at startup (factory-startup does not persist the CLI enable) False
+enable call -> True
+addon enabled True
+scene.cutbridge registered True
+operators True True
+saved QA_cut.blend camera Camera
+validate -> {'FINISHED'}
+build_package -> {'FINISHED'} last_package_path C:\Users\unn0w\AppData\Local\Temp\claude\C--Users-unn0w-Downloads-02-Projects\996c56a4-bbd5-409c-ac4d-63134adf423a\scratchpad\cb-qa\work\cutbridge_exports\QAPROJ_EP01_SC010_C012_T01_V003
+package dir exists True QAPROJ_EP01_SC010_C012_T01_V003
+render -> {'FINISHED'}
+package files 4
+  file cutbridge.json:1079
+  file render/beauty/C012_BEAUTY_0001.png:89184
+  file render/beauty/C012_BEAUTY_0002.png:89184
+  file render/beauty/C012_BEAUTY_0003.png:89184
+manifest keys ['ae', 'camera', 'cut', 'cutbridge_version', 'episode', 'folders', 'fps', 'frames', 'package_name', 'passes', 'project', 'resolution', 'scene', 'schema', 'schema_version', 'source_blend', 'studio_preset', 'take', 'version', 'version_label']
+manifest version 3 fps 24.0 range None None
+manifest sha256 0ea0a0c954ad35fc65ab07ae1bb7560eb5bb7340530b3e3f598e2d74b033f3e4

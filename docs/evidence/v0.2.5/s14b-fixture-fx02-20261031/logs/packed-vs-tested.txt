@@ -1,0 +1,5 @@
+Packed files vs the copies that were dry-run:
+S14B_FX01_JP04.blend identical
+JP08_qc_check identical
+revisions identical to FX01 moderator/revisions
+fallback identical to FX01 moderator/reference

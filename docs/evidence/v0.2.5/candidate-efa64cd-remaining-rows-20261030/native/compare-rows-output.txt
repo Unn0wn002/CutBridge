@@ -1,0 +1,13 @@
+08-before-quit d805843e77ba038628e8854274b2f453112638b64ea2ab5ca2e08a76b2e8656c
+09-after-relaunch d805843e77ba038628e8854274b2f453112638b64ea2ab5ca2e08a76b2e8656c
+PASS N1: project unchanged by the rejected load (00-empty == 01-after-N1)
+PASS N2: refused revision left the project unchanged (05 == 06)
+PASS N3: failed revision rolled back completely (05 == 07)
+PASS P3: saving did not change project state (05 == 08)
+PASS P3: state after full quit + relaunch + reopen equals state before quit (08 == 09)
+PASS P3: artist null and its note survived
+PASS P3: artist comp marker survived
+PASS P3: managed BEAUTY layer still tagged
+PASS P3: no missing footage after relaunch
+PASS P3: comp range and FPS unchanged
+PASS P3: state after QC in the relaunched panel equals state after relaunch (09 == 12)

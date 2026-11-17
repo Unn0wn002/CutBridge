@@ -7,49 +7,47 @@ S12/S13 closeout reference points:
 - PR #69 state-reconciliation merge: `fbfe83324808c9051e88e845d7ffe225bd56530f`;
 - S13F runtime integration baseline: `0a86d9a0605e1dd9714ef35a547693de76f714f4`;
 - stable v0.2.3: released and immutable at main/tag SHA `1fd2f67935600b06ef9d5301d9d8d6c2d723ca4f`;
-- active release line: `0.2.4`, promoted to protected `main` through PR #97;
-- release authorization on this branch: exact tuple `v0.2.4` / `stable` / non-prerelease is `approved: true`; tag/publication remain pending;
-- publication governance issue #18: OPEN; its live evidence includes v0.2.3 publication/distribution and the v0.2.4 promotion/authorization path.
+- stable v0.2.4: published and independently verified on GitHub at main/tag SHA `a393e409d19445c4090460b7e7b4716779161fa4`;
+- active development: `0.2.5`; Issue #99 source remediation included; release authorization is `approved: false`;
+- production distribution: intentionally remains on v0.2.3 until a corrected post-v0.2.4 release is published and verified;
+- publication governance issue #18: CLOSED / COMPLETED; Issue #99 is the separate release-hygiene/distribution hold.
 
-## Priority A — Blender 6.0 compositor API migration
-
-### Current evidence
-
-The latest exact-head Blender 5.2.1 runtime suite on the v0.2.4 integration baseline passes **307 tests + 2 subtests** and emits **72 deprecation warnings**. The principal known source remains `Scene.use_nodes` usage in render-mapping state capture/rollback.
-
-Blender reports that `Scene.use_nodes` is expected to be removed in Blender 6.0.
-
-### Risk
-
-CutBridge currently supports and tests Blender 5.2.1 successfully, so this is not a present Blender 5.2.1 failure. Leaving the deprecated API in the transactional mapping/rollback path may create a Blender 6.x compatibility failure or force a rushed migration later.
-
-### Required work
-
-- [ ] Inspect the actual Blender 6.x compositor API contract before editing.
-- [ ] Replace deprecated `Scene.use_nodes` dependence with the supported equivalent while preserving transactional mapping semantics.
-- [ ] Add regression coverage proving prior valid mapping and artist nodes survive failed replacement attempts.
-- [ ] Run the existing Blender 5.2.1 suite to prevent backward regression.
-- [ ] Add authoritative Blender 6.x runtime coverage only after an explicit compatibility-target decision.
-- [ ] Do not claim Blender 6.x support merely because the warning disappears.
-
-## Priority A — GitHub Actions runtime migration
+## Priority A — Blender 5.3/6.0 compositor API migration
 
 ### Current evidence
 
-Current CI passes, but GitHub warns that pinned revisions of actions such as checkout/setup-node/setup-python target deprecated Node 20 action runtimes and are being forced to execute on Node 24.
+The historical v0.2.4 exact-head Blender 5.2.1 runtime suite passed **307 tests + 2 subtests** and emitted **72 deprecation warnings**. The v0.2.5 follow-up now reads and restores `Scene.use_nodes` only on the Blender 4.x compatibility path; a regression check covers state capture/rollback on the modern compositor path.
+
+Blender's 5.0 API notes deprecate `Scene.use_nodes`, and its 5.3 API notes also deprecate `Scene.compositing_node_group` in favor of `Scene.compositor_effects`. Blender 5.3 introduces a scene compositor effects stack. The installed authoritative runtime remains Blender 5.2.1; the new stack does not yet have a stable supported runtime in this project.
 
 ### Risk
 
-CutBridge intentionally pins release-sensitive actions for supply-chain/reproducibility safety. Relying indefinitely on GitHub's compatibility override weakens confidence that the pinned action/runtime combination will remain supported.
+The change removes deprecated `Scene.use_nodes` access from the currently supported modern path without breaking the 4.x compatibility path. It does not migrate compositor ownership to `Scene.compositor_effects`, so Blender 5.3/6.0 support is not established.
 
 ### Required work
 
-- [ ] Identify current official action revisions that natively support the supported GitHub Actions runtime.
-- [ ] Review upstream action release notes/security changes before changing pins.
-- [ ] Update pins deliberately rather than switching to floating major tags.
-- [ ] Verify `persist-credentials: false` and release-isolation assumptions remain intact.
-- [ ] Run complete CI and release simulation after pin updates.
-- [ ] Record exact new SHAs and validation evidence.
+- [ ] On a stable Blender 5.3 runtime, inspect `Scene.compositor_effects` and the scene-effect node-group contract.
+- [ ] Migrate the output mapping transaction to the effect stack while preserving artist effects and rollback behavior.
+- [ ] Keep Blender 4.2, 4.5, and 5.2 compatibility covered; test Blender 5.3 and Blender 6 only when authoritative runtimes are available.
+- [ ] Update supported-version claims only after real-host coverage passes.
+- [ ] Do not claim Blender 5.3/6.0 support from warning removal or static checks alone.
+
+## RESOLVED IN SOURCE — GitHub Actions Node 24 migration
+
+### Current evidence
+
+The workflows now pin official Node 24 action revisions: checkout `3d3c42e5...` (v7.0.1), setup-node `82076278...` (v7.0.0), setup-python `5fda3b95...` (v7.0.0), upload-artifact `043fb46d...` (v7.0.1), download-artifact `3e5f45b2...` (v8.0.1), and action-gh-release `e598afbe...` (v3.0.3). CI includes an upload/download round-trip check. All action refs remain pinned to full commit SHAs, and checkout keeps `persist-credentials: false`.
+
+### Risk
+
+The pinned actions require a current GitHub Actions runner with Node 24 support. The release-only publish path is not executed by ordinary CI; it remains subject to the next explicitly authorized release workflow.
+
+### Required work
+
+- [x] Identify and review current official Node 24 action revisions.
+- [x] Pin full SHAs, preserving `persist-credentials: false` and release authorization boundaries.
+- [x] Pass complete CI and the artifact round-trip check on exact PR #104 / PR #105 heads (`36300656935`, `36301681204`) and their merge commits.
+- [ ] Exercise the release-only artifact/publish actions during the next explicitly authorized release.
 
 ## RESOLVED — `main` / `develop` release-promotion reconciliation
 
@@ -108,7 +106,7 @@ The v0.2.3 governance path is complete:
 - the v0.2.3 GitHub Release and downloaded artifacts were independently verified;
 - production D1 is deployed separately at `Unn0wn002/cutbridge-distribution` commit `635c1384af2649d4ce49705cce41f98826a861cc`.
 
-Issue #18 remains open as the live governance/release evidence log. For active v0.2.4 development, authorization is fail-closed and no tag, GitHub Release, or distribution entry exists. Subsequent releases must repeat exact-candidate authorization, protected tag creation, independent asset verification, and additive distribution publication.
+Issue #18 is closed as completed after the authorized v0.2.4 exact-current-main tag/publication path and independent asset verification passed. Issue #99 remains open because the immutable published v0.2.4 AE ZIP contains stale release-state wording; its source fix is carried by active v0.2.5 development. Subsequent releases must repeat exact-candidate authorization, protected tag creation, independent asset verification, and additive distribution publication.
 
 ## Priority B — Japanese target-user evidence
 

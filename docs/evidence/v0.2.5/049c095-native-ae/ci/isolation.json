@@ -1,0 +1,246 @@
+[
+    {
+        "Id": "c955254b704cb50eed0a03c4d832a498c162826287bed659bd8ebb6491afba49",
+        "Created": "2026-10-04T05:38:46.484235312Z",
+        "Path": "bash",
+        "Args": [
+            "-c",
+            "\n    set -euo pipefail\n    OUT=\"$PWD/verification-output\"\n    python - <<\"PY\"\nimport os, socket\nfrom pathlib import Path\nassert not any(os.environ.get(key) for key in (\"GH_TOKEN\", \"GITHUB_TOKEN\", \"SSH_AUTH_SOCK\", \"ACTIONS_RUNTIME_TOKEN\"))\nassert not Path(\"/var/run/docker.sock\").exists()\nassert not Path(\"/candidate/.git\").exists()\ntry:\n    Path(\"/candidate/write-probe\").write_text(\"unexpected\")\nexcept OSError:\n    pass\nelse:\n    raise SystemExit(\"candidate mount is writable\")\nwith socket.socket() as probe:\n    probe.settimeout(1)\n    try:\n        probe.connect((\"1.1.1.1\", 443))\n    except OSError:\n        pass\n    else:\n        raise SystemExit(\"network is accessible\")\nprint(\"Isolation probes passed: offline, read-only source, no credential environment or engine socket\")\nPY\n    python -m compileall -q apps tools tests\n    python -m pytest -q -p no:cacheprovider --junitxml=\"$OUT/pytest.xml\"\n    python tests/test_blender_runtime_52.py\n    for file in CutBridge.jsx revision_manager.js qc_plus.js localization.js; do\n      node_file=\"$file\"\n      if [[ \"$file\" == CutBridge.jsx ]]; then node_file=CutBridge.js; fi\n      cp \"apps/after-effects/$file\" \"$TMPDIR/$node_file\"\n      node --check \"$TMPDIR/$node_file\"\n    done\n    for check in ae_s6_revision_checks ae_s6_optional_pass_lifecycle_checks ae_s6_extend_script_binding_checks ae_s7_qc_plus_checks ae_s7_native_qc_binding_checks ae_s8_localization_checks ae_s8_native_ui_binding_checks ae_s10c_reconstruction_checks ae_s13_revision_3d_tag_migration_checks; do\n      node \"tests/$check.cjs\"\n    done\n    VERSION=\"$(python -c \"import tomllib; print(tomllib.load(open(\\\"apps/blender/cutbridge/blender_manifest.toml\\\", \\\"rb\\\"))[\\\"version\\\"], end=\\\"\\\")\")\"\n    python tools/build_release.py --tag \"v${VERSION}\" --output \"$OUT/dist-ci\"\n    python tools/build_release.py --tag \"v${VERSION}\" --output \"$OUT/dist-repeat\"\n    (cd \"$OUT/dist-ci\" && sha256sum --check SHA256SUMS.txt)\n    for artifact in \"$OUT/dist-ci/\"*; do\n      cmp \"$artifact\" \"$OUT/dist-repeat/$(basename \"$artifact\")\"\n    done\n    python - <<\"DISTRIBUTION_PY\"\nimport importlib.util, json, shutil, tomllib, zipfile\nfrom pathlib import Path\nimport jsonschema\nout = Path(\"verification-output\")\nmetadata = json.loads((out / \"dist-ci/release-metadata.json\").read_text())\nindex = json.loads(Path(\"production-release-index.json\").read_text())\nbefore = list(index[\"releases\"])\nversion = metadata[\"version\"]\nbase = \"https://unn0wn002.github.io/cutbridge-distribution\"\narchive = metadata[\"artifacts\"][\"blender\"]\nfilename = archive[\"filename\"]\nentry = {\"version\": version, \"channel\": \"stable\", \"blender_version_min\": metadata[\"blender_version_min\"], \"release_page_url\": f\"{base}/releases/v{version}/\", \"download_url\": f\"{base}/releases/v{version}/{filename}\", \"sha256\": archive[\"sha256\"]}\nassert not any(item[\"version\"] == version for item in before), \"candidate is already advertised\"\nindex[\"releases\"] = [entry, *before]\nindex.pop(\"generated_at\", None)\njsonschema.validate(index, json.loads(Path(\"packages/update/release-index.schema.json\").read_text()))\nspec = importlib.util.spec_from_file_location(\"updates\", \"apps/blender/cutbridge/updates.py\")\nupdates = importlib.util.module_from_spec(spec)\nspec.loader.exec_module(updates)\nfor current in (\"0.2.3\", version, \"99.0.0\"):\n    selected = updates.select_latest_compatible(index, current_version=current, blender_version=(5, 2, 1), platform_name=\"windows-x64\")\n    assert (selected[\"version\"] if selected else None) == (version if current == \"0.2.3\" else None)\nassert index[\"releases\"][1:] == before\npreview = out / \"distribution-preview\"\n(preview / \"cutbridge\").mkdir(parents=True)\n(preview / \"blender\").mkdir()\nrelease = preview / \"releases\" / f\"v{version}\"\nrelease.mkdir(parents=True)\nfor artifact in (out / \"dist-ci\").iterdir():\n    shutil.copyfile(artifact, release / artifact.name)\n(preview / \"cutbridge/release-index.json\").write_text(json.dumps(index, indent=2) + \"\\n\")\nwith zipfile.ZipFile(out / \"dist-ci\" / archive[\"filename\"]) as package:\n    manifest = tomllib.loads(package.read(\"blender_manifest.toml\").decode())\nmanifest.pop(\"build\", None)\nmanifest.update(archive_url=\"./\" + archive[\"filename\"], archive_size=(out / \"dist-ci\" / archive[\"filename\"]).stat().st_size, archive_hash=\"sha256:\" + archive[\"sha256\"])\n(preview / \"blender/index.json\").write_text(json.dumps({\"version\": \"v1\", \"blocklist\": [], \"data\": [manifest]}, indent=2) + \"\\n\")\nshutil.copyfile(out / \"dist-ci\" / archive[\"filename\"], preview / \"blender\" / archive[\"filename\"])\nlinks = \"\".join(f\"<li><a href=\\\"{artifact.name}\\\">{artifact.name}</a></li>\" for artifact in sorted(release.iterdir()))\n(release / \"index.html\").write_text(f\"<!doctype html><html lang=\\\"en\\\"><meta charset=\\\"utf-8\\\"><title>CutBridge v{version} candidate</title><h1>CutBridge v{version} candidate</h1><p>Unpublished preview. Release authorization and published-download verification are required before distribution.</p><ul>{links}</ul></html>\")\n(preview / \"DO_NOT_PUBLISH.txt\").write_text(\"Unpublished candidate artifacts. Verify the authorized published release before mirroring. Preserve the production v0.2.3 tree; do not replace it with this partial preview.\\n\")\nprint(\"Distribution preview: schema, preserved prior entries, v0.2.3 update selection and no downgrade passed; NOT PUBLISHED\")\nDISTRIBUTION_PY\n    echo \"Canonical checks and deterministic repeated packaging passed\"\n  "
+        ],
+        "State": {
+            "Status": "created",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "0001-01-01T00:00:00Z",
+            "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "Image": "sha256:e51f75673dc9886cca3a8ec6e2fe1d502973048523367afc5d76663bcd3e7045",
+        "ResolvConfPath": "",
+        "HostnamePath": "",
+        "HostsPath": "",
+        "LogPath": "",
+        "Name": "/cutbridge-candidate",
+        "RestartCount": 0,
+        "Driver": "overlay2",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": null,
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {}
+            },
+            "NetworkMode": "none",
+            "PortBindings": {},
+            "RestartPolicy": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "CapAdd": null,
+            "CapDrop": [
+                "ALL"
+            ],
+            "CgroupnsMode": "private",
+            "Dns": [],
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": true,
+            "SecurityOpt": [
+                "no-new-privileges"
+            ],
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "runc",
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 6442450944,
+            "NanoCpus": 2000000000,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": [],
+            "BlkioDeviceReadBps": [],
+            "BlkioDeviceWriteBps": [],
+            "BlkioDeviceReadIOps": [],
+            "BlkioDeviceWriteIOps": [],
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": [],
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "MemoryReservation": 0,
+            "MemorySwap": 12884901888,
+            "MemorySwappiness": null,
+            "OomKillDisable": false,
+            "PidsLimit": 512,
+            "Ulimits": [],
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "Mounts": [
+                {
+                    "Type": "bind",
+                    "Source": "/home/runner/work/_temp/cutbridge-snapshot",
+                    "Target": "/candidate",
+                    "ReadOnly": true
+                },
+                {
+                    "Type": "bind",
+                    "Source": "/home/runner/work/_temp/cutbridge-snapshot/verification-output",
+                    "Target": "/candidate/verification-output"
+                }
+            ],
+            "MaskedPaths": [
+                "/proc/asound",
+                "/proc/acpi",
+                "/proc/interrupts",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/sys/firmware",
+                "/sys/devices/virtual/powercap"
+            ],
+            "ReadonlyPaths": [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "GraphDriver": {
+            "Data": {
+                "ID": "c955254b704cb50eed0a03c4d832a498c162826287bed659bd8ebb6491afba49",
+                "LowerDir": "/var/lib/docker/overlay2/d04f36c85d0e696c699c1135b12e4679aed33aee614c0943a38481e65edd83ff-init/diff:/var/lib/docker/overlay2/kvexqlq3u00dbdj6mxy79191b/diff:/var/lib/docker/overlay2/1bnw3065w8z21vrzwa2g43zwz/diff:/var/lib/docker/overlay2/odf7yaqrao4ww0m94gmuher5e/diff:/var/lib/docker/overlay2/2f0a80a61ce9640f42c0a38577970ef70601636d8ac6bc78cf1fb2f66e955960/diff:/var/lib/docker/overlay2/0f512b145e21d200d4a25b09df609ef65c1d8755ba7191d46b8327fd4d6a09b6/diff:/var/lib/docker/overlay2/a28b6cb4429fdfdcdf794cd644bd2d599d587d5c97a29c9c29b0070c0af9cf2c/diff:/var/lib/docker/overlay2/1650abbb1567a0bbeacba767f5255e1004986b3dc6f63eeedfc24f6587729edc/diff:/var/lib/docker/overlay2/b316c6c948f53a31d4a30ecb3be03aa49acbc931e0ffd1dcc2f538b15c26955c/diff:/var/lib/docker/overlay2/937e7f11078bc2eb2b7cf352da0595ad3cc033df3279dbf2f1e2adbf6dfeec96/diff:/var/lib/docker/overlay2/5dd1805f3f479b5bf50b46f46a9d96a162bd5c2fc3eda4f3685e4ca9614452ea/diff",
+                "MergedDir": "/var/lib/docker/overlay2/d04f36c85d0e696c699c1135b12e4679aed33aee614c0943a38481e65edd83ff/merged",
+                "UpperDir": "/var/lib/docker/overlay2/d04f36c85d0e696c699c1135b12e4679aed33aee614c0943a38481e65edd83ff/diff",
+                "WorkDir": "/var/lib/docker/overlay2/d04f36c85d0e696c699c1135b12e4679aed33aee614c0943a38481e65edd83ff/work"
+            },
+            "Name": "overlay2"
+        },
+        "Mounts": [
+            {
+                "Type": "bind",
+                "Source": "/home/runner/work/_temp/cutbridge-snapshot",
+                "Destination": "/candidate",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+            },
+            {
+                "Type": "bind",
+                "Source": "/home/runner/work/_temp/cutbridge-snapshot/verification-output",
+                "Destination": "/candidate/verification-output",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+            }
+        ],
+        "Config": {
+            "Hostname": "c955254b704c",
+            "Domainname": "",
+            "User": "1000:1000",
+            "AttachStdin": false,
+            "AttachStdout": true,
+            "AttachStderr": true,
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "HOME=/candidate/verification-output/home",
+                "PYTHONPYCACHEPREFIX=/candidate/verification-output/pycache",
+                "TEMP=/candidate/verification-output/tmp",
+                "TMP=/candidate/verification-output/tmp",
+                "TMPDIR=/candidate/verification-output/tmp",
+                "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+                "PYTHON_VERSION=3.13.16",
+                "PYTHON_SHA256=f4b1bfb3c79b5bb11b8d228a12504163b4c0dab4d679828d8f5f26b6cb6ab35d"
+            ],
+            "Cmd": [
+                "bash",
+                "-c",
+                "\n    set -euo pipefail\n    OUT=\"$PWD/verification-output\"\n    python - <<\"PY\"\nimport os, socket\nfrom pathlib import Path\nassert not any(os.environ.get(key) for key in (\"GH_TOKEN\", \"GITHUB_TOKEN\", \"SSH_AUTH_SOCK\", \"ACTIONS_RUNTIME_TOKEN\"))\nassert not Path(\"/var/run/docker.sock\").exists()\nassert not Path(\"/candidate/.git\").exists()\ntry:\n    Path(\"/candidate/write-probe\").write_text(\"unexpected\")\nexcept OSError:\n    pass\nelse:\n    raise SystemExit(\"candidate mount is writable\")\nwith socket.socket() as probe:\n    probe.settimeout(1)\n    try:\n        probe.connect((\"1.1.1.1\", 443))\n    except OSError:\n        pass\n    else:\n        raise SystemExit(\"network is accessible\")\nprint(\"Isolation probes passed: offline, read-only source, no credential environment or engine socket\")\nPY\n    python -m compileall -q apps tools tests\n    python -m pytest -q -p no:cacheprovider --junitxml=\"$OUT/pytest.xml\"\n    python tests/test_blender_runtime_52.py\n    for file in CutBridge.jsx revision_manager.js qc_plus.js localization.js; do\n      node_file=\"$file\"\n      if [[ \"$file\" == CutBridge.jsx ]]; then node_file=CutBridge.js; fi\n      cp \"apps/after-effects/$file\" \"$TMPDIR/$node_file\"\n      node --check \"$TMPDIR/$node_file\"\n    done\n    for check in ae_s6_revision_checks ae_s6_optional_pass_lifecycle_checks ae_s6_extend_script_binding_checks ae_s7_qc_plus_checks ae_s7_native_qc_binding_checks ae_s8_localization_checks ae_s8_native_ui_binding_checks ae_s10c_reconstruction_checks ae_s13_revision_3d_tag_migration_checks; do\n      node \"tests/$check.cjs\"\n    done\n    VERSION=\"$(python -c \"import tomllib; print(tomllib.load(open(\\\"apps/blender/cutbridge/blender_manifest.toml\\\", \\\"rb\\\"))[\\\"version\\\"], end=\\\"\\\")\")\"\n    python tools/build_release.py --tag \"v${VERSION}\" --output \"$OUT/dist-ci\"\n    python tools/build_release.py --tag \"v${VERSION}\" --output \"$OUT/dist-repeat\"\n    (cd \"$OUT/dist-ci\" && sha256sum --check SHA256SUMS.txt)\n    for artifact in \"$OUT/dist-ci/\"*; do\n      cmp \"$artifact\" \"$OUT/dist-repeat/$(basename \"$artifact\")\"\n    done\n    python - <<\"DISTRIBUTION_PY\"\nimport importlib.util, json, shutil, tomllib, zipfile\nfrom pathlib import Path\nimport jsonschema\nout = Path(\"verification-output\")\nmetadata = json.loads((out / \"dist-ci/release-metadata.json\").read_text())\nindex = json.loads(Path(\"production-release-index.json\").read_text())\nbefore = list(index[\"releases\"])\nversion = metadata[\"version\"]\nbase = \"https://unn0wn002.github.io/cutbridge-distribution\"\narchive = metadata[\"artifacts\"][\"blender\"]\nfilename = archive[\"filename\"]\nentry = {\"version\": version, \"channel\": \"stable\", \"blender_version_min\": metadata[\"blender_version_min\"], \"release_page_url\": f\"{base}/releases/v{version}/\", \"download_url\": f\"{base}/releases/v{version}/{filename}\", \"sha256\": archive[\"sha256\"]}\nassert not any(item[\"version\"] == version for item in before), \"candidate is already advertised\"\nindex[\"releases\"] = [entry, *before]\nindex.pop(\"generated_at\", None)\njsonschema.validate(index, json.loads(Path(\"packages/update/release-index.schema.json\").read_text()))\nspec = importlib.util.spec_from_file_location(\"updates\", \"apps/blender/cutbridge/updates.py\")\nupdates = importlib.util.module_from_spec(spec)\nspec.loader.exec_module(updates)\nfor current in (\"0.2.3\", version, \"99.0.0\"):\n    selected = updates.select_latest_compatible(index, current_version=current, blender_version=(5, 2, 1), platform_name=\"windows-x64\")\n    assert (selected[\"version\"] if selected else None) == (version if current == \"0.2.3\" else None)\nassert index[\"releases\"][1:] == before\npreview = out / \"distribution-preview\"\n(preview / \"cutbridge\").mkdir(parents=True)\n(preview / \"blender\").mkdir()\nrelease = preview / \"releases\" / f\"v{version}\"\nrelease.mkdir(parents=True)\nfor artifact in (out / \"dist-ci\").iterdir():\n    shutil.copyfile(artifact, release / artifact.name)\n(preview / \"cutbridge/release-index.json\").write_text(json.dumps(index, indent=2) + \"\\n\")\nwith zipfile.ZipFile(out / \"dist-ci\" / archive[\"filename\"]) as package:\n    manifest = tomllib.loads(package.read(\"blender_manifest.toml\").decode())\nmanifest.pop(\"build\", None)\nmanifest.update(archive_url=\"./\" + archive[\"filename\"], archive_size=(out / \"dist-ci\" / archive[\"filename\"]).stat().st_size, archive_hash=\"sha256:\" + archive[\"sha256\"])\n(preview / \"blender/index.json\").write_text(json.dumps({\"version\": \"v1\", \"blocklist\": [], \"data\": [manifest]}, indent=2) + \"\\n\")\nshutil.copyfile(out / \"dist-ci\" / archive[\"filename\"], preview / \"blender\" / archive[\"filename\"])\nlinks = \"\".join(f\"<li><a href=\\\"{artifact.name}\\\">{artifact.name}</a></li>\" for artifact in sorted(release.iterdir()))\n(release / \"index.html\").write_text(f\"<!doctype html><html lang=\\\"en\\\"><meta charset=\\\"utf-8\\\"><title>CutBridge v{version} candidate</title><h1>CutBridge v{version} candidate</h1><p>Unpublished preview. Release authorization and published-download verification are required before distribution.</p><ul>{links}</ul></html>\")\n(preview / \"DO_NOT_PUBLISH.txt\").write_text(\"Unpublished candidate artifacts. Verify the authorized published release before mirroring. Preserve the production v0.2.3 tree; do not replace it with this partial preview.\\n\")\nprint(\"Distribution preview: schema, preserved prior entries, v0.2.3 update selection and no downgrade passed; NOT PUBLISHED\")\nDISTRIBUTION_PY\n    echo \"Canonical checks and deterministic repeated packaging passed\"\n  "
+            ],
+            "Image": "cutbridge-verifier",
+            "Volumes": null,
+            "WorkingDir": "/candidate",
+            "Entrypoint": null,
+            "OnBuild": null,
+            "Labels": {}
+        },
+        "NetworkSettings": {
+            "Bridge": "",
+            "SandboxID": "",
+            "SandboxKey": "",
+            "Ports": {},
+            "HairpinMode": false,
+            "LinkLocalIPv6Address": "",
+            "LinkLocalIPv6PrefixLen": 0,
+            "SecondaryIPAddresses": null,
+            "SecondaryIPv6Addresses": null,
+            "EndpointID": "",
+            "Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "IPAddress": "",
+            "IPPrefixLen": 0,
+            "IPv6Gateway": "",
+            "MacAddress": "",
+            "Networks": {
+                "none": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "MacAddress": "",
+                    "DriverOpts": null,
+                    "GwPriority": 0,
+                    "NetworkID": "",
+                    "EndpointID": "",
+                    "Gateway": "",
+                    "IPAddress": "",
+                    "IPPrefixLen": 0,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "DNSNames": null
+                }
+            }
+        }
+    }
+]

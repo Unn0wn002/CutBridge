@@ -1,0 +1,53 @@
+{
+  "schema": "cutbridge-manifest",
+  "schema_version": 1,
+  "cutbridge_version": "0.2.5",
+  "project": "QAPROJ",
+  "episode": "EP01",
+  "scene": "SC010",
+  "cut": "C012",
+  "take": "T01",
+  "version": 1,
+  "version_label": "V001",
+  "package_name": "QAPROJ_EP01_SC010_C012_T01_V001",
+  "fps": 24.0,
+  "resolution": {
+    "width": 480,
+    "height": 270,
+    "pixel_aspect": 1.0
+  },
+  "frames": {
+    "start": 1,
+    "end": 3,
+    "count": 3
+  },
+  "camera": "Camera",
+  "source_blend": "QA_cut.blend",
+  "passes": [
+    {
+      "name": "BEAUTY",
+      "path": "render/beauty",
+      "sequence_pattern": "C012_BEAUTY_####.png",
+      "required": true,
+      "image_format": "PNG"
+    }
+  ],
+  "folders": {
+    "render": "render",
+    "preview": "preview",
+    "camera": "camera"
+  },
+  "ae": {
+    "comp_name": "C012_COMP",
+    "layer_order": [
+      "BEAUTY"
+    ]
+  },
+  "studio_preset": {
+    "mode": "manual",
+    "schema": "cutbridge-studio-preset",
+    "schema_version": 1,
+    "id": "manual",
+    "name": "Manual"
+  }
+}

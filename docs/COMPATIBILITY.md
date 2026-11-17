@@ -110,4 +110,4 @@ The authoritative execution checklist is [RELEASE_READINESS.md](RELEASE_READINES
 - After Effects 2026 Build 87 on Windows 11: bounded real native evidence exists for S6–S8 scopes and S10C reconstruction/parity.
 - Stable broad compatibility certification: **not yet claimed**.
 
-v0.2.3 remains unreleased, and compatibility evidence does not authorize publication.
+v0.2.4 is published on GitHub; production distribution remains on v0.2.3 while Issue #99 is open. Compatibility evidence does not authorize a future publication.

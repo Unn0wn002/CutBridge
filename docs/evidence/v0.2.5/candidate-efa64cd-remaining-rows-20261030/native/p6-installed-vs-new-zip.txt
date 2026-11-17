@@ -1,0 +1,12 @@
+CutBridge.jsx
+  installed: ca8f7049fad8c0b93b3753ce520852d4b0c2f6d120e2c75a01f9aa2fc3743082  C:\Program Files\Adobe\Adobe After Effects 2026\Support Files\Scripts\ScriptUI Panels\CutBridge.jsx  (LastWriteTime 2026-10-29 14:59:18)
+  new zip:   ca8f7049fad8c0b93b3753ce520852d4b0c2f6d120e2c75a01f9aa2fc3743082
+revision_manager.js
+  installed: ca9df1b6678eeaa1bebf03a5ba8e35253f0a9984a8891d0f00cc01bbc222a097  C:\Program Files\Adobe\Adobe After Effects 2026\Support Files\Scripts\ScriptUI Panels\revision_manager.js  (LastWriteTime 2026-10-29 14:59:18)
+  new zip:   ca9df1b6678eeaa1bebf03a5ba8e35253f0a9984a8891d0f00cc01bbc222a097
+qc_plus.js
+  installed: 054b8f0a2239c28020f758dab19049c1e4a8d74170c16a42e2aa8d4eee222cb8  C:\Program Files\Adobe\Adobe After Effects 2026\Support Files\Scripts\ScriptUI Panels\qc_plus.js  (LastWriteTime 2026-10-29 14:59:18)
+  new zip:   054b8f0a2239c28020f758dab19049c1e4a8d74170c16a42e2aa8d4eee222cb8
+localization.js
+  installed: 413f6cd969e928bbc6c55efb5125003d62f314ba4b7424c29ed4dfe32cff5b0e  C:\Program Files\Adobe\Adobe After Effects 2026\Support Files\Scripts\ScriptUI Panels\localization.js  (LastWriteTime 2026-10-29 14:59:18)
+  new zip:   413f6cd969e928bbc6c55efb5125003d62f314ba4b7424c29ed4dfe32cff5b0e

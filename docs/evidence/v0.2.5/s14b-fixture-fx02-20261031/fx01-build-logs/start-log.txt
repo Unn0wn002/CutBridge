@@ -1,0 +1,1 @@
+FX|saved C:\Users\unn0w\Downloads\02_Projects\_s14b_fixture_20261030\build\S14B_FX01_start.blend objects ['CAM_MAIN', 'CHAR_BODY', 'CHAR_HEAD', 'FLOOR', 'PROP_BOX', 'SUN_KEY'] camera CAM_MAIN fps 30 res 1920 1080 range 1 250 blender 5.2.2 LTS
